@@ -1,0 +1,29 @@
+-{vFlag}=
+-std=c++14
+-DSFML
+;-DODFAEG_SYSTEM_WINDOWS
+>
+-{vIncl}=
+-I ../ 
+-I ../ExtLib/SFML-2.5.1/include/
+-I ../ExtLib/SDL2/include/
+-I ../ODFAEG/extlibs/headers/libsndfile/windows/
+-I ../ODFAEG/extlibs/headers/OPENSSL/
+-I ../ODFAEG/include/
+-I ../ODFAEG/extlibs/headers/
+-I ../ODFAEG/extlibs/headers/libfreetype/windows/
+>
+;Build ODFAEG
+-c ../ODFAEG/src/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
+-{vIncl}
+-{vFlag}
+>
+;Build Main Example
+;-c ../HelloWorld/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/HelloWorld/
+;-{vIncl}
+;-{vFlag}
+>
+;Generate executable
+-o obj/cpp_{_sPlatform}_{_sOpt}/ -#To _out/{_sPlatform}_{_sOpt}/App.*
+>
+-#Run
