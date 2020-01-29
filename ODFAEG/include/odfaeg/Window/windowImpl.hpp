@@ -6,10 +6,10 @@
 #include <SFML/System/Clock.hpp>
 #include "glResource.hpp"
 #if defined (ODFAEG_SYSTEM_LINUX)
-#include "../../../include/odfaeg/Window/x11Window.hpp"
+#include "../../../include/odfaeg/Window/Linux/x11Window.hpp"
 typedef odfaeg::window::X11Window WindowImplType;
 #elif defined (ODFAEG_SYSTEM_WINDOWS)
-#include "../../../include/odfaeg/Window/win32Window.hpp"
+#include "../../../include/odfaeg/Window/Windows/win32Window.hpp"
 typedef odfaeg::window::Win32Window WindowImplType;
 #endif
 namespace odfaeg {

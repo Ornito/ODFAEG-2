@@ -1,4 +1,4 @@
-#include <GL/glew.h>
+#include "ExtLib/GLEW/glew-2.0.0/include/GL/glew.h"
 #include <SFML/OpenGL.hpp>
 #include "../../../include/odfaeg/Graphics/perPixelLinkedListRenderComponent.hpp"
 #include "glCheck.h"

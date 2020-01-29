@@ -1,11 +1,11 @@
 #include "../../../include/odfaeg/Window/iKeyboard.hpp"
 #if defined (SFML)
-#include "../../../include/odfaeg/Window/sfmlKeyboard.hpp"
+#include "../../../include/odfaeg/Window/SFML/sfmlKeyboard.hpp"
 #else
 #if defined (ODFAEG_SYSTEM_LINUX)
-#include "../../../include/odfaeg/Window/x11Keyboard.hpp"
+#include "../../../include/odfaeg/Window/Linux/x11Keyboard.hpp"
 #elif defined (ODFAEG_SYSTEM_WINDOWS)
-#include "../../../include/odfaeg/Window/w32Keyboard.hpp"
+#include "../../../include/odfaeg/Window/Windows/w32Keyboard.hpp"
 #endif // defined
 #endif
 namespace odfaeg {

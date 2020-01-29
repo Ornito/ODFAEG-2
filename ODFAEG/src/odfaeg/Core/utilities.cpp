@@ -80,6 +80,7 @@ namespace odfaeg {
             return strtoul(str.c_str(), NULL, 16);
         }
         void findFiles (std::string keyword, std::vector<std::string>& files, std::string startDir) {
+            #if defined (ODFAEG_SYSTEM_LINUX)
             if (DIR* current = opendir(startDir.c_str())) {
                 dirent* ent;
                 while ((ent = readdir(current)) != NULL) {
@@ -94,6 +95,7 @@ namespace odfaeg {
                 }
                 closedir(current);
             }
+            #endif
         }
         bool is_number(const std::string& s)
         {

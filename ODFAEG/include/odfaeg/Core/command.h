@@ -24,7 +24,7 @@ namespace odfaeg
         * Link the action, the triggered function to a slot function.
         */
 
-        class ODFAEG_CORE_API Command
+        class ODFAEG_API_EXPORT Command
         {
         //friend class Action;
         public :

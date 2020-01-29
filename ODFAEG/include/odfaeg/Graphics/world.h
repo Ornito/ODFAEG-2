@@ -25,7 +25,7 @@ namespace odfaeg {
         * \version 1.0
         * \date 1/02/2014
         */
-        class ODFAEG_CORE_API World {
+        class ODFAEG_API_EXPORT World {
             public :
                 struct Cache {
                     std::vector<std::unique_ptr<core::EntitySystem>> eus; /**> holds every entity systems*/

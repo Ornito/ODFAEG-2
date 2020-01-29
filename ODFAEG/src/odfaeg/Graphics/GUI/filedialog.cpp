@@ -47,6 +47,7 @@ namespace odfaeg {
                 lTop.setBackgroundColor(sf::Color::Red);
                 appliDir = lTop.getText();
                 std::string textDir;
+                #if defined (ODFAEG_SYSTEM_LINUX)
                 if (DIR* root = opendir("/")) {
                     dirent* ent;
                     unsigned int i = 0;
@@ -99,6 +100,7 @@ namespace odfaeg {
                         }
                     }
                 }
+                #endif
                 bChoose.setRelPosition(0.7f, 0.1f);
                 bChoose.setRelSize(0.1f, 0.8f);
                 bChoose.setParent(&pBottom);
@@ -142,6 +144,7 @@ namespace odfaeg {
                 lTop.setText(currentDir);
                 label->setBackgroundColor(sf::Color::Blue);
                 if (label->getForegroundColor() == sf::Color::Red) {
+                    #if defined (ODFAEG_SYSTEM_LINUX)
                     if (DIR* current = opendir(dirName.c_str())) {
                         dirent *ent;
                         std::string fileNames;
@@ -169,6 +172,7 @@ namespace odfaeg {
                         }
                         closedir(current);
                     }
+                    #endif
                 }
                 setAutoResized(true);
             }
@@ -193,6 +197,7 @@ namespace odfaeg {
                     std::string currentDir = lTop.getText();
                     currentDir += "/"+fileName;
                     lTop.setText(currentDir);
+                    #if defined (ODFAEG_SYSTEM_LINUX)
                     if (DIR* current = opendir(currentDir.c_str())) {
                         dirent *ent;
                         std::string fileNames;
@@ -220,6 +225,7 @@ namespace odfaeg {
                         }
                         closedir(current);
                     }
+                    #endif
                 } else {
                     for (unsigned int i = 0; i < pFiles.getChildren().size(); i++) {
                         static_cast<Label*>(pFiles.getChildren()[i])->setBackgroundColor(sf::Color::Black);

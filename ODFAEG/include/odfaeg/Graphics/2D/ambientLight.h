@@ -17,7 +17,7 @@ namespace odfaeg {
               * \date 1/02/2014
               * Set up the ambient light for the scene.
               */
-            class ODFAEG_GRAPHICS_API AmbientLight : public Light {
+            class ODFAEG_API_EXPORT AmbientLight : public Light {
             private :
                   /**  \fn AmbientLight(math::Vec3f center, int height, sf::Color color)
                   *    \brief create an ambient light with the given center, height and color.

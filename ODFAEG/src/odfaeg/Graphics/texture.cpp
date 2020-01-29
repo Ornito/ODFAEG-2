@@ -95,10 +95,6 @@ namespace odfaeg {
                 glCheck(glDeleteTextures(1, &texture));
             }
         }
-        void Texture::bindToImage(unsigned int unit, int level, bool layered, int layer, unsigned int access, unsigned int format) {
-            glCheck(glBindImageTexture(unit, m_texture, level, layered, layer, access, format));
-        }
-
         ////////////////////////////////////////////////////////////
         bool Texture::create(unsigned int width, unsigned int height, GLenum precision, GLenum format, GLenum type)
         {

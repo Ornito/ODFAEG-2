@@ -9,7 +9,6 @@
 #include "singleton.h"
 #include "../Network/network.h"
 #include "../../../include/odfaeg/Window/iEvent.hpp"
-
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -24,7 +23,7 @@ namespace odfaeg {
         * \version 1.0
         * \date 1/02/2014
         */
-        class ODFAEG_CORE_API Application {
+        class ODFAEG_API_EXPORT Application {
         public :
             /** \fn Application(sf::VideoMode, std::string title, int nbComponents, bool depthDepth, sf::Uint32 style, sf::ContetSettings settings)
             *   \brief create a graphic odfaeg application.

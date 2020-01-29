@@ -434,8 +434,8 @@ namespace odfaeg {
                 float top    = m_vertices[0].position.y;
                 float right  = m_vertices[0].position.x;
                 float bottom = m_vertices[0].position.y;
-                float near = m_vertices[0].position.z;
-                float far = m_vertices[0].position.z;
+                float nearest = m_vertices[0].position.z;
+                float farest = m_vertices[0].position.z;
 
                 for (std::size_t i = 1; i < m_vertices.size(); ++i)
                 {
@@ -455,14 +455,14 @@ namespace odfaeg {
 
                     //Update the near and the far.
 
-                    if (position.z < far)
-                        far = position.z;
-                    else if (position.z > near)
-                        near = position.z;
+                    if (position.z < farest)
+                        farest = position.z;
+                    else if (position.z > nearest)
+                        nearest = position.z;
 
                 }
 
-                return physic::BoundingBox(left, top, near, right - left, bottom - top, far - near);
+                return physic::BoundingBox(left, top, nearest, right - left, bottom - top, farest - nearest);
             }
             else
             {

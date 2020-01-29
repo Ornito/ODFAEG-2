@@ -1,11 +1,13 @@
 #include "../../../include/odfaeg/Window/iMouse.hpp"
 #include "../../../include/odfaeg/Window/window.hpp"
 #if defined (SFML)
-#include "../../../include/odfaeg/Window/sfmlMouse.hpp"
-#include "../../../include/odfaeg/Window/sfmlWindowImpl.hpp"
+#include "../../../include/odfaeg/Window/SFML/sfmlMouse.hpp"
+#include "../../../include/odfaeg/Window/SFML/sfmlWindowImpl.hpp"
 #else
 #if defined (ODFAEG_SYSTEM_LINUX)
-#include "../../../include/odfaeg/Window/x11Mouse.hpp"
+#include "../../../include/odfaeg/Window/Linux/x11Mouse.hpp"
+#elif defined (ODFAEG_SYSTEM_WINDOWS)
+#include "../../../include/odfaeg/Window/Windows/win32Mouse.hpp"
 #endif
 #endif
 namespace odfaeg {

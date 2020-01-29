@@ -78,7 +78,6 @@ namespace odfaeg
             ///
             ////////////////////////////////////////////////////////////
             Texture();
-            void bindToImage(unsigned int unit, int level, bool layered, int layer, unsigned int access, unsigned int format);
             ////////////////////////////////////////////////////////////
             /// \brief Copy constructor
             ///

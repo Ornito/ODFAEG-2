@@ -60,7 +60,7 @@
 #include "shader.h"
 namespace odfaeg {
     namespace graphic {
-        class  ODFAEG_GRAPHICS_API RenderStates {
+        class  ODFAEG_API_EXPORT RenderStates {
         public :
 
             ////////////////////////////////////////////////////////////

@@ -12,9 +12,15 @@
 -I ../ODFAEG/include/
 -I ../ODFAEG/extlibs/headers/
 -I ../ODFAEG/extlibs/headers/libfreetype/windows/
+-I ../Extlib/Assimp/include/
 >
 ;Build ODFAEG
--c ../ODFAEG/src/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
+-c ../ODFAEG/src/odfaeg/Core/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
+-c ../ODFAEG/src/odfaeg/Math/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
+-c ../ODFAEG/src/odfaeg/Physics/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
+-c ../ODFAEG/src/odfaeg/Graphics/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
+-c ../ODFAEG/src/odfaeg/Network/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
+-c ../ODFAEG/src/odfaeg/Window/{_sPlatform}/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
 -{vIncl}
 -{vFlag}
 >

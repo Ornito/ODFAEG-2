@@ -6,8 +6,6 @@
 #include "matrix4.h"
 #include "matrix3.h"
 #include "maths.h"
-#include "../BoundingAreas/axisAlignedBoundingBox.h"
-#include "../BoundingAreas/boundingRectangle.h"
 #include "../Core/serialization.h"
 #include <SFML/Graphics.hpp>
 /**
@@ -180,13 +178,6 @@ namespace odfaeg
             *   construct the matrix again if it's necessary.
             */
             float* getGlMatrix();
-            /**
-            *  \fn AABB transformAABB(AABB aabb)
-            *  \brief recompute the englobing AABB when an entity is transformed.
-            *  \param the current AABB of the entity.
-            *  \return the resulting AABB.
-            */
-            AABB transformAABB (AABB aabb);
             /**
             *  \fn BoundingRectangle transformRect(BoundingRectangle)
             *  \brief recompute the bounding rectangle when an entity is transformed.

@@ -1,12 +1,12 @@
 #include "../../../include/odfaeg/Window/windowFactory.hpp"
 #if defined(SFML)
-#include "../../../include/odfaeg/Window/sfmlWindowImpl.hpp"
+#include "../../../include/odfaeg/Window/SFML/sfmlWindowImpl.hpp"
 typedef odfaeg::window::SFMLWindowImpl WindowType;
 #elif defined(SDL)
-#include "../../../include/odfaeg/Window/sdlWindowImpl.hpp"
+#include "../../../include/odfaeg/Window/SDL/sdlWindowImpl.hpp"
 typedef odfaeg::window::sdlWindowImpl WindowType;
 #elif defined(GLFW)
-#include "../../../include/odfaeg/Window/glfwWindowImpl.hpp"
+#include "../../../include/odfaeg/Window/GLFW/glfwWindowImpl.hpp"
 typedef odfaeg::window::glfwWindowImpl WindowType;
 #else
 #include "../../../include/odfaeg/Window/windowImpl.hpp"

@@ -4,12 +4,12 @@
 #include "contextImpl.hpp"
 namespace odfaeg {
     namespace window {
-        typedef void(*ContextDestroyCallback)(void*);
+        //typedef void(*ContextDestroyCallback)(void*);
         class GLResource {
             public :
             GLResource();
             ~GLResource();
-             static void registerContextDestroyCallback(ContextDestroyCallback callback, void* arg);
+             /*static void registerContextDestroyCallback(ContextDestroyCallback callback, void* arg);
             ////////////////////////////////////////////////////////////
             /// \brief RAII helper class to temporarily lock an available context for use
             ///
@@ -28,7 +28,7 @@ namespace odfaeg {
                 ///
                 ////////////////////////////////////////////////////////////
                 ~TransientContextLock();
-            };
+            };*/
         };
     }
 }

@@ -21,7 +21,7 @@ namespace odfaeg {
         * \version 1.0
         * \date 1/02/2014
         */
-        class ODFAEG_CORE_API State {
+        class ODFAEG_API_EXPORT State {
 
 
             private :

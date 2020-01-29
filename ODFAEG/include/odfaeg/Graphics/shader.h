@@ -55,7 +55,7 @@ namespace odfaeg {
         /// \brief Shader class (vertex and fragment)
         ///
         ////////////////////////////////////////////////////////////
-        class ODFAEG_GRAPHICS_API Shader : sf::NonCopyable, window::IGLResource
+        class ODFAEG_API_EXPORT Shader : sf::NonCopyable, window::IGLResource
         {
         public :
 

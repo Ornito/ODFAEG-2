@@ -61,9 +61,9 @@ namespace odfaeg {
         sf::Uint64 ContextImpl::id = 1;
         sf::Mutex ContextImpl::mutex;
         sf::ThreadLocalPtr<ContextImpl> ContextImpl::current_ContextImpl(nullptr);
-        sf::ThreadLocalPtr<ContextImpl::TransientContext> ContextImpl::transientContext(nullptr);
+        //sf::ThreadLocalPtr<ContextImpl::TransientContext> ContextImpl::transientContext(nullptr);
         IContext* ContextImpl::sharedContext = nullptr;
-        std::set<std::pair<ContextDestroyCallback, void*>> ContextImpl::contextDestroyCallbacks = std::set<std::pair<ContextDestroyCallback, void*>>();
+        //std::set<std::pair<ContextDestroyCallback, void*>> ContextImpl::contextDestroyCallbacks = std::set<std::pair<ContextDestroyCallback, void*>>();
         // Helper to parse OpenGL version strings
         bool ContextImpl::parseVersionString(const char* version, const char* prefix, unsigned int &major, unsigned int &minor)
         {
@@ -312,7 +312,7 @@ namespace odfaeg {
             return false;
         }
         ////////////////////////////////////////////////////////////
-        void ContextImpl::acquireTransientContext()
+       /* void ContextImpl::acquireTransientContext()
         {
             // Protect from concurrent access
             Lock lock(mutex);
@@ -346,7 +346,7 @@ namespace odfaeg {
                 delete transientContext;
                 transientContext = NULL;
             }
-        }
+        }*/
         ////////////////////////////////////////////////////////////
         Uint64 ContextImpl::getActiveContextId()
         {
@@ -354,7 +354,7 @@ namespace odfaeg {
         }
 
         ////////////////////////////////////////////////////////////
-        void ContextImpl::registerContextDestroyCallback(ContextDestroyCallback callback, void* arg)
+        /*void ContextImpl::registerContextDestroyCallback(ContextDestroyCallback callback, void* arg)
         {
             contextDestroyCallbacks.insert(std::make_pair(callback, arg));
         }
@@ -378,7 +378,7 @@ namespace odfaeg {
             // Make the originally active context active again
             if (contextToRestore)
                 contextToRestore->setActive(true);
-        }
+        }*/
         ////////////////////////////////////////////////////////////
         void ContextImpl::initialize(const ContextSettings& requestedSettings)
         {
@@ -567,7 +567,7 @@ namespace odfaeg {
             }
         }
         ContextImpl::~ContextImpl() {
-            cleanupUnsharedResources();
+            //cleanupUnsharedResources();
             /*nbContexts--;
             if (nbContexts == 0) {
                 sharedContext->setActive(false);
