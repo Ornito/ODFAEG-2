@@ -1,6 +1,9 @@
 -{vFlag}=
 -std=c++14
 -DSFML
+-DODFAEG_STATIC
+-DSFML_STATIC
+-DGLEW_STATIC
 ;-DODFAEG_SYSTEM_WINDOWS
 >
 -{vIncl}=
@@ -13,6 +16,7 @@
 -I ../ODFAEG/extlibs/headers/
 -I ../ODFAEG/extlibs/headers/libfreetype/windows/
 -I ../Extlib/Assimp/include/
+
 >
 ;Build ODFAEG
 -c ../ODFAEG/src/odfaeg/Core/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
@@ -24,12 +28,32 @@
 -{vIncl}
 -{vFlag}
 >
-;Build Main Example
-;-c ../HelloWorld/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/HelloWorld/
+
+;Build Demo
+;-c ../Demos/ODFAEG-DEMO/ -o obj/cpp_{_sPlatform}_{_sOpt}/Demo/
+;-I ..
 ;-{vIncl}
 ;-{vFlag}
 >
+;Copy Assets
+-#Copy ../Demos/ODFAEG-DEMO/fonts/  _out/{_sPlatform}_{_sOpt}/fonts/
+>
+-#Copy ../Demos/ODFAEG-DEMO/sounds/  _out/{_sPlatform}_{_sOpt}/sounds/
+>
+-#Copy ../Demos/ODFAEG-DEMO/tilesets/  _out/{_sPlatform}_{_sOpt}/tilesets/
+>
+;Copy DLL
+-#Copy ../ODFAEG/extlibs/bin/x86/  _out/{_sPlatform}_{_sOpt}/
+>
 ;Generate executable
 -o obj/cpp_{_sPlatform}_{_sOpt}/ -#To _out/{_sPlatform}_{_sOpt}/App.*
+-L ../ODFAEG/extlibs/bin/x86/
+-L ../ODFAEG/extlibs/libs-mingw/x86/
+-L ../ExtLib/SFML-2.5.1/lib/
+-I ../ExtLib/GLEW/glew-2.1.0/lib/
+ 
+-lglew -lsfml-graphics
+-luser32  -lgdi32 -lopengl32
+ 
 >
 -#Run
