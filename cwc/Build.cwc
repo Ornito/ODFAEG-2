@@ -2,6 +2,9 @@
 -std=c++14
 -DSFML
 ;-DODFAEG_SYSTEM_WINDOWS
+-DSFML_STATIC
+-DGLEW_STATIC
+-DODFAEG_STATIC
 >
 -{vIncl}=
 -I ../ 
@@ -31,5 +34,32 @@
 >
 ;Generate executable
 -o obj/cpp_{_sPlatform}_{_sOpt}/ -#To _out/{_sPlatform}_{_sOpt}/App.*
+>
+-#Run
+;Build Demo
+-c ../Demos/ODFAEG-DEMO/ -o obj/cpp_{_sPlatform}_{_sOpt}/Demo/
+-{vIncl}
+-{vFlag}
+
+>
+;Copy Assets
+-#Copy ../Demos/ODFAEG-DEMO/fonts/  _out/{_sPlatform}_{_sOpt}/fonts/
+>
+-#Copy ../Demos/ODFAEG-DEMO/sounds/  _out/{_sPlatform}_{_sOpt}/sounds/
+>
+-#Copy ../Demos/ODFAEG-DEMO/tilesets/  _out/{_sPlatform}_{_sOpt}/tilesets/
+>
+;Copy DLL
+-#Copy ../ODFAEG/extlibs/bin/x86/  _out/{_sPlatform}_{_sOpt}/
+>
+;Generate executable
+-o obj/cpp_{_sPlatform}_{_sOpt}/ -#To _out/{_sPlatform}_{_sOpt}/App.*
+-L ../ODFAEG/extlibs/bin/x86/
+-L ../ODFAEG/extlibs/libs-mingw/x86/
+-L ../ExtLib/SFML-2.5.1/lib/
+ 
+-lglew32 -lsfml-system -lsfml-window -lsfml-graphics -lsfml-network -lsfml-audio
+-luser32  -lssl -lgdi32 -lopengl32
+ 
 >
 -#Run
