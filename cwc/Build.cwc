@@ -7,7 +7,7 @@
 -DODFAEG_STATIC
 >
 -{vIncl}=
--I ../ 
+-I ../
 -I ../ExtLib/SFML-2.5.1/include/
 -I ../ExtLib/SDL2/include/
 -I ../ODFAEG/extlibs/headers/libsndfile/windows/
@@ -18,37 +18,24 @@
 -I ../Extlib/Assimp/include/
 >
 ;Build ODFAEG
--c ../ODFAEG/src/odfaeg/Core/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
--c ../ODFAEG/src/odfaeg/Math/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
--c ../ODFAEG/src/odfaeg/Physics/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
--c ../ODFAEG/src/odfaeg/Graphics/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
--c ../ODFAEG/src/odfaeg/Network/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
--c ../ODFAEG/src/odfaeg/Window/{_sPlatform}/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
+-c ../ODFAEG/src/odfaeg/Core/                -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/Core/
+-c ../ODFAEG/src/odfaeg/Math/                -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/Math/
+-c ../ODFAEG/src/odfaeg/Physics/             -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/Physics/
+-c ../ODFAEG/src/odfaeg/Graphics/            -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/Graphics/
+-c ../ODFAEG/src/odfaeg/Network/             -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/Network/
+-c ../ODFAEG/src/odfaeg/Window/{_sPlatform}/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/Window/
 -{vIncl}
 -{vFlag}
 >
-;Build Main Example
-;-c ../HelloWorld/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/HelloWorld/
-;-{vIncl}
-;-{vFlag}
->
-;Generate executable
-;-o obj/cpp_{_sPlatform}_{_sOpt}/ -#To _out/{_sPlatform}_{_sOpt}/App.*
-;>
-;-#Run
 ;Build Demo
 -c ../Demos/ODFAEG-DEMO/ -o obj/cpp_{_sPlatform}_{_sOpt}/Demo/
 -{vIncl}
 -{vFlag}
-
 >
 ;Copy Assets
 -#Copy ../Demos/ODFAEG-DEMO/fonts/  _out/{_sPlatform}_{_sOpt}/fonts/
->
 -#Copy ../Demos/ODFAEG-DEMO/sounds/  _out/{_sPlatform}_{_sOpt}/sounds/
->
 -#Copy ../Demos/ODFAEG-DEMO/tilesets/  _out/{_sPlatform}_{_sOpt}/tilesets/
->
 ;Copy DLL
 -#Copy ../ODFAEG/extlibs/bin/x86/  _out/{_sPlatform}_{_sOpt}/
 >
@@ -57,9 +44,8 @@
 -L ../ODFAEG/extlibs/bin/x86/
 -L ../ODFAEG/extlibs/libs-mingw/x86/
 -L ../ExtLib/SFML-2.5.1/lib/
- 
+  
 -lglew32 -lsfml-system -lsfml-window -lsfml-graphics -lsfml-network -lsfml-audio
--luser32  -lssl -lgdi32 -lopengl32
- 
+-luser32 -lssl -lgdi32 -lopengl32
 >
 -#Run
