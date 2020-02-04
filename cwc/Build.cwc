@@ -19,12 +19,27 @@
 
 >
 ;Build ODFAEG
--c ../ODFAEG/src/odfaeg/Core/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
--c ../ODFAEG/src/odfaeg/Math/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
--c ../ODFAEG/src/odfaeg/Physics/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
--c ../ODFAEG/src/odfaeg/Graphics/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
--c ../ODFAEG/src/odfaeg/Network/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
--c ../ODFAEG/src/odfaeg/Window/{_sPlatform}/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
+-c ../ODFAEG/src/odfaeg/Core/                -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/Core/
+-{vIncl}
+-{vFlag}
+>
+-c ../ODFAEG/src/odfaeg/Math/                -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/Math/
+-{vIncl}
+-{vFlag}
+>
+-c ../ODFAEG/src/odfaeg/Physics/             -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/Physics/
+-{vIncl}
+-{vFlag}
+>
+-c ../ODFAEG/src/odfaeg/Graphics/            -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/Graphics/
+-{vIncl}
+-{vFlag}
+>
+-c ../ODFAEG/src/odfaeg/Network/             -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/Network/
+-{vIncl}
+-{vFlag}
+>
+-c ../ODFAEG/src/odfaeg/Window/ !../ODFAEG/src/odfaeg/Window/Linux/ -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/
 -{vIncl}
 -{vFlag}
 >
@@ -52,7 +67,7 @@
 -L ../ExtLib/SFML-2.5.1/lib/
 -I ../ExtLib/GLEW/glew-2.1.0/lib/
  
--lglew -lsfml-graphics
+-lglew32 -lsfml-graphics -lsfml-system -lsfml-window -lsfml-network -lcrypto -lnghttp2 -lcurl -lssh2 -lws2_32
 -luser32  -lgdi32 -lopengl32
  
 >
