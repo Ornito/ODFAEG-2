@@ -67,8 +67,8 @@
 -L ../ExtLib/SFML-2.5.1/lib/
 -L ../ExtLib/GLEW/glew-2.0.0/lib/Release/Win32/
  
- -lsfml-system-s  -lsfml-window-s -lsfml-graphics-s -lsfml-network-s  -lfreetype -lcrypto -lws2_32 -lglew32s  -lwinmm
--luser32  -lgdi32 -lopengl32 -lassimp
+ -lsfml-system-s  -lsfml-window-s -lsfml-graphics-s -lsfml-network-s -lsfml-audio-s -lfreetype -lssl -lcrypto -lws2_32 -lglew32s  -lwinmm
+-luser32  -lgdi32 -lopengl32 -lassimp -lopenal32 -lflac -lvorbis -logg
 ;-lnghttp2 -lcurl -lssh2 
 >
 -#Run
