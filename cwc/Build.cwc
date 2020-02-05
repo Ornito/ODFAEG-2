@@ -44,6 +44,10 @@
 -{vFlag}
 >
 
+-c ../ODFAEG/src/odfaeg/Audio/             -o obj/cpp_{_sPlatform}_{_sOpt}/lib/ODFAEG/Audio/
+-{vIncl}
+-{vFlag}
+>
 ;Build Demo
 ;-c ../Demos/ODFAEG-DEMO/ -o obj/cpp_{_sPlatform}_{_sOpt}/Demo/
 ;-I ..
@@ -67,8 +71,10 @@
 -L ../ExtLib/SFML-2.5.1/lib/
 -L ../ExtLib/GLEW/glew-2.0.0/lib/Release/Win32/
  
- -lsfml-system-s  -lsfml-window-s -lsfml-graphics-s -lsfml-network-s -lsfml-audio-s -lfreetype -lssl -lcrypto -lws2_32 -lglew32s  -lwinmm
--luser32  -lgdi32 -lopengl32 -lassimp -lopenal32 -lflac -lvorbis -logg
+ 
+-lsfml-network-s -lsfml-audio-s -lsfml-graphics-s -lsfml-window-s  -lsfml-system-s  
+-lfreetype   -lws2_32 -lglew32s  -lwinmm -luser32 -lgdi32 -lcrypto -lssl -lopengl32 -lassimp -lopenal32 -lflac -lvorbis -logg    
+  
 ;-lnghttp2 -lcurl -lssh2 
 >
 -#Run
