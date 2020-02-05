@@ -65,10 +65,10 @@
 -L ../ODFAEG/extlibs/bin/x86/
 -L ../ODFAEG/extlibs/libs-mingw/x86/
 -L ../ExtLib/SFML-2.5.1/lib/
--I ../ExtLib/GLEW/glew-2.1.0/lib/
+-L ../ExtLib/GLEW/glew-2.0.0/lib/Release/Win32/
  
--lglew32 -lsfml-graphics -lsfml-system -lsfml-window -lsfml-network -lcrypto -lnghttp2 -lcurl -lssh2 -lws2_32
--luser32  -lgdi32 -lopengl32
- 
+ -lsfml-system-s  -lsfml-window-s -lsfml-graphics-s -lsfml-network-s  -lfreetype -lcrypto -lws2_32 -lglew32s  -lwinmm
+-luser32  -lgdi32 -lopengl32 -lassimp
+;-lnghttp2 -lcurl -lssh2 
 >
 -#Run

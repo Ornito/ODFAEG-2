@@ -5,8 +5,8 @@
 
 namespace odfaeg {
     namespace math {
-        std::mt19937 mrs = std::mt19937(static_cast<unsigned long>(std::time(nullptr)));
-        bool isSeedInitialized = false;
+        std::mt19937 Math::mrs = std::mt19937(static_cast<unsigned long>(std::time(nullptr)));
+        bool Math::isSeedInitialized = false;
         void Math::initSeed() {
             if (!isSeedInitialized) {
                 mrs = std::mt19937(static_cast<unsigned long>(std::time(nullptr)));

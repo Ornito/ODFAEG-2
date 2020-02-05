@@ -1,7 +1,7 @@
 #include "../../../include/odfaeg/Graphics/drawable.h"
 namespace odfaeg {
     namespace graphic {
-        unsigned int nbDrawables = 0;
+        unsigned int Drawable::nbDrawables = 0;
         Drawable::Drawable() {
             id = nbDrawables;
             nbDrawables++;

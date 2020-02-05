@@ -1,9 +1,9 @@
 #include "../../../include/odfaeg/Graphics/entity.h"
 namespace odfaeg {
     namespace graphic {
-        int nbEntities = 0;
-        int nbEntitiesTypes = 0;
-        std::map<int, std::string>* types = Entity::initTypes();
+        int Entity::nbEntities = 0;
+        int Entity::nbEntitiesTypes = 0;
+        std::map<int, std::string>* Entity::types = Entity::initTypes();
         Entity::Entity (math::Vec3f position, math::Vec3f size, math::Vec3f origin, std::string sType, Entity *parent) :
             Transformable (position, size, origin), Drawable(), entityState("Entity State", nullptr) {
             this->parent = parent;

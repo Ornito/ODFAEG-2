@@ -4,9 +4,10 @@ namespace odfaeg {
     namespace math {
         using namespace std;
         using namespace sf;
-        const Vec3f xAxis(1.f, 0.f, 0.f);
-        const Vec3f yAxis(0.f, 1.f, 0.f);
-        const Vec3f zAxis(0.f, 0.f, 1.f);
+		
+        const Vec3f Vec3f::xAxis(1.f, 0.f, 0.f);
+        const Vec3f Vec3f::yAxis(0.f, 1.f, 0.f);
+        const Vec3f Vec3f::zAxis(0.f, 0.f, 1.f);
 
         ostream& operator<< (ostream &out, const Vec3f &vec3) {
             out<<"x : "<<vec3.x<<" y : "<<vec3.y<<" z : "<<vec3.z<<" w : "<<vec3.w<<endl;

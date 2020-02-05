@@ -6,11 +6,11 @@
   */
 namespace odfaeg {
     namespace graphic {
-            float maxSpecularIntensity = 0.f;
-            float maxSpecularPower = 0.f;
-            unsigned int nbMaterials = 0;
-            std::vector<Material*> materials = std::vector<Material*>();
-            std::vector<Material*> sameMaterials = std::vector<Material*>();
+            float Material::maxSpecularIntensity = 0.f;
+            float Material::maxSpecularPower = 0.f;
+            unsigned int Material::nbMaterials = 0;
+            std::vector<Material*> Material::materials = std::vector<Material*>();
+            std::vector<Material*> Material::sameMaterials = std::vector<Material*>();
             Material::TextureInfo::TextureInfo() {
                 texture = nullptr;
                 texId = "";
