@@ -7,11 +7,12 @@ using namespace odfaeg::math;
 using namespace odfaeg::physic;
 using namespace odfaeg::core;
 using namespace odfaeg::audio;
+using namespace odfaeg::window;
 namespace sorrok {
-    MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, false, false, true, sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 0)) {
+    MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, sf::Style::Default, ContextSettings(0, 0, 0, 3, 0)) {
         running = false;
-        actualKey = sf::Keyboard::Key::Unknown;
-        previousKey = sf::Keyboard::Key::Unknown;
+        actualKey = IKeyboard::Key::Unknown;
+        previousKey = IKeyboard::Key::Unknown;
         getView().move(0, 300, 0);
         fpsCounter = 0;
         addClock(sf::Clock(), "FPS");
@@ -21,9 +22,9 @@ namespace sorrok {
     void MyAppli::gaignedFocus(gui::TextArea* textArea) {
         std::cout<<"gaigned focus"<<std::endl;
     }
-    void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
+    void MyAppli::keyHeldDown (IKeyboard::Key key) {
         //BoundingRectangle rect (pos.x, pos.y, getView().getSize().x, getView().getSize().y);
-        if (actualKey != sf::Keyboard::Key::Unknown && key == sf::Keyboard::Key::Z) {
+        if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::Z) {
             if (!caracter->isMoving()) {
                 if (actualKey != previousKey) {
                     Vec2f dir(0, -1);
@@ -33,7 +34,7 @@ namespace sorrok {
                 caracter->setMoving(true);
                 caracter->setIsMovingFromKeyboard(true);
             }
-        } else if (actualKey != sf::Keyboard::Key::Unknown && key == sf::Keyboard::Key::Q) {
+        } else if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::Q) {
             if (!caracter->isMoving()) {
                 if (actualKey != previousKey) {
                     Vec2f dir(-1, 0);
@@ -43,7 +44,7 @@ namespace sorrok {
                 caracter->setMoving(true);
                 caracter->setIsMovingFromKeyboard(true);
             }
-        } else if (actualKey != sf::Keyboard::Key::Unknown && actualKey == sf::Keyboard::Key::S) {
+        } else if (actualKey != IKeyboard::Key::Unknown && actualKey == IKeyboard::Key::S) {
             if (!caracter->isMoving()) {
                 if (actualKey != previousKey) {
                     Vec2f dir(0, 1);
@@ -53,7 +54,7 @@ namespace sorrok {
                 caracter->setMoving(true);
                 caracter->setIsMovingFromKeyboard(true);
             }
-        } else if (actualKey != sf::Keyboard::Key::Unknown && key == sf::Keyboard::Key::D) {
+        } else if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::D) {
             if (!caracter->isMoving()) {
                 if (actualKey != previousKey) {
                     Vec2f dir(1, 0);
@@ -119,15 +120,16 @@ namespace sorrok {
         FontManager<> &fm = cache.resourceManager<Font, std::string>("FontManager");
         Vec2f pos (getView().getPosition().x - getView().getSize().x * 0.5f, getView().getPosition().y - getView().getSize().y * 0.5f);
         BoundingBox bx (pos.x, pos.y, 0, getView().getSize().x, getView().getSize().y, 0);
-        theMap = new Map(&getRenderComponentManager(), "Map test", 100, 50);
+        theMap = new Map(&getRenderComponentManager(), "Map test", 100, 50, 0);
         BaseChangementMatrix bm;
         bm.set2DIsoMatrix();
         theMap->setBaseChangementMatrix(bm);
         World::addEntityManager(theMap);
+        ps = new ParticleSystem(Vec3f(0, 0, 0), Vec3f(50, 50, 0), theMap);
         World::setCurrentEntityManager("Map test");
-        eu = new EntitiesUpdater(false);
+        eu = new EntitiesUpdater();
         World::addWorker(eu);
-        au = new AnimUpdater(false);
+        au = new AnimUpdater();
         au->setInterval(sf::seconds(0.01f));
         World::addTimer(au);
         tiles.push_back(new Tile(tm.getResourceByAlias("GRASS"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
@@ -166,7 +168,6 @@ namespace sorrok {
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
-                    static_cast<Shadow*>(entities[i]->getChildren()[1])->createShadow(g2d::AmbientLight::getAmbientLight(), static_cast<Model*>(entities[i]));
                     World::getGridCellAt(Vec3f(entities[i]->getCenter().x, entities[i]->getCenter().y, 0))->setPassable(false);
                 } else if (entities[i]->getType() == "E_DECOR") {
                     std::string texId =  entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().getTexId();
@@ -174,7 +175,6 @@ namespace sorrok {
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
-                    static_cast<Shadow*>(entities[i]->getChildren()[1])->createShadow(g2d::AmbientLight::getAmbientLight(),static_cast<Model*>(entities[i]));
                 } else if (entities[i]->getType() == "E_ANIMATION") {
                     Anim* anim = static_cast<Anim*> (entities[i]);
                     for (unsigned int j = 0; j < anim->getChildren().size(); j++) {
@@ -183,7 +183,6 @@ namespace sorrok {
                         entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
                         entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
                         entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
-                        static_cast<Shadow*>(entities[i]->getChildren()[j]->getChildren()[1])->createShadow(g2d::AmbientLight::getAmbientLight(),static_cast<Model*>(entities[i]->getChildren()[0]));
                     }
                     anim->play(true);
                     au->addAnim(anim);
@@ -195,7 +194,7 @@ namespace sorrok {
             World::generate_map(tiles, walls, Vec2f(100, 50), mapZone, false);
             Tile* thouse = new Tile(tm.getResourceByAlias("HOUSE"), Vec3f(0, 0, 0), Vec3f(250, 300, 0), sf::IntRect(0, 0, 250, 300));
             thouse->getFaces()[0]->getMaterial().setTexId("HOUSE");
-            g2d::Decor* decor = new g2d::Decor(thouse, &g2d::AmbientLight::getAmbientLight(), 300, Shadow::SHADOW_TYPE::SHADOW_TILE);
+            g2d::Decor* decor = new g2d::Decor(thouse, &g2d::AmbientLight::getAmbientLight());
             decor->setPosition(Vec3f(-100, 250, 400));
             BoundingVolume *bb = new BoundingBox(decor->getGlobalBounds().getPosition().x, decor->getGlobalBounds().getPosition().y + decor->getGlobalBounds().getSize().y * 0.4f, 0,
             decor->getGlobalBounds().getSize().x, decor->getGlobalBounds().getSize().y * 0.25f, 0);
@@ -208,17 +207,17 @@ namespace sorrok {
             Anim* fire = new Anim(0.1f, Vec3f(0, 100, 150), Vec3f(100, 100, 0), 0);
             Tile* tf1 = new Tile(tm.getResourceByAlias("FIRE1"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
             tf1->getFaces()[0]->getMaterial().setTexId("FIRE1");
-            g2d::Decor *fire1 = new g2d::Decor(tf1, &g2d::AmbientLight::getAmbientLight(), 100, Shadow::SHADOW_TYPE::SHADOW_TILE);
+            g2d::Decor *fire1 = new g2d::Decor(tf1, &g2d::AmbientLight::getAmbientLight());
             fire1->setShadowCenter(Vec3f(0, 200, 0));
             //decor->changeGravityCenter(Vec3f(50, 50, 0));
             Tile* tf2 = new Tile(tm.getResourceByAlias("FIRE2"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
             tf2->getFaces()[0]->getMaterial().setTexId("FIRE2");
-            g2d::Decor *fire2 = new g2d::Decor(tf2, &g2d::AmbientLight::getAmbientLight(), 100, Shadow::SHADOW_TYPE::SHADOW_TILE);
+            g2d::Decor *fire2 = new g2d::Decor(tf2, &g2d::AmbientLight::getAmbientLight());
             fire2->setShadowCenter(Vec3f(0, 200, 0));
             //decor->changeGravityCenter(Vec3f(50, 50, 0));
             Tile* tf3 = new Tile(tm.getResourceByAlias("FIRE3"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
             tf3->getFaces()[0]->getMaterial().setTexId("FIRE3");
-            g2d::Decor *fire3 = new g2d::Decor(tf3, &g2d::AmbientLight::getAmbientLight(), 100, Shadow::SHADOW_TYPE::SHADOW_TILE);
+            g2d::Decor *fire3 = new g2d::Decor(tf3, &g2d::AmbientLight::getAmbientLight());
             fire3->setShadowCenter(Vec3f(0, 200, 0));
             //decor->changeGravityCenter(Vec3f(50, 50, 0));
             //fire1->setShadowCenter(Vec2f(80, 100));
@@ -230,13 +229,13 @@ namespace sorrok {
             fire->play(true);
             World::addEntity(fire);
             au->addAnim(fire);
-            w = new g2d::Wall(3, 80, walls[3],&g2d::AmbientLight::getAmbientLight(), Shadow::SHADOW_TYPE::SHADOW_TILE);
+            w = new g2d::Wall(walls[3],&g2d::AmbientLight::getAmbientLight());
             w->setPosition(Vec3f(0, 130, 130 + w->getSize().y * 0.5f));
             World::addEntity(w);
         }
-        ps.setTexture(*tm.getResourceByAlias("PARTICLE"));
+        ps->setTexture(*tm.getResourceByAlias("PARTICLE"));
         for (unsigned int i = 0; i < 10; i++) {
-            ps.addTextureRect(sf::IntRect(i*10, 0, 10, 10));
+            ps->addTextureRect(sf::IntRect(i*10, 0, 10, 10));
         }
         emitter.setEmissionRate(30);
         emitter.setParticleLifetime(Distributions::uniform(sf::seconds(5), sf::seconds(7)));
@@ -249,27 +248,27 @@ namespace sorrok {
        /* sf::Vector3f acceleration(0, -1, 0);
         ForceAffector affector(acceleration);
         billboard->getParticleSystem().addAffector(affector);*/
-        ps.addEmitter(refEmitter(emitter));
+        ps->addEmitter(refEmitter(emitter));
         View view = getView();
         //view.rotate(0, 0, 20);
-        OITRenderComponent *frc1 = new OITRenderComponent(getRenderWindow(),0, "E_BIGTILE");
-        OITRenderComponent *frc2 = new OITRenderComponent(getRenderWindow(),0, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER");
-        gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
+        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE", ContextSettings(0, 0, 4, 3, 0));
+        PerPixelLinkedListRenderComponent *frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(),0, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", ContextSettings(0, 0, 4, 3, 0));
+        /*gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
         textArea->addFocusListener(this);
         textArea->setVisible(false);
-        textArea->setEventContextActivated(false);
+        textArea->setEventContextActivated(false);*/
         frc1->setView(view);
         frc2->setView(view);
-        op = new gui::OptionPane(Vec2f(200, 175), Vec2f(400, 200), fm.getResourceByAlias("FreeSerif"), "Test",gui::OptionPane::TYPE::CONFIRMATION_DIALOG);
+        /*op = new gui::OptionPane(Vec2f(200, 175), Vec2f(400, 200), fm.getResourceByAlias("FreeSerif"), "Test",gui::OptionPane::TYPE::CONFIRMATION_DIALOG);
         std::this_thread::sleep_for(std::chrono::seconds(1));
         op->setVisible(false);
-        op->setEventContextActivated(false);
+        op->setEventContextActivated(false);*/
         getRenderComponentManager().addComponent(frc1);
         getRenderComponentManager().addComponent(frc2);
-        getRenderComponentManager().addComponent(textArea);
-        getRenderComponentManager().addComponent(op);
+        /*getRenderComponentManager().addComponent(textArea);
+        getRenderComponentManager().addComponent(op);*/
 
-        caracter = new Caracter("Sorrok", "Nagi", "M", "Map test", "Brain", "Green", "White","Normal","Novice", 1);
+        caracter = new Hero("Sorrok", "Nagi", "M", "Map test", "Brain", "Green", "White","Normal","Novice", 1);
         std::string path = "tilesets/vlad_sword.png";
         cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "VLADSWORD");
         const Texture *text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
@@ -282,7 +281,7 @@ namespace sorrok {
                 sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
                 Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(textRectWidth, textRectHeight, 0), textRect);
                 tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
-                g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight(), 100, Shadow::SHADOW_TYPE::SHADOW_TILE);
+                g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
                 frame->setShadowCenter(Vec3f(0, 200, 200));
                 textRectX += textRectWidth;
                 if (textRectX + textRectWidth > textWidth) {
@@ -308,13 +307,13 @@ namespace sorrok {
 
         //World::computeIntersectionsWithWalls();
         World::update();
-        Action a1 (Action::EVENT_TYPE::KEY_PRESSED_ONCE, sf::Keyboard::Key::Z);
-        Action a2 (Action::EVENT_TYPE::KEY_PRESSED_ONCE, sf::Keyboard::Key::Q);
-        Action a3 (Action::EVENT_TYPE::KEY_PRESSED_ONCE, sf::Keyboard::Key::S);
-        Action a4 (Action::EVENT_TYPE::KEY_PRESSED_ONCE, sf::Keyboard::Key::D);
-        Action a5 (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
+        Action a1 (Action::EVENT_TYPE::KEY_PRESSED_ONCE, IKeyboard::Key::Z);
+        Action a2 (Action::EVENT_TYPE::KEY_PRESSED_ONCE, IKeyboard::Key::Q);
+        Action a3 (Action::EVENT_TYPE::KEY_PRESSED_ONCE, IKeyboard::Key::S);
+        Action a4 (Action::EVENT_TYPE::KEY_PRESSED_ONCE, IKeyboard::Key::D);
+        Action a5 (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
         Action combined  = a1 || a2 || a3 || a4;
-        Command moveAction(combined, FastDelegate<void>(&MyAppli::keyHeldDown, this, sf::Keyboard::Unknown));
+        Command moveAction(combined, FastDelegate<void>(&MyAppli::keyHeldDown, this, IKeyboard::Unknown));
         getListener().connect("MoveAction", moveAction);
         if (!day)
             g2d::AmbientLight::getAmbientLight().setColor(sf::Color(0, 0, 255));
@@ -344,13 +343,13 @@ namespace sorrok {
         }
     }
     void MyAppli::onDisplay(RenderWindow* window) {
-        Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 2, 1);
+        /*Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 2, 1);
         window->draw(*shadowMap, sf::BlendMultiply);
         //getView().rotate(0, 0, 20);
-        window->draw(ps);
+        window->draw(*ps);
         //getView().rotate(0, 0, 0);
         Entity* lightMap = World::getLightMap("E_PONCTUAL_LIGHT", 2, 1);
-        window->draw(*lightMap, sf::BlendMultiply);
+        window->draw(*lightMap, sf::BlendMultiply);*/
         //window->draw(point);
         /*View view = getView();
         Entity& normalMap = theMap->getNormalMapTile();
@@ -391,12 +390,12 @@ namespace sorrok {
         rect2.setPosition(Vec3f(Vec3f(caracter->getCollisionVolume()->getPosition().x, caracter->getCollisionVolume()->getPosition().y, caracter->getPosition().z)));
         window->draw(rect2);*/
     }
-    void MyAppli::onUpdate (sf::Event& event) {
+    void MyAppli::onUpdate (RenderWindow* rw, IEvent& event) {
         // check all the window's events that were triggered since the last iteration of the loop
-        if (event.type == sf::Event::Closed) {
+        if (rw == &getRenderWindow() && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
             stop();
-            eu->stop();
-            au->stop();
+            /*eu->stop();
+            au->stop();*/
             pfire.stop();
             std::vector<Entity*> entities = World::getEntities("E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION");
             std::ofstream ofs("FichierDeSerialisation");
@@ -404,26 +403,26 @@ namespace sorrok {
             oa(entities);
             ofs.close();
         }
-        if (event.type == sf::Event::KeyPressed) {
+        if (event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED) {
             previousKey = actualKey;
-            actualKey = event.key.code;
-            getListener().setCommandSlotParams("MoveAction", this, event.key.code);
+            actualKey = static_cast<IKeyboard::Key>(event.keyboard.code);
+            getListener().setCommandSlotParams("MoveAction", this, static_cast<IKeyboard::Key>(event.keyboard.code));
         }
-        if (event.type == sf::Event::KeyReleased && caracter->isMovingFromKeyboard()) {
+        if (event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_RELEASED && caracter->isMovingFromKeyboard()) {
             if (player.isPlaying())
                 player.stop();
 
             caracter->setMoving(false);
             caracter->setIsMovingFromKeyboard(false);
-            previousKey = event.key.code;
-            actualKey = sf::Keyboard::Key::Unknown;
+            previousKey = static_cast<IKeyboard::Key>(event.keyboard.code);
+            actualKey = IKeyboard::Key::Unknown;
         }
-        if (event.type == sf::Event::MouseMoved) {
-            sf::Vector2f mousePos = sf::Vector2f(event.mouseMove.x, event.mouseMove.y);
+        if (event.type == IEvent::MOUSE_MOTION_EVENT) {
+            sf::Vector2f mousePos = sf::Vector2f(event.mouseMotion.x, event.mouseMotion.y);
             getListener().setCommandSigParams("MouseInside", this, mousePos);
             getListener().setCommandSlotParams("MouseInside", this, mousePos);
         }
-        if (event.type == sf::Event::MouseButtonPressed) {
+        if (event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_PRESSED) {
             sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
 
             getListener().setCommandSlotParams("LeftMouseButtonPressedAction", this, mousePos);
@@ -482,6 +481,6 @@ namespace sorrok {
             }
             World::update();
         }
-        ps.update(getClock("LoopTime").getElapsedTime());
+        ps->update(getClock("LoopTime").getElapsedTime());
     }
 }

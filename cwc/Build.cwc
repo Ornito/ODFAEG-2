@@ -49,10 +49,10 @@
 -{vFlag}
 >
 ;Build Demo
-;-c ../Demos/ODFAEG-DEMO/ -o obj/cpp_{_sPlatform}_{_sOpt}/Demo/
-;-I ..
-;-{vIncl}
-;-{vFlag}
+-c ../Demos/ODFAEG-DEMO/ -o obj/cpp_{_sPlatform}_{_sOpt}/Demo/
+-I ..
+-{vIncl}
+-{vFlag}
 >
 ;Copy Assets
 -#Copy ../Demos/ODFAEG-DEMO/fonts/  _out/{_sPlatform}_{_sOpt}/fonts/
