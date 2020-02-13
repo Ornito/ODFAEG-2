@@ -72,6 +72,9 @@ namespace odfaeg {
             }
             return false;
         }
+        bool SFMLWindowImpl::filterEvent(const IEvent& event) {
+            return true;
+        }
         bool SFMLWindowImpl::waitEvent(IEvent& event) {
             sf::Event sfevent;
             if (sf::Window::waitEvent(sfevent)) {
