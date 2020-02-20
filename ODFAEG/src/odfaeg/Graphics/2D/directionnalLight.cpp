@@ -376,7 +376,7 @@ namespace odfaeg {
                 math::Vec3f centerCone = center - dir * (getHeight() * 0.5f);
                 math::Vec3f origCone = center - dir * center;
                 TransformMatrix tm;
-                tm.setRotation(90);
+                tm.setRotation(math::Vec3f(0, 0, 1), 90);
                 math::Vec3f ortho = tm.transform(dir);
                 math::Vec3f ext1 (center.x - ortho.x * getSize().x * 0.5f, center.y - ortho.y * getSize().y * 0.5f, center.z);
                 math::Vec3f ext2 (center.x + ortho.x * getSize().x * 0.5f, center.y + ortho.y * getSize().y * 0.5f, center.z);

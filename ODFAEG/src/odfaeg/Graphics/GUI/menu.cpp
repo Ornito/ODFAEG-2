@@ -5,7 +5,7 @@ namespace odfaeg {
             Menu::Menu(RenderWindow& rw, const Font* font, std::string t) :
                 LightComponent(rw, math::Vec3f(0, 0, 0), math::Vec3f(t.length() * 10, 20, 0), math::Vec3f(0, 0, 0), -2)
 {
-                text.setString(sf::String(t.c_str()));
+                text.setString(t);
                 text.setCharacterSize(15);
                 text.setFont(*font);
                 text.setColor(sf::Color::Black);

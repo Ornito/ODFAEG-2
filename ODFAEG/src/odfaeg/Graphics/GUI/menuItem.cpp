@@ -7,7 +7,7 @@ namespace odfaeg {
                 {
                     text.setFont(*font);
                     text.setCharacterSize(15);
-                    text.setString(sf::String(t.c_str()));
+                    text.setString(t);
                     text.setColor(sf::Color::Black);
                     rect = RectangleShape(getSize());
                     rect.setOutlineThickness(1);

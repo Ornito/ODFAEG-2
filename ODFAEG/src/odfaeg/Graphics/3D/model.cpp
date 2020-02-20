@@ -10,7 +10,7 @@ namespace odfaeg {
                 max = math::Vec3f(minF, minF, minF);
             }
             void Model::loadModel(std::string path) {
-                Assimp::Importer importer;
+                /*Assimp::Importer importer;
                 const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
                 if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
                 {
@@ -19,7 +19,7 @@ namespace odfaeg {
                 }
                 directory = path.substr(0, path.find_last_of('/'));
                 processNode(scene->mRootNode, scene);
-                setSize(max - min);
+                setSize(max - min);*/
             }
             bool Model::operator==(Entity& other) {
                 if (!dynamic_cast<Model*>(&other))

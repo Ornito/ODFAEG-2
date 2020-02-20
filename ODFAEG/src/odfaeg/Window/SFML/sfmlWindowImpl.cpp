@@ -3,7 +3,7 @@
 #include "../../../../include/odfaeg/Window/SFML/sfmlMouse.hpp"
 namespace odfaeg {
     namespace window {
-        SFMLWindowImpl::SFMLWindowImpl() {}
+        SFMLWindowImpl::SFMLWindowImpl() : sf::Window() {}
         SFMLWindowImpl::SFMLWindowImpl(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const ContextSettings& settings) :
         sf::Window (mode, title, style, sf::ContextSettings(settings.depthBits, settings.stencilBits, settings.antiAliasingLevel, settings.versionMajor, settings.versionMinor)) {
 
@@ -344,7 +344,7 @@ namespace odfaeg {
             sf::Window::display();
         }
         const ContextSettings& SFMLWindowImpl::getSettings() const {
-            sf::ContextSettings settings = sf::Window::getSettings();
+            static sf::ContextSettings settings = sf::Window::getSettings();
             return ContextSettings(settings.depthBits, settings.stencilBits, settings.antialiasingLevel, settings.majorVersion, settings.minorVersion);
         }
     }

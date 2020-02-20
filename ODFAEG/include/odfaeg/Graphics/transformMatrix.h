@@ -89,12 +89,6 @@ namespace odfaeg
             */
             void setRotation (const  math::Vec3f axis, float teta);
             /**
-            * \fn void setRotation (int angle)
-            * \brief set the angle for the 2D rotation.
-            * \param the rotation angle.
-            */
-            void setRotation (int angle);
-            /**
             * \fn setOrigin (float ox, float oy)
             * \brief set the coordinates of the 2D origin.
             * \param ox : the x coordinate of the origin
