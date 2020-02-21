@@ -189,6 +189,8 @@ namespace odfaeg {
             void setVerticalSyncEnabled(bool enabled);
             void display();
             const ContextSettings& getSettings() const;
+        private :
+            ContextSettings m_settings;
         };
     }
 }

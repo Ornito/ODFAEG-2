@@ -265,7 +265,7 @@ int main(int argc, char* argv[])
     EXPORT_CLASS_GUID(EntityHero, Entity, Hero)
     EXPORT_CLASS_GUID(EntityMesh, Entity, Mesh)
     MyAppli app(sf::VideoMode(800, 600), "Test odfaeg");
-    return app.exec();*/
+    return app.exec();
     /*TestAppli appli(sf::VideoMode(800, 600), "Test appli");
     return appli.exec();*/
     RenderWindow window(sf::VideoMode(800, 600), "Test per pixel linked list", sf::Style::Default, ContextSettings(24, 0, 8, 3, 0));
@@ -278,7 +278,7 @@ int main(int argc, char* argv[])
     std::vector<Entity*> entities = {&tile1, &tile2, &tile3};
     PerPixelLinkedListRenderComponent ppll(window, 0, "E_TILE", ContextSettings(0, 0, 4, 3, 0));
     ppll.loadEntitiesOnComponent(entities);*/
-    /*while (window.isOpen()) {
+    while (window.isOpen()) {
         IEvent event;
         while (window.pollEvent(event)) {
             if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED)
@@ -287,8 +287,8 @@ int main(int argc, char* argv[])
         window.clear();
         /*ppll.clear();
         window.draw(ppll);*/
-        /*window.display();*/
-    //}
+        window.display();
+    }
     return 0;
 }
 

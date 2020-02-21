@@ -4,6 +4,7 @@
 #include <SFML/Window/VideoMode.hpp>
 #include <sstream>
 #include <vector>
+#include <SFML/OpenGL.hpp>
 namespace
 {
     // Some drivers are bugged and don't track the current HDC/HGLRC properly

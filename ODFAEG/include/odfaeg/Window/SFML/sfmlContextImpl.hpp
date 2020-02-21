@@ -16,6 +16,7 @@ namespace odfaeg {
             void setVerticalSyncEnabled(bool enabled);
         private :
             sf::Context* context;
+            ContextSettings m_settings;
         };
     }
 }

@@ -40,7 +40,6 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         bool RenderWindow::activate(bool active)
         {
-
             return setActive(active);
         }
 

@@ -3,16 +3,20 @@
 #include "../../../../include/odfaeg/Window/SFML/sfmlMouse.hpp"
 namespace odfaeg {
     namespace window {
-        SFMLWindowImpl::SFMLWindowImpl() : sf::Window() {}
+        SFMLWindowImpl::SFMLWindowImpl() : sf::Window() {
+            m_settings = ContextSettings(0, 0, 0, 0, 0);
+        }
         SFMLWindowImpl::SFMLWindowImpl(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const ContextSettings& settings) :
         sf::Window (mode, title, style, sf::ContextSettings(settings.depthBits, settings.stencilBits, settings.antiAliasingLevel, settings.versionMajor, settings.versionMinor)) {
-
+            m_settings = ContextSettings(settings.depthBits, settings.stencilBits, settings.antiAliasingLevel, settings.versionMajor, settings.versionMinor);
         }
         void SFMLWindowImpl::create (sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const ContextSettings& settings) {
             sf::Window::create (mode, title, style, sf::ContextSettings(settings.depthBits, settings.stencilBits, settings.antiAliasingLevel, settings.versionMajor, settings.versionMinor));
+            m_settings = ContextSettings(settings.depthBits, settings.stencilBits, settings.antiAliasingLevel, settings.versionMajor, settings.versionMinor);
         }
         void SFMLWindowImpl::create (sf::WindowHandle handle, const ContextSettings& settings) {
             sf::Window::create (handle, sf::ContextSettings(settings.depthBits, settings.stencilBits, settings.antiAliasingLevel, settings.versionMajor, settings.versionMinor));
+            m_settings = ContextSettings(settings.depthBits, settings.stencilBits, settings.antiAliasingLevel, settings.versionMajor, settings.versionMinor);
         }
         bool SFMLWindowImpl::isOpen() const {
             return sf::Window::isOpen();
@@ -335,7 +339,7 @@ namespace odfaeg {
             sf::Window::close();
         }
         bool SFMLWindowImpl::setActive(bool active) {
-            sf::Window::setActive(active);
+            return sf::Window::setActive(active);
         }
         void SFMLWindowImpl::setVerticalSyncEnabled(bool enabled) {
             sf::Window::setVerticalSyncEnabled(enabled);
@@ -344,8 +348,7 @@ namespace odfaeg {
             sf::Window::display();
         }
         const ContextSettings& SFMLWindowImpl::getSettings() const {
-            static sf::ContextSettings settings = sf::Window::getSettings();
-            return ContextSettings(settings.depthBits, settings.stencilBits, settings.antialiasingLevel, settings.majorVersion, settings.minorVersion);
+            return m_settings;
         }
     }
 }

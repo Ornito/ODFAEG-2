@@ -2,6 +2,7 @@
 #include "../../../include/odfaeg/Window/windowImpl.hpp"
 #include <SFML/System/Mutex.hpp>
 #include <SFML/System/Lock.hpp>
+#include <SFML/OpenGL.hpp>
 #include <iostream>
 #include <cassert>
 #if defined(ODFAEG_SYSTEM_WINDOWS)

@@ -4,7 +4,6 @@
 #include "../iContext.hpp"
 #include <windows.h>
 #include "../../../../src/odfaeg/Window/Windows/wglExtensions.hpp"
-#include <SFML/OpenGL.hpp>
 namespace odfaeg {
     namespace window {
         ////////////////////////////////////////////////////////////

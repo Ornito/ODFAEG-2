@@ -190,8 +190,7 @@ namespace odfaeg {
         {
             if (m_window)
             {
-                if (m_window->setActive(active))
-                {
+                if (m_window->setActive(active)) {
                     return true;
                 }
                 else

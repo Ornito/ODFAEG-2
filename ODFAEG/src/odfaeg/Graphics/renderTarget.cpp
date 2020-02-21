@@ -73,9 +73,9 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void RenderTarget::clear(const Color& color)
         {
-
             if (activate(true))
             {
+                std::cout<<"clear"<<std::endl;
                 glCheck(glClearColor(color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f));
                 glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
             }

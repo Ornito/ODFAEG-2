@@ -186,10 +186,10 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             virtual sf::WindowHandle getSystemHandle() const = 0;
             virtual void destroy() = 0;
-            virtual bool setActive(bool active=true) {}
+            virtual bool setActive(bool active=true) { return false; }
             virtual void setVerticalSyncEnabled(bool enabled) {}
             virtual void display() {}
-            virtual const ContextSettings& getSettings() const {}
+            virtual const ContextSettings& getSettings() const { return ContextSettings(0, 0, 0, 0, 0); }
         };
     }
 }
