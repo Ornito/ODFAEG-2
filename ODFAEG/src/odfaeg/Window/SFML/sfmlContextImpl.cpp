@@ -16,8 +16,9 @@ namespace odfaeg {
         }
         const ContextSettings& SFMLContextImpl::getSettings() const {
             if (context) {
-                static sf::ContextSettings settings = context->getSettings();
-                return ContextSettings(settings.depthBits, settings.stencilBits, settings.antialiasingLevel, settings.majorVersion, settings.minorVersion);
+                sf::ContextSettings settings = context->getSettings();
+                static  ContextSettings odfaegSettings = ContextSettings(settings.depthBits, settings.stencilBits, settings.antialiasingLevel, settings.majorVersion, settings.minorVersion);
+                return odfaegSettings;
             } else {
                 static ContextSettings empty(0, 0, 0, 0, 0);
                 return empty;
