@@ -69,6 +69,7 @@ namespace odfaeg {
                     throw core::Erreur(54, "Failed to load shader");
                 }
                 std::cout<<"shader loaded!"<<std::endl;
+                shader.setParameter("texture", Shader::CurrentTexture);
             }
             backgroundColor = sf::Color::Transparent;
         }
@@ -195,25 +196,36 @@ namespace odfaeg {
                 VertexBuffer vb(sf::TrianglesStrip);
                 std::vector<float> matrices;
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
-                    std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
-                    for (unsigned int j = 0; j < tm.size(); j++) {
-                        std::array<float, 16> matrix = tm[j]->getMatrix().toGlMatrix();
-                        for (unsigned int n = 0; n < 16; n++) {
-                            matrices.push_back(matrix[n]);
+                    if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                        std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
+                        for (unsigned int j = 0; j < tm.size(); j++) {
+                            std::array<float, 16> matrix = tm[j]->getMatrix().toGlMatrix();
+                            for (unsigned int n = 0; n < 16; n++) {
+                                matrices.push_back(matrix[n]);
+                            }
                         }
-                    }
-                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
-                    glCheck(glBufferData(GL_ARRAY_BUFFER, sizeof(matrices), &matrices[0], GL_DYNAMIC_DRAW));
-                    if (m_instances[i].getVertexArrays().size() > 0) {
-                        for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
-                            vb.append((*m_instances[i].getVertexArrays()[0])[j]);
+                        std::cout<<"vbo world matrices!"<<std::endl;
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+                        glCheck(glBufferData(GL_ARRAY_BUFFER, sizeof(matrices), &matrices[0], GL_DYNAMIC_DRAW));
+                        std::cout<<"vbo world matrices filled!"<<std::endl;
+                        if (m_instances[i].getVertexArrays().size() > 0) {
+                            for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
+                                vb.append((*m_instances[i].getVertexArrays()[0])[j]);
+                            }
                         }
+                        std::cout<<"vertices filled"<<std::endl;
+                        states.shader = &shader;
+                        std::cout<<"shader set"<<std::endl;
+                        states.texture = m_instances[i].getMaterial().getTexture();
+                        std::cout<<"texture defined"<<std::endl;
+                        if (m_instances[i].getMaterial().getTexture() != nullptr) {
+                            math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
+                            shader.setParameter("textureMatrix", texMatrix);
+                            std::cout<<"texture set to shader"<<std::endl;
+                        }
+                        std::cout<<"draw instanced"<<std::endl;
+                        frameBuffer.drawInstanced(vb, vboWorldMatrices, sf::TrianglesStrip, 0, 4, tm.size(), states);
                     }
-                    states.shader = &shader;
-                    states.texture = m_instances[i].getMaterial().getTexture();
-                    math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
-                    shader.setParameter("textureMatrix", texMatrix);
-                    frameBuffer.drawInstanced(vb, vboWorldMatrices, sf::TrianglesStrip, 0, 4, tm.size(), states);
                 }
             } else {
                 states.blendMode = sf::BlendAlpha;

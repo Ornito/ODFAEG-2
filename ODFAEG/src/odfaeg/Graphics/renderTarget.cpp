@@ -165,6 +165,7 @@ namespace odfaeg {
                     applyShader(states.shader);
                 if (m_cache.lastVboBuffer != &vertexBuffer) {
                     if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                        std::cout<<"define pointers"<<std::endl;
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
                         glCheck(glEnableVertexAttribArray(0));
                         glCheck(glEnableVertexAttribArray(1));
@@ -183,10 +184,15 @@ namespace odfaeg {
                             glVertexAttribDivisor(10 + i, 1);
                         }
                     }
+                    m_cache.lastVboBuffer = &vertexBuffer;
+                }
+                if (m_versionMajor >= 3 && m_versionMinor >= 3) {
                     static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
-                                                   GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
+                                                       GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
                     GLenum mode = modes[type];
+                    std::cout<<"draw instanced"<<std::endl;
                     glDrawArraysInstanced(mode,start,nb,nbInstances);
+                    std::cout<<"instanced rendered"<<std::endl;
                 }
             }
         } //////////////////////////////////////////////////////////
