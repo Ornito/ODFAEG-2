@@ -4,7 +4,6 @@ namespace odfaeg {
     namespace window {
         bool SFMLContextImpl::setActive(bool active) {
             if (context) {
-                std::cout<<"set active!"<<std::endl;
                 return context->setActive(active);
             }
             return false;

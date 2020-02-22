@@ -148,6 +148,7 @@ namespace sorrok {
         walls[5]->getFaces()[0]->getMaterial().setTexId("WALLS");
         std::ifstream ifs("FichierDeSerialisation");
         if(ifs) {
+            std::cout<<"read serialisation file"<<std::endl;
             ITextArchive ia(ifs);
             std::vector<Entity*> entities;
             ia(entities);
@@ -190,8 +191,11 @@ namespace sorrok {
             }
             ifs.close();
         } else {
+            std::cout<<"not read serialisation file"<<std::endl;
             BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
+            std::cout<<"generate map"<<std::endl;
             World::generate_map(tiles, walls, Vec2f(100, 50), mapZone, false);
+            std::cout<<"map generated"<<std::endl;
             Tile* thouse = new Tile(tm.getResourceByAlias("HOUSE"), Vec3f(0, 0, 0), Vec3f(250, 300, 0), sf::IntRect(0, 0, 250, 300));
             thouse->getFaces()[0]->getMaterial().setTexId("HOUSE");
             g2d::Decor* decor = new g2d::Decor(thouse, &g2d::AmbientLight::getAmbientLight());
@@ -203,6 +207,7 @@ namespace sorrok {
             decor->setShadowCenter(Vec3f(0, 500, 0));
             thouse->getFaces()[0]->getMaterial().setSpecularPower(10);
             thouse->getFaces()[0]->getMaterial().setSpecularIntensity(100);
+            std::cout<<"add house"<<std::endl;
             World::addEntity(decor);
             Anim* fire = new Anim(0.1f, Vec3f(0, 100, 150), Vec3f(100, 100, 0), 0);
             Tile* tf1 = new Tile(tm.getResourceByAlias("FIRE1"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
@@ -227,6 +232,7 @@ namespace sorrok {
             fire->addFrame(fire2);
             fire->addFrame(fire3);
             fire->play(true);
+            std::cout<<"add fire"<<std::endl;
             World::addEntity(fire);
             au->addAnim(fire);
             w = new g2d::Wall(walls[3],&g2d::AmbientLight::getAmbientLight());
@@ -249,22 +255,26 @@ namespace sorrok {
         ForceAffector affector(acceleration);
         billboard->getParticleSystem().addAffector(affector);*/
         ps->addEmitter(refEmitter(emitter));
+        std::cout<<"particle system"<<std::endl;
         View view = getView();
         //view.rotate(0, 0, 20);
-        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE", ContextSettings(0, 0, 4, 3, 0));
-        PerPixelLinkedListRenderComponent *frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(),0, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", ContextSettings(0, 0, 4, 3, 0));
+        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE", ContextSettings(0, 0, 4, 3, 3));
+        std::cout<<"Z sorting render component"<<std::endl;
+        /*PerPixelLinkedListRenderComponent *frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(),0, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", ContextSettings(0, 0, 4, 3, 0));
+        std::cout<<"per pixel linked list render component"<<std::endl;*/
         /*gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
         textArea->addFocusListener(this);
         textArea->setVisible(false);
         textArea->setEventContextActivated(false);*/
         frc1->setView(view);
-        frc2->setView(view);
+        //frc2->setView(view);
         /*op = new gui::OptionPane(Vec2f(200, 175), Vec2f(400, 200), fm.getResourceByAlias("FreeSerif"), "Test",gui::OptionPane::TYPE::CONFIRMATION_DIALOG);
         std::this_thread::sleep_for(std::chrono::seconds(1));
         op->setVisible(false);
         op->setEventContextActivated(false);*/
         getRenderComponentManager().addComponent(frc1);
-        getRenderComponentManager().addComponent(frc2);
+        //getRenderComponentManager().addComponent(frc2);
+        std::cout<<"add components"<<std::endl;
         /*getRenderComponentManager().addComponent(textArea);
         getRenderComponentManager().addComponent(op);*/
 
@@ -300,9 +310,11 @@ namespace sorrok {
         //std::cout<<bb2->getPosition()<<" "<<bb2->getSize()<<std::endl;
         g2d::PonctualLight* light1 = new g2d::PonctualLight(Vec3f(-50, 420, 420), 100, 50, 0, 255, sf::Color::Yellow, 16);
         light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 0, 255, sf::Color::Yellow, 16);
+        std::cout<<"add lights"<<std::endl;
         World::addEntity(light1);
         World::addEntity(light2);
         //getView().move(d.x * 0.5f, d.y * 0.5f, 0);
+        std::cout<<"add hero"<<std::endl;
         World::addEntity(caracter);
 
         //World::computeIntersectionsWithWalls();
@@ -321,6 +333,7 @@ namespace sorrok {
         getListener().connect("MouseInside",mouseInsideAction);
         Command leftMouseButtonPressedAction (a5, FastDelegate<void>(&MyAppli::leftMouseButtonPressed, this, sf::Vector2f(-1, -1)));
         getListener().connect("LeftMouseButtonPressedAction", leftMouseButtonPressedAction);
+        std::cout<<"add action"<<std::endl;
         player.setRelativeToListener(true);
         player.setPosition(0.f, 0.f, 0.f);
         player.setMinDistance(5.f);
@@ -334,7 +347,7 @@ namespace sorrok {
     void MyAppli::onRender(RenderComponentManager *cm) {
         // draw everything here...
         World::drawOnComponents("E_BIGTILE", 0);
-        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 1);
+        //World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 1);
         fpsCounter++;
         if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {
             std::cout<<"FPS : "<<fpsCounter<<std::endl;

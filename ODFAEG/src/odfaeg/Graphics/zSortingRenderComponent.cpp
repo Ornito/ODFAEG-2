@@ -23,7 +23,6 @@ namespace odfaeg {
                 glGenBuffers(1, &vboWorldMatrices);
                 const std::string vertexShader =
                 R"(#version 330 core
-                    #extension GL_ARB_shading_language_420pack : require
                     layout (location = 0) in vec3 position;
                     layout (location = 1) in vec4 color;
                     layout (location = 2) in vec2 texCoords;
@@ -31,17 +30,21 @@ namespace odfaeg {
                     uniform mat4 projectionMatrix;
                     uniform mat4 viewMatrix;
                     uniform mat4 textureMatrix;
+                    out vec2 fTexCoords;
+                    out vec4 frontColor;
                     void main() {
                         gl_Position = worldMat * viewMatrix * projectionMatrix * vec4(position, 1.f);
-                        gl_TexCoord[0] = textureMatrix * vec4(texCoords, 1.f, 1.f);
-                        gl_FrontColor = color;
+                        fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                        frontColor = color;
                     }
                 )";
                 const std::string fragmentShader =
-                R"(#version 330
+                R"(#version 330 core
                 uniform sampler2D texture;
+                in vec4 frontColor;
+                in vec2 fTexCoords;
                 void main() {
-                    gl_FragColor = texture2D (texture, gl_FragCoord.xy) * gl_Color;
+                    gl_FragColor = texture2D (texture, fTexCoords.xy) * frontColor;
                 })";
                 /*const std::string vertexShader =
                 R"(#version 140
@@ -61,9 +64,11 @@ namespace odfaeg {
                 void main () {
                     gl_FragColor = texture2DArray(T.t, vec3(v_texCoord.xy, T.textureIndex));
                 })";*/
+                 std::cout<<"load shader!"<<std::endl;
                 if (!shader.loadFromMemory(vertexShader, fragmentShader)) {
                     throw core::Erreur(54, "Failed to load shader");
                 }
+                std::cout<<"shader loaded!"<<std::endl;
             }
             backgroundColor = sf::Color::Transparent;
         }
@@ -208,7 +213,7 @@ namespace odfaeg {
                     states.texture = m_instances[i].getMaterial().getTexture();
                     math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
                     shader.setParameter("textureMatrix", texMatrix);
-                    frameBuffer.drawInstanced(vb, vboWorldMatrices, sf::TrianglesStrip, 0, 6, tm.size(), states);
+                    frameBuffer.drawInstanced(vb, vboWorldMatrices, sf::TrianglesStrip, 0, 4, tm.size(), states);
                 }
             } else {
                 states.blendMode = sf::BlendAlpha;
@@ -223,9 +228,9 @@ namespace odfaeg {
         }
         void ZSortingRenderComponent::draw(RenderTarget& target, RenderStates states) {
             states.blendMode = sf::BlendAlpha;
-            for (unsigned int i = 0; i < m_instances.size(); i++) {
+            /*for (unsigned int i = 0; i < m_instances.size(); i++) {
                 if (m_instances[i].getAllVertices().getVertexCount() > 0) {
-                    states.texture = m_instances[i].getMaterial().getTexture();
+                    states.texture = m_instances[i].getMaterial().getTexture();*/
                     //states.shader = &instancedRenderingShader;
                     /*for (unsigned int j = 0; j < m_instances[i].getAllIndexes().size(); j++)
                         std::cout<<"index : "<< m_instances[i].getAllIndexes()[j];*/
@@ -239,11 +244,11 @@ namespace odfaeg {
                         scene.getSceneVertices().resetIndexes(m_instances[i].getAllIndexes());
                        // update = false;
                     }*/
-                    target.draw(m_instances[i].getAllVertices(), states);
-                    /*sprite.setCenter(target.getView().getPosition());
-                    target.draw(sprite, states);*/
-                }
-            }
+                    //target.draw(m_instances[i].getAllVertices(), states);
+                    sprite.setCenter(target.getView().getPosition());
+                    target.draw(sprite, states);
+                /*}
+            }*/
         }
         View& ZSortingRenderComponent::getView() {
             return view;

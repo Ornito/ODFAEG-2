@@ -600,7 +600,6 @@ namespace odfaeg {
                 m_shaderProgram = glCreateProgram();
             else
                 m_shaderProgram = glCreateProgramObjectARB();
-
             // Create the vertex shader if needed
             if (vertexShaderCode)
             {
@@ -615,7 +614,7 @@ namespace odfaeg {
                         glCheck(glGetShaderiv(vertexShaderID, GL_INFO_LOG_LENGTH, &infoLogLength));
                         char log[infoLogLength];
                         glCheck(glGetShaderInfoLog(vertexShaderID, infoLogLength, 0, &log[0]));
-                        err() << "Failed to compile vertex shader:" << std::endl
+                        std::cerr << "Failed to compile vertex shader:" << std::endl
                         << log << std::endl;
                         glCheck(glDeleteShader(vertexShaderID));
                         glCheck(glDeleteProgram(m_shaderProgram));
@@ -624,6 +623,7 @@ namespace odfaeg {
                     }
                     glCheck(glAttachShader(m_shaderProgram, vertexShaderID));
                     glCheck(glDeleteShader(vertexShaderID));
+
                 } else {
                     // Create and compile the shader
                     GLhandleARB vertexShader = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
@@ -637,7 +637,7 @@ namespace odfaeg {
                     {
                         char log[1024];
                         glCheck(glGetInfoLogARB(vertexShader, sizeof(log), 0, log));
-                        err() << "Failed to compile vertex shader:" << std::endl
+                        std::cerr << "Failed to compile vertex shader:" << std::endl
                               << log << std::endl;
                         glCheck(glDeleteObjectARB(vertexShader));
                         glCheck(glDeleteObjectARB(m_shaderProgram));

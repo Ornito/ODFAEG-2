@@ -518,7 +518,9 @@ namespace odfaeg {
                     if (x == startX && y == startY && walls.size() >= 4) {
                         g2d::Wall *w = new g2d::Wall(new Tile(*walls[3]),&g2d::AmbientLight::getAmbientLight());
                         w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[3]->getSize().y * 0.5f));
+                        std::cout<<"add wall"<<std::endl;
                         addEntity(w);
+                        std::cout<<"wall 4 added"<<std::endl;
                         gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
 
                         //Mur du coin en haut \E0 droite.
@@ -636,12 +638,13 @@ namespace odfaeg {
 
         }
         bool Map::addEntity(Entity *entity) {
-            EntityManager::addEntity(entity);
+
+            //EntityManager::addEntity(entity);
             if (entity->isAnimated()) {
                 if (static_cast<AnimatedEntity*>(entity)->getCurrentFrame() != nullptr) {
                     addEntity(static_cast<AnimatedEntity*>(entity)->getCurrentFrame());
                 } else {
-                    gridMap->addEntity(entity);
+                    return gridMap->addEntity(entity);
                 }
             } else {
                 std::vector<Entity*> children = entity->getChildren();
@@ -659,7 +662,7 @@ namespace odfaeg {
                          increaseComptImg(entity->getFaces()[j]->getMaterial().getTexture());
                      }
                 }
-                gridMap->addEntity(entity);
+                return gridMap->addEntity(entity);
                 /*for (unsigned int c = 0; c < frcm->getNbComponents(); c++) {
                     if(frcm->getRenderComponent(c) != nullptr) {
                         frcm->getRenderComponent(c)->loadShaders();
