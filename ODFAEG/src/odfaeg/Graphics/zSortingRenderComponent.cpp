@@ -189,8 +189,8 @@ namespace odfaeg {
         void ZSortingRenderComponent::drawNextFrame() {
             RenderStates states;
             if (frameBuffer.getSettings().versionMajor >= 3 && frameBuffer.getSettings().versionMinor >= 3) {
-                math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix();
-                math::Matrix4f projMatrix = view.getProjMatrix().getMatrix();
+                math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
+                math::Matrix4f projMatrix = view.getProjMatrix().getMatrix().transpose();
                 shader.setParameter("projectionMatrix", projMatrix);
                 shader.setParameter("viewMatrix", viewMatrix);
                 VertexBuffer vb(sf::TrianglesStrip);
@@ -199,7 +199,7 @@ namespace odfaeg {
                     if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                         std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
                         for (unsigned int j = 0; j < tm.size(); j++) {
-                            std::array<float, 16> matrix = tm[j]->getMatrix().toGlMatrix();
+                            std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
                             for (unsigned int n = 0; n < 16; n++) {
                                 matrices.push_back(matrix[n]);
                             }
@@ -212,6 +212,7 @@ namespace odfaeg {
                             for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
                                 vb.append((*m_instances[i].getVertexArrays()[0])[j]);
                             }
+                            vb.update();
                         }
                         std::cout<<"vertices filled"<<std::endl;
                         states.shader = &shader;

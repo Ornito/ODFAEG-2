@@ -338,6 +338,90 @@ namespace odfaeg {
         void VertexBuffer::addTransformId(unsigned int id, unsigned int vertexId) {
             m_normals.push_back(sf::Vector3f(id, vertexId, 0));
         }
+        void VertexBuffer::update() {
+            if (!m_vertices.empty()) {
+
+                if (GLEW_ARB_vertex_buffer_object) {
+                    if (needToUpdateVertexBuffer) {
+                        if (vboVertexBuffer == 0) {
+                            //std::cout<<"create vbo vertex buffer"<<std::endl;
+                            GLuint vbo;
+                            glCheck(glGenBuffers(1, &vbo));
+                            vboVertexBuffer = static_cast<unsigned int>(vbo);
+                        }
+                        if (oldVerticesSize != m_vertices.size()) {
+                            //std::cout<<"size changed : update vbo vertex buffer"<<std::endl;
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboVertexBuffer));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vertex), &m_vertices[0], GL_STREAM_DRAW));
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        } else {
+                            //std::cout<<"update vbo vertex buffer"<<std::endl;
+                            GLvoid *pos_vbo = nullptr;
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboVertexBuffer));
+                            pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+                            if (pos_vbo != nullptr) {
+                                memcpy(pos_vbo,&m_vertices[0],  m_vertices.size() * sizeof(Vertex));
+                                glCheck(glUnmapBuffer(GL_ARRAY_BUFFER));
+                                pos_vbo = nullptr;
+                            }
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        }
+                        if (vboNormalBuffer == 0) {
+                            //std::cout<<"create vbo normal buffer"<<std::endl;
+                            GLuint vbo;
+                            glCheck(glGenBuffers(1, &vbo));
+                            vboNormalBuffer = static_cast<unsigned int>(vbo);
+                        }
+                        if (oldVerticesSize != m_vertices.size()) {
+                            //std::cout<<"size changed : update vbo normal buffer"<<std::endl;
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboNormalBuffer));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(math::Vec3f), &m_normals[0], GL_STREAM_DRAW));
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        } else {
+                            //std::cout<<"update vbo normal buffer"<<std::endl;
+                            GLvoid *pos_vbo = nullptr;
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboNormalBuffer));
+                            pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+                            if (pos_vbo != nullptr) {
+                                memcpy(pos_vbo,&m_normals[0],  m_normals.size() * sizeof(math::Vec3f));
+                                glCheck(glUnmapBuffer(GL_ARRAY_BUFFER));
+                                pos_vbo = nullptr;
+                            }
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        }
+                        needToUpdateVertexBuffer = false;
+                    }
+                    if (needToUpdateIndexBuffer) {
+                        if (vboIndexBuffer == 0) {
+                            //std::cout<<"create index vbo buffer"<<std::endl;
+                            GLuint vbo;
+                            glCheck(glGenBuffers(1, &vbo));
+                            vboIndexBuffer = static_cast<unsigned int>(vbo);
+                        }
+                        if (oldIndexesSize != m_indexes.size()) {
+                            //std::cout<<"size changed : update index vbo buffer"<<std::endl;
+                            glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndexBuffer));
+                            glCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indexes.size() * sizeof(unsigned int), &m_indexes[0], GL_STREAM_DRAW));
+                            glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+                        } else {
+                            //std::cout<<"update index vbo buffer"<<std::endl;
+                            GLvoid *pos_vbo = nullptr;
+                            glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboVertexBuffer));
+                            glCheck(pos_vbo = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY));
+                            if (pos_vbo != nullptr) {
+                                memcpy(pos_vbo,&m_indexes[0],  m_indexes.size() * sizeof(unsigned int));
+                                glCheck(glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER));
+                                pos_vbo = nullptr;
+                            }
+                            glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+                        }
+                        needToUpdateIndexBuffer = false;
+                    }
+                    oldVerticesSize = m_vertices.size();
+                    oldIndexesSize = m_indexes.size();
+                }
+            }
+        }
         ////////////////////////////////////////////////////////////
         void VertexBuffer::draw(RenderTarget& target, RenderStates states)
         {

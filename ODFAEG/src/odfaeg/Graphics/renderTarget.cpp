@@ -178,21 +178,37 @@ namespace odfaeg {
                         glCheck(glDisableVertexAttribArray(2));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
                         for (unsigned int i = 0; i < 4 ; i++) {
-                            glEnableVertexAttribArray(10 + i);
-                            glVertexAttribPointer(10 + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
-                                                    (const GLvoid*)(sizeof(GLfloat) * i * 4));
-                            glVertexAttribDivisor(10 + i, 1);
+                            glCheck(glEnableVertexAttribArray(10 + i));
+                            glCheck(glVertexAttribPointer(10 + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                                                    (const GLvoid*)(sizeof(GLfloat) * i * 4)));
+                            glCheck(glVertexAttribDivisor(10 + i, 1));
+                            glCheck(glDisableVertexAttribArray(10 + i));
                         }
                     }
                     m_cache.lastVboBuffer = &vertexBuffer;
+                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                 }
                 if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                   /* glCheck(glEnableVertexAttribArray(0));
+                    glCheck(glEnableVertexAttribArray(1));
+                    glCheck(glEnableVertexAttribArray(2));
+                    for (unsigned int i = 0; i < 4 ; i++) {
+                        glCheck(glEnableVertexAttribArray(10 + i));
+                    }
+                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));*/
                     static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
                                                        GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
                     GLenum mode = modes[type];
                     std::cout<<"draw instanced"<<std::endl;
-                    glDrawArraysInstanced(mode,start,nb,nbInstances);
+                    glCheck(glDrawArraysInstanced(mode,start,nb,nbInstances));
                     std::cout<<"instanced rendered"<<std::endl;
+                    /*glCheck(glDisableVertexAttribArray(0));
+                    glCheck(glDisableVertexAttribArray(1));
+                    glCheck(glDisableVertexAttribArray(2));
+                    for (unsigned int i = 0; i < 4 ; i++) {
+                        glCheck(glDisableVertexAttribArray(10 + i));
+                    }
+                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));*/
                 }
             }
         } //////////////////////////////////////////////////////////
