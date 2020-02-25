@@ -350,7 +350,7 @@ namespace odfaeg {
                             vboVertexBuffer = static_cast<unsigned int>(vbo);
                         }
                         if (oldVerticesSize != m_vertices.size()) {
-                            //std::cout<<"size changed : update vbo vertex buffer"<<std::endl;
+                            std::cout<<"size changed : update vbo vertex buffer"<<std::endl;
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboVertexBuffer));
                             glCheck(glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vertex), &m_vertices[0], GL_STREAM_DRAW));
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
@@ -420,6 +420,7 @@ namespace odfaeg {
                     oldVerticesSize = m_vertices.size();
                     oldIndexesSize = m_indexes.size();
                 }
+                std::cout<<"vertex buffer updated"<<std::endl;
             }
         }
         ////////////////////////////////////////////////////////////

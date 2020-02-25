@@ -178,11 +178,11 @@ namespace odfaeg {
                         glCheck(glDisableVertexAttribArray(2));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
                         for (unsigned int i = 0; i < 4 ; i++) {
-                            glCheck(glEnableVertexAttribArray(10 + i));
-                            glCheck(glVertexAttribPointer(10 + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                            glCheck(glEnableVertexAttribArray(3 + i));
+                            glCheck(glVertexAttribPointer(3 + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
                                                     (const GLvoid*)(sizeof(GLfloat) * i * 4)));
-                            glCheck(glVertexAttribDivisor(10 + i, 1));
-                            glCheck(glDisableVertexAttribArray(10 + i));
+                            glCheck(glVertexAttribDivisor(3 + i, 1));
+                            glCheck(glDisableVertexAttribArray(3 + i));
                         }
                     }
                     m_cache.lastVboBuffer = &vertexBuffer;

@@ -26,7 +26,7 @@ namespace odfaeg {
                     layout (location = 0) in vec3 position;
                     layout (location = 1) in vec4 color;
                     layout (location = 2) in vec2 texCoords;
-                    layout (location = 10) in mat4 worldMat;
+                    layout (location = 3) in mat4 worldMat;
                     uniform mat4 projectionMatrix;
                     uniform mat4 viewMatrix;
                     uniform mat4 textureMatrix;
@@ -193,24 +193,27 @@ namespace odfaeg {
                 math::Matrix4f projMatrix = view.getProjMatrix().getMatrix().transpose();
                 shader.setParameter("projectionMatrix", projMatrix);
                 shader.setParameter("viewMatrix", viewMatrix);
-                VertexBuffer vb(sf::TrianglesStrip);
-                std::vector<float> matrices;
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
                     if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                        VertexBuffer vb(sf::TrianglesStrip);
+                        std::vector<float> matrices;
                         std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
                         for (unsigned int j = 0; j < tm.size(); j++) {
                             std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
                             for (unsigned int n = 0; n < 16; n++) {
                                 matrices.push_back(matrix[n]);
+                                //std::cout<<"add matrix element!"<<std::endl;
                             }
                         }
                         std::cout<<"vbo world matrices!"<<std::endl;
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
-                        glCheck(glBufferData(GL_ARRAY_BUFFER, sizeof(matrices), &matrices[0], GL_DYNAMIC_DRAW));
+                        glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                         std::cout<<"vbo world matrices filled!"<<std::endl;
                         if (m_instances[i].getVertexArrays().size() > 0) {
                             for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
                                 vb.append((*m_instances[i].getVertexArrays()[0])[j]);
+                                //std::cout<<"add vertex!"<<std::endl;
                             }
                             vb.update();
                         }
