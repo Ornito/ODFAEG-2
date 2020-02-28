@@ -352,7 +352,7 @@ namespace odfaeg {
                         if (oldVerticesSize != m_vertices.size()) {
                             std::cout<<"size changed : update vbo vertex buffer"<<std::endl;
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboVertexBuffer));
-                            glCheck(glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vertex), &m_vertices[0], GL_STREAM_DRAW));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vertex), &m_vertices[0], GL_DYNAMIC_DRAW));
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                         } else {
                             //std::cout<<"update vbo vertex buffer"<<std::endl;
@@ -375,7 +375,7 @@ namespace odfaeg {
                         if (oldVerticesSize != m_vertices.size()) {
                             //std::cout<<"size changed : update vbo normal buffer"<<std::endl;
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboNormalBuffer));
-                            glCheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(math::Vec3f), &m_normals[0], GL_STREAM_DRAW));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(math::Vec3f), &m_normals[0], GL_DYNAMIC_DRAW));
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                         } else {
                             //std::cout<<"update vbo normal buffer"<<std::endl;
@@ -401,7 +401,7 @@ namespace odfaeg {
                         if (oldIndexesSize != m_indexes.size()) {
                             //std::cout<<"size changed : update index vbo buffer"<<std::endl;
                             glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndexBuffer));
-                            glCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indexes.size() * sizeof(unsigned int), &m_indexes[0], GL_STREAM_DRAW));
+                            glCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indexes.size() * sizeof(unsigned int), &m_indexes[0], GL_DYNAMIC_DRAW));
                             glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
                         } else {
                             //std::cout<<"update index vbo buffer"<<std::endl;

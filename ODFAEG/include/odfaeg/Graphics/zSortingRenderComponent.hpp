@@ -56,6 +56,8 @@ namespace odfaeg {
                 RenderTexture frameBuffer;
                 unsigned int vboWorldMatrices;
                 sf::Color backgroundColor;
+                VertexBuffer vb;
+                std::vector<float> matrices;
         };
     }
 }

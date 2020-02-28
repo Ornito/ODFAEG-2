@@ -195,8 +195,9 @@ namespace odfaeg {
                 shader.setParameter("viewMatrix", viewMatrix);
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
                     if (m_instances[i].getAllVertices().getVertexCount() > 0) {
-                        VertexBuffer vb(sf::TrianglesStrip);
-                        std::vector<float> matrices;
+                        vb.clear();
+                        vb.setPrimitiveType(sf::TriangleStrip);
+                        matrices.clear();
                         std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
                         for (unsigned int j = 0; j < tm.size(); j++) {
                             std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();

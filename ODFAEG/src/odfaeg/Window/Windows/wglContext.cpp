@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include <SFML/OpenGL.hpp>
+#include <iostream>
 namespace
 {
     // Some drivers are bugged and don't track the current HDC/HGLRC properly
@@ -373,7 +374,6 @@ namespace odfaeg {
         void WglContext::setDevicePixelFormat(unsigned int bitsPerPixel)
         {
             int bestFormat = selectBestPixelFormat(m_deviceContext, bitsPerPixel, m_settings);
-
             if (bestFormat == 0)
             {
                 err() << "Failed to find a suitable pixel format for device context: " << getErrorString(GetLastError()).toAnsiString() << std::endl
@@ -487,6 +487,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void WglContext::createSurface(WglContext* shared, unsigned int width, unsigned int height, unsigned int bitsPerPixel)
         {
+
             // Check if the shared context already exists and pbuffers are supported
             if (shared && shared->m_deviceContext && (sfwgl_ext_ARB_pbuffer == sfwgl_LOAD_SUCCEEDED))
             {

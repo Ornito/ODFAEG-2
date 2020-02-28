@@ -75,7 +75,7 @@ namespace odfaeg {
         {
             if (activate(true))
             {
-                std::cout<<"clear"<<std::endl;
+                applyTexture(nullptr);
                 glCheck(glClearColor(color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f));
                 glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
             }
@@ -356,8 +356,8 @@ namespace odfaeg {
                 // Unbind the shader, if any
                 if (states.shader)
                     applyShader(nullptr);
-                /*if (states.texture)
-                    applyTexture(nullptr);*/
+                if (states.texture)
+                    applyTexture(nullptr);
                 // Update the cache
                 m_cache.useVertexCache = useVertexCache;
             }

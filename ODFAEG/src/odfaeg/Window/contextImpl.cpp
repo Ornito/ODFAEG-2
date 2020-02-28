@@ -218,10 +218,10 @@ namespace odfaeg {
             initialize(settings);
             checkSettings(settings);
         }
-        void ContextImpl::create(sf::WindowHandle handle,const ContextSettings& settings, IContext* shared) {
+        void ContextImpl::create(sf::WindowHandle handle,const ContextSettings& settings, IContext* shared, unsigned int bitsPerPixel) {
             std::cout<<"create context impl"<<std::endl;
             sharedContext->setActive(true);
-            ContextImplType::create(handle, settings, (shared == nullptr) ? sharedContext : shared);
+            ContextImplType::create(handle, settings, (shared == nullptr) ? sharedContext : shared, bitsPerPixel);
             sharedContext->setActive(false);
             initialize(settings);
             //checkSettings(settings);*/

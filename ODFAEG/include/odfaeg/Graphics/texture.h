@@ -103,7 +103,7 @@ namespace odfaeg
             /// \return True if creation was successful
             ///
             ////////////////////////////////////////////////////////////
-            bool create(unsigned int width, unsigned int height, unsigned int precision = 0x8058, unsigned int format = 0x1908, unsigned int type = 0x1401);
+            bool create(unsigned int width, unsigned int height);
             void clear();
             ////////////////////////////////////////////////////////////
             /// \brief Load the texture from a file on disk
@@ -263,6 +263,8 @@ namespace odfaeg
             ///
             ////////////////////////////////////////////////////////////
             void update(const sf::Uint8* pixels);
+            void update(const Texture& tex);
+            void update(const Texture& texture, unsigned int x, unsigned int y);
 
             ////////////////////////////////////////////////////////////
             /// \brief Update a part of the texture from an array of pixels
@@ -500,6 +502,12 @@ namespace odfaeg
             const sf::Image& getImage() const;
             void onLoad(std::vector<sf::Uint8>& pixels);
             void onSave(std::vector<sf::Uint8>& pixels);
+            void setSrgb(bool sRgb);
+            bool isSrgb() const;
+            bool generateMipmap();
+            void invalidateMipmap();
+            void swap(Texture& tex);
+            unsigned int getNativeHandle() const;
         private :
 
             friend class RenderTexture;
@@ -530,7 +538,7 @@ namespace odfaeg
             unsigned int m_texture, m_precision, m_format, m_type;       ///< Internal texture identifier
             bool         m_isSmooth;      ///< Status of the smooth filter
             bool         m_isRepeated;    ///< Is the texture in repeat mode?
-            mutable bool m_pixelsFlipped; ///< To work around the inconsistency in Y orientation
+            mutable bool m_pixelsFlipped, m_hasMipmap, m_fboAttachment, m_sRgb; ///< To work around the inconsistency in Y orientation
             sf::Uint64       m_cacheId;       ///< Unique number that identifies the texture to the render target's cache
 
         };

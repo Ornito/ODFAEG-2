@@ -51,7 +51,7 @@ namespace odfaeg {
             // Recreate the WindowImpl implementation
             WindowImplType::create(mode, title, style, settings);
 std::cout<<"create context"<<std::endl;
-            m_context.create(getSystemHandle(), settings);
+            m_context.create(getSystemHandle(), settings, nullptr, mode.bitsPerPixel);
         }
         ////////////////////////////////////////////////////////////
         void WindowImpl::create(WindowHandle handle, const ContextSettings& settings)

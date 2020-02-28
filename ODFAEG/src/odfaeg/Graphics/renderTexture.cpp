@@ -63,7 +63,7 @@ namespace odfaeg
             RenderTarget::setVersionMajor(m_context->getSettings().versionMajor);
             RenderTarget::setVersionMinor(m_context->getSettings().versionMinor);
             // Create the texture
-            if(!m_texture.create(width, height, precision, format, type))
+            if(!m_texture.create(width, height))
             {
                 std::cerr<< "Impossible to create render texture (failed to create the target texture)" << std::endl;
                 return false;
