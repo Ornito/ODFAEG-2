@@ -509,6 +509,12 @@ namespace odfaeg {
                           << std::endl;        }
 
                 #endif
+                // Make sure that extensions are initialized
+                if (GL_ARB_multitexture)
+                {
+                    glCheck(glClientActiveTexture(GL_TEXTURE0));
+                    glCheck(glActiveTexture(GL_TEXTURE0));
+                }
                 glCheck(glDisable(GL_CULL_FACE));
                 glCheck(glDisable(GL_LIGHTING));
                 glCheck(glEnable(GL_DEPTH_TEST));
@@ -520,7 +526,7 @@ namespace odfaeg {
                 glCheck(glAlphaFunc(GL_GREATER, 0.f));
                 glCheck(glDepthFunc(GL_GREATER));
                 glCheck(glEnable(GL_TEXTURE_2D));
-                glCheck(glEnable(GL_TEXTURE_3D));
+                //glCheck(glEnable(GL_TEXTURE_3D));
                 glCheck(glEnable(GL_BLEND));
                 glCheck(glClearDepth(0));
                 glCheck(glDepthMask(GL_TRUE));

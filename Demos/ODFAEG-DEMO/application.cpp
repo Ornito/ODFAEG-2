@@ -258,7 +258,7 @@ namespace sorrok {
         std::cout<<"particle system"<<std::endl;
         View view = getView();
         //view.rotate(0, 0, 20);
-        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE", ContextSettings(0, 0, 4, 3, 0));
+        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE", ContextSettings(0, 0, 4, 3, 3));
         std::cout<<"Z sorting render component"<<std::endl;
         /*PerPixelLinkedListRenderComponent *frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(),0, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", ContextSettings(0, 0, 4, 3, 0));
         std::cout<<"per pixel linked list render component"<<std::endl;*/
