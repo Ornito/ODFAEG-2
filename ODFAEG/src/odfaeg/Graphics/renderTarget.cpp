@@ -167,7 +167,6 @@ namespace odfaeg {
                     glCheck(glBindVertexArray(m_vao));
                 if (m_cache.lastVboBuffer != &vertexBuffer) {
                     if (m_versionMajor >= 3 && m_versionMinor >= 3) {
-                        std::cout<<"define pointers"<<std::endl;
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
                         glCheck(glEnableVertexAttribArray(0));
                         glCheck(glEnableVertexAttribArray(1));
@@ -175,6 +174,9 @@ namespace odfaeg {
                         glCheck(glVertexAttribPointer(0, 3,GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*) 0));
                         glCheck(glVertexAttribPointer(1, 4,GL_UNSIGNED_BYTE,GL_TRUE,sizeof(Vertex),(GLvoid*) 12));
                         glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) 16));
+                        glCheck(glDisableVertexAttribArray(0));
+                        glCheck(glDisableVertexAttribArray(1));
+                        glCheck(glDisableVertexAttribArray(2));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                         for (unsigned int i = 0; i < 4 ; i++) {
                             glCheck(glEnableVertexAttribArray(3 + i));
@@ -183,32 +185,30 @@ namespace odfaeg {
                                                     (const GLvoid*)(sizeof(GLfloat) * i * 4)));
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                             glCheck(glVertexAttribDivisor(3 + i, 1));
+                            glCheck(glDisableVertexAttribArray(3 + i));
                         }
                     }
                     m_cache.lastVboBuffer = &vertexBuffer;
 
                 }
                 if (m_versionMajor >= 3 && m_versionMinor >= 3) {
-                   /* glCheck(glEnableVertexAttribArray(0));
+                    glCheck(glEnableVertexAttribArray(0));
                     glCheck(glEnableVertexAttribArray(1));
                     glCheck(glEnableVertexAttribArray(2));
                     for (unsigned int i = 0; i < 4 ; i++) {
-                        glCheck(glEnableVertexAttribArray(10 + i));
+                        glCheck(glEnableVertexAttribArray(3 + i));
                     }
-                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));*/
                     static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
                                                        GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
                     GLenum mode = modes[type];
-                    std::cout<<"draw instanced"<<std::endl;
                     glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
                     glCheck(glDrawArraysInstanced(mode,start,nb,nbInstances));
-                    std::cout<<"instanced rendered"<<std::endl;
-                    /*glCheck(glDisableVertexAttribArray(0));
+                    glCheck(glDisableVertexAttribArray(0));
                     glCheck(glDisableVertexAttribArray(1));
                     glCheck(glDisableVertexAttribArray(2));
                     for (unsigned int i = 0; i < 4 ; i++) {
                         glCheck(glDisableVertexAttribArray(3 + i));
-                    }*/
+                    }
                     glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                     glCheck(glBindVertexArray(0));
                 }

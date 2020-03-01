@@ -207,11 +207,9 @@ namespace odfaeg {
                                 //std::cout<<"add matrix element!"<<std::endl;
                             }
                         }
-                        std::cout<<"vbo world matrices!"<<std::endl;
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
                         glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                        std::cout<<"vbo world matrices filled!"<<std::endl;
                         if (m_instances[i].getVertexArrays().size() > 0) {
                             for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
                                 vb.append((*m_instances[i].getVertexArrays()[0])[j]);
@@ -219,17 +217,12 @@ namespace odfaeg {
                             }
                             vb.update();
                         }
-                        std::cout<<"vertices filled"<<std::endl;
                         states.shader = &shader;
-                        std::cout<<"shader set"<<std::endl;
                         states.texture = m_instances[i].getMaterial().getTexture();
-                        std::cout<<"texture defined"<<std::endl;
                         if (m_instances[i].getMaterial().getTexture() != nullptr) {
                             math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
                             shader.setParameter("textureMatrix", texMatrix);
-                            std::cout<<"texture set to shader"<<std::endl;
                         }
-                        std::cout<<"draw instanced"<<std::endl;
                         frameBuffer.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, 4, tm.size(), states);
                     }
                 }

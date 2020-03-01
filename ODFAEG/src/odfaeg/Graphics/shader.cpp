@@ -664,7 +664,7 @@ namespace odfaeg {
                         glCheck(glGetShaderiv(fragmentShaderID, GL_INFO_LOG_LENGTH, &infoLogLength));
                         char log[infoLogLength];
                         glCheck(glGetShaderInfoLog(fragmentShaderID, infoLogLength, 0, &log[0]));
-                        err() << "Failed to compile fragment shader:" << std::endl
+                        std::cerr << "Failed to compile fragment shader:" << std::endl
                         << log << std::endl;
                         glCheck(glDeleteShader(fragmentShaderID));
                         glCheck(glDeleteProgram(m_shaderProgram));
@@ -685,7 +685,7 @@ namespace odfaeg {
                     {
                         char log[1024];
                         glCheck(glGetInfoLogARB(fragmentShader, sizeof(log), 0, log));
-                        err() << "Failed to compile fragment shader:" << std::endl
+                        std::cerr << "Failed to compile fragment shader:" << std::endl
                               << log << std::endl;
                         glCheck(glDeleteObjectARB(fragmentShader));
                         glCheck(glDeleteObjectARB(m_shaderProgram));
@@ -705,7 +705,7 @@ namespace odfaeg {
                     glCheck(glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &infoLogLength));
                     std::vector<char> programErrorMessage(std::max(infoLogLength, int(1)) );
                     glCheck(glGetProgramInfoLog(m_shaderProgram, infoLogLength, nullptr, &programErrorMessage[0]));
-                    err() << "Failed to link shader:" << std::endl
+                    std::cerr << "Failed to link shader:" << std::endl
                          /* << log << std::endl*/;
                     glCheck(glDeleteProgram(m_shaderProgram));
                     m_shaderProgram = 0;
