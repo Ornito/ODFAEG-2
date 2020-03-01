@@ -33,7 +33,7 @@ namespace odfaeg {
                     out vec2 fTexCoords;
                     out vec4 frontColor;
                     void main() {
-                        gl_Position = worldMat * viewMatrix * projectionMatrix * vec4(position, 1.f);
+                        gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
                         fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
                         frontColor = color;
                     }
@@ -196,10 +196,11 @@ namespace odfaeg {
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
                     if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                         vb.clear();
-                        vb.setPrimitiveType(sf::TriangleStrip);
+                        vb.setPrimitiveType(m_instances[i].getVertexArrays()[0]->getPrimitiveType());
                         matrices.clear();
                         std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
                         for (unsigned int j = 0; j < tm.size(); j++) {
+                            tm[j]->update();
                             std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
                             for (unsigned int n = 0; n < 16; n++) {
                                 matrices.push_back(matrix[n]);
@@ -229,7 +230,7 @@ namespace odfaeg {
                             std::cout<<"texture set to shader"<<std::endl;
                         }
                         std::cout<<"draw instanced"<<std::endl;
-                        frameBuffer.drawInstanced(vb, vboWorldMatrices, sf::TrianglesStrip, 0, 4, tm.size(), states);
+                        frameBuffer.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, 4, tm.size(), states);
                     }
                 }
             } else {

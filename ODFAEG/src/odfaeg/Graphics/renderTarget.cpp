@@ -163,6 +163,8 @@ namespace odfaeg {
                 // Apply the shader
                 if (states.shader)
                     applyShader(states.shader);
+                if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                    glCheck(glBindVertexArray(m_vao));
                 if (m_cache.lastVboBuffer != &vertexBuffer) {
                     if (m_versionMajor >= 3 && m_versionMinor >= 3) {
                         std::cout<<"define pointers"<<std::endl;
@@ -173,20 +175,18 @@ namespace odfaeg {
                         glCheck(glVertexAttribPointer(0, 3,GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*) 0));
                         glCheck(glVertexAttribPointer(1, 4,GL_UNSIGNED_BYTE,GL_TRUE,sizeof(Vertex),(GLvoid*) 12));
                         glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) 16));
-                        glCheck(glDisableVertexAttribArray(0));
-                        glCheck(glDisableVertexAttribArray(1));
-                        glCheck(glDisableVertexAttribArray(2));
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                         for (unsigned int i = 0; i < 4 ; i++) {
                             glCheck(glEnableVertexAttribArray(3 + i));
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
                             glCheck(glVertexAttribPointer(3 + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
                                                     (const GLvoid*)(sizeof(GLfloat) * i * 4)));
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                             glCheck(glVertexAttribDivisor(3 + i, 1));
-                            glCheck(glDisableVertexAttribArray(3 + i));
                         }
                     }
                     m_cache.lastVboBuffer = &vertexBuffer;
-                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
                 }
                 if (m_versionMajor >= 3 && m_versionMinor >= 3) {
                    /* glCheck(glEnableVertexAttribArray(0));
@@ -200,15 +200,17 @@ namespace odfaeg {
                                                        GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
                     GLenum mode = modes[type];
                     std::cout<<"draw instanced"<<std::endl;
+                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
                     glCheck(glDrawArraysInstanced(mode,start,nb,nbInstances));
                     std::cout<<"instanced rendered"<<std::endl;
                     /*glCheck(glDisableVertexAttribArray(0));
                     glCheck(glDisableVertexAttribArray(1));
                     glCheck(glDisableVertexAttribArray(2));
                     for (unsigned int i = 0; i < 4 ; i++) {
-                        glCheck(glDisableVertexAttribArray(10 + i));
-                    }
-                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));*/
+                        glCheck(glDisableVertexAttribArray(3 + i));
+                    }*/
+                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                    glCheck(glBindVertexArray(0));
                 }
             }
         } //////////////////////////////////////////////////////////
@@ -391,6 +393,8 @@ namespace odfaeg {
                 // Apply the shader
                 if (states.shader)
                     applyShader(states.shader);
+                if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                    glCheck(glBindVertexArray(m_vao));
                 if (m_cache.lastVboBuffer != &vertexBuffer) {
                     if (m_versionMajor >= 3 && m_versionMinor >= 3) {
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
@@ -447,6 +451,7 @@ namespace odfaeg {
                     glCheck(glDisableVertexAttribArray(0));
                     glCheck(glDisableVertexAttribArray(1));
                     glCheck(glDisableVertexAttribArray(2));
+                    glCheck(glBindVertexArray(0));
                 } else {
                     glCheck(glDisableClientState(GL_COLOR_ARRAY));
                     glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
@@ -557,7 +562,6 @@ namespace odfaeg {
                 GLuint vaoID;
                 glCheck(glGenVertexArrays(1, &vaoID));
                 m_vao = static_cast<unsigned int>(vaoID);
-                glCheck(glBindVertexArray(m_vao));
             }
             // Setup the default and current views
             m_defaultView = View (static_cast<float>(getSize().x), static_cast<float>(getSize().y), -static_cast<float>(getSize().y) - 100, static_cast<float>(getSize().y)+100);

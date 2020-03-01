@@ -426,6 +426,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void VertexBuffer::draw(RenderTarget& target, RenderStates states)
         {
+            std::cout<<"draw vertex buffer"<<std::endl;
             if (!m_vertices.empty()) {
 
                 if (GLEW_ARB_vertex_buffer_object) {
