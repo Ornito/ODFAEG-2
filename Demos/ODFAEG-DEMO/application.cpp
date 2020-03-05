@@ -258,9 +258,8 @@ namespace sorrok {
         std::cout<<"particle system"<<std::endl;
         View view = getView();
         //view.rotate(0, 0, 20);
-        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE", ContextSettings(0, 0, 4, 3, 3));
+        PerPixelLinkedListRenderComponent *frc1 = new PerPixelLinkedListRenderComponent(getRenderWindow(),0, "E_BIGTILE", ContextSettings(0, 0, 4, 4, 6));
         PerPixelLinkedListRenderComponent *frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(),0, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", ContextSettings(0, 0, 4, 4, 6));
-        std::cout<<"per pixel linked list render component"<<std::endl;
         /*gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
         textArea->addFocusListener(this);
         textArea->setVisible(false);
@@ -272,8 +271,7 @@ namespace sorrok {
         op->setVisible(false);
         op->setEventContextActivated(false);*/
         getRenderComponentManager().addComponent(frc1);
-        //getRenderComponentManager().addComponent(frc2);
-        std::cout<<"add components"<<std::endl;
+        getRenderComponentManager().addComponent(frc2);
         /*getRenderComponentManager().addComponent(textArea);
         getRenderComponentManager().addComponent(op);*/
 
@@ -309,11 +307,9 @@ namespace sorrok {
         //std::cout<<bb2->getPosition()<<" "<<bb2->getSize()<<std::endl;
         g2d::PonctualLight* light1 = new g2d::PonctualLight(Vec3f(-50, 420, 420), 100, 50, 0, 255, sf::Color::Yellow, 16);
         light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 0, 255, sf::Color::Yellow, 16);
-        std::cout<<"add lights"<<std::endl;
         World::addEntity(light1);
         World::addEntity(light2);
         //getView().move(d.x * 0.5f, d.y * 0.5f, 0);
-        std::cout<<"add hero"<<std::endl;
         World::addEntity(caracter);
 
         //World::computeIntersectionsWithWalls();
@@ -332,7 +328,6 @@ namespace sorrok {
         getListener().connect("MouseInside",mouseInsideAction);
         Command leftMouseButtonPressedAction (a5, FastDelegate<void>(&MyAppli::leftMouseButtonPressed, this, sf::Vector2f(-1, -1)));
         getListener().connect("LeftMouseButtonPressedAction", leftMouseButtonPressedAction);
-        std::cout<<"add action"<<std::endl;
         player.setRelativeToListener(true);
         player.setPosition(0.f, 0.f, 0.f);
         player.setMinDistance(5.f);
@@ -346,7 +341,7 @@ namespace sorrok {
     void MyAppli::onRender(RenderComponentManager *cm) {
         // draw everything here...
         World::drawOnComponents("E_BIGTILE", 0);
-        //World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 1);
+        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 1);
         fpsCounter++;
         if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {
             std::cout<<"FPS : "<<fpsCounter<<std::endl;

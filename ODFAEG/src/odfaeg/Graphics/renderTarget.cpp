@@ -418,21 +418,25 @@ namespace odfaeg {
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboNormalBuffer));
                         glCheck(glEnableClientState(GL_NORMAL_ARRAY));
                         glCheck(glNormalPointer(GL_FLOAT,sizeof(sf::Vector3f),(GLvoid*) 0));
+                        glCheck(glDisableClientState(GL_COLOR_ARRAY));
+                        glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
+                        glCheck(glDisableClientState(GL_VERTEX_ARRAY));
+                        glCheck(glDisableClientState(GL_NORMAL_ARRAY));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                     }
                     m_cache.lastVboBuffer = &vertexBuffer;
-                } else {
-                    if (m_versionMajor >= 3 && m_versionMinor >= 3) {
-                        glCheck(glEnableVertexAttribArray(0));
-                        glCheck(glEnableVertexAttribArray(1));
-                        glCheck(glEnableVertexAttribArray(2));
-                    } else {
-                        glCheck(glEnableClientState(GL_COLOR_ARRAY));
-                        glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
-                        glCheck(glEnableClientState(GL_VERTEX_ARRAY));
-                        glCheck(glEnableClientState(GL_NORMAL_ARRAY));
-                    }
                 }
+                if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                    glCheck(glEnableVertexAttribArray(0));
+                    glCheck(glEnableVertexAttribArray(1));
+                    glCheck(glEnableVertexAttribArray(2));
+                } else {
+                    glCheck(glEnableClientState(GL_COLOR_ARRAY));
+                    glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
+                    glCheck(glEnableClientState(GL_VERTEX_ARRAY));
+                    glCheck(glEnableClientState(GL_NORMAL_ARRAY));
+                }
+
                 // Find the OpenGL primitive type
                 static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
                                                    GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
@@ -443,9 +447,9 @@ namespace odfaeg {
                     glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
                 } else {
                     //std::cout<<"draw arrays"<<std::endl;
-                    //glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
+                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
                     glCheck(glDrawArrays(mode, 0, vertexBuffer.getVertexCount()));
-                    //glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                 }
                 if (m_versionMajor >= 3 && m_versionMinor >= 3) {
                     glCheck(glDisableVertexAttribArray(0));
