@@ -33,8 +33,8 @@ namespace
         switch (blendEquation)
         {
             default:
-            case sf::BlendMode::Add:             return GL_FUNC_ADD;
-            case sf::BlendMode::Subtract:        return GL_FUNC_SUBTRACT;
+            case sf::BlendMode::Add:             return GL_FUNC_ADD_EXT;
+            case sf::BlendMode::Subtract:        return GL_FUNC_SUBTRACT_EXT;
         }
     }
 }
@@ -603,24 +603,25 @@ namespace odfaeg {
             //priv::ensureExtensionsInit();
             // Apply the blend mode, falling back to the non-separate versions if necessary
 
-
-            glCheck(glBlendFuncSeparate(
+            if (glBlendFuncSeparateEXT) {
+                glCheck(glBlendFuncSeparate(
                 factorToGlConstant(mode.colorSrcFactor), factorToGlConstant(mode.colorDstFactor),
                 factorToGlConstant(mode.alphaSrcFactor), factorToGlConstant(mode.alphaDstFactor)));
 
-            /*    glCheck(glBlendFunc(
+            } else {
+                    glCheck(glBlendFunc(
                     factorToGlConstant(mode.colorSrcFactor),
-                    factorToGlConstant(mode.colorDstFactor)));*/
-            //}
+                    factorToGlConstant(mode.colorDstFactor)));
+            }
 
-            /*if (GLEXT_blend_equation_separate)
-            {*/
+            if (glBlendFuncSeparateEXT)
+            {
                 glCheck(glBlendEquationSeparate(
                     equationToGlConstant(mode.colorEquation),
                     equationToGlConstant(mode.alphaEquation)));
-
-
-                //glCheck(glBlendEquation(equationToGlConstant(mode.colorEquation)));
+            } else {
+                glCheck(glBlendEquation(equationToGlConstant(mode.colorEquation)));
+            }
 
             m_cache.lastBlendMode = mode;
         }

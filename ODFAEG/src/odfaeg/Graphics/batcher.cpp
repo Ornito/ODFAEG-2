@@ -28,10 +28,10 @@ namespace odfaeg {
                 return texId;
             }
             bool Material::TextureInfo::operator== (TextureInfo& info) {
-                return texture == info.texture;
+                return texture == info.texture && rect.left == info.rect.left && rect.top == info.rect.top && rect.width == info.rect.width && rect.height == info.rect.height;
             }
             bool Material::TextureInfo::operator!= (TextureInfo& info) {
-                return texture != info.texture;
+                return !(*this == info);
             }
             const Texture* Material::TextureInfo::getTexture() const {
                 return texture;

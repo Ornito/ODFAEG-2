@@ -257,134 +257,23 @@ int main(int argc, char* argv[])
     EXPORT_CLASS_GUID(EntityMesh, Entity, Mesh)
     MyAppli app(sf::VideoMode(800, 600), "Test odfaeg");
     return app.exec();
-    sf::Window window(sf::VideoMode(800, 600), "Test instanced rendering", sf::Style::Default, sf::ContextSettings(24, 8, 8, 4, 6));
-    glEnable(GL_DEPTH_TEST);
-    const std::string vertexShader =
-                R"(#version 330 core
-                    layout (location = 0) in vec3 position;
-                    layout (location = 1) in vec4 color;
-                    layout (location = 2) in vec2 texCoords;
-                    layout (location = 3) in mat4 worldMat;
-                    /*uniform mat4 projectionMatrix;
-                    uniform mat4 viewMatrix;
-                    uniform mat4 textureMatrix;*/
-                    out vec2 fTexCoords;
-                    out vec4 frontColor;
-                    void main() {
-                        gl_Position = worldMat * vec4(position, 1.f);
-                        //fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
-                        frontColor = color;
-                    }
-                )";
-                const std::string fragmentShader =
-                R"(#version 330 core
-                uniform sampler2D texture;
-                in vec4 frontColor;
-                in vec2 fTexCoords;
-                void main() {
-                    gl_FragColor = /*texture2D (texture, fTexCoords.xy) **/ frontColor;
-                })";
-    sf::Shader shader;
-    if (!shader.loadFromMemory(vertexShader, fragmentShader)) {
-        std::cerr<<"Failed to load shaders"<<std::endl;
-        return -1;
-    }
-    TransformMatrix tm;
-    std::vector<float> matrices;
-    float offset = 0.1f;
-    for (int y = -10; y < 10; y += 2)
-    {
-        for (int x = -10; x < 10; x += 2)
-        {
-            tm.setTranslation(Vec3f((float)x / 10.0f + offset, (float)y / 10.0f + offset, 0));
-            tm.update();
-            std::array<float, 16> matrix = tm.getMatrix().transpose().toGlMatrix();
-            for (unsigned int n = 0; n < 16; n++) {
-                matrices.push_back(matrix[n]);
-            }
-        }
-    }
-    // store instance data in an array buffer
-    // --------------------------------------
-    unsigned int instanceVBO;
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-        std::cerr<<"failed to initialize glew!"<<std::endl;
-        return -1;
-    }
-    glGenBuffers(1, &instanceVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * matrices.size(), &matrices[0], GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
-    Vertex v1(sf::Vector3f(-0.05f,  0.05f, 0.f), sf::Color(255, 0, 0, 255), sf::Vector2f(0, 0));
-    Vertex v2(sf::Vector3f(0.05f, -0.05f, 0.f),  sf::Color(0, 255, 0, 255), sf::Vector2f(0, 0));
-    Vertex v3(sf::Vector3f(-0.05f, -0.05f, 0.f),  sf::Color(0, 0, 255, 255), sf::Vector2f(0, 0));
-    Vertex v4(sf::Vector3f(-0.05f,  0.05f, 0.f),  sf::Color(255, 0, 0, 255), sf::Vector2f(0, 0));
-    Vertex v5(sf::Vector3f(0.05f, -0.05f, 0.f),  sf::Color(0, 255, 0, 255), sf::Vector2f(0, 0));
-    Vertex v6(sf::Vector3f(0.05f,  0.05f, 0.f),  sf::Color(0, 255, 255, 255), sf::Vector2f(0, 0));
-    std::vector<Vertex> vertices;
-    vertices.push_back(v1);
-    vertices.push_back(v2);
-    vertices.push_back(v3);
-    vertices.push_back(v4);
-    vertices.push_back(v5);
-    vertices.push_back(v6);
-
-    printf( "sizeof( Vertex )             = %zu\n", sizeof( Vertex ) );
-
-    printf( "offsetof( Vertex, pos      ) = %zu\n", offsetof( Vertex, position      ) );
-
-    printf( "offsetof( Vertex, color    ) = %zu\n", offsetof( Vertex, color    ) );
-
-    printf( "offsetof( Vertex, texcoord ) = %zu\n", offsetof( Vertex, texCoords ) );
-
-    unsigned int quadVAO, quadVBO;
-    glGenVertexArrays(1, &quadVAO);
-    glGenBuffers(1, &quadVBO);
-    glBindVertexArray(quadVAO);
-    glCheck(glBindBuffer(GL_ARRAY_BUFFER, quadVBO));
-    glCheck(glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW));
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(Vertex), (void*) 12);
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,  sizeof(Vertex), (void*) 16);
-    // also set instance data
-    for (unsigned int i = 0; i < 4; i++) {
-        glEnableVertexAttribArray(3+i);
-        glBindBuffer(GL_ARRAY_BUFFER, instanceVBO); // this attribute comes from a different vertex buffer
-        glVertexAttribPointer(3+i, 4, GL_FLOAT, GL_FALSE, sizeof(Matrix4f), (const GLvoid*)(sizeof(GLfloat) * i * 4));
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glVertexAttribDivisor(3+i, 1); // tell OpenGL this is an instanced vertex attribute.
-    }
-
+    RenderWindow window(sf::VideoMode(800, 600), "test blending", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
+    Tile tile1 (nullptr, Vec3f(0, 0, 0), Vec3f(100, 50, 0), sf::IntRect(0,0,0,0), sf::Color(255, 0, 0, 50));
+    Tile tile2 (nullptr, Vec3f(50, 25, 0), Vec3f(100, 50, 0), sf::IntRect(0,0,0,0), sf::Color(0, 255, 0, 50));
+    Tile tile3 (nullptr, Vec3f(-50, 25, 0), Vec3f(100, 50, 0), sf::IntRect(0,0,0,0), sf::Color(0, 0, 255, 50));
     while (window.isOpen()) {
-        sf::Event event;
+        IEvent event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
+            if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
                 window.close();
             }
         }
-        // render
-        // ------
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glUseProgram(shader.getNativeHandle());
-        glBindVertexArray(quadVBO);
-        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100); // 100 triangles of 6 vertices each
-        glBindVertexArray(0);
+        window.clear();
+        window.draw(tile1);
+        window.draw(tile2);
+        window.draw(tile3);
         window.display();
     }
-    // optional: de-allocate all resources once they've outlived their purpose:
-    // ------------------------------------------------------------------------
-    glDeleteVertexArrays(1, &quadVAO);
-    glDeleteBuffers(1, &quadVBO);
-    return 0;
 }
 
 
