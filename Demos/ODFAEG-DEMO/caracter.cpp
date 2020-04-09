@@ -157,8 +157,9 @@ namespace sorrok {
         this->dir = dir;
         if (moving) {
             anims[baseAnimIndex + currentAnimIndex]->play(true);
+            BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
         }
-        BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
+
     }
     Vec2f Caracter::getDir () {
         return dir;

@@ -1,4 +1,6 @@
 #include "../../../include/odfaeg/Graphics/shadowRenderComponent.hpp"
+#include "ExtLib/GLEW/glew-2.0.0/include/GL/glew.h"
+#include <SFML/OpenGL.hpp>
 #include "glCheck.h"
 #include <memory.h>
 using namespace sf;
@@ -22,84 +24,172 @@ namespace odfaeg {
                 core::FastDelegate<void> slot (&ShadowRenderComponent::drawNextFrame, this);
                 core::Command cmd(signal, slot);
                 getListener().connect("UPDATE", cmd);
-                if (Shader::isAvailable()) {
-                    const std::string buildShadowMapVertexShader =
-                        "#version 130 \n"
-                        "out mat4 projMat;"
-                        "void main () {"
-                            "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
-                            "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
-                            "gl_FrontColor = gl_Color;"
-                            "projMat = gl_ProjectionMatrix;"
-                        "}";
-                    const std::string buildShadowMapFragmentShader =
-                        "#version 130 \n"
-                        "uniform sampler2D texture;"
-                        "uniform float haveTexture;"
-                        "in mat4 projMat;"
-                        "mat4 inverse(mat4 mat) {"
-                        "   mat4 inv;"
-                        "   return inv;"
-                        "}"
-                        "void main() {"
-                        "   vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
-                        "   vec4 colors[2];"
-                        "   colors[1] = texel * gl_Color;"
-                        "   colors[0] = gl_Color;"
-                        "   bool b = (haveTexture == 1);"
-                        "   float color = colors[int(b)].a;"
-                        "   float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                        "   gl_FragColor = vec4(0, 0, z, color);"
-                        "}";
-                    const std::string perPixShadowVertexShader =
-                        "#version 130 \n"
-                        "uniform mat4 depthBiasMatrix;"
-                        "out vec4 shadowCoords;"
-                        "out mat4 projMat;"
-                        "void main () {"
-                            "gl_Position = gl_ProjectionMatrix * gl_Vertex;"
-                            "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
-                            "gl_FrontColor = gl_Color;"
-                            "projMat = gl_ProjectionMatrix;"
-                            "shadowCoords = depthBiasMatrix * vec4(gl_Position.xyz, 1);"
-                        "}";
-                    const std::string perPixShadowFragmentShader =
-                        "#version 130 \n"
-                        "uniform sampler2D texture;"
-                        "uniform sampler2D stencilBuffer;"
-                        "uniform float haveTexture;"
-                        "in vec4 shadowCoords;"
-                        "in mat4 projMat;"
-                        "mat4 inverse(mat4 mat) {"
-                        "   mat4 inv;"
-                        "   return inv;"
-                        "}"
-                        "void main() {"
-                        "   vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
-                        "   vec4 colors[2];"
-                        "   colors[1] = texel * gl_Color;"
-                        "   colors[0] = gl_Color;"
-                        "   bool b = (haveTexture == 1);"
-                        "   float color = colors[int(b)].a;"
-                        "   vec4 stencil = texture2D (stencilBuffer, shadowCoords.xy);"
-                        "   float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                        "   colors[1] = vec4 (0, 0, 0, color);"
-                        "   colors[0] = vec4 (0.5, 0.5, 0.5, 0.5);"
-                        "   b = (stencil.z < z);"
-                        "   vec4 visibility = colors[int(b)];"
-                        "   gl_FragColor = visibility;"
-                        "}";
-                    if (!buildShadowMapShader.loadFromMemory(buildShadowMapVertexShader, buildShadowMapFragmentShader)) {
-                        throw core::Erreur(53, "Error, failed to load build shadow map shader", 3);
-                    }
-                    if (!perPixShadowShader.loadFromMemory(perPixShadowVertexShader, perPixShadowFragmentShader)) {
-                        throw core::Erreur(54, "Error, failed to load per pix shadow map shader", 3);
-                    }
-                    buildShadowMapShader.setParameter("texture", Shader::CurrentTexture);
-                    perPixShadowShader.setParameter("stencilBuffer", stencilBuffer.getTexture());
-                    perPixShadowShader.setParameter("texture", Shader::CurrentTexture);
+                if (settings.versionMajor >= 3 && settings.versionMinor >= 3) {
+                    glGenBuffers(1, &vboWorldMatrices);
+                    const std::string buildShadowMapVertexShader = R"(#version 460 core
+                                                        layout (location = 0) in vec3 position;
+                                                        layout (location = 1) in vec4 color;
+                                                        layout (location = 2) in vec2 texCoords;
+                                                        layout (location = 3) in mat4 worldMat;
+                                                        uniform mat4 projectionMatrix;
+                                                        uniform mat4 viewMatrix;
+                                                        uniform mat4 textureMatrix;
+                                                        out vec2 fTexCoords;
+                                                        out vec4 frontColor;
+                                                        void main() {
+                                                            gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
+                                                            fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                                            frontColor = color;
+                                                        }
+                                                        )";
+                    const std::string buildShadowMapFragmentShader = R"(#version 460 core
+                                                                        in vec4 frontColor;
+                                                                        in vec2 fTexCoords;
+                                                                        uniform sampler2D texture;
+                                                                        uniform float haveTexture;
+                                                                        layout (location = 0) out vec4 fcolor;
+                                                                        void main() {
+                                                                            vec4 texel = texture2D(texture, fTexCoords);
+                                                                            vec4 colors[2];
+                                                                            colors[1] = texel * frontColor;
+                                                                            colors[0] = frontColor;
+                                                                            bool b = (haveTexture >= 0.9f);
+                                                                            float color = colors[int(b)].a;
+                                                                            float z = gl_FragCoord.z;
+                                                                            fcolor = vec4(0, 0, z, color.a);
+                                                                        }
+                                                                    )";
+                    const std::string perPixShadowVertexShader = R"(#version 460 core
+                                                                   layout (location = 0) in vec3 position;
+                                                                   layout (location = 1) in vec4 color;
+                                                                   layout (location = 2) in vec2 texCoords;
+                                                                   uniform mat4 projectionMatrix;
+                                                                   uniform mat4 depthBiasMatrix;
+                                                                   uniform mat4 textureMatrix;
+                                                                   out vec4 shadowCoords;
+                                                                   out vec4 frontColor;
+                                                                   out vec2 fTexCoords;
+                                                                   void main() {
+                                                                       gl_Position = projectionMatrix * vec4(position, 1.f);
+                                                                       fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                                                       frontColor = color;
+                                                                       shadowCoords = depthBiasMatrix * vec4(gl_Position.xyz, 1);
+                                                                   }
+                                                                  )";
+                        const std::string perPixShadowFragmentShader = R"(#version 460 core
+                                                                          in vec4 shadowCoords;
+                                                                          in vec4 frontColor;
+                                                                          in vec2 fTexCoords;
+                                                                          uniform sampler2D texture;
+                                                                          uniform sampler2D stencilBuffer;
+                                                                          uniform float haveTexture;
+                                                                          layout (location = 0) out fcolor;
+                                                                          void main() {
+                                                                            vec4 texel = texture2D(texture, fTexCoords);
+                                                                            vec4 colors[2];"
+                                                                            colors[1] = texel * frontColor;
+                                                                            colors[0] = frontColor;
+                                                                            bool b = (haveTexture >= 0.9f);
+                                                                            float color = colors[int(b)].a;
+                                                                            vec4 stencil = texture2D (stencilBuffer, shadowCoords.xy);
+                                                                            float z = gl_FragCoord.z;
+                                                                            colors[1] = vec4 (0, 0, 0, color);
+                                                                            colors[0] = vec4 (0.5, 0.5, 0.5, 0.5);
+                                                                            b = (stencil.z < z);
+                                                                            vec4 visibility = colors[int(b)];
+                                                                            fColor = visibility;
+                                                                          }
+                                                                          )";
+                        if (!buildShadowMapShader.loadFromMemory(buildShadowMapVertexShader, buildShadowMapFragmentShader)) {
+                            throw core::Erreur(53, "Error, failed to load build shadow map shader", 3);
+                        }
+                        if (!perPixShadowShader.loadFromMemory(perPixShadowVertexShader, perPixShadowFragmentShader)) {
+                            throw core::Erreur(54, "Error, failed to load per pix shadow map shader", 3);
+                        }
+                        buildShadowMapShader.setParameter("texture", Shader::CurrentTexture);
+                        perPixShadowShader.setParameter("stencilBuffer", stencilBuffer.getTexture());
+                        perPixShadowShader.setParameter("texture", Shader::CurrentTexture);
+
                 } else {
-                    throw core::Erreur(55, "Shader not supported!", 0);
+                    if (Shader::isAvailable()) {
+                        const std::string buildShadowMapVertexShader =
+                            "#version 130 \n"
+                            "out mat4 projMat;"
+                            "void main () {"
+                                "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
+                                "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
+                                "gl_FrontColor = gl_Color;"
+                                "projMat = gl_ProjectionMatrix;"
+                            "}";
+                        const std::string buildShadowMapFragmentShader =
+                            "#version 130 \n"
+                            "uniform sampler2D texture;"
+                            "uniform float haveTexture;"
+                            "in mat4 projMat;"
+                            "mat4 inverse(mat4 mat) {"
+                            "   mat4 inv;"
+                            "   return inv;"
+                            "}"
+                            "void main() {"
+                            "   vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
+                            "   vec4 colors[2];"
+                            "   colors[1] = texel * gl_Color;"
+                            "   colors[0] = gl_Color;"
+                            "   bool b = (haveTexture == 1);"
+                            "   float color = colors[int(b)].a;"
+                            "   float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                            "   gl_FragColor = vec4(0, 0, z, color);"
+                            "}";
+                        const std::string perPixShadowVertexShader =
+                            "#version 130 \n"
+                            "uniform mat4 depthBiasMatrix;"
+                            "out vec4 shadowCoords;"
+                            "out mat4 projMat;"
+                            "void main () {"
+                                "gl_Position = gl_ProjectionMatrix * gl_Vertex;"
+                                "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
+                                "gl_FrontColor = gl_Color;"
+                                "projMat = gl_ProjectionMatrix;"
+                                "shadowCoords = depthBiasMatrix * vec4(gl_Position.xyz, 1);"
+                            "}";
+                        const std::string perPixShadowFragmentShader =
+                            "#version 130 \n"
+                            "uniform sampler2D texture;"
+                            "uniform sampler2D stencilBuffer;"
+                            "uniform float haveTexture;"
+                            "in vec4 shadowCoords;"
+                            "in mat4 projMat;"
+                            "mat4 inverse(mat4 mat) {"
+                            "   mat4 inv;"
+                            "   return inv;"
+                            "}"
+                            "void main() {"
+                            "   vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
+                            "   vec4 colors[2];"
+                            "   colors[1] = texel * gl_Color;"
+                            "   colors[0] = gl_Color;"
+                            "   bool b = (haveTexture == 1);"
+                            "   float color = colors[int(b)].a;"
+                            "   vec4 stencil = texture2D (stencilBuffer, shadowCoords.xy);"
+                            "   float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                            "   colors[1] = vec4 (0, 0, 0, color);"
+                            "   colors[0] = vec4 (0.5, 0.5, 0.5, 0.5);"
+                            "   b = (stencil.z < z);"
+                            "   vec4 visibility = colors[int(b)];"
+                            "   gl_FragColor = visibility;"
+                            "}";
+                        if (!buildShadowMapShader.loadFromMemory(buildShadowMapVertexShader, buildShadowMapFragmentShader)) {
+                            throw core::Erreur(53, "Error, failed to load build shadow map shader", 3);
+                        }
+                        if (!perPixShadowShader.loadFromMemory(perPixShadowVertexShader, perPixShadowFragmentShader)) {
+                            throw core::Erreur(54, "Error, failed to load per pix shadow map shader", 3);
+                        }
+                        buildShadowMapShader.setParameter("texture", Shader::CurrentTexture);
+                        perPixShadowShader.setParameter("stencilBuffer", stencilBuffer.getTexture());
+                        perPixShadowShader.setParameter("texture", Shader::CurrentTexture);
+                    }   else {
+                        throw core::Erreur(55, "Shader not supported!", 0);
+                    }
                 }
             }
             void ShadowRenderComponent::drawNextFrame() {
@@ -111,11 +201,11 @@ namespace odfaeg {
                 lightView.lookAt(target.x, target.y, target.z);
                 stencilBuffer.setView(lightView);
                 math::Vec3f v = lightView.getPosition() - view.getPosition();
-                RenderStates states;
-                states.shader = &buildShadowMapShader;
                 physic::BoundingBox viewArea = view.getViewVolume();
                 math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
                 math::Vec3f size (viewArea.getWidth(), viewArea.getHeight(), 0);
+                RenderStates states;
+                states.shader = &buildShadowMapShader;
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
                     if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                         states.texture = m_instances[i].getMaterial().getTexture();

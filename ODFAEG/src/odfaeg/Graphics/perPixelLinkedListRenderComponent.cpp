@@ -16,26 +16,22 @@ namespace odfaeg {
             GLuint maxNodes = 20 * window.getView().getSize().x * window.getView().getSize().y;
             GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
             frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
-            std::cout<<"create frame buffer"<<std::endl;
             frameBufferSprite = Sprite(frameBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             frameBuffer.setView(view);
             //window.setActive();
             glCheck(glGenBuffers(1, &atomicBuffer));
             glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
             glCheck(glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW));
-            std::cout<<"atomic counter created"<<std::endl;
             glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0));
             glCheck(glGenBuffers(1, &linkedListBuffer));
             glCheck(glBindBuffer(GL_SHADER_STORAGE_BUFFER, linkedListBuffer));
             glCheck(glBufferData(GL_SHADER_STORAGE_BUFFER, maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW));
             glCheck(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0));
-            std::cout<<"shader storage buffer created"<<std::endl;
             glCheck(glGenTextures(1, &headPtrTex));
             glCheck(glBindTexture(GL_TEXTURE_2D, headPtrTex));
             glCheck(glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, window.getView().getSize().x, window.getView().getSize().y));
             glCheck(glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI));
             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
-            std::cout<<"head ptr text created"<<std::endl;
             std::vector<GLuint> headPtrClearBuf(window.getView().getSize().x*window.getView().getSize().y, 0xffffffff);
             std::vector<GLuint> linkedListClearBuffer(maxNodes * nodeSize, 0);
             glCheck(glGenBuffers(1, &clearBuf));
@@ -43,7 +39,6 @@ namespace odfaeg {
             glCheck(glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint),
             &headPtrClearBuf[0], GL_STATIC_COPY));
             glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
-            std::cout<<"clear buff created"<<std::endl;
             core::FastDelegate<bool> signal (&PerPixelLinkedListRenderComponent::needToUpdate, this);
             core::FastDelegate<void> slot (&PerPixelLinkedListRenderComponent::drawNextFrame, this);
             core::Command cmd(signal, slot);
