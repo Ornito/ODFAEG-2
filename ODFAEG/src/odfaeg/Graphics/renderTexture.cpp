@@ -55,7 +55,7 @@ namespace odfaeg
 
 
         ////////////////////////////////////////////////////////////
-        bool RenderTexture::create(unsigned int width, unsigned int height, window::ContextSettings settings, unsigned int precision, unsigned int format, unsigned int type, bool useSeparateContext)
+        bool RenderTexture::create(unsigned int width, unsigned int height, window::ContextSettings settings, bool useSeparateContext, unsigned int precision, unsigned int format, unsigned int type)
         {
 
             if (useSeparateContext)

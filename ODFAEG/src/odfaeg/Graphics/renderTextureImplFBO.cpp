@@ -133,7 +133,7 @@ namespace odfaeg {
                     }
                 }
                 if (m_versionMajor >= 3 && m_versionMinor >= 3) {
-                    glCheck(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, textureId, 0));
+                    glCheck(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId, 0));
 
                 } else {
                     // Link the texture to the frame buffer

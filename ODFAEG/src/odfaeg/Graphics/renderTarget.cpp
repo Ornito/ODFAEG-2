@@ -77,7 +77,7 @@ namespace odfaeg {
             {
                 applyTexture(nullptr);
                 glCheck(glClearColor(color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f));
-                glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+                glCheck(glClear(GL_COLOR_BUFFER_BIT));
             }
         }
 
@@ -145,21 +145,19 @@ namespace odfaeg {
             if (activate(true))
             {
 
-                // First set the persistent OpenGL states if it's the very first call
                 if (!m_cache.glStatesSet)
                     resetGLStates();
                 // Apply the view
-                if (m_cache.viewChanged || m_view.viewUpdated)
+                if (m_cache.viewChanged)
                     applyCurrentView();
-                // Apply the blend mode
+
                 if (states.blendMode != m_cache.lastBlendMode)
                     applyBlendMode(states.blendMode);
-                sf::Uint64 textureId = states.texture ? states.texture->m_cacheId : 0;
-                /*if (textureId > 0)
-                     std::cout<<"texture id : "<<textureId<<" "<<states.texture->m_texture<<std::endl;*/
+
+                // Apply the texture
+                sf::Uint64 textureId = states.texture ? states.texture->getNativeHandle() : 0;
                 if (textureId != m_cache.lastTextureId)
                     applyTexture(states.texture);
-
                 // Apply the shader
                 if (states.shader)
                     applyShader(states.shader);
@@ -202,6 +200,7 @@ namespace odfaeg {
                                                        GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
                     GLenum mode = modes[type];
                     glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
+                    glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferId));
                     glCheck(glDrawArraysInstanced(mode,start,nb,nbInstances));
                     glCheck(glDisableVertexAttribArray(0));
                     glCheck(glDisableVertexAttribArray(1));
@@ -211,6 +210,7 @@ namespace odfaeg {
                     }
                     glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                     glCheck(glBindVertexArray(0));
+
                 }
             }
         } //////////////////////////////////////////////////////////
@@ -231,15 +231,24 @@ namespace odfaeg {
             if (activate(true))
             {
 
-                // First set the persistent OpenGL states if it's the very first call
                 if (!m_cache.glStatesSet)
                     resetGLStates();
                 // Apply the view
-                if (m_cache.viewChanged || m_view.viewUpdated)
+                if (m_cache.viewChanged)
                     applyCurrentView();
-                // Check if the vertex count is low enough so that we can pre-transform them
+
+                if (states.blendMode != m_cache.lastBlendMode)
+                    applyBlendMode(states.blendMode);
+
+                // Apply the texture
+                sf::Uint64 textureId = states.texture ? states.texture->getNativeHandle() : 0;
+                if (textureId != m_cache.lastTextureId)
+                    applyTexture(states.texture);
+                // Apply the shader
+                if (states.shader)
+                    applyShader(states.shader);
                 bool useVertexCache = (vertexCount <= StatesCache::VertexCacheSize);
-                if (useVertexCache /*&& !GL_ARB_vertex_buffer_object*/)
+                if (useVertexCache)
                 {
 
                     // Pre-transform the vertices and store them into the vertex cache
@@ -250,7 +259,7 @@ namespace odfaeg {
                         math::Vec3f pos (vertices[i].position.x, vertices[i].position.y, vertices[i].position.z);
                         math::Vec3f finalpos = states.transform.transform(pos);
 
-                        vertex.position = Vector3f(finalpos.x, finalpos.y, finalpos.z);
+                        vertex.position = sf::Vector3f(finalpos.x, finalpos.y, finalpos.z);
                         vertex.color = vertices[i].color;
                         vertex.texCoords = vertices[i].texCoords;
                     }
@@ -263,25 +272,7 @@ namespace odfaeg {
                     TransformMatrix tm = states.transform;
                     applyTransform(tm);
                 }
-                if (states.shader) {
-                    //std::cout<<"apply shader : "<<states.shader<<std::endl;
-                    applyShader(states.shader);
-                }
-                // Apply the blend mode
-                if (states.blendMode != m_cache.lastBlendMode)
-                    applyBlendMode(states.blendMode);
-
-                // Apply the texture
-                sf::Uint64 textureId = states.texture ? states.texture->m_cacheId : 0;
-
-                if (textureId != m_cache.lastTextureId)
-                    applyTexture(states.texture);
-
-                // Apply the shader
-
-
-                // If we pre-transform the vertices, we must use our internal vertex cache
-                if (useVertexCache /*&& !GL_ARB_vertex_buffer_object*/)
+                if (useVertexCache)
                 {
                     // ... and if we already used it previously, we don't need to set the pointers again
                     if (!m_cache.useVertexCache)
@@ -289,78 +280,30 @@ namespace odfaeg {
                     else
                         vertices = nullptr;
                 }
-                // Setup the pointers to the vertices' components
                 if (vertices) {
-                    if (m_versionMajor >= 3 && m_versionMinor >= 3) {
-                        /*glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.vboVertexID));
-                        glCheck(glEnableVertexAttribArray(0));
-                        glCheck(glEnableVertexAttribArray(1));
-                        glCheck(glEnableVertexAttribArray(2));
-                        glCheck(glVertexAttribPointer(0, 3,GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*) 0));
-                        glCheck(glVertexAttribPointer(1, 4,GL_UNSIGNED_BYTE,GL_TRUE,sizeof(Vertex),(GLvoid*) 12));
-                        glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) 16));
-                        glCheck(glDisableVertexAttribArray(0));
-                        glCheck(glDisableVertexAttribArray(1));
-                        glCheck(glDisableVertexAttribArray(2));
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));*/
-                    } /*else if (GL_ARB_vertex_buffer_object) {
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.vboVertexID));
-                        glCheck(glEnableClientState(GL_COLOR_ARRAY));
-                        glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
-                        glCheck(glEnableClientState(GL_VERTEX_ARRAY));
-                        glCheck(glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (GLvoid*) 0 ));
-                        glCheck(glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), (GLvoid*) 12));
-                        glCheck(glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex),(GLvoid*) 16));
-                        glCheck(glDisableClientState(GL_COLOR_ARRAY));
-                        glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
-                        glCheck(glDisableClientState(GL_VERTEX_ARRAY));
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                    }*/ else {
-                        const char* data = reinterpret_cast<const char*>(vertices);
-                        glCheck(glEnableClientState(GL_COLOR_ARRAY));
-                        glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
-                        glCheck(glEnableClientState(GL_VERTEX_ARRAY));
-                        glCheck(glVertexPointer(3, GL_FLOAT, sizeof(Vertex), data + 0 ));
-                        glCheck(glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), data + 12));
-                        glCheck(glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), data + 16));
-                        glCheck(glDisableClientState(GL_COLOR_ARRAY));
-                        glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
-                        glCheck(glDisableClientState(GL_VERTEX_ARRAY));
-                    }
+                    const char* data = reinterpret_cast<const char*>(vertices);
+                    glEnableClientState(GL_COLOR_ARRAY);
+                    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+                    glEnableClientState(GL_VERTEX_ARRAY);
+                    glVertexPointer(3, GL_FLOAT, sizeof(Vertex), data + 0 );
+                    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), data + 12);
+                    glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), data + 16);
+                    glDisableClientState(GL_COLOR_ARRAY);
+                    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+                    glDisableClientState(GL_VERTEX_ARRAY);
                 }
-                if (m_versionMajor >= 3 && m_versionMinor >= 3) {
-                    /*glCheck(glEnableVertexAttribArray(0));
-                    glCheck(glEnableVertexAttribArray(1));
-                    glCheck(glEnableVertexAttribArray(2));*/
-                } else {
-                    glCheck(glEnableClientState(GL_COLOR_ARRAY));
-                    glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
-                    glCheck(glEnableClientState(GL_VERTEX_ARRAY));
-                }
+                glEnableClientState(GL_COLOR_ARRAY);
+                glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+                glEnableClientState(GL_VERTEX_ARRAY);
                 // Find the OpenGL primitive type
                 static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
                                                    GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
                 GLenum mode = modes[type];
                 // Draw the primitives
-                //glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferId));
-                glCheck(glDrawArrays(mode, 0, vertexCount));
-                //glCheck(glBindFramebuffer(GL_FRAMEBUFFER, 0));
-                if (m_versionMajor >= 3 && m_versionMinor >= 3) {
-                    /*glCheck(glDisableVertexAttribArray(0));
-                    glCheck(glDisableVertexAttribArray(1));
-                    glCheck(glDisableVertexAttribArray(2));*/
-                } else {
-                    // Draw the primitives
-                    glCheck(glDisableClientState(GL_COLOR_ARRAY));
-                    glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
-                    glCheck(glDisableClientState(GL_VERTEX_ARRAY));
-                }
-                // Unbind the shader, if any
-                if (states.shader)
-                    applyShader(nullptr);
-                if (states.texture)
-                    applyTexture(nullptr);
-                // Update the cache
+                glDrawArrays(mode, 0, vertexCount);
+                glDisableClientState(GL_COLOR_ARRAY);
+                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+                glDisableClientState(GL_VERTEX_ARRAY);
                 m_cache.useVertexCache = useVertexCache;
             }
         }
@@ -372,24 +315,19 @@ namespace odfaeg {
             if (activate(true))
             {
 
-                // First set the persistent OpenGL states if it's the very first call
                 if (!m_cache.glStatesSet)
                     resetGLStates();
                 // Apply the view
-                if (m_cache.viewChanged || m_view.viewUpdated)
+                if (m_cache.viewChanged)
                     applyCurrentView();
-                // Apply the blend mode
+
                 if (states.blendMode != m_cache.lastBlendMode)
                     applyBlendMode(states.blendMode);
-                TransformMatrix tm = states.transform;
-                applyTransform(tm);
+
                 // Apply the texture
-                sf::Uint64 textureId = states.texture ? states.texture->m_cacheId : 0;
-                /*if (textureId > 0)
-                     std::cout<<"texture id : "<<textureId<<" "<<states.texture->m_texture<<std::endl;*/
+                sf::Uint64 textureId = states.texture ? states.texture->getNativeHandle() : 0;
                 if (textureId != m_cache.lastTextureId)
                     applyTexture(states.texture);
-
                 // Apply the shader
                 if (states.shader)
                     applyShader(states.shader);
@@ -448,6 +386,7 @@ namespace odfaeg {
                 } else {
                     //std::cout<<"draw arrays"<<std::endl;
                     glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
+                    glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferId));
                     glCheck(glDrawArrays(mode, 0, vertexBuffer.getVertexCount()));
                     glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                 }
@@ -535,7 +474,6 @@ namespace odfaeg {
                 glCheck(glAlphaFunc(GL_GREATER, 0.f));
                 glCheck(glDepthFunc(GL_GREATER));
                 glCheck(glEnable(GL_TEXTURE_2D));
-                //glCheck(glEnable(GL_TEXTURE_3D));
                 glCheck(glEnable(GL_BLEND));
                 glCheck(glClearDepth(0));
                 glCheck(glDepthMask(GL_TRUE));
@@ -600,7 +538,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void RenderTarget::applyBlendMode(const BlendMode& mode)
         {
-            //priv::ensureExtensionsInit();
+
             // Apply the blend mode, falling back to the non-separate versions if necessary
 
             if (glBlendFuncSeparateEXT) {

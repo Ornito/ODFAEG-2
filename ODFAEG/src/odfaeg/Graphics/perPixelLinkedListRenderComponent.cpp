@@ -93,6 +93,7 @@ namespace odfaeg {
                                                       uniform sampler2D texture;
                                                       in vec4 frontColor;
                                                       in vec2 fTexCoords;
+                                                      layout (location = 0) out vec4 fcolor;
                                                       void main() {
                                                            uint nodeIdx = atomicCounterIncrement(nextNodeCounter);
                                                            vec4 texel = texture2D(texture, fTexCoords.xy);
@@ -103,7 +104,7 @@ namespace odfaeg {
                                                                 nodes[nodeIdx].depth = gl_FragCoord.z;
                                                                 nodes[nodeIdx].next = prevHead;
                                                            }
-                                                           gl_FragColor = vec4(0, 0, 0, 0);
+                                                           fcolor = vec4(0, 0, 0, 0);
                                                       })";
                  const std::string fragmentShader2 =
                    R"(
@@ -118,6 +119,7 @@ namespace odfaeg {
                    layout(binding = 0, std430) buffer linkedLists {
                        NodeType nodes[];
                    };
+                   layout(location = 0) out vec4 fcolor;
                    void main() {
                       NodeType frags[MAX_FRAGMENTS];
                       int count = 0;
@@ -167,7 +169,7 @@ namespace odfaeg {
                         color.rgb = frags[i].color.rgb * frags[i].color.a + color.rgb * (1 - frags[i].color.a);
                         color.a = frags[i].color.a + color.a * (1 - frags[i].color.a);
                       }
-                      gl_FragColor = color;
+                      fcolor = color;
                    })";
                    if (!perPixelLinkedList.loadFromMemory(vertexShader, fragmentShader)) {
                         throw core::Erreur(54, "Failed to load per pixel linked list shader");
@@ -385,7 +387,6 @@ namespace odfaeg {
                 vb2.append(v4);
                 vb2.update();
                 math::Matrix4f matrix = quad.getTransform().getMatrix().transpose();
-                std::cout<<"quad position : "<<quad.getPosition();
                 perPixelLinkedListP2.setParameter("projectionMatrix", projMatrix);
                 perPixelLinkedListP2.setParameter("viewMatrix", viewMatrix);
                 perPixelLinkedListP2.setParameter("worldMat", matrix);
@@ -429,7 +430,6 @@ namespace odfaeg {
             }
         }
         void PerPixelLinkedListRenderComponent::draw(RenderTarget& target, RenderStates states) {
-            states.blendMode = sf::BlendAlpha;
             /*states.shader=&perPixelLinkedList;
             for (unsigned int i = 0; i < m_instances.size(); i++) {
                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
