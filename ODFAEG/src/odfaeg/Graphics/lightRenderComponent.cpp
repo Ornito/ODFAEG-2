@@ -77,7 +77,7 @@ namespace odfaeg {
                                                                             uniform sampler2D texture;
                                                                             layout (location = 0) out vec4 fColor;
                                                                             void main () {
-                                                                                vec4 depth = texture2D(texture, fTexCoords.xy);
+                                                                                vec4 depth = texture2D(texture, fTexCoords);
                                                                                 float s01 = textureOffset(texture, fTexCoords, off.xy).z;
                                                                                 float s21 = textureOffset(texture, fTexCoords, off.zy).z;
                                                                                 float s10 = textureOffset(texture, fTexCoords, off.yx).z;
@@ -158,7 +158,7 @@ namespace odfaeg {
                                                                  uniform vec4 lightPos;
                                                                  layout (location = 0) out vec4 fColor;
                                                                  void main () {
-                                                                     vec2 position = (fTexCoords / resolution.xy);
+                                                                     vec2 position = (gl_FragCoord.xy / resolution.xy);
                                                                      vec4 normal = texture2D(normalMap, position);
                                                                      vec4 bump = texture2D(bumpMap, position);
                                                                      vec4 specularInfos = texture2D(specularTexture, position);
@@ -679,21 +679,24 @@ namespace odfaeg {
                             states.shader = &bumpTextureGenerator;
                             states.texture = m_instances[i].getMaterial().getBumpTexture();
                             bumpTexture.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states);*/
-                            states.shader = &normalMapGenerator;
-                            depthBufferTile.setCenter(view.getPosition());
-                            depthBuffer.display();
-                            vb.clear();
-                            VertexArray va = depthBufferTile.getVertexArray();
-                            for (unsigned int n = 0; i < va.getVertexCount(); n++) {
-                                vb.append(va[n]);
-                            }
-                            vb.update();
-                            math::Matrix4f m = depthBufferTile.getTransform().getMatrix().transpose();
-                            normalMapGenerator.setParameter("worldMatrix", m);
-                            states.texture = depthBufferTile.getTexture();
-                            normalMap.drawVertexBuffer(vb, states);
                         }
                     }
+                    states.shader = &normalMapGenerator;
+                    depthBufferTile.setCenter(view.getPosition());
+                    depthBuffer.display();
+                    VertexArray va = depthBufferTile.getVertexArray();
+                    vb.clear();
+                    vb.setPrimitiveType(va.getPrimitiveType());
+                    for (unsigned int n = 0; n < va.getVertexCount(); n++) {
+                        vb.append(va[n]);
+                    }
+                    vb.update();
+                    math::Matrix4f m = depthBufferTile.getTransform().getMatrix().transpose();
+                    math::Matrix4f texMatrix = depthBufferTile.getTexture()->getTextureMatrix();
+                    normalMapGenerator.setParameter("textureMatrix", texMatrix);
+                    normalMapGenerator.setParameter("worldMatrix", m);
+                    states.texture = depthBufferTile.getTexture();
+                    normalMap.drawVertexBuffer(vb, states);
                     specularTexture.display();
                     bumpTexture.display();
                     normalMap.display();
