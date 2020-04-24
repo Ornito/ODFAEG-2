@@ -83,7 +83,7 @@ namespace odfaeg {
                                                                           uniform sampler2D texture;
                                                                           uniform sampler2D stencilBuffer;
                                                                           uniform float haveTexture;
-                                                                          layout (location = 0) out fcolor;
+                                                                          layout (location = 0) out vec4 fcolor;
                                                                           void main() {
                                                                             vec4 texel = texture2D(texture, fTexCoords);
                                                                             vec4 colors[2];"
@@ -204,42 +204,114 @@ namespace odfaeg {
                 physic::BoundingBox viewArea = view.getViewVolume();
                 math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
                 math::Vec3f size (viewArea.getWidth(), viewArea.getHeight(), 0);
-                RenderStates states;
-                states.shader = &buildShadowMapShader;
-                for (unsigned int i = 0; i < m_instances.size(); i++) {
-                    if (m_instances[i].getAllVertices().getVertexCount() > 0) {
-                        states.texture = m_instances[i].getMaterial().getTexture();
-                        if (m_instances[i].getMaterial().getTexture() != nullptr) {
-                            buildShadowMapShader.setParameter("haveTexture", 1.f);
-                        } else {
-                            buildShadowMapShader.setParameter("haveTexture", 0.f);
+                if (shadowMap.getSettings().versionMajor >= 3 && shadowMap.getSettings().versionMinor >= 3) {
+                    math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
+                    math::Matrix4f projMatrix = view.getProjMatrix().getMatrix().transpose();
+                    buildShadowMapShader.setParameter("projectionMatrix", projMatrix);
+                    buildShadowMapShader.setParameter("viewMatrix", viewMatrix);
+                    RenderStates states;
+                    states.shader = &buildShadowMapShader;
+                    for (unsigned int i = 0; i < m_instances.size(); i++) {
+                        if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                            states.texture = m_instances[i].getMaterial().getTexture();
+                            if (m_instances[i].getMaterial().getTexture() != nullptr) {
+                                math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
+                                buildShadowMapShader.setParameter("textureMatrix", texMatrix);
+                                buildShadowMapShader.setParameter("haveTexture", 1.f);
+                            } else {
+                                buildShadowMapShader.setParameter("haveTexture", 0.f);
+                            }
+                            vb.clear();
+                            vb.setPrimitiveType(m_instances[i].getVertexArrays()[0]->getPrimitiveType());
+                            matrices.clear();
+                            std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
+                            for (unsigned int j = 0; j < tm.size(); j++) {
+                                tm[j]->update();
+                                std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
+                                for (unsigned int n = 0; n < 16; n++) {
+                                    matrices.push_back(matrix[n]);
+                                }
+                            }
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                            if (m_instances[i].getVertexArrays().size() > 0) {
+                                for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
+                                    vb.append((*m_instances[i].getVertexArrays()[0])[j]);
+                                }
+                                vb.update();
+                            }
+                            stencilBuffer.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states);
                         }
-                        stencilBuffer.draw(m_instances[i].getAllVertices(), states);
                     }
-                }
-                stencilBuffer.display();
-                stencilBufferTile.setPosition(position);
-                shadowMap.setView(view);
-                math::Matrix4f biasMatrix(0.5f, 0.0f, 0.0f, 0.0f,
-                                          0.0f, 0.5f, 0.0f, 0.0f,
-                                          0.0f, 0.0f, 0.5f, 0.0f,
-                                          0.5f, 0.5f, 0.5f, 1.f);
-                math::Matrix4f depthBiasMatrix = biasMatrix * view.getViewMatrix().getMatrix() * view.getProjMatrix().getMatrix();
-                perPixShadowShader.setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
-                states.shader = &perPixShadowShader;
-                for (unsigned int i = 0; i < m_shadow_instances.size(); i++) {
-                    if (m_shadow_instances[i].getAllVertices().getVertexCount() > 0) {
-                        states.texture = m_shadow_instances[i].getMaterial().getTexture();
-                        if (m_shadow_instances[i].getMaterial().getTexture() != nullptr) {
-                            perPixShadowShader.setParameter("haveTexture", 1.f);
-                        } else {
-                            perPixShadowShader.setParameter("haveTexture", 0.f);
+                    stencilBuffer.display();
+                    stencilBufferTile.setPosition(position);
+                    shadowMap.setView(view);
+                    math::Matrix4f biasMatrix(0.5f, 0.0f, 0.0f, 0.0f,
+                                              0.0f, 0.5f, 0.0f, 0.0f,
+                                              0.0f, 0.0f, 0.5f, 0.0f,
+                                              0.5f, 0.5f, 0.5f, 1.f);
+                    math::Matrix4f depthBiasMatrix = biasMatrix * view.getViewMatrix().getMatrix() * view.getProjMatrix().getMatrix();
+                    perPixShadowShader.setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
+                    perPixShadowShader.setParameter("projectionMatrix", projMatrix);
+                    states.shader = &perPixShadowShader;
+                    for (unsigned int i = 0; i < m_shadow_instances.size(); i++) {
+                        if (m_shadow_instances[i].getAllVertices().getVertexCount() > 0) {
+                            states.texture = m_shadow_instances[i].getMaterial().getTexture();
+                            if (m_shadow_instances[i].getMaterial().getTexture() != nullptr) {
+                                math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
+                                perPixShadowShader.setParameter("textureMatrix", texMatrix);
+                                perPixShadowShader.setParameter("haveTexture", 1.f);
+                            } else {
+                                perPixShadowShader.setParameter("haveTexture", 0.f);
+                            }
+                            vb.clear();
+                            for (unsigned int j = 0; j < m_instances[i].getAllVertices().getVertexCount(); j++) {
+                                vb.append(m_instances[i].getAllVertices()[j]);
+                            }
+                            vb.update();
+                            shadowMap.drawVertexBuffer(vb, states);
                         }
+                    }
+                    shadowMap.display();
+                } else {
+                    RenderStates states;
+                    states.shader = &buildShadowMapShader;
+                    for (unsigned int i = 0; i < m_instances.size(); i++) {
+                        if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                            states.texture = m_instances[i].getMaterial().getTexture();
+                            if (m_instances[i].getMaterial().getTexture() != nullptr) {
+                                buildShadowMapShader.setParameter("haveTexture", 1.f);
+                            } else {
+                                buildShadowMapShader.setParameter("haveTexture", 0.f);
+                            }
+                            stencilBuffer.draw(m_instances[i].getAllVertices(), states);
+                        }
+                    }
+                    stencilBuffer.display();
+                    stencilBufferTile.setPosition(position);
+                    shadowMap.setView(view);
+                    math::Matrix4f biasMatrix(0.5f, 0.0f, 0.0f, 0.0f,
+                                              0.0f, 0.5f, 0.0f, 0.0f,
+                                              0.0f, 0.0f, 0.5f, 0.0f,
+                                              0.5f, 0.5f, 0.5f, 1.f);
+                    math::Matrix4f depthBiasMatrix = biasMatrix * view.getViewMatrix().getMatrix() * view.getProjMatrix().getMatrix();
+                    perPixShadowShader.setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
+                    states.shader = &perPixShadowShader;
+                    for (unsigned int i = 0; i < m_shadow_instances.size(); i++) {
+                        if (m_shadow_instances[i].getAllVertices().getVertexCount() > 0) {
+                            states.texture = m_shadow_instances[i].getMaterial().getTexture();
+                            if (m_shadow_instances[i].getMaterial().getTexture() != nullptr) {
+                                perPixShadowShader.setParameter("haveTexture", 1.f);
+                            } else {
+                                perPixShadowShader.setParameter("haveTexture", 0.f);
+                            }
 
-                        shadowMap.draw(m_shadow_instances[i].getAllVertices(), states);
+                            shadowMap.draw(m_shadow_instances[i].getAllVertices(), states);
+                        }
                     }
+                    shadowMap.display();
                 }
-                shadowMap.display();
             }
             std::vector<Entity*> ShadowRenderComponent::getEntities() {
                 return visibleEntities;

@@ -60,7 +60,7 @@ namespace odfaeg {
                 std::string expression;
                 bool update;
                 unsigned int vboWorldMatrices;
-                VertexBuffer vb1;
+                VertexBuffer vb;
                 std::vector<float> matrices;
          };
     }

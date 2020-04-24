@@ -364,7 +364,7 @@ namespace odfaeg {
                         } else {
                             perPixelLinkedList.setParameter("haveTexture", 0.f);
                         }
-                        frameBuffer.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, 4, tm.size(), currentStates);
+                        frameBuffer.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates);
                     }
                 }
                 glCheck(glFinish());
