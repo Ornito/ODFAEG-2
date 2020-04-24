@@ -690,6 +690,7 @@ namespace odfaeg {
                             vb.update();
                             math::Matrix4f m = depthBufferTile.getTransform().getMatrix().transpose();
                             normalMapGenerator.setParameter("worldMatrix", m);
+                            states.texture = depthBufferTile.getTexture();
                             normalMap.drawVertexBuffer(vb, states);
                         }
                     }
