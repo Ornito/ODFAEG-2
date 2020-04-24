@@ -149,7 +149,7 @@ namespace odfaeg {
                                                                  in vec2 fTexCoords;
                                                                  const vec2 size = vec2(2.0,0.0);
                                                                  const ivec3 off = ivec3(-1,0,1);
-                                                                 uniform sampler2D normalMap;
+                                                                 uniform sampler2D depthTexture;
                                                                  uniform sampler2D lightMap;
                                                                  uniform sampler2D specularTexture;
                                                                  uniform sampler2D bumpMap;
@@ -159,7 +159,14 @@ namespace odfaeg {
                                                                  layout (location = 0) out vec4 fColor;
                                                                  void main () {
                                                                      vec2 position = (gl_FragCoord.xy / resolution.xy);
-                                                                     vec4 normal = texture2D(normalMap, position);
+                                                                     vec4 depth = texture2D(depthTexture, position);
+                                                                     float s01 = textureOffset(depthTexture, position, off.xy).z;
+                                                                     float s21 = textureOffset(depthTexture, position, off.zy).z;
+                                                                     float s10 = textureOffset(depthTexture, position, off.yx).z;
+                                                                     float s12 = textureOffset(depthTexture, position, off.yz).z;
+                                                                     vec3 va = normalize (vec3(size.xy, s21 - s01));
+                                                                     vec3 vb = normalize (vec3(size.yx, s12 - s10));
+                                                                     vec4 normal = vec4(cross(va, vb), depth.z);
                                                                      vec4 bump = texture2D(bumpMap, position);
                                                                      vec4 specularInfos = texture2D(specularTexture, position);
                                                                      vec3 sLightPos = vec3 (lightPos.x, lightPos.y, -lightPos.z * (gl_DepthRange.far - gl_DepthRange.near));
@@ -170,10 +177,10 @@ namespace odfaeg {
                                                                      float z = gl_FragCoord.z;
                                                                      vec3 vertexToLight = sLightPos - pixPos;
                                                                      if (bump.x != 0 || bump.y != 0 || bump.z != 0) {
-                                                                         float s01 = textureOffset(normalMap, position, off.xy).z;
-                                                                         float s21 = textureOffset(normalMap, position, off.zy).z;
-                                                                         float s10 = textureOffset(normalMap, position, off.yx).z;
-                                                                         float s12 = textureOffset(normalMap, position, off.yz).z;
+                                                                         float s01 = textureOffset(depthTexture, position, off.xy).z;
+                                                                         float s21 = textureOffset(depthTexture, position, off.zy).z;
+                                                                         float s10 = textureOffset(depthTexture, position, off.yx).z;
+                                                                         float s12 = textureOffset(depthTexture, position, off.yz).z;
                                                                          vec3 tmpNormal = (normal.xyz);
                                                                          vec3 tangeant = normalize (vec3(size.xy, s21 - s01));
                                                                          vec3 binomial = normalize (vec3(size.yx, s12 - s10));
@@ -182,7 +189,7 @@ namespace odfaeg {
                                                                          normal.z = dot(vertexToLight, tmpNormal);
                                                                          normal.w = bump.w;
                                                                      }
-                                                                     if (z > normal.w) {
+                                                                     if (z >= normal.w) {
                                                                          vec4 specularColor = vec4(0, 0, 0, 0);
                                                                          float attenuation = 1.f - length(vertexToLight) / radius;
                                                                          vec3 pixToView = pixPos - viewPos;
@@ -228,7 +235,7 @@ namespace odfaeg {
                         specularTextureGenerator.setParameter("maxP", Material::getMaxSpecularPower());
                         bumpTextureGenerator.setParameter("texture",Shader::CurrentTexture);
                         lightMapGenerator.setParameter("resolution", resolution.x, resolution.y, resolution.z);
-                        lightMapGenerator.setParameter("normalMap", normalMap.getTexture());
+                        lightMapGenerator.setParameter("depthTexture", depthBuffer.getTexture());
                         lightMapGenerator.setParameter("specularTexture",specularTexture.getTexture());
                         lightMapGenerator.setParameter("bumpMap",bumpTexture.getTexture());
                         lightMapGenerator.setParameter("lightMap",lightMap.getTexture());
@@ -625,8 +632,6 @@ namespace odfaeg {
                     specularTextureGenerator.setParameter("viewMatrix", viewMatrix);
                     bumpTextureGenerator.setParameter("projectionMatrix", projMatrix);
                     bumpTextureGenerator.setParameter("viewMatrix", viewMatrix);
-                    normalMapGenerator.setParameter("projectionMatrix", projMatrix);
-                    normalMapGenerator.setParameter("viewMatrix", viewMatrix);
                     for (unsigned int i = 0; i < m_instances.size(); i++) {
 
                         if (m_instances[i].getAllVertices().getVertexCount() > 0) {
@@ -681,25 +686,27 @@ namespace odfaeg {
                             bumpTexture.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states);*/
                         }
                     }
-                    states.shader = &normalMapGenerator;
-                    depthBufferTile.setCenter(view.getPosition());
                     depthBuffer.display();
+                    specularTexture.display();
+                    bumpTexture.display();
+                    /*states.shader = &normalMapGenerator;
                     VertexArray va = depthBufferTile.getVertexArray();
+                    depthBufferTile.setCenter(view.getPosition());
                     vb.clear();
                     vb.setPrimitiveType(va.getPrimitiveType());
                     for (unsigned int n = 0; n < va.getVertexCount(); n++) {
                         vb.append(va[n]);
                     }
                     vb.update();
-                    math::Matrix4f m = depthBufferTile.getTransform().getMatrix().transpose();
+                    math::Matrix4f worldMatrix = depthBufferTile.getTransform().getMatrix().transpose();
                     math::Matrix4f texMatrix = depthBufferTile.getTexture()->getTextureMatrix();
+                    normalMapGenerator.setParameter("projectionMatrix", projMatrix);
+                    normalMapGenerator.setParameter("viewMatrix", viewMatrix);
                     normalMapGenerator.setParameter("textureMatrix", texMatrix);
-                    normalMapGenerator.setParameter("worldMatrix", m);
+                    normalMapGenerator.setParameter("worldMatrix", worldMatrix);
                     states.texture = depthBufferTile.getTexture();
                     normalMap.drawVertexBuffer(vb, states);
-                    specularTexture.display();
-                    bumpTexture.display();
-                    normalMap.display();
+                    normalMap.display();*/
                     states.shader = &lightMapGenerator;
                     states.blendMode = sf::BlendAdd;
                     lightMapGenerator.setParameter("projectionMatrix", projMatrix);
