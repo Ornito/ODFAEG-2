@@ -205,8 +205,8 @@ namespace odfaeg {
                 math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
                 math::Vec3f size (viewArea.getWidth(), viewArea.getHeight(), 0);
                 if (shadowMap.getSettings().versionMajor >= 3 && shadowMap.getSettings().versionMinor >= 3) {
-                    math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
-                    math::Matrix4f projMatrix = view.getProjMatrix().getMatrix().transpose();
+                    math::Matrix4f viewMatrix = lightView.getViewMatrix().getMatrix().transpose();
+                    math::Matrix4f projMatrix = lightView.getProjMatrix().getMatrix().transpose();
                     buildShadowMapShader.setParameter("projectionMatrix", projMatrix);
                     buildShadowMapShader.setParameter("viewMatrix", viewMatrix);
                     RenderStates states;
@@ -253,6 +253,7 @@ namespace odfaeg {
                                               0.5f, 0.5f, 0.5f, 1.f);
                     math::Matrix4f depthBiasMatrix = biasMatrix * view.getViewMatrix().getMatrix() * view.getProjMatrix().getMatrix();
                     perPixShadowShader.setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
+                    projMatrix = view.getProjMatrix().getMatrix().transpose();
                     perPixShadowShader.setParameter("projectionMatrix", projMatrix);
                     states.shader = &perPixShadowShader;
                     for (unsigned int i = 0; i < m_shadow_instances.size(); i++) {

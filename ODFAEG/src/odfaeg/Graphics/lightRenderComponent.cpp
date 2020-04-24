@@ -83,7 +83,7 @@ namespace odfaeg {
                                                                                 float s10 = textureOffset(texture, fTexCoords, off.yx).z;
                                                                                 float s12 = textureOffset(texture, fTexCoords, off.yz).z;
                                                                                 vec3 va = normalize (vec3(size.xy, s21 - s01));
-                                                                                vec4 vb = normalize (vec3(size.yx, s12 - s10));
+                                                                                vec3 vb = normalize (vec3(size.yx, s12 - s10));
                                                                                 fColor = vec4(cross(va, vb), depth.z);
                                                                             }
                                                                             )";
@@ -115,7 +115,7 @@ namespace odfaeg {
                                                                      uniform float haveTexture;
                                                                      layout (location = 0) out vec4 fColor;
                                                                      void main() {
-                                                                        vec4 texel = texture2D(texture, fTexCoords);"
+                                                                        vec4 texel = texture2D(texture, fTexCoords);
                                                                         vec4 colors[2];
                                                                         colors[1] = texel * frontColor;
                                                                         colors[0] = frontColor;
@@ -133,18 +133,18 @@ namespace odfaeg {
                                                                  uniform sampler2D texture;
                                                                  uniform float haveTexture;
                                                                  layout (location = 0) out vec4 fColor;
-                                                                 void main() {"
+                                                                 void main() {
                                                                      vec4 texel = texture2D(texture, fTexCoords);
                                                                      vec4 colors[2];
                                                                      colors[1] = texel * frontColor;
                                                                      colors[0] = frontColor;
                                                                      bool b = (haveTexture > 0.9);
                                                                      vec4 color = colors[int(b)];
-                                                                     fColor = color;"
+                                                                     fColor = color;
                                                                  }
                                                                  )";
                         const std::string perPixLightingFragmentShader =
-                                                                 R"(#version 460 core;
+                                                                 R"(#version 460 core
                                                                  in vec4 frontColor;
                                                                  in vec2 fTexCoords;
                                                                  const vec2 size = vec2(2.0,0.0);
@@ -209,12 +209,16 @@ namespace odfaeg {
                                                                  )";
                         if (!depthBufferGenerator.loadFromMemory(vertexShader, depthGenFragShader))
                             throw core::Erreur(50, "Failed to load depth buffer generator shader", 0);
+                        std::cout<<"depth buffer generator compiled"<<std::endl;
                         if (!normalMapGenerator.loadFromMemory(buildNormalMapVertexShader, buildNormalMapFragmentShader))
                             throw core::Erreur(51, "Failed to load normal generator shader", 0);
+                        std::cout<<"normal map generator compiled"<<std::endl;
                         if (!specularTextureGenerator.loadFromMemory(vertexShader, specularGenFragShader))
                             throw core::Erreur(52, "Failed to load specular texture generator shader", 0);
+                        std::cout<<"specular texture generator compiled"<<std::endl;
                         if (!bumpTextureGenerator.loadFromMemory(vertexShader, bumpGenFragShader))
                             throw core::Erreur(53, "Failed to load bump texture generator shader", 0);
+                        std::cout<<"bump texture generator compiled"<<std::endl;
                         if (!lightMapGenerator.loadFromMemory(buildNormalMapVertexShader, perPixLightingFragmentShader))
                             throw core::Erreur(54, "Failed to load light map generator shader", 0);
                         normalMapGenerator.setParameter("texture", Shader::CurrentTexture);
