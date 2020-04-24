@@ -16,7 +16,7 @@ namespace sorrok {
         getView().move(0, 300, 0);
         fpsCounter = 0;
         addClock(sf::Clock(), "FPS");
-        day = true;
+        day = false;
         sf::Listener::setUpVector(0.f, 0.f, 1.f);
     }
     void MyAppli::gaignedFocus(gui::TextArea* textArea) {

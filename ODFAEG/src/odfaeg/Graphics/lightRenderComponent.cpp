@@ -182,7 +182,7 @@ namespace odfaeg {
                                                                          normal.z = dot(vertexToLight, tmpNormal);
                                                                          normal.w = bump.w;
                                                                      }
-                                                                     if (z >= normal.w) {
+                                                                     if (z > normal.w) {
                                                                          vec4 specularColor = vec4(0, 0, 0, 0);
                                                                          float attenuation = 1.f - length(vertexToLight) / radius;
                                                                          vec3 pixToView = pixPos - viewPos;
@@ -674,11 +674,11 @@ namespace odfaeg {
                             states.texture = m_instances[i].getMaterial().getTexture();
                             states.shader = &depthBufferGenerator;
                             depthBuffer.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states);
-                            states.shader = &specularTextureGenerator;
+                            /*states.shader = &specularTextureGenerator;
                             specularTexture.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states);
                             states.shader = &bumpTextureGenerator;
                             states.texture = m_instances[i].getMaterial().getBumpTexture();
-                            bumpTexture.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states);
+                            bumpTexture.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states);*/
                             states.shader = &normalMapGenerator;
                             depthBufferTile.setCenter(view.getPosition());
                             depthBuffer.display();
