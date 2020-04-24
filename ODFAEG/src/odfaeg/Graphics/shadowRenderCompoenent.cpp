@@ -37,7 +37,7 @@ namespace odfaeg {
                                                         out vec2 fTexCoords;
                                                         out vec4 frontColor;
                                                         void main() {
-                                                            gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
+                                                            gl_Position = projectionMatrix * viewMatrix  * worldMat * vec4(position, 1.f);
                                                             fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
                                                             frontColor = color;
                                                         }
@@ -64,13 +64,14 @@ namespace odfaeg {
                                                                    layout (location = 1) in vec4 color;
                                                                    layout (location = 2) in vec2 texCoords;
                                                                    uniform mat4 projectionMatrix;
+                                                                   uniform mat4 viewMatrix;
                                                                    uniform mat4 depthBiasMatrix;
                                                                    uniform mat4 textureMatrix;
                                                                    out vec4 shadowCoords;
                                                                    out vec4 frontColor;
                                                                    out vec2 fTexCoords;
                                                                    void main() {
-                                                                       gl_Position = projectionMatrix * vec4(position, 1.f);
+                                                                       gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.f);
                                                                        fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
                                                                        frontColor = color;
                                                                        shadowCoords = depthBiasMatrix * vec4(gl_Position.xyz, 1);
@@ -255,6 +256,8 @@ namespace odfaeg {
                     perPixShadowShader.setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
                     projMatrix = view.getProjMatrix().getMatrix().transpose();
                     perPixShadowShader.setParameter("projectionMatrix", projMatrix);
+                    viewMatrix = view.getViewMatrix().getMatrix().transpose();
+                    perPixShadowShader.setParameter("viewMatrix", viewMatrix);
                     states.shader = &perPixShadowShader;
                     for (unsigned int i = 0; i < m_shadow_instances.size(); i++) {
                         if (m_shadow_instances[i].getAllVertices().getVertexCount() > 0) {
