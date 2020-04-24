@@ -260,15 +260,16 @@ namespace odfaeg {
                         if (m_shadow_instances[i].getAllVertices().getVertexCount() > 0) {
                             states.texture = m_shadow_instances[i].getMaterial().getTexture();
                             if (m_shadow_instances[i].getMaterial().getTexture() != nullptr) {
-                                math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
+                                math::Matrix4f texMatrix = m_shadow_instances[i].getMaterial().getTexture()->getTextureMatrix();
                                 perPixShadowShader.setParameter("textureMatrix", texMatrix);
                                 perPixShadowShader.setParameter("haveTexture", 1.f);
                             } else {
                                 perPixShadowShader.setParameter("haveTexture", 0.f);
                             }
                             vb.clear();
-                            for (unsigned int j = 0; j < m_instances[i].getAllVertices().getVertexCount(); j++) {
-                                vb.append(m_instances[i].getAllVertices()[j]);
+                            vb.setPrimitiveType(m_shadow_instances[i].getAllVertices().getPrimitiveType());
+                            for (unsigned int j = 0; j < m_shadow_instances[i].getAllVertices().getVertexCount(); j++) {
+                                vb.append(m_shadow_instances[i].getAllVertices()[j]);
                             }
                             vb.update();
                             shadowMap.drawVertexBuffer(vb, states);
