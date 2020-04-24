@@ -6,6 +6,8 @@
 #ifndef MY_APPLI
 #define MY_APPLI
 #include "odfaeg/Graphics/perPixelLinkedListRenderComponent.hpp"
+#include "odfaeg/Graphics/shadowRenderComponent.hpp"
+#include "odfaeg/Graphics/lightRenderComponent.hpp"
 #include "odfaeg/Graphics/zSortingRenderComponent.hpp"
 #include "odfaeg/Graphics/fastRenderComponent.hpp"
 #include "odfaeg/Core/application.h"

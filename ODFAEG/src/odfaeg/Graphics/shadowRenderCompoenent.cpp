@@ -47,7 +47,7 @@ namespace odfaeg {
                                                                         in vec2 fTexCoords;
                                                                         uniform sampler2D texture;
                                                                         uniform float haveTexture;
-                                                                        layout (location = 0) out vec4 fcolor;
+                                                                        layout (location = 0) out vec4 fColor;
                                                                         void main() {
                                                                             vec4 texel = texture2D(texture, fTexCoords);
                                                                             vec4 colors[2];
@@ -56,7 +56,7 @@ namespace odfaeg {
                                                                             bool b = (haveTexture >= 0.9f);
                                                                             float color = colors[int(b)].a;
                                                                             float z = gl_FragCoord.z;
-                                                                            fcolor = vec4(0, 0, z, color.a);
+                                                                            fColor = vec4(0, 0, z, color);
                                                                         }
                                                                     )";
                     const std::string perPixShadowVertexShader = R"(#version 460 core
@@ -83,10 +83,10 @@ namespace odfaeg {
                                                                           uniform sampler2D texture;
                                                                           uniform sampler2D stencilBuffer;
                                                                           uniform float haveTexture;
-                                                                          layout (location = 0) out vec4 fcolor;
+                                                                          layout (location = 0) out vec4 fColor;
                                                                           void main() {
                                                                             vec4 texel = texture2D(texture, fTexCoords);
-                                                                            vec4 colors[2];"
+                                                                            vec4 colors[2];
                                                                             colors[1] = texel * frontColor;
                                                                             colors[0] = frontColor;
                                                                             bool b = (haveTexture >= 0.9f);
