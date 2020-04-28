@@ -100,6 +100,63 @@ namespace odfaeg {
                         }
                     }
                 }
+                #else if defined(ODFAEG_SYSTEM_WINDOWS)
+                if (DIR* root = opendir("C:\\")) {
+                    dirent* ent;
+                    struct stat st;
+                    unsigned int i = 0;
+                    while((ent = readdir(root)) != NULL) {
+                        if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..")) {
+                            textDir = std::string(ent->d_name);
+                            stat(textDir.c_str(), &st);
+                            Label* lDirectory = new Label(rw, position, size, font, "",15);
+                            //lDirectory->setBackgroundColor(sf::Color(math::Math::random(0, 255),math::Math::random(0, 255), math::Math::random(0, 255), 255));
+                            lDirectory->setParent(&pDirectories);
+                            lDirectory->setRelPosition(0.f, 0.04f * i);
+                            lDirectory->setRelSize(1, 0.04f);
+                            pDirectories.addChild(lDirectory);
+                            lDirectory->setText(textDir);
+                            core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
+                            core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lDirectory), core::FastDelegate<void>(&FileDialog::onDirSelected, this, lDirectory));
+                            if(S_ISDIR(st.st_mode)) {
+                                lDirectory->setForegroundColor(sf::Color::Red);
+                                getListener().connect("1d"+textDir, cmd);
+                            } else {
+                                getListener().connect("1f"+textDir, cmd);
+                            }
+                            i++;
+                        }
+                    }
+                }
+                currentPath = lTop.getText();
+                if (DIR* current = opendir(currentPath.c_str())) {
+                    dirent *ent;
+                    struct stat st;
+                    std::string fileNames;
+                    unsigned int i = 0;
+                    while ((ent = readdir(current)) != NULL) {
+                        if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..")) {
+                            fileNames = std::string(ent->d_name);
+                            stat(fileNames.c_str(), &st);
+                            Label* lFile = new Label(rw, position, size, font, "",15);
+                            //lFile->setBackgroundColor(sf::Color(math::Math::random(0, 255),math::Math::random(0, 255), math::Math::random(0, 255), 255));
+                            lFile->setParent(&pFiles);
+                            lFile->setRelPosition(0.f, 0.04f * i);
+                            lFile->setRelSize(1.f, 0.04f);
+                            pFiles.addChild(lFile);
+                            lFile->setText(fileNames);
+                            core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
+                            core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lFile), core::FastDelegate<void>(&FileDialog::onFileSelected, this, lFile));
+                            if(S_ISDIR(st.st_mode)) {
+                                lFile->setForegroundColor(sf::Color::Red);
+                                getListener().connect("2d"+fileNames, cmd);
+                            } else {
+                                getListener().connect("2f"+fileNames, cmd);
+                            }
+                            i++;
+                        }
+                    }
+                }
                 #endif
                 bChoose.setRelPosition(0.7f, 0.1f);
                 bChoose.setRelSize(0.1f, 0.8f);
@@ -172,6 +229,36 @@ namespace odfaeg {
                         }
                         closedir(current);
                     }
+                    #else if defined (ODFAEG_SYSTEM_WINDOWS)
+                    if (DIR* current = opendir(dirName.c_str())) {
+                        dirent *ent;
+                        struct stat st;
+                        std::string fileNames;
+                        unsigned int i = 0;
+                        while ((ent = readdir(current)) != NULL) {
+                            if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..")) {
+                                fileNames = std::string(ent->d_name);
+                                stat(fileNames.c_str(), &st);
+                                Label* lFile = new Label(rw, getPosition(), getSize(), font, "",15);
+                                //lFile->setBackgroundColor(sf::Color(math::Math::random(0, 255),math::Math::random(0, 255), math::Math::random(0, 255), 255));
+                                lFile->setParent(&pFiles);
+                                lFile->setRelPosition(0.f, 0.04f * i);
+                                lFile->setRelSize(1.f, 0.04f);
+                                pFiles.addChild(lFile);
+                                lFile->setText(fileNames);
+                                core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
+                                core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lFile), core::FastDelegate<void>(&FileDialog::onFileSelected, this, lFile));
+                                if(S_ISDIR(st.st_mode)) {
+                                    lFile->setForegroundColor(sf::Color::Red);
+                                    getListener().connect("2d"+fileNames, cmd);
+                                } else {
+                                    getListener().connect("2f"+fileNames, cmd);
+                                }
+                                i++;
+                            }
+                        }
+                        closedir(current);
+                    }
                     #endif
                 }
                 setAutoResized(true);
@@ -215,6 +302,36 @@ namespace odfaeg {
                                 core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
                                 core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lFile), core::FastDelegate<void>(&FileDialog::onFileSelected, this, lFile));
                                 if(ent->d_type == DT_DIR) {
+                                    lFile->setForegroundColor(sf::Color::Red);
+                                    getListener().connect("2d"+fileNames, cmd);
+                                } else {
+                                    getListener().connect("2f"+fileNames, cmd);
+                                }
+                                i++;
+                            }
+                        }
+                        closedir(current);
+                    }
+                    #else if defined (ODFAEG_SYSTEM_WINDOWS)
+                    if (DIR* current = opendir(currentDir.c_str())) {
+                        dirent *ent;
+                        struct stat st;
+                        std::string fileNames;
+                        unsigned int i = 0;
+                        while ((ent = readdir(current)) != NULL) {
+                            if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..")) {
+                                fileNames = std::string(ent->d_name);
+                                stat(fileNames.c_str(), &st);
+                                Label* lFile = new Label(rw, getPosition(), getSize(), font, "",15);
+                                //lFile->setBackgroundColor(sf::Color(math::Math::random(0, 255),math::Math::random(0, 255), math::Math::random(0, 255), 255));
+                                lFile->setParent(&pFiles);
+                                lFile->setRelPosition(0.f, 0.04f * i);
+                                lFile->setRelSize(1.f, 0.04f);
+                                pFiles.addChild(lFile);
+                                lFile->setText(fileNames);
+                                core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
+                                core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lFile), core::FastDelegate<void>(&FileDialog::onFileSelected, this, lFile));
+                                if(S_ISDIR(st.st_mode)) {
                                     lFile->setForegroundColor(sf::Color::Red);
                                     getListener().connect("2d"+fileNames, cmd);
                                 } else {
