@@ -485,7 +485,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             ucars[i] = std::tolower(lcars[i]);
         }
         minAppliname = std::string(ucars, appliname.length());
-        if(mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == -1) {
+        if(mkdir(path.c_str()/*, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH*/) == -1) {
             std::cerr<<"Failed to create application directory!";
             std::cerr << "Error: " << strerror(errno);
         }

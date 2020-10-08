@@ -27,7 +27,6 @@ namespace odfaeg {
                 pBottom.setParent(this);
                 pDirectories.setParent(this);
                 pFiles.setParent(this);
-                pFiles.setName("PFILES");
                 addChild(&pTop);
                 addChild(&pBottom);
                 addChild(&pDirectories);
@@ -108,7 +107,8 @@ namespace odfaeg {
                     while((ent = readdir(root)) != NULL) {
                         if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..")) {
                             textDir = std::string(ent->d_name);
-                            stat(textDir.c_str(), &st);
+                            std::string fullPath = "C:\\" + textDir;
+                            stat(fullPath.c_str(), &st);
                             Label* lDirectory = new Label(rw, position, size, font, "",15);
                             //lDirectory->setBackgroundColor(sf::Color(math::Math::random(0, 255),math::Math::random(0, 255), math::Math::random(0, 255), 255));
                             lDirectory->setParent(&pDirectories);
@@ -119,6 +119,7 @@ namespace odfaeg {
                             core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
                             core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lDirectory), core::FastDelegate<void>(&FileDialog::onDirSelected, this, lDirectory));
                             if(S_ISDIR(st.st_mode)) {
+                                std::cout<<"dir"<<std::endl;
                                 lDirectory->setForegroundColor(sf::Color::Red);
                                 getListener().connect("1d"+textDir, cmd);
                             } else {
@@ -196,7 +197,12 @@ namespace odfaeg {
                 for (unsigned int i = 0; i < pDirectories.getChildren().size(); i++) {
                     static_cast<Label*>(pDirectories.getChildren()[i])->setBackgroundColor(sf::Color::Black);
                 }
-                std::string dirName = (label->getText().at(0) != '/') ? "/" + label->getText() : label->getText();
+                std::string dirName;
+                #if defined (ODFAEG_SYSTEM_LINUX)
+                dirName = (label->getText().at(0) != '/') ? "/" + label->getText() : label->getText();
+                #else if defined (ODFAEG_SYSTEM_WINDOWS)
+                dirName = "C:\\" + label->getText();
+                #endif // if
                 std::string currentDir = dirName;
                 lTop.setText(currentDir);
                 label->setBackgroundColor(sf::Color::Blue);
@@ -238,12 +244,14 @@ namespace odfaeg {
                         while ((ent = readdir(current)) != NULL) {
                             if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..")) {
                                 fileNames = std::string(ent->d_name);
-                                stat(fileNames.c_str(), &st);
+                                std::string fullPath = currentDir + "\\" + fileNames;
+                                stat(fullPath.c_str(), &st);
                                 Label* lFile = new Label(rw, getPosition(), getSize(), font, "",15);
                                 //lFile->setBackgroundColor(sf::Color(math::Math::random(0, 255),math::Math::random(0, 255), math::Math::random(0, 255), 255));
                                 lFile->setParent(&pFiles);
                                 lFile->setRelPosition(0.f, 0.04f * i);
                                 lFile->setRelSize(1.f, 0.04f);
+                                lFile->setName("LFILE");
                                 pFiles.addChild(lFile);
                                 lFile->setText(fileNames);
                                 core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
@@ -282,7 +290,11 @@ namespace odfaeg {
                     }
                     pFiles.removeAll();
                     std::string currentDir = lTop.getText();
+                    #if defined (ODFAEG_SYSTEM_LINUX)
                     currentDir += "/"+fileName;
+                    #else if defined (ODFAEG_SYSTEM_WINDOWS)
+                    currentDir += "\\"+fileName;
+                    #endif // if
                     lTop.setText(currentDir);
                     #if defined (ODFAEG_SYSTEM_LINUX)
                     if (DIR* current = opendir(currentDir.c_str())) {
@@ -321,7 +333,8 @@ namespace odfaeg {
                         while ((ent = readdir(current)) != NULL) {
                             if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..")) {
                                 fileNames = std::string(ent->d_name);
-                                stat(fileNames.c_str(), &st);
+                                std::string fullPath = currentDir + "\\" + fileNames;
+                                stat(fullPath.c_str(), &st);
                                 Label* lFile = new Label(rw, getPosition(), getSize(), font, "",15);
                                 //lFile->setBackgroundColor(sf::Color(math::Math::random(0, 255),math::Math::random(0, 255), math::Math::random(0, 255), 255));
                                 lFile->setParent(&pFiles);

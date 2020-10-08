@@ -43,6 +43,8 @@ namespace odfaeg {
                     }
                     setSize(math::Vec3f(nsx, nsy, 0.f));
                     setPosition(math::Vec3f(npx, npy, getPosition().z));
+                    if (getName() == "LFILE")
+                        std::cout<<"lfile pos : "<<getPosition()<<std::endl;
                     if (getSize().x > psx)
                         setSize(math::Vec3f(psx, getSize().y, 0));
                     if (getSize().y > psy)
@@ -72,6 +74,8 @@ namespace odfaeg {
                 }
                 std::multimap<int, LightComponent*, std::greater<int>>::iterator it;
                 for (it = sortedChildren.begin(); it != sortedChildren.end(); it++) {
+                    if (it->second->getName() == "LFILE")
+                        std::cout<<"lfile pos : "<<it->second->getPosition()<<std::endl;
                     if (it->second->isVisible()
                         && it->second->getPosition().x + it->second->getSize().x >= getPosition().x
                         && it->second->getPosition().y + it->second->getSize().y >= getPosition().y
