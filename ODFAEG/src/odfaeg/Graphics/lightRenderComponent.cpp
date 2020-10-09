@@ -669,6 +669,13 @@ namespace odfaeg {
                             }
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
                             glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+                            /*for (unsigned int i = 0; i < 4 ; i++) {
+                                glCheck(glEnableVertexAttribArray(3 + i));
+                                glCheck(glVertexAttribPointer(3 + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                                                        (const GLvoid*)(sizeof(GLfloat) * i * 4)));
+                                glCheck(glVertexAttribDivisor(3 + i, 1));
+                                glCheck(glDisableVertexAttribArray(3 + i));
+                            }*/
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                             if (m_instances[i].getVertexArrays().size() > 0) {
                                 for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {

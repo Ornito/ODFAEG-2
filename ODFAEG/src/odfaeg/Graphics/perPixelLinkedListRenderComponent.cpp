@@ -5,13 +5,14 @@
 #include "../../../include/odfaeg/Physics/particuleSystem.h"
 namespace odfaeg {
     namespace graphic {
-        PerPixelLinkedListRenderComponent::PerPixelLinkedListRenderComponent(RenderWindow& window, int layer, std::string expression, window::ContextSettings settings) :
+        PerPixelLinkedListRenderComponent::PerPixelLinkedListRenderComponent(RenderWindow& window, int layer, std::string expression, window::ContextSettings settings, bool drawInstanced, RenderTexture* drawTarget) :
             HeavyComponent(window, math::Vec3f(window.getView().getPosition().x, window.getView().getPosition().y, layer),
                           math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0),
                           math::Vec3f(window.getView().getSize().x + window.getView().getSize().x * 0.5f, window.getView().getPosition().y + window.getView().getSize().y * 0.5f, layer)),
             view(window.getView()),
             expression(expression),
-            quad(math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, window.getSize().y * 0.5f)) {
+            quad(math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, window.getSize().y * 0.5f)),
+            m_drawInstanced(drawInstanced) {
             quad.move(math::Vec3f(-window.getView().getSize().x * 0.5f, 0/*-window.getView().getSize().y * 0.5f*/, 0));
             GLuint maxNodes = 20 * window.getView().getSize().x * window.getView().getSize().y;
             GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
@@ -334,37 +335,54 @@ namespace odfaeg {
                 perPixelLinkedList.setParameter("viewMatrix", viewMatrix);
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
                     if (m_instances[i].getAllVertices().getVertexCount() > 0) {
-                        vb.clear();
-                        vb.setPrimitiveType(m_instances[i].getVertexArrays()[0]->getPrimitiveType());
-                        matrices.clear();
-                        std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
-                        for (unsigned int j = 0; j < tm.size(); j++) {
-                            tm[j]->update();
-                            std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
-                            for (unsigned int n = 0; n < 16; n++) {
-                                matrices.push_back(matrix[n]);
+                        if (m_drawInstanced) {
+                            vb.clear();
+                            vb.setPrimitiveType(m_instances[i].getVertexArrays()[0]->getPrimitiveType());
+                            matrices.clear();
+                            std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
+                            for (unsigned int j = 0; j < tm.size(); j++) {
+                                tm[j]->update();
+                                std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
+                                for (unsigned int n = 0; n < 16; n++) {
+                                    matrices.push_back(matrix[n]);
+                                }
                             }
-                        }
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
-                        glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                        if (m_instances[i].getVertexArrays().size() > 0) {
-                            for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
-                                vb.append((*m_instances[i].getVertexArrays()[0])[j]);
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+                            /*for (unsigned int i = 0; i < 4 ; i++) {
+                                glCheck(glEnableVertexAttribArray(3 + i));
+                                glCheck(glVertexAttribPointer(3 + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                                                        (const GLvoid*)(sizeof(GLfloat) * i * 4)));
+                                glCheck(glVertexAttribDivisor(3 + i, 1));
+                                glCheck(glDisableVertexAttribArray(3 + i));
+                            }*/
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                            if (m_instances[i].getVertexArrays().size() > 0) {
+                                for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
+                                    vb.append((*m_instances[i].getVertexArrays()[0])[j]);
+                                }
+                                vb.update();
+                            }
+                            currentStates.blendMode = sf::BlendNone;
+                            currentStates.shader = &perPixelLinkedList;
+                            currentStates.texture = m_instances[i].getMaterial().getTexture();
+                            if (m_instances[i].getMaterial().getTexture() != nullptr) {
+                                math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
+                                perPixelLinkedList.setParameter("textureMatrix", texMatrix);
+                                perPixelLinkedList.setParameter("haveTexture", 1.f);
+                            } else {
+                                perPixelLinkedList.setParameter("haveTexture", 0.f);
+                            }
+                            frameBuffer.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates);
+                        } else {
+                            vb.clear();
+                            vb.setPrimitiveType(m_instances[i].getAllVertices().getPrimitiveType());
+                            for (unsigned int  j = 0; j < m_instances[i].getAllVertices().getVertexCount(); j++) {
+                                vb.append(m_instances[i].getAllVertices()[j]);
                             }
                             vb.update();
+                            frameBuffer.drawVertexBuffer(vb, currentStates);
                         }
-                        currentStates.blendMode = sf::BlendNone;
-                        currentStates.shader = &perPixelLinkedList;
-                        currentStates.texture = m_instances[i].getMaterial().getTexture();
-                        if (m_instances[i].getMaterial().getTexture() != nullptr) {
-                            math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
-                            perPixelLinkedList.setParameter("textureMatrix", texMatrix);
-                            perPixelLinkedList.setParameter("haveTexture", 1.f);
-                        } else {
-                            perPixelLinkedList.setParameter("haveTexture", 0.f);
-                        }
-                        frameBuffer.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates);
                     }
                 }
                 glCheck(glFinish());

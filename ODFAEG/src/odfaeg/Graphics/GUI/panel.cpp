@@ -163,6 +163,8 @@ namespace odfaeg {
                 glCheck(glScissor(getPosition().x, getWindow().getSize().y - (getPosition().y + getSize().y), getSize().x, getSize().y));
                 rect.setPosition(getPosition());
                 rect.setSize(getSize());
+                if (getName() == "PSCRIPTFILES")
+                        rect.setName("RPSCRIPTFILES");
                 target.draw(rect, states);
                 for (unsigned int i = 0; i < sprites.size(); i++) {
                     target.draw(sprites[i], states);

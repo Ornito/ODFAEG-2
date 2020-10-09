@@ -244,6 +244,7 @@ void ODFAEGCreator::onInit() {
     pScriptsFiles->setBorderThickness(5);
     pScriptsFiles->setRelPosition(5.f / 6.5f, 0.015f);
     pScriptsFiles->setRelSize(1.5f / 6.f, 1.f);
+    pScriptsFiles->setName("PSCRIPTFILES");
     getRenderComponentManager().addComponent(pScriptsFiles);
     tabPane = new TabPane(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(200, 700, 0));
     tabPane->setRelPosition(0, 0);
@@ -332,6 +333,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
         wApplicationNew->setVisible(false);
     }
     if (&getRenderWindow() == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_RESIZED) {
+        getRenderWindow().getDefaultView().reset(BoundingBox(0, 0, getRenderWindow().getDefaultView().getPosition().z, event.window.data1, event.window.data2, getRenderWindow().getDefaultView().getDepth()));
         View view = getRenderWindow().getView();
         view.reset(BoundingBox(0, 0, getRenderWindow().getView().getPosition().z, event.window.data1, event.window.data2, getRenderWindow().getView().getDepth()));
         getRenderWindow().setView(view);

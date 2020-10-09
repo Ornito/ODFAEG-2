@@ -26,6 +26,7 @@ namespace odfaeg {
                 getListener().connect("UPDATE", cmd);
                 if (settings.versionMajor >= 3 && settings.versionMinor >= 3) {
                     glGenBuffers(1, &vboWorldMatrices);
+                    glGenBuffers(1, &vboShadowProjMatrices);
                     const std::string buildShadowMapVertexShader = R"(#version 460 core
                                                         layout (location = 0) in vec3 position;
                                                         layout (location = 1) in vec4 color;
@@ -63,6 +64,8 @@ namespace odfaeg {
                                                                    layout (location = 0) in vec3 position;
                                                                    layout (location = 1) in vec4 color;
                                                                    layout (location = 2) in vec2 texCoords;
+                                                                   /*layout (location = 3) in mat4 worldMat;
+                                                                   layout (location = 7) in mat4 shadowProjMat;*/
                                                                    uniform mat4 projectionMatrix;
                                                                    uniform mat4 viewMatrix;
                                                                    uniform mat4 depthBiasMatrix;
@@ -71,6 +74,7 @@ namespace odfaeg {
                                                                    out vec4 frontColor;
                                                                    out vec2 fTexCoords;
                                                                    void main() {
+                                                                       //gl_Position = projectionMatrix * viewMatrix * shadowProjMat * worldMat * vec4(position, 1.f);
                                                                        gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.f);
                                                                        fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
                                                                        frontColor = color;
@@ -235,6 +239,13 @@ namespace odfaeg {
                             }
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
                             glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+                            /*for (unsigned int i = 0; i < 4 ; i++) {
+                                glCheck(glEnableVertexAttribArray(3 + i));
+                                glCheck(glVertexAttribPointer(3 + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                                                        (const GLvoid*)(sizeof(GLfloat) * i * 4)));
+                                glCheck(glVertexAttribDivisor(3 + i, 1));
+                                glCheck(glDisableVertexAttribArray(3 + i));
+                            }*/
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                             if (m_instances[i].getVertexArrays().size() > 0) {
                                 for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
@@ -278,6 +289,51 @@ namespace odfaeg {
                             shadowMap.drawVertexBuffer(vb, states);
                         }
                     }
+                    /*for (unsigned int i = 0; i < m_shadow_instances.size(); i++) {
+                        if (m_shadow_instances[i].getAllVertices().getVertexCount() > 0) {
+                            states.texture = m_shadow_instances[i].getMaterial().getTexture();
+                            if (m_shadow_instances[i].getMaterial().getTexture() != nullptr) {
+                                math::Matrix4f texMatrix = m_shadow_instances[i].getMaterial().getTexture()->getTextureMatrix();
+                                perPixShadowShader.setParameter("textureMatrix", texMatrix);
+                                perPixShadowShader.setParameter("haveTexture", 1.f);
+                            } else {
+                                perPixShadowShader.setParameter("haveTexture", 0.f);
+                            }
+                            vb2.clear();
+                            vb2.setPrimitiveType(m_shadow_instances[i].getVertexArrays()[0]->getPrimitiveType());
+                            matrices.clear();
+                            std::vector<TransformMatrix*> tm = m_shadow_instances[i].getTransforms();
+                            for (unsigned int j = 0; j < tm.size(); j++) {
+                                tm[j]->update();
+                                std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
+                                for (unsigned int n = 0; n < 16; n++) {
+                                    matrices.push_back(matrix[n]);
+                                }
+                            }
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                            matrices2.clear();
+                            std::vector<TransformMatrix> tm2 = m_shadow_instances[i].getShadowProjMatrix();
+                            for (unsigned int j = 0; j < tm2.size(); j++) {
+                                tm2[j].update();
+                                std::array<float, 16> matrix = tm2[j].getMatrix().transpose().toGlMatrix();
+                                for (unsigned int n = 0; n < 16; n++) {
+                                    matrices2.push_back(matrix[n]);
+                                }
+                            }
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboShadowProjMatrices));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, matrices2.size() * sizeof(float), &matrices2[0], GL_DYNAMIC_DRAW));
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                            if (m_shadow_instances[i].getVertexArrays().size() > 0) {
+                                for (unsigned int j = 0; j < m_shadow_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
+                                    vb2.append((*m_shadow_instances[i].getVertexArrays()[0])[j]);
+                                }
+                                vb2.update();
+                            }
+                            shadowMap.drawInstanced(vb2, vboWorldMatrices, m_shadow_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_shadow_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states, vboShadowProjMatrices);
+                        }
+                    }*/
                     shadowMap.display();
                 } else {
                     RenderStates states;

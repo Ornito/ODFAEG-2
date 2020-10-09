@@ -99,7 +99,7 @@ namespace odfaeg {
 
 
         ////////////////////////////////////////////////////////////
-        View RenderTarget::getDefaultView() const
+        View& RenderTarget::getDefaultView()
         {
             return m_defaultView;
         }
@@ -137,7 +137,7 @@ namespace odfaeg {
             coords = vpm.toViewportCoordinates(coords);
             return coords;
         }
-        void RenderTarget::drawInstanced(VertexBuffer& vertexBuffer, unsigned int vboWorldMatrices, enum sf::PrimitiveType type, unsigned int start, unsigned int nb, unsigned int nbInstances, RenderStates states) {
+        void RenderTarget::drawInstanced(VertexBuffer& vertexBuffer, unsigned int vboWorldMatrices, enum sf::PrimitiveType type, unsigned int start, unsigned int nb, unsigned int nbInstances, RenderStates states, unsigned int vboMatrix2) {
             if (vertexBuffer.getVertexCount() == 0) {
                 return;
             }
@@ -184,6 +184,17 @@ namespace odfaeg {
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                             glCheck(glVertexAttribDivisor(3 + i, 1));
                             glCheck(glDisableVertexAttribArray(3 + i));
+                        }
+                        if (vboMatrix2 != 0) {
+                            for (unsigned int i = 0; i < 4 ; i++) {
+                                glCheck(glEnableVertexAttribArray(7 + i));
+                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboMatrix2));
+                                glCheck(glVertexAttribPointer(7 + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                                                        (const GLvoid*)(sizeof(GLfloat) * i * 4)));
+                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                                glCheck(glVertexAttribDivisor(7 + i, 1));
+                                glCheck(glDisableVertexAttribArray(7 + i));
+                            }
                         }
                     }
                     m_cache.lastVboBuffer = &vertexBuffer;

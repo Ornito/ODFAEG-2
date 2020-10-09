@@ -257,9 +257,10 @@ namespace odfaeg {
                     //}
                 }
             }
-            void Instance::addVertexShadowArray (VertexArray va, TransformMatrix tm, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix) {
+            void Instance::addVertexShadowArray (VertexArray& va, TransformMatrix& tm, ViewMatrix& viewMatrix, TransformMatrix shadowProjMatrix) {
                 m_transforms.push_back(&tm);
                 m_vertexArrays.push_back(&va);
+                m_shadowProjMatrix.push_back(shadowProjMatrix);
                 //shadowProjMatrix.combine(viewMatrix.getMatrix());
                 shadowProjMatrix.combine(tm.getMatrix());
                 for (unsigned int i = 0; i < va.getVertexCount(); i++) {
@@ -321,9 +322,13 @@ namespace odfaeg {
             void Instance::clear() {
                 m_transforms.clear();
                 m_vertexArrays.clear();
+                m_shadowProjMatrix.clear();
             }
             std::vector<TransformMatrix*> Instance::getTransforms() {
                  return m_transforms;
+            }
+            std::vector<TransformMatrix> Instance::getShadowProjMatrix() {
+                return m_shadowProjMatrix;
             }
             Material& Instance::getMaterial() {
                 return *material;
@@ -337,6 +342,7 @@ namespace odfaeg {
             Instance::~Instance() {
                 m_transforms.clear();
                 m_vertexArrays.clear();
+                m_shadowProjMatrix.clear();
             }
 
             Batcher::Batcher() {

@@ -122,7 +122,7 @@ namespace odfaeg {
             /// \see setView, getView
             ///
             ////////////////////////////////////////////////////////////
-            View getDefaultView() const;
+            View& getDefaultView();
 
              ////////////////////////////////////////////////////////////
             /// \brief Convert a point from target coordinates to world
@@ -221,7 +221,7 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             math::Vec3f mapCoordsToPixel(const math::Vec3f& point, View& view);
-            void drawInstanced(VertexBuffer& vertexBuffer, unsigned int vboWorldMatrices, enum sf::PrimitiveType type, unsigned int start, unsigned int nb, unsigned int nbInstances, RenderStates states);
+            void drawInstanced(VertexBuffer& vertexBuffer, unsigned int vboWorldMatrices, enum sf::PrimitiveType type, unsigned int start, unsigned int nb, unsigned int nbInstances, RenderStates states, unsigned int vboMatrix2 = 0);
 
             ////////////////////////////////////////////////////////////
             /// \brief Draw a drawable object to the render-target
@@ -321,7 +321,12 @@ namespace odfaeg {
             unsigned int getVersionMajor();
             unsigned int getVersionMinor();
             void setAlphaTestEnable(bool enabled);
-
+            void setName(std::string name) {
+                m_name = name;
+            }
+            std::string getName() {
+                return m_name;
+            }
         protected :
             void setVersionMajor(unsigned int version);
             void setVersionMinor(unsigned int version);
@@ -418,6 +423,7 @@ namespace odfaeg {
             StatesCache m_cache;  ///< Render states cache
             unsigned int m_vao, m_versionMajor, m_versionMinor, m_framebufferId;
             bool enableAlphaTest;
+            std::string m_name;
         };
     }
 }

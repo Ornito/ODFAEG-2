@@ -333,7 +333,7 @@ namespace odfaeg {
             *
             */
             void addVertexArray(VertexArray& va, TransformMatrix& tm);
-            void addVertexShadowArray(VertexArray va, TransformMatrix tm, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix);
+            void addVertexShadowArray(VertexArray& va, TransformMatrix& tm, ViewMatrix& viewMatrix, TransformMatrix shadowProjMatrix);
             void sortVertexArrays(View& view);
             /**
             * \fn std::vector<VertexArray*> getVertexArrays()
@@ -354,6 +354,7 @@ namespace odfaeg {
             * \return the transforms.
             */
             std::vector<TransformMatrix*> getTransforms();
+            std::vector<TransformMatrix> getShadowProjMatrix();
             /** \fn Material& getMaterial()
             * \brief get the material of the instance.
             * \return the material.
@@ -383,6 +384,7 @@ namespace odfaeg {
             Material* material; /**> the material of the instance.*/
             std::vector<VertexArray*> m_vertexArrays; /**> the vertex arrays of the instance.*/
             std::vector<TransformMatrix*> m_transforms; /**> the transformations of the instance.*/
+            std::vector<TransformMatrix> m_shadowProjMatrix;
             sf::PrimitiveType primType; /**>The primitive type of the instance.*/
             unsigned int numInstances; /**>The number of instances.*/
             VertexArray vertices;
