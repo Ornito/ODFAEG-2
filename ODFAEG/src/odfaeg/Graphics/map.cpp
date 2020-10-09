@@ -689,11 +689,15 @@ namespace odfaeg {
             return gridMap->addEntity(entity);*/
         }
         bool Map::removeEntity (Entity *entity) {
-            std::vector<Entity*> children = entity->getChildren();
-            for (unsigned int i = 0; i < children.size(); i++) {
-                if (entity->isAnimated()) {
-                    removeEntity(static_cast<AnimatedEntity*>(children[i])->getCurrentFrame());
+            if (entity->isAnimated()) {
+                if (static_cast<AnimatedEntity*>(entity)->getCurrentFrame() != nullptr) {
+                    removeEntity(static_cast<AnimatedEntity*>(entity)->getCurrentFrame());
                 } else {
+                    return gridMap->removeEntity(entity);
+                }
+            } else {
+                std::vector<Entity*> children = entity->getChildren();
+                for (unsigned int i = 0; i < children.size(); i++) {
                     removeEntity(children[i]);
                 }
             }
@@ -702,7 +706,7 @@ namespace odfaeg {
                 for (unsigned int j = 0; j < faces.size(); j++) {
                     decreaseComptImg(faces[j]->getMaterial().getTexture());
                 }
-                gridMap->removeEntity(entity);
+                return gridMap->removeEntity(entity);
             }
             /*std::vector<Entity*> tiles;
             getChildren(entity, tiles, "*");
@@ -776,6 +780,7 @@ namespace odfaeg {
             removeEntity(entity);
             entity->move(math::Vec3f(dx, dy, dz));
             addEntity(entity);
+            std::cout<<"entity added"<<std::endl;
             /*for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
                 if (frcm->getRenderComponent(i) != nullptr) {
                     frcm->getRenderComponent(i)->updateTransformMatrices();

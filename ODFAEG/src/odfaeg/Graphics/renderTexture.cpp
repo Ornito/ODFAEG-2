@@ -164,5 +164,23 @@ namespace odfaeg
             if (m_impl)
                 m_impl->bind();
         }
+        void RenderTexture::setLinkedListIds(unsigned int atomicBuffer, unsigned int linkedListBuffer, unsigned int headPtrTex, unsigned int clearBuff) {
+            m_atomicBuffer = atomicBuffer;
+            m_linkedListBuffer = linkedListBuffer;
+            m_headPtrTex = headPtrTex;
+            m_clearBuff = clearBuff;
+        }
+        unsigned int RenderTexture::getAtomicBuffer() {
+            return m_atomicBuffer;
+        }
+        unsigned int RenderTexture::getLinkedListBuffer() {
+            return m_linkedListBuffer;
+        }
+        unsigned int RenderTexture::getHeadPtrTex() {
+            return m_headPtrTex;
+        }
+        unsigned int RenderTexture::getClearBuff() {
+            return m_clearBuff;
+        }
     }
 }

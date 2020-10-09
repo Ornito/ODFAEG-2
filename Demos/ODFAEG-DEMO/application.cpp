@@ -405,6 +405,7 @@ namespace sorrok {
         window->draw(rect2);*/
     }
     void MyAppli::onUpdate (RenderWindow* rw, IEvent& event) {
+        std::cout<<"on update"<<std::endl;
         // check all the window's events that were triggered since the last iteration of the loop
         if (rw == &getRenderWindow() && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
             stop();
@@ -469,13 +470,16 @@ namespace sorrok {
                 sf::Listener::setPosition(newPos.x, newPos.y, 0);
                 World::update();
             } else {
+
                 Vec3f actualPos = caracter->getCenter();
                 Vec2f pos = Computer::getPosOnPathFromTime(actualPos, caracter->getPath(),t,caracter->getSpeed());
                 Vec2f d = pos - actualPos;
                 Vec2f dir = d.normalize();
                 World::moveEntity(caracter, d.x, d.y, d.y);
+                std::cout<<"entity moved"<<std::endl;
                 if (dir != caracter->getDir())
                     caracter->setDir(dir);
+                std::cout<<"update components"<<std::endl;
                 for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
                     if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
                         View view = getRenderComponentManager().getRenderComponent(i)->getView();
@@ -483,6 +487,7 @@ namespace sorrok {
                         getRenderComponentManager().getRenderComponent(i)->setView(view);
                     }
                 }
+                std::cout<<"components moved"<<std::endl;
                 getView().move(d.x, d.y, d.y);
                 actualPos = Vec2f(caracter->getCenter().x, caracter->getCenter().y);
                 sf::Listener::setDirection(dir.x, dir.y, 0);

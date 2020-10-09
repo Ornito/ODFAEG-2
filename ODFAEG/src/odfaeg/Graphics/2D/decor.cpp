@@ -18,7 +18,14 @@ namespace odfaeg {
                 if (other.getType() != "E_DECOR")
                     return false;
                 Decor &decor = static_cast<Decor&> (other);
-                return *getChildren()[0] == *decor.getChildren()[0];
+                if (getNbChildren() != decor.getNbChildren())
+                    return false;
+                for (unsigned int i = 0; i < getNbChildren(); i++) {
+                    if(!(*getChildren()[i] == *decor.getChildren()[i]))
+                        return false;
+
+                }
+                return true;
             }
         }
     }

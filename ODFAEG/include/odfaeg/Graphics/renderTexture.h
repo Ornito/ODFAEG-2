@@ -191,6 +191,11 @@ namespace odfaeg {
             const Texture& getTexture() const;
             const window::ContextSettings& getSettings() const;
             void bind();
+            void setLinkedListIds(unsigned int atomicBuffer, unsigned int linkedListBuffer, unsigned int headPtrTex, unsigned int clearBuf);
+            unsigned int getAtomicBuffer();
+            unsigned int getLinkedListBuffer();
+            unsigned int getHeadPtrTex();
+            unsigned int getClearBuff();
         private :
             bool activate(bool active);
             ////////////////////////////////////////////////////////////
@@ -199,6 +204,7 @@ namespace odfaeg {
             priv::RenderTextureImpl* m_impl;    ///< Platform/hardware specific implementation
             Texture                  m_texture; ///< Target texture to draw on
             window::Context*         m_context; ///< Need to use a separating opengl context otherwise it doesn't work because opengl resource are messed up.
+            unsigned int m_atomicBuffer, m_linkedListBuffer, m_headPtrTex, m_clearBuff;
         };
     }
 

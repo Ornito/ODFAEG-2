@@ -34,6 +34,10 @@ namespace odfaeg {
             virtual void draw(Drawable& drawable, RenderStates states) = 0;
             virtual void setView(View view) = 0;
             virtual View& getView() = 0;
+            static void addSharedRenderTexture (RenderTexture* rt);
+            static bool containsSharedRenderTexture (RenderTexture* rt);
+            private :
+                static std::vector<RenderTexture*> sharedRenderTextures;
         };
     }
 }

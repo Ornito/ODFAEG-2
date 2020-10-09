@@ -105,13 +105,13 @@ namespace sorrok {
     bool Caracter::operator== (Entity &other) {
         if (getType() != other.getType())
             return false;
-            Caracter& caracter = static_cast<Caracter&>(other);
-            if (anims.size() != caracter.anims.size())
+        Caracter& caracter = static_cast<Caracter&>(other);
+        if (anims.size() != caracter.anims.size())
+            return false;
+        for (unsigned int i = 0; i < anims.size(); i++) {
+            if (anims[i] != caracter.anims[i])
                 return false;
-            for (unsigned int i = 0; i < anims.size(); i++) {
-                if (anims[i] != caracter.anims[i])
-                    return false;
-            }
+        }
         return true;
     }
     bool Caracter::isInFightingMode() {

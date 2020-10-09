@@ -40,9 +40,6 @@ namespace odfaeg {
             int y = entity->getGlobalBounds().getPosition().y;
             int endX = (x + entity->getGlobalBounds().getWidth());
             int endY = (y + entity->getGlobalBounds().getHeight());
-            if (entity->getRootType() == "E_PNJ") {
-                std::cout<<"type : "<<entity->getType()<<std::endl<<"global bounds : "<<entity->getGlobalBounds().getPosition()<<std::endl;
-            }
             bool added = false;
             /*std::array<math::Vec2f, 4> pos;
             pos[0] = math::Vec2f(x, y);
@@ -71,6 +68,7 @@ namespace odfaeg {
                             cm = getGridCellAt(pos);
                         }
                         added = true;
+
                         cm->addEntity(entity);
                     }
                 }

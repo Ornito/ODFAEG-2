@@ -97,9 +97,15 @@ namespace odfaeg {
             return entityInside.size();
         }
         bool CellMap::containsEntity (Entity *entity) {
-            for (unsigned int i = 0; i < entityInside.size(); i++)
-                if (*entityInside[i] == *entity)
+            std::cout<<"contains entity"<<std::endl;
+            for (unsigned int i = 0; i < entityInside.size(); i++) {
+                std::cout<<"type : "<<entityInside[i]->getType()<<" "<<entity->getType()<<std::endl;
+                if (*entityInside[i] == *entity) {
+                    std::cout<<"end contains entity"<<std::endl;
                     return true;
+                }
+            }
+            std::cout<<"end contains entity"<<std::endl;
             return false;
         }
 
