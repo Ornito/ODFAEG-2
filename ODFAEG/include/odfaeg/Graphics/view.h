@@ -190,7 +190,6 @@ namespace odfaeg {
             bool isXFlipped();
             bool isYFlipped();
             void updated();
-        private :
              /**
             * \fn void setPerspective(double left, double right, double top, double bottom, double zNear, double zFar);
             * \brief change the perspective of the view with the given frustum. (2D view)
@@ -221,6 +220,8 @@ namespace odfaeg {
             * \fn void computeVectorsFromAngles();
             * \brief compute the vectors from angles to pass form polar coordinates to cartesian coordinates.
             */
+        private :
+
             void computeVectorsFromAngles();
 
             /**
