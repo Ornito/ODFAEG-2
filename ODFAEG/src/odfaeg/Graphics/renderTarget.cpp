@@ -137,7 +137,7 @@ namespace odfaeg {
             coords = vpm.toViewportCoordinates(coords);
             return coords;
         }
-        void RenderTarget::drawInstanced(VertexBuffer& vertexBuffer, unsigned int vboWorldMatrices, enum sf::PrimitiveType type, unsigned int start, unsigned int nb, unsigned int nbInstances, RenderStates states, unsigned int vboMatrix2) {
+        void RenderTarget::drawInstanced(VertexBuffer& vertexBuffer, enum sf::PrimitiveType type, unsigned int start, unsigned int nb, unsigned int nbInstances, RenderStates states, unsigned int vboMatrix1, unsigned int vboMatrix2) {
             if (vertexBuffer.getVertexCount() == 0) {
                 return;
             }
@@ -176,24 +176,41 @@ namespace odfaeg {
                         glCheck(glDisableVertexAttribArray(1));
                         glCheck(glDisableVertexAttribArray(2));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                        for (unsigned int i = 0; i < 4 ; i++) {
-                            glCheck(glEnableVertexAttribArray(3 + i));
-                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
-                            glCheck(glVertexAttribPointer(3 + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
-                                                    (const GLvoid*)(sizeof(GLfloat) * i * 4)));
-                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                            glCheck(glVertexAttribDivisor(3 + i, 1));
-                            glCheck(glDisableVertexAttribArray(3 + i));
-                        }
-                        if (vboMatrix2 != 0) {
-                            for (unsigned int i = 0; i < 4 ; i++) {
-                                glCheck(glEnableVertexAttribArray(7 + i));
-                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboMatrix2));
-                                glCheck(glVertexAttribPointer(7 + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                        /*va_list args;
+                        va_start(args, n);
+                        for (unsigned int i = 0; i < n; i++) {
+                            unsigned int vboMatrices = va_arg(args, unsigned int);
+                            for (unsigned int j = 0; j < 4; j++) {
+                                glCheck(glEnableVertexAttribArray(i * 4 + j + 3));
+                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboMatrices));
+                                glCheck(glVertexAttribPointer(i * 4 + j + 3, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
                                                         (const GLvoid*)(sizeof(GLfloat) * i * 4)));
                                 glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                                glCheck(glVertexAttribDivisor(7 + i, 1));
-                                glCheck(glDisableVertexAttribArray(7 + i));
+                                glCheck(glVertexAttribDivisor(i * 4 + j + 3, 1));
+                                glCheck(glDisableVertexAttribArray(i * 4 + j + 3));
+                            }
+                        }
+                        va_end(args);*/
+                        if (vboMatrix1 != 0) {
+                            for (unsigned int i = 0; i < 4; i++) {
+                                glCheck(glEnableVertexAttribArray(i + 3));
+                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboMatrix1));
+                                glCheck(glVertexAttribPointer(i + 3, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                                                        (const GLvoid*)(sizeof(GLfloat) * i * 4)));
+                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                                glCheck(glVertexAttribDivisor(i + 3, 1));
+                                glCheck(glDisableVertexAttribArray(i + 3));
+                            }
+                        }
+                        if (vboMatrix2 != 0) {
+                            for (unsigned int i = 0; i < 4; i++) {
+                                glCheck(glEnableVertexAttribArray(i + 3));
+                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboMatrix2));
+                                glCheck(glVertexAttribPointer(i + 3, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                                                        (const GLvoid*)(sizeof(GLfloat) * i * 4)));
+                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                                glCheck(glVertexAttribDivisor(i + 3, 1));
+                                glCheck(glDisableVertexAttribArray(i + 3));
                             }
                         }
                     }

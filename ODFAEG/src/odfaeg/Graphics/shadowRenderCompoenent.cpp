@@ -18,8 +18,10 @@ namespace odfaeg {
                 shadowMap.create(resolution.x, resolution.y,settings);
                 settings.depthBits = 24;
                 stencilBuffer.create(resolution.x, resolution.y,settings);
+                depthBuffer.create(resolution.x, resolution.y, settings);
                 stencilBufferTile = Sprite(stencilBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
                 shadowTile = Sprite(shadowMap.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+                depthBufferTile = Sprite(depthBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
                 core::FastDelegate<bool> signal (&ShadowRenderComponent::needToUpdate, this);
                 core::FastDelegate<void> slot (&ShadowRenderComponent::drawNextFrame, this);
                 core::Command cmd(signal, slot);
@@ -27,11 +29,45 @@ namespace odfaeg {
                 if (settings.versionMajor >= 3 && settings.versionMinor >= 3) {
                     glGenBuffers(1, &vboWorldMatrices);
                     glGenBuffers(1, &vboShadowProjMatrices);
+                    const std::string buildDepthBufferVertexShader = R"(#version 460 core
+                                                                        layout (location = 0) in vec3 position;
+                                                                        layout (location = 1) in vec4 color;
+                                                                        layout (location = 2) in vec2 texCoords;
+                                                                        layout (location = 3) in mat4 worldMat;
+                                                                        uniform mat4 projectionMatrix;
+                                                                        uniform mat4 viewMatrix;
+                                                                        uniform mat4 textureMatrix;
+                                                                        out vec2 fTexCoords;
+                                                                        out vec4 frontColor;
+                                                                        void main() {
+                                                                            gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
+                                                                            fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                                                            frontColor = color;
+                                                                        }
+                                                                     )";
+                    const std::string buildDepthBufferFragmentShader = R"(#version 460 core
+                                                                          in vec4 frontColor;
+                                                                          in vec2 fTexCoords;
+                                                                          uniform sampler2D texture;
+                                                                          uniform float haveTexture;
+                                                                          layout (location = 0) out vec4 fColor;
+                                                                          void main () {
+                                                                              vec4 texel = texture2D(texture, fTexCoords);
+                                                                              vec4 colors[2];
+                                                                              colors[1] = texel * frontColor;
+                                                                              colors[0] = frontColor;
+                                                                              bool b = (haveTexture > 0.9);
+                                                                              float current_alpha = colors[int(b)].a;
+                                                                              float z = gl_FragCoord.z;
+                                                                              fColor = vec4(0, 0, z, current_alpha);
+                                                                          }
+                                                                        )";
                     const std::string buildShadowMapVertexShader = R"(#version 460 core
                                                         layout (location = 0) in vec3 position;
                                                         layout (location = 1) in vec4 color;
                                                         layout (location = 2) in vec2 texCoords;
                                                         layout (location = 3) in mat4 worldMat;
+                                                        layout (location = 7) in mat4 shadowProjMat;
                                                         uniform mat4 projectionMatrix;
                                                         uniform mat4 viewMatrix;
                                                         uniform mat4 textureMatrix;
@@ -87,9 +123,13 @@ namespace odfaeg {
                                                                           in vec2 fTexCoords;
                                                                           uniform sampler2D texture;
                                                                           uniform sampler2D stencilBuffer;
+                                                                          uniform sampler2D depthBuffer;
                                                                           uniform float haveTexture;
+                                                                          uniform vec3 resolution;
                                                                           layout (location = 0) out vec4 fColor;
                                                                           void main() {
+                                                                            vec2 position = (gl_FragCoord.xy / resolution.xy);
+                                                                            vec4 depth = texture2D(depthBuffer, position);
                                                                             vec4 texel = texture2D(texture, fTexCoords);
                                                                             vec4 colors[2];
                                                                             colors[1] = texel * frontColor;
@@ -99,21 +139,37 @@ namespace odfaeg {
                                                                             vec4 stencil = texture2D (stencilBuffer, shadowCoords.xy);
                                                                             float z = gl_FragCoord.z;
                                                                             colors[1] = vec4 (0, 0, 0, color);
-                                                                            colors[0] = vec4 (0.5, 0.5, 0.5, 0.5);
+                                                                            colors[0] = vec4 (1, 1, 1, 1);
                                                                             b = (stencil.z < z);
+                                                                            /*vec4 visibility;
+                                                                            if (stencil.z < z) {
+                                                                                if (depth.z >= z) {
+                                                                                    visibility = vec4 (1, 1, 1, depth.a);
+                                                                                } else {
+                                                                                    visibility = vec4 (0, 0, 0, color);
+                                                                                }
+                                                                            } else {
+                                                                                visibility = vec4 (1, 1, 1, 1);
+                                                                            }*/
                                                                             vec4 visibility = colors[int(b)];
                                                                             fColor = visibility;
                                                                           }
                                                                           )";
+                        if (!depthGenShader.loadFromMemory(buildDepthBufferVertexShader, buildDepthBufferFragmentShader))  {
+                            throw core::Erreur(52, "Error, failed to load build depth buffer shader", 3);
+                        }
                         if (!buildShadowMapShader.loadFromMemory(buildShadowMapVertexShader, buildShadowMapFragmentShader)) {
                             throw core::Erreur(53, "Error, failed to load build shadow map shader", 3);
                         }
                         if (!perPixShadowShader.loadFromMemory(perPixShadowVertexShader, perPixShadowFragmentShader)) {
                             throw core::Erreur(54, "Error, failed to load per pix shadow map shader", 3);
                         }
+                        depthGenShader.setParameter("texture", Shader::CurrentTexture);
                         buildShadowMapShader.setParameter("texture", Shader::CurrentTexture);
                         perPixShadowShader.setParameter("stencilBuffer", stencilBuffer.getTexture());
+                        perPixShadowShader.setParameter("depthBuffer", depthBuffer.getTexture());
                         perPixShadowShader.setParameter("texture", Shader::CurrentTexture);
+                        perPixShadowShader.setParameter("resolution", resolution.x, resolution.y, resolution.z);
 
                 } else {
                     if (Shader::isAvailable()) {
@@ -209,27 +265,34 @@ namespace odfaeg {
                 physic::BoundingBox viewArea = view.getViewVolume();
                 math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
                 math::Vec3f size (viewArea.getWidth(), viewArea.getHeight(), 0);
+                depthBuffer.setView(view);
                 if (shadowMap.getSettings().versionMajor >= 3 && shadowMap.getSettings().versionMinor >= 3) {
                     math::Matrix4f viewMatrix = lightView.getViewMatrix().getMatrix().transpose();
                     math::Matrix4f projMatrix = lightView.getProjMatrix().getMatrix().transpose();
+                    math::Matrix4f dViewMatrix = view.getViewMatrix().getMatrix().transpose();
+                    math::Matrix4f dProjMatrix = view.getProjMatrix().getMatrix().transpose();
                     buildShadowMapShader.setParameter("projectionMatrix", projMatrix);
                     buildShadowMapShader.setParameter("viewMatrix", viewMatrix);
+                    depthGenShader.setParameter("projectionMatrix", dProjMatrix);
+                    depthGenShader.setParameter("viewMatrix", dViewMatrix);
                     RenderStates states;
-                    states.shader = &buildShadowMapShader;
-                    for (unsigned int i = 0; i < m_instances.size(); i++) {
-                        if (m_instances[i].getAllVertices().getVertexCount() > 0) {
-                            states.texture = m_instances[i].getMaterial().getTexture();
-                            if (m_instances[i].getMaterial().getTexture() != nullptr) {
-                                math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
+                    for (unsigned int i = 0; i < m_shadow_instances.size(); i++) {
+                        if (m_shadow_instances[i].getAllVertices().getVertexCount() > 0) {
+                            states.texture = m_shadow_instances[i].getMaterial().getTexture();
+                            if (m_shadow_instances[i].getMaterial().getTexture() != nullptr) {
+                                math::Matrix4f texMatrix = m_shadow_instances[i].getMaterial().getTexture()->getTextureMatrix();
                                 buildShadowMapShader.setParameter("textureMatrix", texMatrix);
                                 buildShadowMapShader.setParameter("haveTexture", 1.f);
+                                depthGenShader.setParameter("textureMatrix", texMatrix);
+                                depthGenShader.setParameter("haveTexture", 1.f);
                             } else {
                                 buildShadowMapShader.setParameter("haveTexture", 0.f);
+                                depthGenShader.setParameter("haveTexture", 0.f);
                             }
                             vb.clear();
-                            vb.setPrimitiveType(m_instances[i].getVertexArrays()[0]->getPrimitiveType());
+                            vb.setPrimitiveType(m_shadow_instances[i].getVertexArrays()[0]->getPrimitiveType());
                             matrices.clear();
-                            std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
+                            std::vector<TransformMatrix*> tm = m_shadow_instances[i].getTransforms();
                             for (unsigned int j = 0; j < tm.size(); j++) {
                                 tm[j]->update();
                                 std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
@@ -239,25 +302,35 @@ namespace odfaeg {
                             }
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
                             glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
-                            /*for (unsigned int i = 0; i < 4 ; i++) {
-                                glCheck(glEnableVertexAttribArray(3 + i));
-                                glCheck(glVertexAttribPointer(3 + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
-                                                        (const GLvoid*)(sizeof(GLfloat) * i * 4)));
-                                glCheck(glVertexAttribDivisor(3 + i, 1));
-                                glCheck(glDisableVertexAttribArray(3 + i));
-                            }*/
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                            if (m_instances[i].getVertexArrays().size() > 0) {
-                                for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
-                                    vb.append((*m_instances[i].getVertexArrays()[0])[j]);
+                            matrices2.clear();
+                            std::vector<TransformMatrix> tm2 = m_shadow_instances[i].getShadowProjMatrix();
+                            for (unsigned int j = 0; j < tm2.size(); j++) {
+                                tm2[j].update();
+                                std::array<float, 16> matrix = tm2[j].getMatrix().transpose().toGlMatrix();
+                                for (unsigned int n = 0; n < 16; n++) {
+                                    matrices2.push_back(matrix[n]);
+                                }
+                            }
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboShadowProjMatrices));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, matrices2.size() * sizeof(float), &matrices2[0], GL_DYNAMIC_DRAW));
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                            if (m_shadow_instances[i].getVertexArrays().size() > 0) {
+                                for (unsigned int j = 0; j < m_shadow_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
+                                    vb.append((*m_shadow_instances[i].getVertexArrays()[0])[j]);
                                 }
                                 vb.update();
                             }
-                            stencilBuffer.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states);
+                            states.shader = &buildShadowMapShader;
+                            stencilBuffer.drawInstanced(vb, m_shadow_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_shadow_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states, vboWorldMatrices, vboShadowProjMatrices);
+                            states.shader = &depthGenShader;
+                            depthBuffer.drawInstanced(vb, m_shadow_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_shadow_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states, vboWorldMatrices);
                         }
                     }
                     stencilBuffer.display();
                     stencilBufferTile.setPosition(position);
+                    depthBuffer.display();
+                    depthBufferTile.setPosition(position);
                     shadowMap.setView(view);
                     math::Matrix4f biasMatrix(0.5f, 0.0f, 0.0f, 0.0f,
                                               0.0f, 0.5f, 0.0f, 0.0f,
@@ -289,51 +362,6 @@ namespace odfaeg {
                             shadowMap.drawVertexBuffer(vb, states);
                         }
                     }
-                    /*for (unsigned int i = 0; i < m_shadow_instances.size(); i++) {
-                        if (m_shadow_instances[i].getAllVertices().getVertexCount() > 0) {
-                            states.texture = m_shadow_instances[i].getMaterial().getTexture();
-                            if (m_shadow_instances[i].getMaterial().getTexture() != nullptr) {
-                                math::Matrix4f texMatrix = m_shadow_instances[i].getMaterial().getTexture()->getTextureMatrix();
-                                perPixShadowShader.setParameter("textureMatrix", texMatrix);
-                                perPixShadowShader.setParameter("haveTexture", 1.f);
-                            } else {
-                                perPixShadowShader.setParameter("haveTexture", 0.f);
-                            }
-                            vb2.clear();
-                            vb2.setPrimitiveType(m_shadow_instances[i].getVertexArrays()[0]->getPrimitiveType());
-                            matrices.clear();
-                            std::vector<TransformMatrix*> tm = m_shadow_instances[i].getTransforms();
-                            for (unsigned int j = 0; j < tm.size(); j++) {
-                                tm[j]->update();
-                                std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
-                                for (unsigned int n = 0; n < 16; n++) {
-                                    matrices.push_back(matrix[n]);
-                                }
-                            }
-                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
-                            glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
-                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                            matrices2.clear();
-                            std::vector<TransformMatrix> tm2 = m_shadow_instances[i].getShadowProjMatrix();
-                            for (unsigned int j = 0; j < tm2.size(); j++) {
-                                tm2[j].update();
-                                std::array<float, 16> matrix = tm2[j].getMatrix().transpose().toGlMatrix();
-                                for (unsigned int n = 0; n < 16; n++) {
-                                    matrices2.push_back(matrix[n]);
-                                }
-                            }
-                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboShadowProjMatrices));
-                            glCheck(glBufferData(GL_ARRAY_BUFFER, matrices2.size() * sizeof(float), &matrices2[0], GL_DYNAMIC_DRAW));
-                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                            if (m_shadow_instances[i].getVertexArrays().size() > 0) {
-                                for (unsigned int j = 0; j < m_shadow_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
-                                    vb2.append((*m_shadow_instances[i].getVertexArrays()[0])[j]);
-                                }
-                                vb2.update();
-                            }
-                            shadowMap.drawInstanced(vb2, vboWorldMatrices, m_shadow_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_shadow_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states, vboShadowProjMatrices);
-                        }
-                    }*/
                     shadowMap.display();
                 } else {
                     RenderStates states;
@@ -421,6 +449,7 @@ namespace odfaeg {
                 this->view = view;/*View(view.getSize().x, view.getSize().y, view.getPosition().z, view.getDepth());
                 this->view.setCenter(view.getPosition());*/
                 shadowMap.setView(this->view);
+                depthBuffer.setView(this->view);
             }
             bool ShadowRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities)
             {
@@ -460,6 +489,7 @@ namespace odfaeg {
             void ShadowRenderComponent::clear() {
                  shadowMap.clear(sf::Color::White);
                  stencilBuffer.clear(sf::Color::Transparent);
+                 depthBuffer.clear(sf::Color::Transparent);
             }
             void ShadowRenderComponent::changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em) {
                 bool removed;

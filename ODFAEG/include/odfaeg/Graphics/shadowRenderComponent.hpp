@@ -53,9 +53,11 @@ namespace odfaeg {
                 std::vector<Entity*> visibleEntities; /**> Entities loaded*/
                 RenderTexture stencilBuffer; /**> the stencil buffer.*/
                 RenderTexture shadowMap; /**> the shadow map.*/
-                Sprite stencilBufferTile, shadowTile; /**> the stencil and shadow map buffer.*/
+                RenderTexture depthBuffer;
+                Sprite stencilBufferTile, shadowTile, depthBufferTile; /**> the stencil and shadow map buffer.*/
                 Shader buildShadowMapShader; /**> the shader to generate the stencil buffer.*/
                 Shader perPixShadowShader; /**> the shader to generate the shadow map.*/
+                Shader depthGenShader;
                 View view; /**> the view of the component.*/
                 std::string expression;
                 bool update;

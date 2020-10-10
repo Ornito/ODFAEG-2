@@ -223,7 +223,7 @@ namespace odfaeg {
                             math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
                             shader.setParameter("textureMatrix", texMatrix);
                         }
-                        frameBuffer.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, 4, tm.size(), states);
+                        frameBuffer.drawInstanced(vb, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, 4, tm.size(), states, vboWorldMatrices);
                     }
                 }
             } else {

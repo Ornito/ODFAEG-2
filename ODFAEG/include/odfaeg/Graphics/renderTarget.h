@@ -7,6 +7,7 @@
 #include "renderStates.h"
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include "shader.h"
+#include <cstdarg>
 ////////////////////////////////////////////////////////////
 //
 // /!\ Important : this class is a modification of the circle shape class of the SFML
@@ -221,7 +222,7 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             math::Vec3f mapCoordsToPixel(const math::Vec3f& point, View& view);
-            void drawInstanced(VertexBuffer& vertexBuffer, unsigned int vboWorldMatrices, enum sf::PrimitiveType type, unsigned int start, unsigned int nb, unsigned int nbInstances, RenderStates states, unsigned int vboMatrix2 = 0);
+            void drawInstanced(VertexBuffer& vertexBuffer, enum sf::PrimitiveType type, unsigned int start, unsigned int nb, unsigned int nbInstances, RenderStates states, unsigned int vboMatrix1=0, unsigned int vboMatrix2=0);
 
             ////////////////////////////////////////////////////////////
             /// \brief Draw a drawable object to the render-target

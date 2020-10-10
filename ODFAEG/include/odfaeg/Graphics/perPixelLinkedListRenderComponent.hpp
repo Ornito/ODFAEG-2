@@ -13,7 +13,7 @@ namespace odfaeg {
         };*/
         class PerPixelLinkedListRenderComponent : public HeavyComponent {
             public :
-            PerPixelLinkedListRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings, bool drawInstanced = true);
+            PerPixelLinkedListRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings);
                  /**
             * \fn bool loadEntitiesOnComponent(std::vector<Entity*> visibleEntities)
             * \brief load the given entities onto the component.
