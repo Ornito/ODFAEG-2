@@ -138,20 +138,20 @@ namespace odfaeg {
                                                                             float color = colors[int(b)].a;
                                                                             vec4 stencil = texture2D (stencilBuffer, shadowCoords.xy);
                                                                             float z = gl_FragCoord.z;
-                                                                            colors[1] = vec4 (0, 0, 0, color);
+                                                                            /*colors[1] = vec4 (0, 0, 0, color);
                                                                             colors[0] = vec4 (1, 1, 1, 1);
-                                                                            b = (stencil.z < z);
-                                                                            /*vec4 visibility;
+                                                                            b = (stencil.z < z);*/
+                                                                            vec4 visibility;
                                                                             if (stencil.z < z) {
-                                                                                if (depth.z >= z) {
+                                                                                if (depth.z > 0) {
                                                                                     visibility = vec4 (1, 1, 1, depth.a);
                                                                                 } else {
                                                                                     visibility = vec4 (0, 0, 0, color);
                                                                                 }
                                                                             } else {
                                                                                 visibility = vec4 (1, 1, 1, 1);
-                                                                            }*/
-                                                                            vec4 visibility = colors[int(b)];
+                                                                            }
+                                                                            //vec4 visibility = colors[int(b)];
                                                                             fColor = visibility;
                                                                           }
                                                                           )";
