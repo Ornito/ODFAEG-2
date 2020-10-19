@@ -18,6 +18,7 @@ namespace sorrok {
         addClock(sf::Clock(), "FPS");
         day = true;
         sf::Listener::setUpVector(0.f, 0.f, 1.f);
+        ps = new ParticleSystem(Vec3f(0, 0, 150),Vec3f(100, 100, 0));
     }
     void MyAppli::gaignedFocus(gui::TextArea* textArea) {
         std::cout<<"gaigned focus"<<std::endl;
@@ -125,13 +126,14 @@ namespace sorrok {
         bm.set2DIsoMatrix();
         theMap->setBaseChangementMatrix(bm);
         World::addEntityManager(theMap);
-        ps = new ParticleSystem(Vec3f(0, 0, 0), Vec3f(50, 50, 0), theMap);
         World::setCurrentEntityManager("Map test");
         eu = new EntitiesUpdater();
         World::addWorker(eu);
         au = new AnimUpdater();
         au->setInterval(sf::seconds(0.01f));
         World::addTimer(au);
+        psu = new ParticleSystemUpdater();
+        World::addWorker(psu);
         tiles.push_back(new Tile(tm.getResourceByAlias("GRASS"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 0, 100, 100)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 100, 100, 100)));
@@ -257,12 +259,14 @@ namespace sorrok {
         ForceAffector affector(acceleration);
         billboard->getParticleSystem().addAffector(affector);*/
         ps->addEmitter(refEmitter(emitter));
+        psu->addParticleSystem(ps);
+        World::addEntity(ps);
         std::cout<<"particle system"<<std::endl;
         View view = getView();
         //view.rotate(0, 0, 20);
         PerPixelLinkedListRenderComponent *frc1 = new PerPixelLinkedListRenderComponent(getRenderWindow(),0, "E_BIGTILE", ContextSettings(0, 0, 4, 4, 6));
+        PerPixelLinkedListRenderComponent *frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(), 1, "E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PARTICLES", ContextSettings(0, 0, 4, 4, 6));
         ShadowRenderComponent *src = new ShadowRenderComponent(getRenderWindow(), 2, "E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
-        PerPixelLinkedListRenderComponent *frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(), 1, "E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
         LightRenderComponent *lrc = new LightRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", ContextSettings(0, 0, 4, 4, 6));
         /*gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
         textArea->addFocusListener(this);
@@ -350,7 +354,7 @@ namespace sorrok {
     void MyAppli::onRender(RenderComponentManager *cm) {
         // draw everything here...
         World::drawOnComponents("E_BIGTILE", 0);
-        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO", 1);
+        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PARTICLES", 1);
         World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO", 2);
         World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", 3);
         fpsCounter++;
@@ -472,7 +476,6 @@ namespace sorrok {
                 getView().move(d.x, d.y, d.y);
                 World::moveEntity(caracter, d.x, d.y, d.y);
                 sf::Listener::setPosition(newPos.x, newPos.y, 0);
-                World::update();
             } else {
 
                 Vec3f actualPos = caracter->getCenter();
@@ -502,8 +505,8 @@ namespace sorrok {
                         player.stop();
                 }
             }
-            World::update();
         }
-        ps->update(getClock("LoopTime").getElapsedTime());
+        World::update();
+        //ps->update(getClock("LoopTime").getElapsedTime());
     }
 }

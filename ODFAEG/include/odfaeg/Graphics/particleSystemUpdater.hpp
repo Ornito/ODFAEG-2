@@ -41,6 +41,8 @@ namespace odfaeg {
             void onUpdate () {
                 for (unsigned int i = 0; i < particleSystems.size(); i++) {
                     particleSystems[i]->update();
+                    if (odfaeg::core::Application::app != nullptr)
+                        particleSystems[i]->update(odfaeg::core::Application::app->getClock("LoopTime").getElapsedTime());
                 }
                 World::changeVisibleEntity(nullptr, nullptr);
             }

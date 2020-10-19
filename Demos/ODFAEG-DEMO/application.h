@@ -26,6 +26,7 @@
 #include "odfaeg/Core/command.h"
 #include "odfaeg/Graphics/entitiesUpdater.h"
 #include "odfaeg/Graphics/animationUpdater.h"
+#include "odfaeg/Graphics/particleSystemUpdater.hpp"
 #include "hero.hpp"
 #include "odfaeg/Graphics/billBoard.h"
 #include "odfaeg/Physics/emmiters.h"
@@ -41,6 +42,7 @@ namespace sorrok {
         const float speed = 0.2f;
         odfaeg::graphic::EntitiesUpdater *eu;
         odfaeg::graphic::AnimUpdater *au;
+        odfaeg::graphic::ParticleSystemUpdater* psu;
         bool running;
         odfaeg::graphic::g2d::Wall *w;
         Caracter* caracter;
