@@ -19,7 +19,6 @@ namespace odfaeg {
                 pTop.setRelSize(1.f, 0.1f);
                 pDirectories.setRelPosition(0.f, 0.1f);
                 pDirectories.setRelSize(0.5f, 0.8f);
-                pDirectories.setName("PDIRECTORIES");
                 pFiles.setRelPosition(0.5f, 0.1f);
                 pFiles.setRelSize(0.5f, 0.8f);
                 pBottom.setRelPosition(0.f, 0.9f);
@@ -274,6 +273,7 @@ namespace odfaeg {
             void FileDialog::onFileSelected(Label* label) {
                 std::string fileName = label->getText();
                 sf::Color color = label->getForegroundColor();
+                pFiles.setName("PFILES");
                 if (color == sf::Color::Red) {
                     for (unsigned int i = 0; i < pFiles.getChildren().size(); i++) {
                         if (static_cast<Label*>(pFiles.getChildren()[i])->getForegroundColor() == sf::Color::Red) {

@@ -91,18 +91,11 @@ namespace odfaeg {
             void Panel::updateScrolls() {
                 maxSize = math::Vec3f(0, 0, 0);
                 std::vector<LightComponent*> children = getChildren();
-                math::Vec3f positions;
-                if (children.size() > 0 && children[0]->getPosition().y < getPosition().y) {
-                    positions.y = getPosition().y - children[0]->getPosition().y;
-                }
-                if (children.size() > 0 && children[0]->getPosition().x < getPosition().x) {
-                    positions.x = getPosition().x - children[0]->getPosition().x;
-                }
                 for (unsigned int i = 0; i < children.size(); i++) {
-                    if (positions.y + children[i]->getPosition().y - getPosition().y + children[i]->getSize().y > maxSize.y)
-                        maxSize.y = positions.y + children[i]->getPosition().y - getPosition().y + children[i]->getSize().y;
-                    if (positions.x + children[i]->getPosition().x - getPosition().x + children[i]->getSize().x > maxSize.x)
-                        maxSize.x = positions.x + children[i]->getPosition().x - getPosition().x + children[i]->getSize().x;
+                    if (children[i]->getPosition().y - getPosition().y + children[i]->getSize().y > maxSize.y)
+                        maxSize.y = children[i]->getPosition().y - getPosition().y + children[i]->getSize().y;
+                    if (children[i]->getPosition().x - getPosition().x + children[i]->getSize().x > maxSize.x)
+                        maxSize.x = children[i]->getPosition().x - getPosition().x + children[i]->getSize().x;
                 }
                 for (unsigned int i = 0; i < sprites.size(); i++) {
                     if (sprites[i].getPosition().y + sprites[i].getSize().y > maxSize.y)
@@ -139,6 +132,7 @@ namespace odfaeg {
             }
             void Panel::addChild(LightComponent* child) {
                 LightComponent::addChild(child);
+                recomputeSize();
                 updateScrolls();
             }
             void Panel::onSizeRecomputed() {
