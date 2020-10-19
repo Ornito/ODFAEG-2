@@ -85,23 +85,6 @@ namespace odfaeg {
                     * \param other : compare if an entity is equal to another.
                     */
                     bool operator== (Entity &other);
-                    /**
-                    * \fn  void setShadowCenter (math::Vec3f shadCenter);
-                    * \brief set the center of the shadow.
-                    * \param shadCenter : the center of the shadow.
-                    */
-                    void setShadowCenter (math::Vec3f shadCenter);
-                    /**
-                    * \fn math::Vec3f getShadowCenter();
-                    * \brief get the center of the shadow.
-                    * \return the center of the shadow.
-                    */
-                    math::Vec3f getShadowCenter();
-                    /**
-                    * \fn bool selectable() const;
-                    * \brief redefinition of the method of the base class Entity.
-                    * \return if the entity is selectable.
-                    */
                     bool selectable () const;
                     /**
                     * \fn bool isLight() const;

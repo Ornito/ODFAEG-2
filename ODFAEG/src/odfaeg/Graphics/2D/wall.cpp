@@ -9,6 +9,8 @@ namespace odfaeg {
                 float sy = light->getHeight() / (light->getHeight() * 0.75f);
                 shadowScale = math::Vec3f(1.f, sy, 1.f);
                 setShadowScale(shadowScale);
+                int c = getSize().y * sy;
+                setShadowCenter(math::Vec3f(0, 0, -c));
             }
             bool Wall::isLeaf() const {
                 return false;

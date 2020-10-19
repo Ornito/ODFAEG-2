@@ -204,7 +204,7 @@ namespace sorrok {
             decor->getGlobalBounds().getSize().x, decor->getGlobalBounds().getSize().y * 0.25f, 0);
             //std::cout<<bb->getPosition()<<" "<<bb->getSize()<<std::endl;
             decor->setCollisionVolume(bb);
-            decor->setShadowCenter(Vec3f(0, 500, 0));
+            decor->setShadowCenter(Vec3f(0, 500, -250));
             thouse->getFaces()[0]->getMaterial().setSpecularPower(10);
             thouse->getFaces()[0]->getMaterial().setSpecularIntensity(100);
             std::cout<<"add house"<<std::endl;
@@ -232,6 +232,8 @@ namespace sorrok {
             fire->addFrame(fire2);
             fire->addFrame(fire3);
             fire->play(true);
+            fire->setShadowScale(Vec3f(1, -1, 1));
+            fire->setShadowCenter(Vec3f(0, 350, -150));
             std::cout<<"add fire"<<std::endl;
             World::addEntity(fire);
             au->addAnim(fire);
@@ -309,6 +311,8 @@ namespace sorrok {
         caracter->getGlobalBounds().getSize().x, caracter->getGlobalBounds().getSize().y * 0.25f, 0);
         caracter->setCollisionVolume(bb2);
         caracter->setCenter(Vec3f(getView().getPosition().x, getView().getPosition().y, 300));
+        caracter->setShadowScale(Vec3f(1, -1, 1));
+        caracter->setShadowCenter(Vec3f(0, 280, -140));
         //std::cout<<bb2->getPosition()<<" "<<bb2->getSize()<<std::endl;
         g2d::PonctualLight* light1 = new g2d::PonctualLight(Vec3f(-50, 420, 420), 100, 50, 0, 255, sf::Color::Yellow, 16);
         light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 0, 255, sf::Color::Yellow, 16);

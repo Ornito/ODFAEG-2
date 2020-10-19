@@ -204,13 +204,13 @@ namespace odfaeg {
                         }
                         if (vboMatrix2 != 0) {
                             for (unsigned int i = 0; i < 4; i++) {
-                                glCheck(glEnableVertexAttribArray(i + 3));
+                                glCheck(glEnableVertexAttribArray(i + 7));
                                 glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboMatrix2));
-                                glCheck(glVertexAttribPointer(i + 3, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                                glCheck(glVertexAttribPointer(i + 7, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
                                                         (const GLvoid*)(sizeof(GLfloat) * i * 4)));
                                 glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                                glCheck(glVertexAttribDivisor(i + 3, 1));
-                                glCheck(glDisableVertexAttribArray(i + 3));
+                                glCheck(glVertexAttribDivisor(i + 7, 1));
+                                glCheck(glDisableVertexAttribArray(i + 7));
                             }
                         }
                     }
