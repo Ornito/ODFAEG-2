@@ -26,6 +26,7 @@ namespace odfaeg {
                 void setBorderThickness(float thickness);
                 void setBorderColor(sf::Color color);
                 void updateScrolls();
+                void addChild(LightComponent* child);
             private :
                 bool scrollX, scrollY;
                 RectangleShape rect;

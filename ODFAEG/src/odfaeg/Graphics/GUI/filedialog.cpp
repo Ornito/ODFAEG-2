@@ -19,6 +19,7 @@ namespace odfaeg {
                 pTop.setRelSize(1.f, 0.1f);
                 pDirectories.setRelPosition(0.f, 0.1f);
                 pDirectories.setRelSize(0.5f, 0.8f);
+                pDirectories.setName("PDIRECTORIES");
                 pFiles.setRelPosition(0.5f, 0.1f);
                 pFiles.setRelSize(0.5f, 0.8f);
                 pBottom.setRelPosition(0.f, 0.9f);
@@ -119,7 +120,6 @@ namespace odfaeg {
                             core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
                             core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lDirectory), core::FastDelegate<void>(&FileDialog::onDirSelected, this, lDirectory));
                             if(S_ISDIR(st.st_mode)) {
-                                std::cout<<"dir"<<std::endl;
                                 lDirectory->setForegroundColor(sf::Color::Red);
                                 getListener().connect("1d"+textDir, cmd);
                             } else {

@@ -39,7 +39,7 @@ namespace odfaeg {
                 return false;
             }
             void Panel::moveXItems() {
-                if (mouseDeltaX > 0 && vertScrollBar.getPosition().x + vertScrollBar.getSize().x + mouseDeltaX <= getPosition().x + getSize().x - 10) {
+                if (mouseDeltaX > 0 && vertScrollBar.getPosition().x + vertScrollBar.getSize().x + math::Math::abs(mouseDeltaX) <= getPosition().x + getSize().x - 10) {
                     vertScrollBar.move(math::Vec3f(mouseDeltaX, 0, 0));
                     for (unsigned int i = 0; i < getChildren().size(); i++) {
                         getChildren()[i]->move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
@@ -50,7 +50,7 @@ namespace odfaeg {
                     for (unsigned int i = 0; i < shapes.size(); i++) {
                         shapes[i]->move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
                     }
-                } else if (mouseDeltaX < 0 && vertScrollBar.getPosition().x +  mouseDeltaX >= getPosition().x) {
+                } else if (mouseDeltaX < 0 && vertScrollBar.getPosition().x +  math::Math::abs(mouseDeltaX) >= getPosition().x) {
                     vertScrollBar.move(math::Vec3f(mouseDeltaX, 0, 0));
                     for (unsigned int i = 0; i < getChildren().size(); i++) {
                         getChildren()[i]->move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
@@ -64,7 +64,7 @@ namespace odfaeg {
                 }
             }
             void Panel::moveYItems() {
-                if (mouseDeltaY > 0 && horScrollBar.getPosition().y + horScrollBar.getSize().y + mouseDeltaY <= getPosition().y + getSize().y - 10) {
+                if (mouseDeltaY > 0 && horScrollBar.getPosition().y + horScrollBar.getSize().y + math::Math::abs(mouseDeltaY) <= getPosition().y + getSize().y - 10) {
                     horScrollBar.move(math::Vec3f(0, mouseDeltaY, 0));
                     for (unsigned int i = 0; i < getChildren().size(); i++) {
                         getChildren()[i]->move(math::Vec3f(0, -(maxSize.y / (getSize().y - 10) * mouseDeltaY), 0));
@@ -75,7 +75,7 @@ namespace odfaeg {
                     for (unsigned int i = 0; i < shapes.size(); i++) {
                         shapes[i]->move(math::Vec3f(0, -(maxSize.y / (getSize().y - 10) * mouseDeltaY), 0));
                     }
-                } else if (mouseDeltaY < 0 && horScrollBar.getPosition().y + mouseDeltaY >= getPosition().y) {
+                } else if (mouseDeltaY < 0 && horScrollBar.getPosition().y +  math::Math::abs(mouseDeltaY) >= getPosition().y) {
                     horScrollBar.move(math::Vec3f(0, mouseDeltaY, 0));
                     for (unsigned int i = 0; i < getChildren().size(); i++) {
                         getChildren()[i]->move(math::Vec3f(0, -(maxSize.y / (getSize().y - 10) * mouseDeltaY), 0));
@@ -91,11 +91,18 @@ namespace odfaeg {
             void Panel::updateScrolls() {
                 maxSize = math::Vec3f(0, 0, 0);
                 std::vector<LightComponent*> children = getChildren();
+                math::Vec3f positions;
+                if (children.size() > 0 && children[0]->getPosition().y < getPosition().y) {
+                    positions.y = getPosition().y - children[0]->getPosition().y;
+                }
+                if (children.size() > 0 && children[0]->getPosition().x < getPosition().x) {
+                    positions.x = getPosition().x - children[0]->getPosition().x;
+                }
                 for (unsigned int i = 0; i < children.size(); i++) {
-                    if (children[i]->getPosition().y - getPosition().y + children[i]->getSize().y > maxSize.y)
-                        maxSize.y = children[i]->getPosition().y - getPosition().y + children[i]->getSize().y;
-                    if (children[i]->getPosition().x - getPosition().x + children[i]->getSize().x > maxSize.x)
-                        maxSize.x = children[i]->getPosition().x - getPosition().x + children[i]->getSize().x;
+                    if (positions.y + children[i]->getPosition().y - getPosition().y + children[i]->getSize().y > maxSize.y)
+                        maxSize.y = positions.y + children[i]->getPosition().y - getPosition().y + children[i]->getSize().y;
+                    if (positions.x + children[i]->getPosition().x - getPosition().x + children[i]->getSize().x > maxSize.x)
+                        maxSize.x = positions.x + children[i]->getPosition().x - getPosition().x + children[i]->getSize().x;
                 }
                 for (unsigned int i = 0; i < sprites.size(); i++) {
                     if (sprites[i].getPosition().y + sprites[i].getSize().y > maxSize.y)
@@ -130,8 +137,12 @@ namespace odfaeg {
                     scrollY = false;
                 }
             }
-            void Panel::onSizeRecomputed() {
+            void Panel::addChild(LightComponent* child) {
+                LightComponent::addChild(child);
                 updateScrolls();
+            }
+            void Panel::onSizeRecomputed() {
+
             }
             void Panel::removeAll() {
                 LightComponent::removeAll();
