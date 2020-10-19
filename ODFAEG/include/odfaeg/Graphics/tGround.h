@@ -104,6 +104,7 @@ namespace odfaeg {
             void recomputeSize();
             math::Vec2f tileSize;
             int nbTilesPerRow;
+            std::vector<Tile*> m_tiles;
         };
     }
 }
