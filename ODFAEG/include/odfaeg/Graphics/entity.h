@@ -29,6 +29,9 @@ namespace odfaeg {
           */
         class ODFAEG_GRAPHICS_API Entity : public Transformable, public Drawable, public core::Registered<Entity> {
             public :
+                enum DrawMode {
+                    NORMAL, INSTANCED, BASE_INSTANCED
+                };
                 /** \fn Entity(math::Vec3f position, math::Vec3f size, math::Vec3f origin, std::string type, Entity* parent)
                  * \brief constructor.
                  * \param position : the position of the top left corner of the entity
@@ -375,6 +378,8 @@ namespace odfaeg {
                 math::Vec3f getShadowOrigin();
                 virtual void setBoneIndex (unsigned int boneIndex);
                 virtual unsigned int getBoneIndex();
+                DrawMode getDrawMode();
+                void setDrawMode (DrawMode);
             protected :
                 math::Vec3f shadowCenter, shadowScale, shadowRotationAxis, shadowOrigin; /**> The center of the shadow of the entity.*/
                 float shadowRotationAngle;
@@ -391,6 +396,7 @@ namespace odfaeg {
                 Entity& operator=(const Entity& entity) = delete; /**> an entity is not affectable*/
                 bool alreadySerialized;
                 unsigned int boneIndex;
+                DrawMode drawMode;
         };
     }
 }

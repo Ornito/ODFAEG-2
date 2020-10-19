@@ -87,7 +87,7 @@ namespace odfaeg {
             * \return false, a bigtile can have children.
             */
             bool isLeaf() const {
-                return false;
+                return const_cast<BigTile*>(this)->getNbChildren() > 0;
             }
             /**
             * \fn void vtserialize(Archive & ar)

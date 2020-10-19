@@ -6,7 +6,7 @@
 #include "odfaeg/Graphics/tGround.h"
 #include "odfaeg/Graphics/entitiesUpdater.h"
 #include "odfaeg/Graphics/billBoard.h"
-#include "odfaeg/Core/world.h"
+#include "odfaeg/Graphics/world.h"
 #include "odfaeg/Graphics/shadowRenderComponent.hpp"
 #include "odfaeg/Graphics/lightRenderComponent.hpp"
 #include "odfaeg/Graphics/zSortingRenderComponent.hpp"

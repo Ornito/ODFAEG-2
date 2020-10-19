@@ -374,6 +374,23 @@ namespace odfaeg {
                         frameBuffer.drawInstanced(vb, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
                     }
                 }
+                for (unsigned int i = 0; i < m_normals.size(); i++) {
+                   if (m_normals[i].getAllVertices().getVertexCount() > 0) {
+                        if (m_normals[i].getMaterial().getTexture() == nullptr) {
+                            perPixelLinkedList.setParameter("haveTexture", 0.f);
+                        } else {
+                            perPixelLinkedList.setParameter("haveTexture", 1.f);
+                        }
+                        currentStates.texture = m_normals[i].getMaterial().getTexture();
+                        vb.clear();
+                        vb.setPrimitiveType(m_normals[i].getAllVertices().getPrimitiveType());
+                        for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
+                            vb.append(m_normals[i].getAllVertices()[j]);
+                        }
+                        vb.update();
+                        frameBuffer.drawVertexBuffer(vb, currentStates);
+                    }
+                }
                 glCheck(glFinish());
                 glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -501,11 +518,15 @@ namespace odfaeg {
             for (unsigned int i = 0; i < vEntities.size(); i++) {
                 //if ( vEntities[i]->isLeaf()) {
                     for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
-                         batcher.addFace( vEntities[i]->getFace(j));
+                         if (vEntities[i]->getDrawMode() == Entity::INSTANCED)
+                            batcher.addFace( vEntities[i]->getFace(j));
+                         else
+                            normalBatcher.addFace(vEntities[i]->getFace(j));
                     }
                 //}
             }
             m_instances = batcher.getInstances();
+            m_normals = normalBatcher.getInstances();
             visibleEntities = vEntities;
             update = true;
             return true;

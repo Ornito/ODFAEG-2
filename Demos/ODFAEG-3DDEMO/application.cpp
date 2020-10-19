@@ -23,14 +23,14 @@ MyAppli::MyAppli(Vec2f size, std::string title) :
     frc->setView(view);
     ShadowRenderComponent* src = new ShadowRenderComponent(getRenderWindow(), 1, "E_CUBE+E_3DMODEL");
     src->setView(view);
-    OITRenderComponent* oit = new OITRenderComponent(getRenderWindow(), 2, "E_3DMODEL+E_CUBE");
+    OITRenderComponent* oit = new OITRenderComponent(getRenderWindow(), 1, "E_3DMODEL+E_CUBE");
     oit->setView(view);
     /*LightRenderComponent* lrc = new LightRenderComponent(getRenderWindow(), 3, "E_BIGTILE+E_CUBE+E_3DMODEL+E_PONCTUAL_LIGHT");
     lrc->setView(view);*/
     //getView().setPerspective(-size.x * 0.5f, size.x * 0.5f, -size.y * 0.5f, size.y * 0.5f,-1000, 1000);
     getRenderComponentManager().addComponent(frc);
-    getRenderComponentManager().addComponent(src);
-    getRenderComponentManager().addComponent(oit);
+    //getRenderComponentManager().addComponent(src);
+    //getRenderComponentManager().addComponent(oit);
     //getRenderComponentManager().addComponent(lrc);
     speed = 10.f;
     sensivity = 0.1f;
@@ -110,8 +110,8 @@ void MyAppli::onInit() {
 }
 void MyAppli::onRender(RenderComponentManager* frcm) {
     World::drawOnComponents("E_BIGTILE", 0);
-    World::drawOnComponents("E_CUBE+E_3DMODEL", 1);
-    World::drawOnComponents("E_3DMODEL+E_CUBE", 2);
+    //World::drawOnComponents("E_CUBE+E_3DMODEL", 1);
+    //World::drawOnComponents("E_3DMODEL+E_CUBE", 2);
     //World::drawOnComponents("E_BIGTILE+E_CUBE+E_3DMODEL+E_PONCTUAL_LIGHT", 3);
     fpsCounter++;
     if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {

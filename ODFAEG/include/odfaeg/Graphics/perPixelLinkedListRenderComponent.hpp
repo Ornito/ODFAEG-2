@@ -80,9 +80,9 @@ namespace odfaeg {
             private :
             RectangleShape quad;
             std::vector<std::pair<std::reference_wrapper<Drawable>, RenderStates>> drawables;
-            Batcher batcher; /**> A group of faces using the same materials and primitive type.*/
+            Batcher batcher, normalBatcher; /**> A group of faces using the same materials and primitive type.*/
             sf::Color backgroundColor; /**> The background color.*/
-            std::vector<Instance> m_instances; /**> Instances to draw. (Instanced rendering.) */
+            std::vector<Instance> m_instances, m_normals; /**> Instances to draw. (Instanced rendering.) */
             std::vector<std::unique_ptr<Face>> additionalFaces;
             std::vector<Entity*> visibleEntities; /**> Entities loaded*/
             RenderTexture frameBuffer; /**> the frame buffer.*/
@@ -90,7 +90,7 @@ namespace odfaeg {
             RenderStates currentStates; /**> the current render states.*/
             View view; /**> the view of the component.*/
             std::string expression;
-            bool update, m_drawInstanced;
+            bool update;
             unsigned int atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex, vboWorldMatrices;
             Sprite frameBufferSprite;
             VertexBuffer vb, vb2;

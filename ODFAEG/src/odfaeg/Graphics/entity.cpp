@@ -28,6 +28,13 @@ namespace odfaeg {
             shadowRotationAngle = 0;
             shadowRotationAxis = math::Vec3f::zAxis;
             boneIndex = 0;
+            drawMode = INSTANCED;
+        }
+        void Entity::setDrawMode(DrawMode dm) {
+            drawMode = dm;
+        }
+        Entity::DrawMode Entity::getDrawMode() {
+            return drawMode;
         }
         std::string Entity::getRootType() {
             if (parent != nullptr) {
