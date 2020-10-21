@@ -105,7 +105,7 @@ void ODFAEGCreator::onInit() {
     fdTexturePath = new FileDialog(Vec3f(0, 0, 0), Vec3f(800, 600, 0), fm.getResourceByAlias(Fonts::Serif));
     fdTexturePath->setVisible(false);
     fdTexturePath->setEventContextActivated(false);
-    addWindow(&fdTexturePath->getWindow());
+    addWindow(&fdTexturePath->getWindow(), false);
     getRenderComponentManager().addComponent(fdTexturePath);
     wApplicationNew = new RenderWindow(sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
     //wApplicationNew->setName("WAPPLICATIONNEW");
@@ -343,18 +343,24 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
 }
 void ODFAEGCreator::onExec() {
     std::string path = fdTexturePath->getPathChosen();
-    std::cout<<"path : "<<path<<std::endl;
     if (path != "") {
-        unsigned int lastSlash = path.find_last_of("/");
+        unsigned int lastSlash;
+        #if defined(ODFAEG_SYSTEM_LINUX)
+        lastSlash = path.find_last_of("/");
+        #else if defined (ODFAEG_SYSTEM_WINDOWS)
+        lastSlash = path.find_last_of("\\");
+        #endif // if
         std::string ImgName = path.substr(lastSlash+1);
         dpSelectTexture->addItem(ImgName,15);
         fdTexturePath->setVisible(false);
         fdTexturePath->setEventContextActivated(false);
-        std::string appliDir = fdTexturePath->getAppiDir();
-        std::string relativePath = path.substr(appliDir.size()+1);
+        /*std::string appliDir = fdTexturePath->getAppiDir();
+        std::cout<<"appli dir : "<<appliDir<<std::endl;
+        std::string relativePath = path.substr(appliDir.size()+1);*/
         TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
-        tm.fromFileWithAlias(relativePath, relativePath);
-        textPaths.push_back(relativePath);
+        std::cout<<"add image : "<<ImgName<<std::endl;
+        tm.fromFileWithAlias(path, ImgName);
+        textPaths.push_back(ImgName);
         /*unsigned int pos = cppAppliContent.find("TextureManager<>& tm");
         std::string subs = cppAppliContent.substr(pos);
         pos += subs.find_first_of('\n') + 1;
@@ -1239,9 +1245,10 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
         }
     } else {
         TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
-        for (unsigned int i = 0; i < textPaths.size(); i++) {
-            if (textPaths[i].find(dp->getSelectedItem())) {
-                const Texture* text = tm.getResourceByPath(textPaths[i]);
+        /*for (unsigned int i = 0; i < textPaths.size(); i++) {
+            std::cout<<"searching tex path : "<<dp->getSelectedItem()<<std::endl;
+            if (textPaths[i].find(dp->getSelectedItem())) {*/
+                const Texture* text = tm.getResourceByAlias(dp->getSelectedItem());
                 Sprite sprite (*text, Vec3f(0, bChooseText->getPosition().y + bChooseText->getSize().y, 0),Vec3f(text->getSize().x, text->getSize().y, 0),sf::IntRect(0, 0, text->getSize().x,text->getSize().y));
                 pMaterial->addSprite(sprite);
                 sf::IntRect textRect;
@@ -1259,8 +1266,8 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                 sTextRect->setOutlineColor(sf::Color::Red);
                 sTextRect->setOutlineThickness(1);
                 pMaterial->addShape(sTextRect);
-            }
-        }
+            /*}
+        }*/
     }
     StateGroup* sg = new StateGroup("SGCHANGETEXTURE"+conversionLongString(reinterpret_cast<unsigned long>(oldTexture)));
     State* state = new State("SCHANGETEXTURE", &se);

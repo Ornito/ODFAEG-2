@@ -31,9 +31,9 @@ namespace odfaeg {
                 private :
                     RenderWindow rw;
                     const Font* font;
-                    Panel pTop, pBottom, pDirectories, pFiles;
-                    Label lTop;
-                    Button bChoose, bCancel;
+                    Panel *pTop, *pBottom, *pDirectories, *pFiles;
+                    Label *lTop;
+                    Button *bChoose, *bCancel;
                     std::string appliDir;
                     std::string pathChosen;
             };

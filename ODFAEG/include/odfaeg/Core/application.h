@@ -37,7 +37,7 @@ namespace odfaeg {
             {
                 clearColor = sf::Color::Black;
                 graphic::RenderWindow* window = new graphic::RenderWindow (vm, title, style, settings);
-                windows.push_back(window);
+                windows.push_back(std::make_pair(window, true));
                 componentManager = std::make_unique<graphic::RenderComponentManager>(*window);
                 app = this;
                 running = false;
@@ -60,9 +60,9 @@ namespace odfaeg {
                 addClock(timeClock, "TimeClock");
                 eventContextActivated = true;
             }
-            void addWindow(graphic::RenderWindow* window) {
+            void addWindow(graphic::RenderWindow* window, bool holdWindow = true) {
                 if (windows.size() != 0) {
-                    windows.push_back(window);
+                    windows.push_back(std::make_pair(window, holdWindow));
                     componentManager->addWindow(*window);
                 }
             }
@@ -78,7 +78,7 @@ namespace odfaeg {
                 //rendering_thread = std::thread(&Application::render, this);
                 while (running) {
                     //std::lock_guard<std::recursive_mutex> lock(rec_mutex);
-                    if (windows.size() != 0 && windows[0]->isOpen()) {
+                    if (windows.size() != 0 && windows[0].first->isOpen()) {
                         render();
                         update();
                     }
@@ -101,7 +101,7 @@ namespace odfaeg {
                 running = false;
                 //rendering_thread.join();
                 for(unsigned int i = 0; i < windows.size(); i++)
-                    windows[i]->close();
+                    windows[i].first->close();
             }
             /** \fn void load()
             *   \brief call the onLoad function, this is where all resources used by the application are loaded.
@@ -119,9 +119,9 @@ namespace odfaeg {
             *   \brief call the rendering functions used to render entities on components or on the window.
             */
             void render() {
-                if (windows.size() != 0 && windows[0]->isOpen()) {
+                if (windows.size() != 0 && windows[0].first->isOpen()) {
                     for (unsigned int i = 0; i < windows.size(); i++)
-                        windows[i]->clear(clearColor);
+                        windows[i].first->clear(clearColor);
                     onRender(componentManager.get());
                     componentManager->clearComponents();
                     if (eventContextActivated) {
@@ -129,10 +129,10 @@ namespace odfaeg {
                     }
                     componentManager->updateComponents();
                     componentManager->drawRenderComponents();
-                    onDisplay(windows[0]);
+                    onDisplay(windows[0].first);
                     componentManager->drawGuiComponents();
                     for (unsigned int i = 0; i < windows.size(); i++)
-                        windows[i]->display();
+                        windows[i].first->display();
                 }
             }
             void setEventContextActivated(bool eventContextActivated) {
@@ -150,8 +150,8 @@ namespace odfaeg {
                     window::IEvent event;
                     events.clear();
                     for (unsigned int i = 0; i < windows.size(); i++) {
-                        while (windows[i]->pollEvent(event)) {
-                            events.insert(std::make_pair(windows[i], event));
+                        while (windows[i].first->pollEvent(event)) {
+                            events.insert(std::make_pair(windows[i].first, event));
                         }
                     }
                     if (events.size() > 0) {
@@ -229,7 +229,7 @@ namespace odfaeg {
             *   \return the render window of the application.
             */
             graphic::RenderWindow& getRenderWindow(unsigned int i = 0) {
-                return *windows[i];
+                return *windows[i].first;
             }
             unsigned int getNbWindows() {
                 return windows.size();
@@ -246,14 +246,14 @@ namespace odfaeg {
             *   \return a reference to the view.
             */
             graphic::View& getView() {
-                return windows[0]->getView();
+                return windows[0].first->getView();
             }
             /** \fn View& getDefaultView()
             *   \brief return the default view of the window.
             *   \return the default view.
             */
             graphic::View getDefaultView() {
-                return windows[0]->getDefaultView();
+                return windows[0].first->getDefaultView();
             }
             /** \fn setClearColor (sf::Color clearColor)
             *   \brief define the clear color of the window.
@@ -272,8 +272,10 @@ namespace odfaeg {
             }
             virtual ~Application() {
                 stop();
-                for (unsigned int i = 0; i < windows.size(); i++)
-                   delete windows[i];
+                for (unsigned int i = 0; i < windows.size(); i++) {
+                    if (windows[i].second)
+                        delete windows[i].first;
+                }
             }
             static sf::Clock& getTimeClk() {
                 return timeClk;
@@ -281,7 +283,7 @@ namespace odfaeg {
             /** > a pointer to the current odfaeg application*/
             static Application* app;
         private :
-            std::vector<graphic::RenderWindow*> windows; /** > the render window*/
+            std::vector<std::pair<graphic::RenderWindow*, bool>> windows; /** > the render window*/
             std::unique_ptr<graphic::RenderComponentManager> componentManager; /** > the render component manager which draw components on the window*/
             std::map<std::string, sf::Clock> clocks; /** > all the clocks used by the application to measure the time.*/
             bool running; /** > determine if the application running or not.*/
