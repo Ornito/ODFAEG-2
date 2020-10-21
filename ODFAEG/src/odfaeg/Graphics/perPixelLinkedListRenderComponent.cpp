@@ -1,5 +1,3 @@
-#include "ExtLib/GLEW/glew-2.0.0/include/GL/glew.h"
-#include <SFML/OpenGL.hpp>
 #include "../../../include/odfaeg/Graphics/perPixelLinkedListRenderComponent.hpp"
 #include "glCheck.h"
 #include "../../../include/odfaeg/Physics/particuleSystem.h"
@@ -71,6 +69,20 @@ namespace odfaeg {
                                                         uniform mat4 worldMat;
                                                         void main () {
                                                             gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
+                                                        })";
+                const std::string  simpleVertexShader2 = R"(#version 460 core
+                                                        layout (location = 0) in vec3 position;
+                                                        layout (location = 1) in vec4 color;
+                                                        layout (location = 2) in vec2 texCoords;
+                                                        uniform mat4 textureMatrix;
+                                                        uniform mat4 projectionMatrix;
+                                                        uniform mat4 viewMatrix;
+                                                        out vec2 fTexCoords;
+                                                        out vec4 frontColor;
+                                                        void main () {
+                                                            gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.f);
+                                                            fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                                            frontColor = color;
                                                         })";
                 const std::string fragmentShader = R"(#version 460 core
                                                       struct NodeType {
@@ -169,15 +181,24 @@ namespace odfaeg {
                    if (!perPixelLinkedList.loadFromMemory(vertexShader, fragmentShader)) {
                         throw core::Erreur(54, "Failed to load per pixel linked list shader");
                    }
-                   std::cout<<"ppll shaders 1 compilated"<<std::endl;
                    if (!perPixelLinkedListP2.loadFromMemory(simpleVertexShader, fragmentShader2)) {
                         throw core::Erreur(55, "Failed to load per pixel linked list pass 2 shader");
                    }
+                   if (!perPixelLinkedList2.loadFromMemory(simpleVertexShader2, fragmentShader)) {
+                       throw core::Erreur(56, "Failed to load per pixel linked list 2 shader");
+                   }
+                   std::cout<<"ppll shaders 1 compilated"<<std::endl;
                    /*if (!filterNotOpaque.loadFromMemory(simpleVertexShader, filterNotOpaquePixels)) {
                         throw core::Erreur(54, "Failed to load filter not opaque shader");
                    }*/
                    perPixelLinkedList.setParameter("maxNodes", maxNodes);
                    perPixelLinkedList.setParameter("texture", Shader::CurrentTexture);
+                   perPixelLinkedList2.setParameter("maxNodes", maxNodes);
+                   perPixelLinkedList2.setParameter("texture", Shader::CurrentTexture);
+                   math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
+                   math::Matrix4f projMatrix = view.getProjMatrix().getMatrix().transpose();
+                   perPixelLinkedListP2.setParameter("viewMatrix", viewMatrix);
+                   perPixelLinkedListP2.setParameter("projectionMatrix", projMatrix);
             } else {
                 const std::string  simpleVertexShader =
                 R"(#version 140
@@ -332,6 +353,8 @@ namespace odfaeg {
                 math::Matrix4f projMatrix = view.getProjMatrix().getMatrix().transpose();
                 perPixelLinkedList.setParameter("projectionMatrix", projMatrix);
                 perPixelLinkedList.setParameter("viewMatrix", viewMatrix);
+                perPixelLinkedList2.setParameter("projectionMatrix", projMatrix);
+                perPixelLinkedList2.setParameter("viewMatrix", viewMatrix);
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
                     if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                         vb.clear();
@@ -377,10 +400,14 @@ namespace odfaeg {
                 for (unsigned int i = 0; i < m_normals.size(); i++) {
                    if (m_normals[i].getAllVertices().getVertexCount() > 0) {
                         if (m_normals[i].getMaterial().getTexture() == nullptr) {
-                            perPixelLinkedList.setParameter("haveTexture", 0.f);
+                            perPixelLinkedList2.setParameter("haveTexture", 0.f);
                         } else {
-                            perPixelLinkedList.setParameter("haveTexture", 1.f);
+                            math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
+                            perPixelLinkedList2.setParameter("textureMatrix", texMatrix);
+                            perPixelLinkedList2.setParameter("haveTexture", 1.f);
                         }
+                        currentStates.blendMode = sf::BlendNone;
+                        currentStates.shader = &perPixelLinkedList2;
                         currentStates.texture = m_normals[i].getMaterial().getTexture();
                         vb.clear();
                         vb.setPrimitiveType(m_normals[i].getAllVertices().getPrimitiveType());
@@ -406,8 +433,8 @@ namespace odfaeg {
                 vb2.append(v4);
                 vb2.update();
                 math::Matrix4f matrix = quad.getTransform().getMatrix().transpose();
-                perPixelLinkedListP2.setParameter("projectionMatrix", projMatrix);
-                perPixelLinkedListP2.setParameter("viewMatrix", viewMatrix);
+                /*perPixelLinkedListP2.setParameter("projectionMatrix", projMatrix);
+                perPixelLinkedListP2.setParameter("viewMatrix", viewMatrix);*/
                 perPixelLinkedListP2.setParameter("worldMat", matrix);
                 currentStates.shader = &perPixelLinkedListP2;
                 frameBuffer.drawVertexBuffer(vb2, currentStates);
@@ -515,13 +542,15 @@ namespace odfaeg {
         }
         bool PerPixelLinkedListRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities) {
             batcher.clear();
+            normalBatcher.clear();
             for (unsigned int i = 0; i < vEntities.size(); i++) {
                 //if ( vEntities[i]->isLeaf()) {
                     for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
                          if (vEntities[i]->getDrawMode() == Entity::INSTANCED)
                             batcher.addFace( vEntities[i]->getFace(j));
-                         else
+                         else {
                             normalBatcher.addFace(vEntities[i]->getFace(j));
+                         }
                     }
                 //}
             }

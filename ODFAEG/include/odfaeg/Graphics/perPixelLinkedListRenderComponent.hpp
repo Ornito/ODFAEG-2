@@ -1,5 +1,7 @@
 #ifndef ODFAEG_PERPIXEL_LINKEDLIST_RENDER_COMPONENT_HPP
 #define ODFAEG_PERPIXEL_LINKEDLIST_RENDER_COMPONENT_HPP
+#include "ExtLib/GLEW/glew-2.0.0/include/GL/glew.h"
+#include <SFML/OpenGL.hpp>
 #include "heavyComponent.h"
 #include "renderTexture.h"
 #include "sprite.h"
@@ -86,7 +88,7 @@ namespace odfaeg {
             std::vector<std::unique_ptr<Face>> additionalFaces;
             std::vector<Entity*> visibleEntities; /**> Entities loaded*/
             RenderTexture frameBuffer; /**> the frame buffer.*/
-            Shader perPixelLinkedList, perPixelLinkedListP2, filterNotOpaque, initialize;
+            Shader perPixelLinkedList, perPixelLinkedListP2, perPixelLinkedList2, filterNotOpaque, initialize;
             RenderStates currentStates; /**> the current render states.*/
             View view; /**> the view of the component.*/
             std::string expression;
