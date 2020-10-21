@@ -37,6 +37,21 @@ namespace odfaeg {
                     getListener().connect("UPDATE", cmd);
                     if (settings.versionMajor >= 3 && settings.versionMinor >= 3) {
                         glGenBuffers(1, &vboWorldMatrices);
+                        const std::string normalVertexShader = R"(#version 460 core
+                                                                layout (location = 0) in vec3 position;
+                                                                layout (location = 1) in vec4 color;
+                                                                layout (location = 2) in vec2 texCoords;
+                                                                uniform mat4 projectionMatrix;
+                                                                uniform mat4 viewMatrix;
+                                                                uniform mat4 textureMatrix;
+                                                                out vec2 fTexCoords;
+                                                                out vec4 frontColor;
+                                                                void main() {
+                                                                    gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.f);
+                                                                    fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                                                    frontColor = color;
+                                                                }
+                                                                )";
                         const std::string vertexShader = R"(#version 460 core
                                                         layout (location = 0) in vec3 position;
                                                         layout (location = 1) in vec4 color;
@@ -216,6 +231,8 @@ namespace odfaeg {
                                                                  )";
                         if (!depthBufferGenerator.loadFromMemory(vertexShader, depthGenFragShader))
                             throw core::Erreur(50, "Failed to load depth buffer generator shader", 0);
+                        if (!depthBufferNormalGenerator.loadFromMemory(normalVertexShader, depthGenFragShader))
+                            throw core::Erreur(55, "Failed to load depth buffer normal generator shader", 0);
                         std::cout<<"depth buffer generator compiled"<<std::endl;
                         if (!normalMapGenerator.loadFromMemory(buildNormalMapVertexShader, buildNormalMapFragmentShader))
                             throw core::Erreur(51, "Failed to load normal generator shader", 0);
@@ -230,6 +247,7 @@ namespace odfaeg {
                             throw core::Erreur(54, "Failed to load light map generator shader", 0);
                         normalMapGenerator.setParameter("texture", Shader::CurrentTexture);
                         depthBufferGenerator.setParameter("texture", Shader::CurrentTexture);
+                        depthBufferNormalGenerator.setParameter("texture", Shader::CurrentTexture);
                         specularTextureGenerator.setParameter("texture",Shader::CurrentTexture);
                         specularTextureGenerator.setParameter("maxM", Material::getMaxSpecularIntensity());
                         specularTextureGenerator.setParameter("maxP", Material::getMaxSpecularPower());
@@ -582,6 +600,7 @@ namespace odfaeg {
         bool LightRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities)
         {
             batcher.clear();
+            normalBatcher.clear();
             lightBatcher.clear();
             for (unsigned int i = 0; i < vEntities.size(); i++) {
 
@@ -593,12 +612,16 @@ namespace odfaeg {
                         }
                     } else {
                         for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
-                            batcher.addFace(vEntities[i]->getFace(j));
+                            if (vEntities[i]->getDrawMode() == Entity::INSTANCED)
+                                batcher.addFace(vEntities[i]->getFace(j));
+                            else
+                                normalBatcher.addFace(vEntities[i]->getFace(j));
                         }
                     }
                 //}
             }
             m_instances = batcher.getInstances();
+            m_normals = normalBatcher.getInstances();
             m_light_instances = lightBatcher.getInstances();
             visibleEntities = vEntities;
             update = true;
@@ -632,6 +655,8 @@ namespace odfaeg {
                     specularTextureGenerator.setParameter("viewMatrix", viewMatrix);
                     bumpTextureGenerator.setParameter("projectionMatrix", projMatrix);
                     bumpTextureGenerator.setParameter("viewMatrix", viewMatrix);
+                    depthBufferNormalGenerator.setParameter("projectionMatrix", projMatrix);
+                    depthBufferNormalGenerator.setParameter("viewMatrix", viewMatrix);
                     for (unsigned int i = 0; i < m_instances.size(); i++) {
 
                         if (m_instances[i].getAllVertices().getVertexCount() > 0) {
@@ -691,6 +716,27 @@ namespace odfaeg {
                             states.shader = &bumpTextureGenerator;
                             states.texture = m_instances[i].getMaterial().getBumpTexture();
                             bumpTexture.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states);*/
+                        }
+                    }
+                    for (unsigned int i = 0; i < m_normals.size(); i++) {
+                       if (m_normals[i].getAllVertices().getVertexCount() > 0) {
+                            if (m_instances[i].getMaterial().getTexture() != nullptr) {
+                                math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
+                                depthBufferNormalGenerator.setParameter("textureMatrix", texMatrix);
+                                depthBufferNormalGenerator.setParameter("haveTexture", 1.f);
+                            } else {
+                                depthBufferNormalGenerator.setParameter("haveTexture", 0.f);
+                            }
+                            states.blendMode = sf::BlendNone;
+                            states.shader = &depthBufferNormalGenerator;
+                            states.texture = m_normals[i].getMaterial().getTexture();
+                            vb.clear();
+                            vb.setPrimitiveType(m_normals[i].getAllVertices().getPrimitiveType());
+                            for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
+                                vb.append(m_normals[i].getAllVertices()[j]);
+                            }
+                            vb.update();
+                            depthBuffer.drawVertexBuffer(vb, states);
                         }
                     }
                     depthBuffer.display();

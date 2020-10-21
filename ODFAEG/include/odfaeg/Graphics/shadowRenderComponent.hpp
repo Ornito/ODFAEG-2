@@ -47,17 +47,17 @@ namespace odfaeg {
                 void changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em);
                 void updateParticleSystems();
             private :
-                Batcher batcher, shadowBatcher; /**> A group of faces using the same materials and primitive type.*/
-                std::vector<Instance> m_instances; /**> Instances to draw. (Instanced rendering.) */
+                Batcher batcher, shadowBatcher, normalBatcher; /**> A group of faces using the same materials and primitive type.*/
+                std::vector<Instance> m_instances, m_normals; /**> Instances to draw. (Instanced rendering.) */
                 std::vector<Instance> m_shadow_instances;
                 std::vector<Entity*> visibleEntities; /**> Entities loaded*/
                 RenderTexture stencilBuffer; /**> the stencil buffer.*/
                 RenderTexture shadowMap; /**> the shadow map.*/
                 RenderTexture depthBuffer;
                 Sprite stencilBufferTile, shadowTile, depthBufferTile; /**> the stencil and shadow map buffer.*/
-                Shader buildShadowMapShader; /**> the shader to generate the stencil buffer.*/
+                Shader buildShadowMapShader, buildShadowMapNormalShader; /**> the shader to generate the stencil buffer.*/
                 Shader perPixShadowShader; /**> the shader to generate the shadow map.*/
-                Shader depthGenShader;
+                Shader depthGenShader, depthGenNormalShader;
                 View view; /**> the view of the component.*/
                 std::string expression;
                 bool update;

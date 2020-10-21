@@ -53,8 +53,8 @@ namespace odfaeg {
                 int getLayer();
                 void updateParticleSystems();
             private :
-                Batcher batcher, lightBatcher; /**> A group of faces using the same materials and primitive type.*/
-                std::vector<Instance> m_instances; /**> Instances to draw. (Instanced rendering.) */
+                Batcher batcher, lightBatcher, normalBatcher; /**> A group of faces using the same materials and primitive type.*/
+                std::vector<Instance> m_instances, m_normals; /**> Instances to draw. (Instanced rendering.) */
                 std::vector<Instance> m_light_instances; /**> Instances to draw. (Instanced rendering.) */
                 std::vector<Entity*> visibleEntities; /**> Entities loaded*/
                 RenderTexture depthBuffer; /**> the stencil buffer.*/
@@ -63,7 +63,7 @@ namespace odfaeg {
                 RenderTexture specularTexture;
                 RenderTexture lightMap;
                 Sprite  depthBufferTile, normalMapTile, bumpMapTile, specularBufferTile, lightMapTile; /**> the stencil and shadow map buffer.*/
-                Shader depthBufferGenerator; /**> the shader to generate the stencil buffer.*/
+                Shader depthBufferGenerator, depthBufferNormalGenerator; /**> the shader to generate the stencil buffer.*/
                 Shader normalMapGenerator; /**> the shader to generate the shadow map.*/
                 Shader specularTextureGenerator;
                 Shader bumpTextureGenerator;
