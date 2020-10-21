@@ -15,7 +15,7 @@ namespace odfaeg {
         };*/
         class PerPixelLinkedListRenderComponent : public HeavyComponent {
             public :
-            PerPixelLinkedListRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings);
+            PerPixelLinkedListRenderComponent (RenderWindow& window, int layer, std::string expression, bool draw2D, window::ContextSettings settings);
                  /**
             * \fn bool loadEntitiesOnComponent(std::vector<Entity*> visibleEntities)
             * \brief load the given entities onto the component.
@@ -92,7 +92,7 @@ namespace odfaeg {
             RenderStates currentStates; /**> the current render states.*/
             View view; /**> the view of the component.*/
             std::string expression;
-            bool update;
+            bool update, draw2D;
             unsigned int atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex, vboWorldMatrices;
             Sprite frameBufferSprite;
             VertexBuffer vb, vb2;

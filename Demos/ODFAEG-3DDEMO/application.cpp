@@ -19,7 +19,7 @@ MyAppli::MyAppli(Vec2f size, std::string title) :
     view.setConstrains(0, 10);
     //getRenderWindow().setView(view);
     //getView().setPerspective(-size.x * 0.5f, size.x * 0.5f, -size.y * 0.5f, size.y * 0.5f, -1000, 1000);
-    PerPixelLinkedListRenderComponent* frc = new PerPixelLinkedListRenderComponent(getRenderWindow(), 0, "E_BIGTILE", ContextSettings(0, 0, 4, 4, 6));
+    PerPixelLinkedListRenderComponent* frc = new PerPixelLinkedListRenderComponent(getRenderWindow(), 0, "E_BIGTILE", false, ContextSettings(0, 0, 4, 4, 6));
     frc->setView(view);
     ShadowRenderComponent* src = new ShadowRenderComponent(getRenderWindow(), 1, "E_CUBE+E_3DMODEL");
     src->setView(view);
