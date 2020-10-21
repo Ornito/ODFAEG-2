@@ -3,13 +3,12 @@
 #include "../../../include/odfaeg/Physics/particuleSystem.h"
 namespace odfaeg {
     namespace graphic {
-        PerPixelLinkedListRenderComponent::PerPixelLinkedListRenderComponent(RenderWindow& window, int layer, std::string expression, bool draw2D, window::ContextSettings settings) :
+        PerPixelLinkedListRenderComponent::PerPixelLinkedListRenderComponent(RenderWindow& window, int layer, std::string expression, window::ContextSettings settings) :
             HeavyComponent(window, math::Vec3f(window.getView().getPosition().x, window.getView().getPosition().y, layer),
                           math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0),
                           math::Vec3f(window.getView().getSize().x + window.getView().getSize().x * 0.5f, window.getView().getPosition().y + window.getView().getSize().y * 0.5f, layer)),
             view(window.getView()),
             expression(expression),
-            draw2D(draw2D),
             quad(math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, window.getSize().y * 0.5f)) {
             quad.move(math::Vec3f(-window.getView().getSize().x * 0.5f, 0/*-window.getView().getSize().y * 0.5f*/, 0));
             GLuint maxNodes = 20 * window.getView().getSize().x * window.getView().getSize().y;
@@ -433,10 +432,6 @@ namespace odfaeg {
                 vb2.append(v3);
                 vb2.append(v4);
                 vb2.update();
-                if (draw2D) {
-                    perPixelLinkedListP2.setParameter("viewMatrix", viewMatrix);
-                    perPixelLinkedListP2.setParameter("projectionMatrix", projMatrix);
-                }
                 math::Matrix4f matrix = quad.getTransform().getMatrix().transpose();
                 perPixelLinkedListP2.setParameter("worldMat", matrix);
                 currentStates.shader = &perPixelLinkedListP2;
@@ -523,10 +518,6 @@ namespace odfaeg {
         void PerPixelLinkedListRenderComponent::changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em) {
         }
         void PerPixelLinkedListRenderComponent::setView(View view) {
-            if (draw2D) {
-                math::Vec3f t = view.getPosition() - this->view.getPosition();
-                quad.move(t);
-            }
             frameBuffer.setView(view);
             this->view = view;
         }

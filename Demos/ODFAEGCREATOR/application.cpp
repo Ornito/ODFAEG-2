@@ -343,6 +343,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
 }
 void ODFAEGCreator::onExec() {
     std::string path = fdTexturePath->getPathChosen();
+    std::cout<<"path : "<<path<<std::endl;
     if (path != "") {
         unsigned int lastSlash = path.find_last_of("/");
         std::string ImgName = path.substr(lastSlash+1);
