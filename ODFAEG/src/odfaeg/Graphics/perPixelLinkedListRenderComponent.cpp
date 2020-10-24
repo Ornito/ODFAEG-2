@@ -31,7 +31,6 @@ namespace odfaeg {
             glCheck(glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI));
             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
             std::vector<GLuint> headPtrClearBuf(window.getView().getSize().x*window.getView().getSize().y, 0xffffffff);
-            std::vector<GLuint> linkedListClearBuffer(maxNodes * nodeSize, 0);
             glCheck(glGenBuffers(1, &clearBuf));
             glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf));
             glCheck(glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint),
@@ -141,7 +140,6 @@ namespace odfaeg {
                       int a, b, c;
                       int step = 1;
                       NodeType leftArray[MAX_FRAGMENTS/2]; //for merge sort
-
                       while (step <= count)
                       {
                           i = 0;
@@ -152,10 +150,8 @@ namespace odfaeg {
                               a = i;
                               b = i + step;
                               c = (i + step + step) >= count ? count : (i + step + step);
-
                               for (k = 0; k < step; k++)
                                   leftArray[k] = frags[a + k];
-
                               j1 = 0;
                               j2 = 0;
                               for (k = a; k < c; k++)
@@ -269,7 +265,6 @@ namespace odfaeg {
                       int a, b, c;
                       int step = 1;
                       NodeType leftArray[MAX_FRAGMENTS/2]; //for merge sort
-
                       while (step <= count)
                       {
                           i = 0;
@@ -280,10 +275,8 @@ namespace odfaeg {
                               a = i;
                               b = i + step;
                               c = (i + step + step) >= count ? count : (i + step + step);
-
                               for (k = 0; k < step; k++)
                                   leftArray[k] = frags[a + k];
-
                               j1 = 0;
                               j2 = 0;
                               for (k = a; k < c; k++)
@@ -464,7 +457,6 @@ namespace odfaeg {
                    if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                         frameBuffer.draw(m_instances[i].getAllVertices(), currentStates);
                    }
-
                 //glCheck(glDepthMask(GL_TRUE));*/
 
                 //quad.setCenter(frameBuffer.getView().getPosition());
@@ -486,16 +478,12 @@ namespace odfaeg {
                     }
                     states.texture = m_instances[i].getMaterial().getTexture();
                     target.draw(m_instances[i].getAllVertices(), states);
-
                 }
             }
             glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
             glCheck(glFinish());
-
             //glCheck(glTextureBarrier());
-
             states.shader = &perPixelLinkedListP2;
-
             //glCheck(glDepthMask(GL_FALSE));
             /*for (unsigned int i = 0; i < m_instances.size(); i++) {
                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
@@ -540,15 +528,15 @@ namespace odfaeg {
             batcher.clear();
             normalBatcher.clear();
             for (unsigned int i = 0; i < vEntities.size(); i++) {
-                //if ( vEntities[i]->isLeaf()) {
+                if ( vEntities[i]->isLeaf() && vEntities[i]->getDrawOnComponent()) {
                     for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
-                         if (vEntities[i]->getDrawMode() == Entity::INSTANCED)
+                         if (vEntities[i]->getDrawMode() == Entity::INSTANCED) {
                             batcher.addFace( vEntities[i]->getFace(j));
-                         else {
+                         } else {
                             normalBatcher.addFace(vEntities[i]->getFace(j));
                          }
                     }
-                //}
+                }
             }
             m_instances = batcher.getInstances();
             m_normals = normalBatcher.getInstances();
@@ -577,7 +565,6 @@ namespace odfaeg {
             glDeleteBuffers(1, &atomicBuffer);
             glDeleteBuffers(1, &linkedListBuffer);
             glDeleteBuffers(1, &clearBuf);
-            glDeleteBuffers(1, &clearBuf2);
             glDeleteTextures(1, &headPtrTex);
         }
     }

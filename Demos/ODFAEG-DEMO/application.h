@@ -10,6 +10,7 @@
 #include "odfaeg/Graphics/lightRenderComponent.hpp"
 #include "odfaeg/Graphics/zSortingRenderComponent.hpp"
 #include "odfaeg/Graphics/fastRenderComponent.hpp"
+#include "odfaeg/Graphics/reflectRefractRenderComponent.hpp"
 #include "odfaeg/Core/application.h"
 #include "odfaeg/Graphics/convexShape.h"
 #include "odfaeg/Graphics/rectangleShape.h"

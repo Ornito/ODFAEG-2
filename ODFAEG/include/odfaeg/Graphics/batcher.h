@@ -93,8 +93,8 @@ namespace odfaeg {
             };
             std::vector<TextureInfo*> texInfos; /**> The informations about the textures. */
             sf::Color color; /**> the color of the material. */
-            float specularIntensity, specularPower, refractionFactor;
-            static float maxSpecularIntensity, maxSpecularPower;
+            float specularIntensity, specularPower, refractionFactor, reflectionFactor;
+            static float maxSpecularIntensity, maxSpecularPower, maxRefractionFactor;
             static unsigned int nbMaterials;
             unsigned int id;
             const Texture* bumpTexture;
@@ -190,6 +190,7 @@ namespace odfaeg {
             static float getMaxSpecularPower();
             static void setMaxSpecularIntensity(float maxSpecularIntensity);
             static void setMaxSpecularPower(float maxSpecularPower);
+            static float getMaxRefraction();
             float getSpecularIntensity();
             float getSpecularPower();
             void setSpecularIntensity(float specularIntensity);
@@ -198,6 +199,8 @@ namespace odfaeg {
             const Texture* getBumpTexture();
             void setRefractionFactor(float refractionFactor);
             float getRefractionFactor();
+            void setReflectionFactor (float reflectionFactor);
+            float getReflectionFactor();
             void updateIds();
             bool contains(Material material);
             void countNbMaterials();

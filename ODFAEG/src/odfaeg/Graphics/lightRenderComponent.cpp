@@ -604,7 +604,7 @@ namespace odfaeg {
             lightBatcher.clear();
             for (unsigned int i = 0; i < vEntities.size(); i++) {
 
-                //if ( vEntities[i]->isLeaf()) {
+                if (vEntities[i]->isLeaf() && vEntities[i]->getDrawOnComponent()) {
 
                     if (vEntities[i]->isLight()) {
                         for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
@@ -618,7 +618,7 @@ namespace odfaeg {
                                 normalBatcher.addFace(vEntities[i]->getFace(j));
                         }
                     }
-                //}
+                }
             }
             m_instances = batcher.getInstances();
             m_normals = normalBatcher.getInstances();

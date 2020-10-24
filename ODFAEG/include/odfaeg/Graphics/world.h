@@ -35,6 +35,13 @@ namespace odfaeg {
                 static EntityManager* getCurrentEntityManager() {
                     return currentEntityManager;
                 }
+                static std::vector<EntityManager*> getEntityManagers() {
+                    std::vector<EntityManager*> ems;
+                    for (unsigned int i = 0; i < cache.ems.size(); i++) {
+                        ems.push_back(cache.ems[i].get());
+                    }
+                    return ems;
+                }
                 /**
                 *    \fn std::vector<CellMap<E>*> getCasesMap()
                 *    \brief get all the cells (containing the entities) of the entity manager.

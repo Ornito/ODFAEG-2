@@ -8,6 +8,7 @@ namespace odfaeg {
     namespace graphic {
             float Material::maxSpecularIntensity = 0.f;
             float Material::maxSpecularPower = 0.f;
+            float Material::maxRefractionFactor = 0.f;
             unsigned int Material::nbMaterials = 0;
             std::vector<Material*> Material::materials = std::vector<Material*>();
             std::vector<Material*> Material::sameMaterials = std::vector<Material*>();
@@ -44,6 +45,7 @@ namespace odfaeg {
                 specularIntensity = 0;
                 specularPower = 0;
                 refractionFactor = 0;
+                reflectionFactor = 0;
                 bumpTexture = nullptr;
                 id = 0;
                 materials.push_back(this);
@@ -74,6 +76,9 @@ namespace odfaeg {
             void Material::setMaxSpecularPower(float maxSpecularPower) {
                 Material::maxSpecularPower = maxSpecularPower;
             }
+            float Material::getMaxRefraction() {
+                return maxRefractionFactor;
+            }
             float Material::getSpecularIntensity() {
                 return specularIntensity;
             }
@@ -100,11 +105,20 @@ namespace odfaeg {
                 return bumpTexture;
             }
             void Material::setRefractionFactor(float refractionFactor) {
+                if (refractionFactor > maxRefractionFactor)
+                    maxRefractionFactor = refractionFactor;
                 this->refractionFactor = refractionFactor;
                 updateIds();
             }
             float Material::getRefractionFactor() {
                 return refractionFactor;
+            }
+            void Material::setReflectionFactor (float reflectionFactor) {
+                this->reflectionFactor = reflectionFactor;
+                updateIds();
+            }
+            float Material::getReflectionFactor() {
+                return reflectionFactor;
             }
             int Material::getNbTextures () {
                 return texInfos.size();
@@ -151,7 +165,8 @@ namespace odfaeg {
                        && specularIntensity == material.specularIntensity
                        && specularPower == material.specularPower
                        && bumpTexture == material.bumpTexture
-                       && refractionFactor == material.refractionFactor;
+                       && refractionFactor == material.refractionFactor
+                       && reflectionFactor == material.reflectionFactor;
             }
             bool Material::operator!= (Material& material) {
                 return !useSameTextures(material) || !hasSameColor(material);

@@ -48,6 +48,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onObjectColorChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedTextureChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onTexCoordsChanged(odfaeg::graphic::gui::TextArea* ta);
+    void onSelectedEmChanged(odfaeg::graphic::gui::DropDownList* dp);
     void addShape(odfaeg::graphic::Shape *shape);
     bool removeShape (unsigned int id);
     void updateScriptPos(odfaeg::graphic::Transformable* shape);
@@ -64,7 +65,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::FileDialog* fdTexturePath;
         odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent;
         odfaeg::graphic::gui::TextArea* ta, *taComponentExpression, *taComponentLayer;
-        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType;
+        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
         odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight;
         odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial;
@@ -89,6 +90,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::core::StateStack stateStack;
         ODFAEGCreatorStateExecutor se;
         std::vector<odfaeg::graphic::ConvexShape> cshapes;
+        std::vector<odfaeg::graphic::Entity*> entities;
         odfaeg::graphic::Map* theMap;
 };
 #endif

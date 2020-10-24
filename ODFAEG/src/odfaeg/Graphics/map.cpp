@@ -507,6 +507,7 @@ namespace odfaeg {
                 bt = new BigTile(math::Vec3f(startX, startY, startY + endY * 0.5f));
             else
                 bt = new BigTile(math::Vec3f(startX, startY, rect.getPosition().z),tileSize,rect.getWidth() / tileSize.x);
+            bt->setSize(rect.getSize());
             //Positions de d\E9part et d'arriv\E9es en fonction de la taille, de la position et de la taille des cellules de la map.
             for (int y = startY; y < endY;  y+=tileSize.y) {
                 for (int x = startX; x < endX; x+=tileSize.x) {
@@ -1120,10 +1121,6 @@ namespace odfaeg {
                                 BoneAnimation* ba = dynamic_cast<BoneAnimation*>(visibleEntities[i][j]->getRootEntity());
                                 if (ba != nullptr) {
                                     if (ba->getBoneIndex() == visibleEntities[i][j]->getBoneIndex()) {
-                                        if (visibleEntities[i][j]->getRootType() == "E_MONSTER")
-                                            std::cout<<"get E_MONSTER"<<std::endl;
-                                            if (visibleEntities[i][j]->getRootType() == "E_HERO")
-                                            std::cout<<"get E_HERO"<<std::endl;
                                         entities.push_back(visibleEntities[i][j]);
                                     }
                                 } else {
