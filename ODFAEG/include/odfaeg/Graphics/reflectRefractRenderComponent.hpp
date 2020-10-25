@@ -77,7 +77,7 @@ namespace odfaeg {
             std::vector<Instance> m_instances, m_normals, m_reflInstances, m_reflNormals; /**> Instances to draw. (Instanced rendering.) */
             std::vector<Entity*> visibleEntities;
             RenderTexture depthBuffer, reflectRefractBuffer, frameBuffer;
-            Shader sBuildDepthBuffer, sBuildDepthBufferNormal, sBuildReflectRefract, sBuildReflectRefractNormal, sReflectRefract, sReflectRefractNormal;
+            Shader sBuildDepthBuffer, sBuildDepthBufferNormal, sBuildReflectRefract, sBuildReflectRefractNormal, sReflectRefract, sReflectRefractNormal, sHiding, sHidingNormal;
             View view;
             std::string expression;
             bool update;

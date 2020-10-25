@@ -124,7 +124,8 @@ namespace odfaeg {
                                                                                    colors[0] = frontColor;
                                                                                    bool b = (haveTexture > 0.9);
                                                                                    float current_alpha = colors[int(b)].a;
-                                                                                   fColor = vec4 (reflectFactor, refractFactor / maxRefractionFactor, 0, current_alpha);
+                                                                                   float negative = (refractFactor < 0) ? 1 : 0;
+                                                                                   fColor = vec4 (reflectFactor, abs(refractFactor), negative, current_alpha);
                                                                                }
                                                                                )";
                 const std::string buildFramebufferShader = R"(#version 460 core
@@ -135,17 +136,31 @@ namespace odfaeg {
                                                                 uniform float maxRefraction;
                                                                 uniform vec3 resolution;
                                                                 uniform sampler2D texture;
-                                                                uniform sampler2D depthBuffer;
                                                                 uniform sampler2D reflectRefractFactorTexture;
                                                                 uniform sampler2D reflectRefractTexture;
                                                                 layout (location = 0) out vec4 fColor;
                                                                 void main () {
                                                                     vec2 position = (gl_FragCoord.xy / resolution.xy);
-                                                                    vec4 depth = texture2D(depthBuffer, position);
                                                                     vec4 reflectRefractInd = texture2D (reflectRefractFactorTexture, position);
-                                                                    float offsetX = reflectRefractInd.y * maxRefraction;
-                                                                    ivec2 offs = ivec2 (offsetX, 0);
-                                                                    vec4 colorToReflect = textureOffset (reflectRefractTexture, position, offs);
+                                                                    float offset = reflectRefractInd.y /** maxRefraction*/;
+                                                                    if (reflectRefractInd.z > 0.9f) {
+                                                                        offset = -offset;
+                                                                    }
+                                                                    vec2 offs = vec2 (offset, offset);
+                                                                    vec2 offsPosition = position + offs;
+                                                                    if (offsPosition.x < 0) {
+                                                                        offsPosition.x = 0;
+                                                                    }
+                                                                    if (offsPosition.y < 0) {
+                                                                        offsPosition.y = 0;
+                                                                    }
+                                                                    if (offsPosition.x > 1) {
+                                                                        offsPosition.x = 1;
+                                                                    }
+                                                                    if (offsPosition.y > 1) {
+                                                                        offsPosition.y = 1;
+                                                                    }
+                                                                    vec4 colorToReflect = texture2D (reflectRefractTexture, offsPosition);
                                                                     vec4 texel = texture2D(texture, fTexCoords);
                                                                     vec4 colors[2];
                                                                     colors[1] = texel * frontColor;
@@ -155,6 +170,32 @@ namespace odfaeg {
                                                                     fColor = colorToReflect * reflectRefractInd.x;
                                                                 }
                                                               )";
+                const std::string hidingFragmentShader = R"(#version 460 core
+                                                            in vec4 frontColor;
+                                                            in vec2 fTexCoords;
+                                                            uniform vec3 resolution;
+                                                            uniform float haveTexture;
+                                                            uniform sampler2D texture;
+                                                            uniform sampler2D depthBuffer;
+                                                            uniform sampler2D reflectRefractTexture;
+                                                            layout (location = 0) out vec4 fColor;
+                                                            void main() {
+                                                                vec2 position = (gl_FragCoord.xy / resolution.xy);
+                                                                vec4 color = texture2D(reflectRefractTexture, position);
+                                                                vec4 depth = texture2D (depthBuffer, position);
+                                                                vec4 texel = texture2D(texture, fTexCoords);
+                                                                vec4 colors[2];
+                                                                colors[1] = texel * frontColor;
+                                                                colors[0] = frontColor;
+                                                                bool b = (haveTexture > 0.9);
+                                                                vec4 tcolor = colors[int(b)];
+                                                                if (depth.z >= gl_FragCoord.z) {
+                                                                    fColor = vec4 (color.rgb, color.a - depth.a);
+                                                                } else {
+                                                                    fColor = vec4 (tcolor.rgb, depth.a);
+                                                                }
+                                                            }
+                                                         )";
                 if (!sBuildDepthBuffer.loadFromMemory(vertexShader, buildDepthBufferFragmentShader)) {
                     throw core::Erreur(50, "Error, failed to load build depth buffer shader", 3);
                 }
@@ -173,6 +214,12 @@ namespace odfaeg {
                 if (!sReflectRefractNormal.loadFromMemory(perPixReflectRefractVertexNormalShader, buildFramebufferShader)) {
                     throw core::Erreur(58, "Error, failed to load reflect refract normal shader", 3);
                 }
+                if (!sHiding.loadFromMemory(vertexShader, hidingFragmentShader)) {
+                    throw core::Erreur(59, "Error, failed to load hiding shader", 3);
+                }
+                if (!sHidingNormal.loadFromMemory(normalVertexShader, hidingFragmentShader)) {
+                    throw core::Erreur(60, "Error, failed to load hiding normal shader", 3);
+                }
                 sBuildDepthBuffer.setParameter("texture", Shader::CurrentTexture);
                 sBuildDepthBufferNormal.setParameter("texture", Shader::CurrentTexture);
                 sBuildReflectRefract.setParameter("texture", Shader::CurrentTexture);
@@ -181,15 +228,21 @@ namespace odfaeg {
                 sReflectRefract.setParameter("maxRefraction", Material::getMaxRefraction());
                 sReflectRefract.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                 sReflectRefract.setParameter("texture", Shader::CurrentTexture);
-                sReflectRefract.setParameter("depthBuffer",depthBuffer.getTexture());
                 sReflectRefract.setParameter("reflectRefractFactorTexture", reflectRefractBuffer.getTexture());
                 sReflectRefract.setParameter("reflectRefractTexture", ppll.getFrameBufferTexture());
                 sReflectRefractNormal.setParameter("maxRefraction", Material::getMaxRefraction());
                 sReflectRefractNormal.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                 sReflectRefractNormal.setParameter("texture", Shader::CurrentTexture);
-                sReflectRefractNormal.setParameter("depthTexture",depthBuffer.getTexture());
                 sReflectRefractNormal.setParameter("reflectRefractFactorTexture", reflectRefractBuffer.getTexture());
                 sReflectRefractNormal.setParameter("reflectRefractTexture", ppll.getFrameBufferTexture());
+                sHiding.setParameter("texture", Shader::CurrentTexture);
+                sHiding.setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                sHiding.setParameter("depthBuffer", depthBuffer.getTexture());
+                sHiding.setParameter("reflectRefractTexture", frameBuffer.getTexture());
+                sHidingNormal.setParameter("texture", Shader::CurrentTexture);
+                sHidingNormal.setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                sHidingNormal.setParameter("depthBuffer", depthBuffer.getTexture());
+                sHidingNormal.setParameter("reflectRefractTexture", frameBuffer.getTexture());
             }
             backgroundColor = sf::Color::Transparent;
         }
@@ -206,6 +259,10 @@ namespace odfaeg {
                 sBuildReflectRefract.setParameter("projectionMatrix", projMatrix);
                 sBuildReflectRefractNormal.setParameter("viewMatrix", viewMatrix);
                 sBuildReflectRefractNormal.setParameter("projectionMatrix", projMatrix);
+                sHiding.setParameter("viewMatrix", viewMatrix);
+                sHiding.setParameter("projectionMatrix", projMatrix);
+                sHidingNormal.setParameter("viewMatrix", viewMatrix);
+                sHidingNormal.setParameter("projectionMatrix", projMatrix);
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
                     if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                         if (m_instances[i].getMaterial().getTexture() != nullptr) {
@@ -433,6 +490,41 @@ namespace odfaeg {
                         currentStates.shader = &sReflectRefractNormal;
                         currentStates.texture = m_reflNormals[i].getMaterial().getTexture();
                         frameBuffer.drawVertexBuffer(vb, currentStates);
+                    }
+                }
+                for (unsigned int i = 0; i < m_instances.size(); i++) {
+                    if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                        if (m_instances[i].getMaterial().getTexture() != nullptr) {
+                            math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
+                            sHiding.setParameter("textureMatrix", texMatrix);
+                            sHiding.setParameter("haveTexture", 1.f);
+                        } else {
+                            sHiding.setParameter("haveTexture", 0.f);
+                        }
+                        vb.clear();
+                        vb.setPrimitiveType(m_instances[i].getVertexArrays()[0]->getPrimitiveType());
+                        matrices.clear();
+                        std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
+                        for (unsigned int j = 0; j < tm.size(); j++) {
+                            tm[j]->update();
+                            std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
+                            for (unsigned int n = 0; n < 16; n++) {
+                                matrices.push_back(matrix[n]);
+                            }
+                        }
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+                        glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        if (m_instances[i].getVertexArrays().size() > 0) {
+                            for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
+                                vb.append((*m_instances[i].getVertexArrays()[0])[j]);
+                            }
+                            vb.update();
+                        }
+                        currentStates.blendMode = sf::BlendNone;
+                        currentStates.shader = &sHiding;
+                        currentStates.texture = m_instances[i].getMaterial().getTexture();
+                        frameBuffer.drawInstanced(vb, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
                     }
                 }
                 frameBuffer.display();
