@@ -52,6 +52,7 @@ namespace odfaeg {
                 View& getView();
                 int getLayer();
                 void updateParticleSystems();
+                ~LightRenderComponent();
             private :
                 Batcher batcher, lightBatcher, normalBatcher; /**> A group of faces using the same materials and primitive type.*/
                 std::vector<Instance> m_instances, m_normals; /**> Instances to draw. (Instanced rendering.) */

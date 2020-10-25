@@ -561,11 +561,15 @@ namespace odfaeg {
                 getView().reset(physic::BoundingBox(getView().getViewport().getPosition().x, getView().getViewport().getPosition().y, getView().getViewport().getPosition().z, event.window.data1, event.window.data2, getView().getViewport().getDepth()));
             }
         }
+        const Texture& PerPixelLinkedListRenderComponent::getFrameBufferTexture() {
+            return frameBuffer.getTexture();
+        }
         PerPixelLinkedListRenderComponent::~PerPixelLinkedListRenderComponent() {
             glDeleteBuffers(1, &atomicBuffer);
             glDeleteBuffers(1, &linkedListBuffer);
             glDeleteBuffers(1, &clearBuf);
             glDeleteTextures(1, &headPtrTex);
+            glDeleteBuffers(1, &vboWorldMatrices);
         }
     }
 }

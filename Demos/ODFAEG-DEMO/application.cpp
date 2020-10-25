@@ -92,6 +92,7 @@ namespace sorrok {
     }
     void MyAppli::onLoad() {
         TextureManager<> tm;
+        tm.fromFileWithAlias("tilesets/eau.png", "WATER");
         tm.fromFileWithAlias("tilesets/herbe.png", "GRASS");
         tm.fromFileWithAlias("tilesets/murs.png", "WALLS");
         tm.fromFileWithAlias("tilesets/maison.png", "HOUSE");
@@ -134,14 +135,17 @@ namespace sorrok {
         World::addTimer(au);
         psu = new ParticleSystemUpdater();
         World::addWorker(psu);
-        tiles.push_back(new Tile(tm.getResourceByAlias("GRASS"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
+        tiles.push_back(new Tile(tm.getResourceByAlias("WATER"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 0, 100, 100)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 100, 100, 100)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 200, 100, 100)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 300, 100, 100)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 400, 100, 100)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 500, 100, 100)));
-        tiles[0]->getFaces()[0]->getMaterial().setTexId("GRASS");
+        tiles[0]->getFaces()[0]->getMaterial().setTexId("WATER");
+        tiles[0]->getFaces()[0]->getMaterial().setReflectionFactor(0.5f);
+        tiles[0]->setReflectable(true);
+        tiles[0]->getFaces()[0]->getMaterial().setRefractionFactor(200);
         walls[0]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[1]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[2]->getFaces()[0]->getMaterial().setTexId("WALLS");
@@ -265,10 +269,10 @@ namespace sorrok {
         View view = getView();
         //view.rotate(0, 0, 20);
         PerPixelLinkedListRenderComponent *frc1 = new PerPixelLinkedListRenderComponent(getRenderWindow(),0, "E_BIGTILE", ContextSettings(0, 0, 4, 4, 6));
-        PerPixelLinkedListRenderComponent *frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(), 1, "E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PARTICLES", ContextSettings(0, 0, 4, 4, 6));
-        ShadowRenderComponent *src = new ShadowRenderComponent(getRenderWindow(), 2, "E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
-        LightRenderComponent *lrc = new LightRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", ContextSettings(0, 0, 4, 4, 6));
-        ReflectRefractRenderComponent *rrrc = new ReflectRefractRenderComponent(getRenderWindow(), 4, "", ContextSettings(0, 0, 4, 4, 6));
+        PerPixelLinkedListRenderComponent *frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(), 2, "E_DECOR", ContextSettings(0, 0, 4, 4, 6));
+        /*ShadowRenderComponent *src = new ShadowRenderComponent(getRenderWindow(), 2, "E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
+        LightRenderComponent *lrc = new LightRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", ContextSettings(0, 0, 4, 4, 6));*/
+        ReflectRefractRenderComponent *rrrc = new ReflectRefractRenderComponent(getRenderWindow(), 1, "E_BIGTILE+E_DECOR", ContextSettings(0, 0, 4, 4, 6));
         /*gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
         textArea->addFocusListener(this);
         textArea->setVisible(false);
@@ -280,9 +284,10 @@ namespace sorrok {
         op->setVisible(false);
         op->setEventContextActivated(false);*/
         getRenderComponentManager().addComponent(frc1);
-        getRenderComponentManager().addComponent(src);
+        //getRenderComponentManager().addComponent(src);
         getRenderComponentManager().addComponent(frc2);
-        getRenderComponentManager().addComponent(lrc);
+        /*getRenderComponentManager().addComponent(lrc);*/
+        getRenderComponentManager().addComponent(rrrc);
         /*getRenderComponentManager().addComponent(textArea);
         getRenderComponentManager().addComponent(op);*/
 
@@ -355,9 +360,11 @@ namespace sorrok {
     void MyAppli::onRender(RenderComponentManager *cm) {
         // draw everything here...
         World::drawOnComponents("E_BIGTILE", 0);
-        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PARTICLES", 1);
+        /*World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PARTICLES", 1);
         World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO", 2);
-        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", 3);
+        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", 3);*/
+        World::drawOnComponents("E_BIGTILE+E_DECOR", 1);
+        World::drawOnComponents("E_DECOR", 2);
         fpsCounter++;
         if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {
             std::cout<<"FPS : "<<fpsCounter<<std::endl;

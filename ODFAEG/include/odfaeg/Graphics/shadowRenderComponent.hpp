@@ -46,6 +46,7 @@ namespace odfaeg {
                 void clear();
                 void changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em);
                 void updateParticleSystems();
+                ~ShadowRenderComponent();
             private :
                 Batcher batcher, shadowBatcher, normalBatcher; /**> A group of faces using the same materials and primitive type.*/
                 std::vector<Instance> m_instances, m_normals; /**> Instances to draw. (Instanced rendering.) */

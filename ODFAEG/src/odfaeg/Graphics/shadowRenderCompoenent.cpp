@@ -626,5 +626,8 @@ namespace odfaeg {
                 loadEntitiesOnComponent(visibleEntities);
                 update = true;*/
             }
+            ShadowRenderComponent::~ShadowRenderComponent() {
+                glDeleteBuffers(1, &vboWorldMatrices);
+            }
         }
     }

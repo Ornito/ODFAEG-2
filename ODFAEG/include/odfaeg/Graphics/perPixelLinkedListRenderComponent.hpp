@@ -78,6 +78,7 @@ namespace odfaeg {
             void updateParticleSystems();
             void setView(View view);
             View& getView();
+            const Texture& getFrameBufferTexture();
             ~PerPixelLinkedListRenderComponent();
             private :
             RectangleShape quad;

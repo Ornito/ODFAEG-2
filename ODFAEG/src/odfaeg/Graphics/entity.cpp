@@ -31,7 +31,7 @@ namespace odfaeg {
             drawMode = INSTANCED;
             drawOnComponent = true;
             reflectable = false;
-            refractDir = math::Vec3f(0, 1, 0);
+            refractDir = math::Vec3f(0, 0, 1);
         }
         void Entity::setDrawMode(DrawMode dm) {
             drawMode = dm;

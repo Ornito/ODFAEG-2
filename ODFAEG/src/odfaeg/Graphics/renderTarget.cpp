@@ -144,7 +144,6 @@ namespace odfaeg {
 
             if (activate(true))
             {
-
                 if (!m_cache.glStatesSet)
                     resetGLStates();
                 // Apply the view

@@ -7,6 +7,7 @@
 #include "sprite.h"
 #include "rectangleShape.h"
 #include "world.h"
+#include "perPixelLinkedListRenderComponent.hpp"
 namespace odfaeg {
     namespace graphic {
         class ReflectRefractRenderComponent : public HeavyComponent {
@@ -70,19 +71,19 @@ namespace odfaeg {
             View& getView();
             ~ReflectRefractRenderComponent();
         private :
-            RectangleShape quad;
-            Batcher batcher, normalBatcher, reflBatcher, reflNormalBatcher, rvBatcher, rvNormalBatcher;
+            PerPixelLinkedListRenderComponent ppll;
+            Batcher batcher, normalBatcher, reflBatcher, reflNormalBatcher;
             sf::Color backgroundColor; /**> The background color.*/
-            std::vector<Instance> m_instances, m_normals, m_reflInstances, m_reflNormals, m_rvInstances, m_rvNormals; /**> Instances to draw. (Instanced rendering.) */
+            std::vector<Instance> m_instances, m_normals, m_reflInstances, m_reflNormals; /**> Instances to draw. (Instanced rendering.) */
             std::vector<Entity*> visibleEntities;
-            RenderTexture frameBuffer, depthBuffer, reflectRefractBuffer, reflectRefractTextBuffer;
-            Shader sBuildDepthBuffer, sBuildDepthBufferNormal, sBuildReflectRefract, sBuildReflectRefractNormal, sReflectRefract, sReflectRefractNormal, sLinkedList, sLinkedListP2, sLinkedList2;
+            RenderTexture depthBuffer, reflectRefractBuffer, frameBuffer;
+            Shader sBuildDepthBuffer, sBuildDepthBufferNormal, sBuildReflectRefract, sBuildReflectRefractNormal, sReflectRefract, sReflectRefractNormal;
             View view;
             std::string expression;
             bool update;
-            unsigned int vboWorldMatrices, atomicBuffer, linkedListBuffer, headPtrTex, clearBuf;
-            Sprite frameBufferSprite;
-            VertexBuffer vb, vb2;
+            unsigned int vboWorldMatrices;
+            Sprite frameBufferSprite, reflectRefractTextSprite, reflectRefractSprite, depthBufferSprite;
+            VertexBuffer vb;
             std::vector<float> matrices;
         };
     }

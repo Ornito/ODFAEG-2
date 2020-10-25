@@ -863,5 +863,8 @@ namespace odfaeg {
             loadEntitiesOnComponent(visibleEntities);
             update = true;*/
         }
+        LightRenderComponent::~LightRenderComponent() {
+            glDeleteBuffers(1, &vboWorldMatrices);
+        }
     }
 }
