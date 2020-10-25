@@ -33,6 +33,7 @@ namespace odfaeg {
                                                                               layout (location = 0) in vec3 position;
                                                                               layout (location = 1) in vec4 color;
                                                                               layout (location = 2) in vec2 texCoords;
+                                                                              layout (location = 3) in vec3 normals;
                                                                               uniform mat4 projectionMatrix;
                                                                               uniform mat4 viewMatrix;
                                                                               uniform mat4 textureMatrix;
@@ -48,7 +49,8 @@ namespace odfaeg {
                                                                         layout (location = 0) in vec3 position;
                                                                         layout (location = 1) in vec4 color;
                                                                         layout (location = 2) in vec2 texCoords;
-                                                                        layout (location = 3) in mat4 worldMat;
+                                                                        layout (location = 3) in vec3 normals;
+                                                                        layout (location = 4) in mat4 worldMat;
                                                                         uniform mat4 projectionMatrix;
                                                                         uniform mat4 viewMatrix;
                                                                         uniform mat4 textureMatrix;
@@ -129,8 +131,9 @@ namespace odfaeg {
                                                                    layout (location = 0) in vec3 position;
                                                                    layout (location = 1) in vec4 color;
                                                                    layout (location = 2) in vec2 texCoords;
-                                                                   layout (location = 3) in mat4 worldMat;
-                                                                   layout (location = 7) in mat4 shadowProjMat;
+                                                                   layout (location = 3) in vec3 normals;
+                                                                   layout (location = 4) in mat4 worldMat;
+                                                                   layout (location = 8) in mat4 shadowProjMat;
                                                                    uniform mat4 projectionMatrix;
                                                                    uniform mat4 viewMatrix;
                                                                    uniform mat4 depthBiasMatrix;

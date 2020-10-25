@@ -182,6 +182,7 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             void draw(RenderTarget& target, RenderStates states);
+            void computeNormals();
             ~VertexBuffer();
         private :
 

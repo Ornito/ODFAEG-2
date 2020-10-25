@@ -7,14 +7,25 @@ namespace odfaeg {
                           math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0),
                           math::Vec3f(window.getView().getSize().x + window.getView().getSize().x * 0.5f, window.getView().getPosition().y + window.getView().getSize().y * 0.5f, layer)),
             view(window.getView()),
-            expression(expression),
-            ppll(window, layer, expression, settings) {
+            expression(expression)
+            {
+            for (unsigned int i = 0; i < 6; i++) {
+                pplls[i] = new PerPixelLinkedListRenderComponent(window, layer, expression, settings);
+                ppllsSprites[i] = Sprite(pplls[i]->getFrameBufferTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            }
+            dirs[0] = math::Vec3f(1, 0, 0);
+            dirs[1] = math::Vec3f(-1, 0, 0);
+            dirs[2] = math::Vec3f(0, 1, 0);
+            dirs[3] = math::Vec3f(0, -1, 0);
+            dirs[4] = math::Vec3f(0, 0, 1);
+            dirs[5] = math::Vec3f(0, 0, -1);
             frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
             frameBufferSprite = Sprite(frameBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-            reflectRefractTextSprite = Sprite(ppll.getFrameBufferTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             reflectRefractSprite = Sprite(reflectRefractBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
             reflectRefractBuffer.create (window.getView().getSize().x, window.getView().getSize().y, settings);
+            reflectRefractTex.create(window.getView().getSize().x, window.getView().getSize().y, settings);
+            reflectRefractTexSprite = Sprite(reflectRefractTex.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             settings.depthBits = 24;
             depthBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
             depthBufferSprite = Sprite(depthBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
@@ -28,7 +39,8 @@ namespace odfaeg {
                                                     layout (location = 0) in vec3 position;
                                                     layout (location = 1) in vec4 color;
                                                     layout (location = 2) in vec2 texCoords;
-                                                    layout (location = 3) in mat4 worldMat;
+                                                    layout (location = 3) in vec3 normals;
+                                                    layout (location = 4) in mat4 worldMat;
                                                     uniform mat4 projectionMatrix;
                                                     uniform mat4 viewMatrix;
                                                     uniform mat4 textureMatrix;
@@ -44,6 +56,7 @@ namespace odfaeg {
                                                         layout (location = 0) in vec3 position;
                                                         layout (location = 1) in vec4 color;
                                                         layout (location = 2) in vec2 texCoords;
+                                                        layout (location = 3) in vec3 normals;
                                                         uniform mat4 textureMatrix;
                                                         uniform mat4 projectionMatrix;
                                                         uniform mat4 viewMatrix;
@@ -58,37 +71,39 @@ namespace odfaeg {
                                                                    layout (location = 0) in vec3 position;
                                                                    layout (location = 1) in vec4 color;
                                                                    layout (location = 2) in vec2 texCoords;
-                                                                   layout (location = 3) in mat4 worldMat;
+                                                                   layout (location = 3) in vec3 normals;
+                                                                   layout (location = 4) in mat4 worldMat;
                                                                    uniform mat4 projectionMatrix;
                                                                    uniform mat4 viewMatrix;
-                                                                   uniform mat4 depthBiasMatrix;
                                                                    uniform mat4 textureMatrix;
-                                                                   out vec4 reflectRefractCoords;
+                                                                   out vec3 normal;
+                                                                   out vec3 pos;
                                                                    out vec4 frontColor;
                                                                    out vec2 fTexCoords;
                                                                    void main() {
+                                                                       normal = mat3(transpose(inverse(worldMat))) * normals;
+                                                                       pos = vec3(worldMat * vec4(position, 1.0));
                                                                        gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
                                                                        fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
                                                                        frontColor = color;
-                                                                       reflectRefractCoords = depthBiasMatrix * viewMatrix * projectionMatrix * vec4(gl_Position.xyz, 1);
                                                                    }
                                                                   )";
                 const std::string perPixReflectRefractVertexNormalShader = R"(#version 460 core
                                                                    layout (location = 0) in vec3 position;
                                                                    layout (location = 1) in vec4 color;
                                                                    layout (location = 2) in vec2 texCoords;
+                                                                   layout (location = 3) in vec3 normals;
                                                                    uniform mat4 projectionMatrix;
                                                                    uniform mat4 viewMatrix;
-                                                                   uniform mat4 depthBiasMatrix;
                                                                    uniform mat4 textureMatrix;
-                                                                   out vec4 reflectRefractCoords;
                                                                    out vec4 frontColor;
                                                                    out vec2 fTexCoords;
+                                                                   out vec3 normal;
+                                                                   out vec3 pos;
                                                                    void main() {
                                                                        gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.f);
                                                                        fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
                                                                        frontColor = color;
-                                                                       reflectRefractCoords = depthBiasMatrix * viewMatrix * projectionMatrix * vec4(gl_Position.xyz, 1);
                                                                    }
                                                                   )";
                 const std::string buildDepthBufferFragmentShader = R"(#version 460 core
@@ -129,45 +144,18 @@ namespace odfaeg {
                                                                                }
                                                                                )";
                 const std::string buildFramebufferShader = R"(#version 460 core
-                                                                in vec4 reflectRefractCoords;
                                                                 in vec4 frontColor;
                                                                 in vec2 fTexCoords;
-                                                                uniform float haveTexture;
-                                                                uniform float maxRefraction;
-                                                                uniform vec3 resolution;
-                                                                uniform sampler2D texture;
-                                                                uniform sampler2D reflectRefractFactorTexture;
-                                                                uniform sampler2D reflectRefractTexture;
+                                                                in vec3 normal;
+                                                                in vec3 pos;
+                                                                uniform vec3 cameraPos;
+                                                                uniform samplerCube sceneBox;
                                                                 layout (location = 0) out vec4 fColor;
                                                                 void main () {
-                                                                    vec2 position = (gl_FragCoord.xy / resolution.xy);
-                                                                    vec4 reflectRefractInd = texture2D (reflectRefractFactorTexture, position);
-                                                                    float offset = reflectRefractInd.y /** maxRefraction*/;
-                                                                    if (reflectRefractInd.z > 0.9f) {
-                                                                        offset = -offset;
-                                                                    }
-                                                                    vec2 offs = vec2 (offset, offset);
-                                                                    vec2 offsPosition = position + offs;
-                                                                    if (offsPosition.x < 0) {
-                                                                        offsPosition.x = 0;
-                                                                    }
-                                                                    if (offsPosition.y < 0) {
-                                                                        offsPosition.y = 0;
-                                                                    }
-                                                                    if (offsPosition.x > 1) {
-                                                                        offsPosition.x = 1;
-                                                                    }
-                                                                    if (offsPosition.y > 1) {
-                                                                        offsPosition.y = 1;
-                                                                    }
-                                                                    vec4 colorToReflect = texture2D (reflectRefractTexture, offsPosition);
-                                                                    vec4 texel = texture2D(texture, fTexCoords);
-                                                                    vec4 colors[2];
-                                                                    colors[1] = texel * frontColor;
-                                                                    colors[0] = frontColor;
-                                                                    bool b = (haveTexture > 0.9);
-                                                                    vec4 color = colors[int(b)];
-                                                                    fColor = colorToReflect * reflectRefractInd.x;
+                                                                    float ratio = 1.00 / 1.33;
+                                                                    vec3 i = normalize(pos - cameraPos);
+                                                                    vec3 r = reflect (i, normalize(normal));
+                                                                    fColor = texture(sceneBox, r);
                                                                 }
                                                               )";
                 const std::string hidingFragmentShader = R"(#version 460 core
@@ -177,11 +165,30 @@ namespace odfaeg {
                                                             uniform float haveTexture;
                                                             uniform sampler2D texture;
                                                             uniform sampler2D depthBuffer;
+                                                            uniform sampler2D reflectRefractFactor;
                                                             uniform sampler2D reflectRefractTexture;
                                                             layout (location = 0) out vec4 fColor;
                                                             void main() {
                                                                 vec2 position = (gl_FragCoord.xy / resolution.xy);
-                                                                vec4 color = texture2D(reflectRefractTexture, position);
+                                                                vec4 reflRefInd = texture2D(reflectRefractFactor, position);
+                                                                float offset = reflRefInd.y;
+                                                                if (reflRefInd.z > 0.9) {
+                                                                    offset = -offset;
+                                                                }
+                                                                vec2 offPosition = position + vec2(offset, offset);
+                                                                if (offPosition.x < 0) {
+                                                                    offPosition.x = 0;
+                                                                }
+                                                                if (offPosition.y < 0) {
+                                                                    offPosition.y = 0;
+                                                                }
+                                                                if (offPosition.x > 1) {
+                                                                    offPosition.x = 1;
+                                                                }
+                                                                if (offPosition.y > 1) {
+                                                                    offPosition.y = 1;
+                                                                }
+                                                                vec4 color = texture2D(reflectRefractTexture, offPosition);
                                                                 vec4 depth = texture2D (depthBuffer, position);
                                                                 vec4 texel = texture2D(texture, fTexCoords);
                                                                 vec4 colors[2];
@@ -189,11 +196,11 @@ namespace odfaeg {
                                                                 colors[0] = frontColor;
                                                                 bool b = (haveTexture > 0.9);
                                                                 vec4 tcolor = colors[int(b)];
-                                                                if (depth.z >= gl_FragCoord.z) {
+                                                                /*if (depth.z >= gl_FragCoord.z) {
                                                                     fColor = vec4 (color.rgb, color.a - depth.a);
-                                                                } else {
-                                                                    fColor = vec4 (tcolor.rgb, depth.a);
-                                                                }
+                                                                } else {*/
+                                                                    fColor = color;
+                                                                //}
                                                             }
                                                          )";
                 if (!sBuildDepthBuffer.loadFromMemory(vertexShader, buildDepthBufferFragmentShader)) {
@@ -224,25 +231,26 @@ namespace odfaeg {
                 sBuildDepthBufferNormal.setParameter("texture", Shader::CurrentTexture);
                 sBuildReflectRefract.setParameter("texture", Shader::CurrentTexture);
                 sBuildReflectRefract.setParameter("maxRefraction", Material::getMaxRefraction());
-                sBuildDepthBufferNormal.setParameter("texture", Shader::CurrentTexture);
+                sBuildReflectRefractNormal.setParameter("texture", Shader::CurrentTexture);
+                sBuildReflectRefractNormal.setParameter("maxRefraction", Material::getMaxRefraction());
                 sReflectRefract.setParameter("maxRefraction", Material::getMaxRefraction());
                 sReflectRefract.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                 sReflectRefract.setParameter("texture", Shader::CurrentTexture);
-                sReflectRefract.setParameter("reflectRefractFactorTexture", reflectRefractBuffer.getTexture());
-                sReflectRefract.setParameter("reflectRefractTexture", ppll.getFrameBufferTexture());
+                sReflectRefract.setParameter("sceneBox", cubeMapTex);
                 sReflectRefractNormal.setParameter("maxRefraction", Material::getMaxRefraction());
                 sReflectRefractNormal.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                 sReflectRefractNormal.setParameter("texture", Shader::CurrentTexture);
-                sReflectRefractNormal.setParameter("reflectRefractFactorTexture", reflectRefractBuffer.getTexture());
-                sReflectRefractNormal.setParameter("reflectRefractTexture", ppll.getFrameBufferTexture());
+                sReflectRefractNormal.setParameter("sceneBox", cubeMapTex);
                 sHiding.setParameter("texture", Shader::CurrentTexture);
                 sHiding.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                 sHiding.setParameter("depthBuffer", depthBuffer.getTexture());
+                sHiding.setParameter("reflectRefractFactor", reflectRefractBuffer.getTexture());
                 sHiding.setParameter("reflectRefractTexture", frameBuffer.getTexture());
                 sHidingNormal.setParameter("texture", Shader::CurrentTexture);
                 sHidingNormal.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                 sHidingNormal.setParameter("depthBuffer", depthBuffer.getTexture());
-                sHidingNormal.setParameter("reflectRefractTexture", frameBuffer.getTexture());
+                sHidingNormal.setParameter("reflectRefractFactor", reflectRefractBuffer.getTexture());
+                sHidingNormal.setParameter("reflectRefractTexture", reflectRefractTex.getTexture());
             }
             backgroundColor = sf::Color::Transparent;
         }
@@ -255,10 +263,6 @@ namespace odfaeg {
                 sBuildDepthBuffer.setParameter("projectionMatrix", projMatrix);
                 sBuildDepthBufferNormal.setParameter("viewMatrix", viewMatrix);
                 sBuildDepthBufferNormal.setParameter("projectionMatrix", projMatrix);
-                sBuildReflectRefract.setParameter("viewMatrix", viewMatrix);
-                sBuildReflectRefract.setParameter("projectionMatrix", projMatrix);
-                sBuildReflectRefractNormal.setParameter("viewMatrix", viewMatrix);
-                sBuildReflectRefractNormal.setParameter("projectionMatrix", projMatrix);
                 sHiding.setParameter("viewMatrix", viewMatrix);
                 sHiding.setParameter("projectionMatrix", projMatrix);
                 sHidingNormal.setParameter("viewMatrix", viewMatrix);
@@ -298,6 +302,28 @@ namespace odfaeg {
                         depthBuffer.drawInstanced(vb, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
                     }
                 }
+                for (unsigned int i = 0; i < m_normals.size(); i++) {
+                    if (m_normals[i].getAllVertices().getVertexCount() > 0) {
+                        if (m_normals[i].getMaterial().getTexture() != nullptr) {
+                            math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
+                            sBuildDepthBufferNormal.setParameter("textureMatrix", texMatrix);
+                            sBuildDepthBufferNormal.setParameter("haveTexture", 1.f);
+                        } else {
+                            sBuildDepthBufferNormal.setParameter("haveTexture", 0.f);
+                        }
+                        vb.clear();
+                        vb.setPrimitiveType(m_normals[i].getAllVertices().getPrimitiveType());
+                        for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
+                            vb.append(m_normals[i].getAllVertices()[j]);
+                        }
+                        vb.update();
+                        currentStates.blendMode = sf::BlendNone;
+                        currentStates.shader = &sBuildDepthBufferNormal;
+                        currentStates.texture = m_instances[i].getMaterial().getTexture();
+                        depthBuffer.drawVertexBuffer(vb, currentStates);
+                    }
+                }
+                depthBuffer.display();
                 for (unsigned int i = 0; i < m_reflInstances.size(); i++) {
                     if (m_reflInstances[i].getAllVertices().getVertexCount() > 0) {
                         if (m_reflInstances[i].getMaterial().getTexture() != nullptr) {
@@ -335,27 +361,6 @@ namespace odfaeg {
                         reflectRefractBuffer.drawInstanced(vb, m_reflInstances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_reflInstances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
                     }
                 }
-                for (unsigned int i = 0; i < m_normals.size(); i++) {
-                    if (m_normals[i].getAllVertices().getVertexCount() > 0) {
-                        if (m_normals[i].getMaterial().getTexture() != nullptr) {
-                            math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
-                            sBuildDepthBufferNormal.setParameter("textureMatrix", texMatrix);
-                            sBuildDepthBufferNormal.setParameter("haveTexture", 1.f);
-                        } else {
-                            sBuildDepthBufferNormal.setParameter("haveTexture", 0.f);
-                        }
-                        vb.clear();
-                        vb.setPrimitiveType(m_normals[i].getAllVertices().getPrimitiveType());
-                        for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
-                            vb.append(m_normals[i].getAllVertices()[j]);
-                        }
-                        vb.update();
-                        currentStates.blendMode = sf::BlendNone;
-                        currentStates.shader = &sBuildDepthBufferNormal;
-                        currentStates.texture = m_instances[i].getMaterial().getTexture();
-                        depthBuffer.drawVertexBuffer(vb, currentStates);
-                    }
-                }
                 for (unsigned int i = 0; i < m_reflNormals.size(); i++) {
                     if (m_reflNormals[i].getAllVertices().getVertexCount() > 0) {
                         if (m_reflNormals[i].getMaterial().getTexture() != nullptr) {
@@ -379,45 +384,44 @@ namespace odfaeg {
                         reflectRefractBuffer.drawVertexBuffer(vb, currentStates);
                     }
                 }
-
-                depthBuffer.display();
                 reflectRefractBuffer.display();
                 for (unsigned int i = 0; i < m_reflInstances.size(); i++) {
                     if (m_reflInstances[i].getAllVertices().getVertexCount() > 0) {
                         Entity* reflectEntity = m_reflInstances[i].getVertexArrays()[0]->getEntity()->getRootEntity();
-                        View reflectView(reflectEntity->getSize().x, reflectEntity->getSize().y,0, 1000);
-                        reflectView.setCenter(reflectEntity->getCenter());
-                        math::Vec3f reflDir = reflectEntity->getRefractDir();
-                        math::Vec3f target = reflectView.getPosition() + reflDir;
-                        reflectView.lookAt(target.x, target.y, target.z);
-                        std::vector<Entity*> visibleReflEntities = World::getEntitiesInRect(view.getViewVolume(), expression);
-                        std::vector<Entity*> copy;
-                        for (unsigned int j = 0; j < visibleReflEntities.size(); j++)  {
-                            if (visibleReflEntities[j]->getRootEntity() != reflectEntity) {
-                                copy.push_back(visibleReflEntities[j]);
+                        View reflectView(view.getSize().x, view.getSize().y,0, 1000);
+                        reflectView.setCenter(view.getPosition());
+                        for (unsigned int m = 0; m < 6; m++) {
+                            math::Vec3f target = reflectView.getPosition() + dirs[m];
+                            reflectView.lookAt(target.x, target.y, target.z);
+                            std::vector<Entity*> visibleReflEntities = World::getEntitiesInRect(reflectView.getViewVolume(), expression);
+                            std::vector<Entity*> copy;
+                            for (unsigned int j = 0; j < visibleReflEntities.size(); j++)  {
+                                if (visibleReflEntities[j]->getRootEntity() != reflectEntity) {
+                                    copy.push_back(visibleReflEntities[j]);
+                                }
                             }
+                            pplls[m]->loadEntitiesOnComponent(copy);
+                            pplls[m]->setView(reflectView);
+                            pplls[m]->clear();
+                            pplls[m]->drawNextFrame();
+                            std::vector<sf::Image> images;
+                            images.push_back(pplls[m]->getFrameBufferTexture().copyToImage());
+                            int width = view.getSize().x;
+                            int height = view.getSize().y;
+                            cubeMapTex.createCubeMap(width, height, images);
                         }
-                        ppll.loadEntitiesOnComponent(copy);
-                        ppll.setView(view);
-                        ppll.clear();
-                        ppll.drawNextFrame();
                         viewMatrix = view.getViewMatrix().getMatrix().transpose();
                         projMatrix = view.getProjMatrix().getMatrix().transpose();
                         sReflectRefract.setParameter("viewMatrix", viewMatrix);
                         sReflectRefract.setParameter("projectionMatrix", projMatrix);
-                        math::Matrix4f biasMatrix(0.5f, 0.0f, 0.0f, 0.0f,
-                                              0.0f, 0.5f, 0.0f, 0.0f,
-                                              0.0f, 0.0f, 0.5f, 0.0f,
-                                              0.5f, 0.5f, 0.5f, 1.f);
-                        math::Matrix4f depthBiasMatrix = biasMatrix;
-                        sReflectRefract.setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
-                        if (m_reflInstances[i].getMaterial().getTexture() != nullptr) {
+                        sReflectRefract.setParameter("cameraPos", view.getPosition().x, view.getPosition().y, view.getPosition().z);
+                        /*if (m_reflInstances[i].getMaterial().getTexture() != nullptr) {
                             math::Matrix4f texMatrix = m_reflInstances[i].getMaterial().getTexture()->getTextureMatrix();
                             sReflectRefract.setParameter("textureMatrix", texMatrix);
                             sReflectRefract.setParameter("haveTexture", 1.f);
                         } else {
                             sReflectRefract.setParameter("haveTexture", 0.f);
-                        }
+                        }*/
                         vb.clear();
                         vb.setPrimitiveType(m_reflInstances[i].getVertexArrays()[0]->getPrimitiveType());
                         matrices.clear();
@@ -441,7 +445,8 @@ namespace odfaeg {
                         currentStates.blendMode = sf::BlendNone;
                         currentStates.texture = m_reflInstances[i].getMaterial().getTexture();
                         currentStates.shader = &sReflectRefract;
-                        frameBuffer.drawInstanced(vb, m_reflInstances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_reflInstances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
+                        currentStates.texture = &cubeMapTex;
+                        reflectRefractTex.drawInstanced(vb, m_reflInstances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_reflInstances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
                     }
                 }
                 for (unsigned int i = 0; i < m_reflNormals.size(); i++) {
@@ -449,37 +454,30 @@ namespace odfaeg {
                         Entity* reflectEntity = m_reflNormals[i].getVertexArrays()[0]->getEntity()->getRootEntity();
                         View reflectView(reflectEntity->getSize().x, reflectEntity->getSize().y,0, 1000);
                         reflectView.setCenter(reflectEntity->getCenter());
-                        math::Vec3f reflDir = reflectEntity->getRefractDir();
-                        math::Vec3f target = reflectView.getPosition() + reflDir;
-                        reflectView.lookAt(target.x, target.y, target.z);
-                        std::vector<Entity*> visibleReflEntities = World::getEntitiesInRect(view.getViewVolume(), expression);
-                        std::vector<Entity*> copy;
-                        for (unsigned int j = 0; j < visibleReflEntities.size(); j++)  {
-                            if (visibleReflEntities[j]->getRootEntity() != reflectEntity) {
-                                copy.push_back(visibleReflEntities[j]);
+                        for (unsigned int m = 0; m < 6; m++) {
+                            math::Vec3f target = reflectView.getPosition() + dirs[m];
+                            reflectView.lookAt(target.x, target.y, target.z);
+                            std::vector<Entity*> visibleReflEntities = World::getEntitiesInRect(reflectView.getViewVolume(), expression);
+                            std::vector<Entity*> copy;
+                            for (unsigned int j = 0; j < visibleReflEntities.size(); j++)  {
+                                if (visibleReflEntities[j]->getRootEntity() != reflectEntity) {
+                                    copy.push_back(visibleReflEntities[j]);
+                                }
                             }
+                            pplls[m]->loadEntitiesOnComponent(copy);
+                            pplls[m]->setView(reflectView);
+                            pplls[m]->clear();
+                            pplls[m]->drawNextFrame();
+                            std::vector<sf::Image> images;
+                            images.push_back(pplls[m]->getFrameBufferTexture().copyToImage());
+                            int width = view.getSize().x;
+                            int height = view.getSize().y;
+                            cubeMapTex.createCubeMap(width, height, images);
                         }
-                        ppll.loadEntitiesOnComponent(copy);
-                        ppll.setView(view);
-                        ppll.clear();
-                        ppll.drawNextFrame();
                         viewMatrix = view.getViewMatrix().getMatrix().transpose();
                         projMatrix = view.getProjMatrix().getMatrix().transpose();
                         sReflectRefractNormal.setParameter("viewMatrix", viewMatrix);
                         sReflectRefractNormal.setParameter("projectionMatrix", projMatrix);
-                        math::Matrix4f biasMatrix(0.5f, 0.0f, 0.0f, 0.0f,
-                                              0.0f, 0.5f, 0.0f, 0.0f,
-                                              0.0f, 0.0f, 0.5f, 0.0f,
-                                              0.5f, 0.5f, 0.5f, 1.f);
-                        math::Matrix4f depthBiasMatrix = biasMatrix;
-                        sReflectRefractNormal.setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
-                        if (m_reflNormals[i].getMaterial().getTexture() != nullptr) {
-                            math::Matrix4f texMatrix = m_reflNormals[i].getMaterial().getTexture()->getTextureMatrix();
-                            sReflectRefractNormal.setParameter("textureMatrix", texMatrix);
-                            sReflectRefractNormal.setParameter("haveTexture", 1.f);
-                        } else {
-                            sReflectRefractNormal.setParameter("haveTexture", 0.f);
-                        }
                         vb.clear();
                         vb.setPrimitiveType(m_reflNormals[i].getAllVertices().getPrimitiveType());
                         for (unsigned int j = 0; j < m_reflNormals[i].getAllVertices().getVertexCount(); j++) {
@@ -488,8 +486,8 @@ namespace odfaeg {
                         vb.update();
                         currentStates.blendMode = sf::BlendNone;
                         currentStates.shader = &sReflectRefractNormal;
-                        currentStates.texture = m_reflNormals[i].getMaterial().getTexture();
-                        frameBuffer.drawVertexBuffer(vb, currentStates);
+                        currentStates.texture = &cubeMapTex;
+                        reflectRefractTex.drawVertexBuffer(vb, currentStates);
                     }
                 }
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
@@ -570,8 +568,9 @@ namespace odfaeg {
         }
         void ReflectRefractRenderComponent::clear() {
             frameBuffer.clear(backgroundColor);
-            reflectRefractBuffer.clear(sf::Color::Transparent);
             depthBuffer.clear(sf::Color::Transparent);
+            reflectRefractBuffer.clear(sf::Color::Transparent);
+            reflectRefractTex.clear(sf::Color::Transparent);
         }
         void ReflectRefractRenderComponent::setBackgroundColor (sf::Color color) {
             this->backgroundColor = color;
@@ -583,8 +582,8 @@ namespace odfaeg {
 
         }
         void ReflectRefractRenderComponent::draw (RenderTarget& target, RenderStates states) {
-            frameBufferSprite.setCenter(target.getView().getPosition());
-            target.draw(frameBufferSprite, states);
+            reflectRefractTexSprite.setCenter(target.getView().getPosition());
+            target.draw(reflectRefractTexSprite, states);
         }
         std::string ReflectRefractRenderComponent::getExpression() {
             return expression;
@@ -607,8 +606,9 @@ namespace odfaeg {
         }
         void ReflectRefractRenderComponent::setView (View view) {
             frameBuffer.setView(view);
-            reflectRefractBuffer.setView(view);
             depthBuffer.setView(view);
+            reflectRefractBuffer.setView(view);
+            reflectRefractTex.setView(view);
             this->view = view;
         }
         View& ReflectRefractRenderComponent::getView() {
@@ -616,6 +616,7 @@ namespace odfaeg {
         }
         ReflectRefractRenderComponent::~ReflectRefractRenderComponent() {
             glDeleteBuffers(1, &vboWorldMatrices);
+            delete[] pplls;
         }
     }
 }

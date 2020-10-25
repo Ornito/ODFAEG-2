@@ -71,20 +71,22 @@ namespace odfaeg {
             View& getView();
             ~ReflectRefractRenderComponent();
         private :
-            PerPixelLinkedListRenderComponent ppll;
+            PerPixelLinkedListRenderComponent* pplls[6];
             Batcher batcher, normalBatcher, reflBatcher, reflNormalBatcher;
             sf::Color backgroundColor; /**> The background color.*/
             std::vector<Instance> m_instances, m_normals, m_reflInstances, m_reflNormals; /**> Instances to draw. (Instanced rendering.) */
             std::vector<Entity*> visibleEntities;
-            RenderTexture depthBuffer, reflectRefractBuffer, frameBuffer;
-            Shader sBuildDepthBuffer, sBuildDepthBufferNormal, sBuildReflectRefract, sBuildReflectRefractNormal, sReflectRefract, sReflectRefractNormal, sHiding, sHidingNormal;
+            RenderTexture frameBuffer, depthBuffer, reflectRefractBuffer, reflectRefractTex;
+            Shader sBuildDepthBuffer, sBuildDepthBufferNormal, sReflectRefract, sReflectRefractNormal, sBuildReflectRefract, sBuildReflectRefractNormal, sHiding, sHidingNormal;
             View view;
             std::string expression;
             bool update;
             unsigned int vboWorldMatrices;
-            Sprite frameBufferSprite, reflectRefractTextSprite, reflectRefractSprite, depthBufferSprite;
+            Texture cubeMapTex;
+            Sprite frameBufferSprite, depthBufferSprite, reflectRefractSprite, reflectRefractTexSprite, ppllsSprites[6];
             VertexBuffer vb;
             std::vector<float> matrices;
+            math::Vec3f dirs[6];
         };
     }
 }

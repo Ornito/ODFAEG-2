@@ -174,7 +174,12 @@ namespace odfaeg {
                         glCheck(glDisableVertexAttribArray(0));
                         glCheck(glDisableVertexAttribArray(1));
                         glCheck(glDisableVertexAttribArray(2));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboNormalBuffer));
+                        glCheck(glEnableVertexAttribArray(3));
+                        glCheck(glVertexAttribPointer(3, 3, GL_FLOAT,GL_FALSE,sizeof(sf::Vector3f), (GLvoid*) 0));
+                        glCheck(glDisableVertexAttribArray(3));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
                         /*va_list args;
                         va_start(args, n);
                         for (unsigned int i = 0; i < n; i++) {
@@ -192,24 +197,24 @@ namespace odfaeg {
                         va_end(args);*/
                         if (vboMatrix1 != 0) {
                             for (unsigned int i = 0; i < 4; i++) {
-                                glCheck(glEnableVertexAttribArray(i + 3));
+                                glCheck(glEnableVertexAttribArray(i + 4));
                                 glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboMatrix1));
-                                glCheck(glVertexAttribPointer(i + 3, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                                glCheck(glVertexAttribPointer(i + 4, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
                                                         (const GLvoid*)(sizeof(GLfloat) * i * 4)));
                                 glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                                glCheck(glVertexAttribDivisor(i + 3, 1));
-                                glCheck(glDisableVertexAttribArray(i + 3));
+                                glCheck(glVertexAttribDivisor(i + 4, 1));
+                                glCheck(glDisableVertexAttribArray(i + 4));
                             }
                         }
                         if (vboMatrix2 != 0) {
                             for (unsigned int i = 0; i < 4; i++) {
-                                glCheck(glEnableVertexAttribArray(i + 7));
+                                glCheck(glEnableVertexAttribArray(i + 8));
                                 glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboMatrix2));
-                                glCheck(glVertexAttribPointer(i + 7, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                                glCheck(glVertexAttribPointer(i + 8, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
                                                         (const GLvoid*)(sizeof(GLfloat) * i * 4)));
                                 glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                                glCheck(glVertexAttribDivisor(i + 7, 1));
-                                glCheck(glDisableVertexAttribArray(i + 7));
+                                glCheck(glVertexAttribDivisor(i + 8, 1));
+                                glCheck(glDisableVertexAttribArray(i + 8));
                             }
                         }
                     }
@@ -220,8 +225,16 @@ namespace odfaeg {
                     glCheck(glEnableVertexAttribArray(0));
                     glCheck(glEnableVertexAttribArray(1));
                     glCheck(glEnableVertexAttribArray(2));
-                    for (unsigned int i = 0; i < 4 ; i++) {
-                        glCheck(glEnableVertexAttribArray(3 + i));
+                    glCheck(glEnableVertexAttribArray(3));
+                    if (vboMatrix1 != 0) {
+                        for (unsigned int i = 0; i < 4 ; i++) {
+                            glCheck(glEnableVertexAttribArray(4 + i));
+                        }
+                    }
+                    if (vboMatrix2 != 0) {
+                        for (unsigned int i = 0; i < 4 ; i++) {
+                            glCheck(glEnableVertexAttribArray(8 + i));
+                        }
                     }
                     static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
                                                        GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
@@ -232,8 +245,16 @@ namespace odfaeg {
                     glCheck(glDisableVertexAttribArray(0));
                     glCheck(glDisableVertexAttribArray(1));
                     glCheck(glDisableVertexAttribArray(2));
-                    for (unsigned int i = 0; i < 4 ; i++) {
-                        glCheck(glDisableVertexAttribArray(3 + i));
+                    glCheck(glDisableVertexAttribArray(3));
+                    if (vboMatrix1 != 0) {
+                        for (unsigned int i = 0; i < 4 ; i++) {
+                            glCheck(glDisableVertexAttribArray(4 + i));
+                        }
+                    }
+                    if (vboMatrix2 != 0) {
+                        for (unsigned int i = 0; i < 4 ; i++) {
+                            glCheck(glDisableVertexAttribArray(8 + i));
+                        }
                     }
                     glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                     glCheck(glBindVertexArray(0));
@@ -369,6 +390,10 @@ namespace odfaeg {
                         glCheck(glVertexAttribPointer(0, 3,GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*) 0));
                         glCheck(glVertexAttribPointer(1, 4,GL_UNSIGNED_BYTE,GL_TRUE,sizeof(Vertex),(GLvoid*) 12));
                         glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) 16));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboNormalBuffer));
+                        glCheck(glEnableVertexAttribArray(3));
+                        glCheck(glVertexAttribPointer(3, 3, GL_FLOAT,GL_FALSE,sizeof(sf::Vector3f), (GLvoid*) 0));
+                        glCheck(glDisableVertexAttribArray(3));
                         glCheck(glDisableVertexAttribArray(0));
                         glCheck(glDisableVertexAttribArray(1));
                         glCheck(glDisableVertexAttribArray(2));
@@ -395,6 +420,7 @@ namespace odfaeg {
                     glCheck(glEnableVertexAttribArray(0));
                     glCheck(glEnableVertexAttribArray(1));
                     glCheck(glEnableVertexAttribArray(2));
+                    glCheck(glEnableVertexAttribArray(3));
                 } else {
                     glCheck(glEnableClientState(GL_COLOR_ARRAY));
                     glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
@@ -421,6 +447,7 @@ namespace odfaeg {
                     glCheck(glDisableVertexAttribArray(0));
                     glCheck(glDisableVertexAttribArray(1));
                     glCheck(glDisableVertexAttribArray(2));
+                    glCheck(glDisableVertexAttribArray(3));
                     glCheck(glBindVertexArray(0));
                 } else {
                     glCheck(glDisableClientState(GL_COLOR_ARRAY));

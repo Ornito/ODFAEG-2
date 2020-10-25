@@ -145,6 +145,44 @@ namespace odfaeg {
             needToUpdateIndexBuffer = true;
             return *this;
         }
+        void VertexBuffer::computeNormals() {
+            int size = 0;
+            if (m_primitiveType == sf::PrimitiveType::Quads)
+                size = m_vertices.size() / 4;
+            else
+                size = m_vertices.size() / 3;
+            for (int i = 0; i < size; i++) {
+                if (m_primitiveType == sf::PrimitiveType::Quads) {
+                    Vector3f v1 = m_vertices[i*4+1].position - m_vertices[i*4].position;
+                    Vector3f v2 = m_vertices[i*4+2].position - m_vertices[i*4+1].position;
+                    math::Vec3f v1f (v1.x, v1.y, v1.z);
+                    math::Vec3f v2f (v2.x, v2.y, v2.z);
+                    math::Vec3f n = v1f.cross(v2f).normalize();
+                    m_normals.push_back(Vector3f(n.x, n.y, n.z));
+                } else if (m_primitiveType == sf::PrimitiveType::Triangles) {
+                    Vector3f v1 = m_vertices[i*3+1].position - m_vertices[i*3].position;
+                    Vector3f v2 = m_vertices[i*3+2].position - m_vertices[i*3+1].position;
+                    math::Vec3f v1f (v1.x, v1.y, v1.z);
+                    math::Vec3f v2f (v2.x, v2.y, v2.z);
+                    math::Vec3f n = v1f.cross(v2f).normalize();
+                    m_normals.push_back(Vector3f(n.x, n.y, n.z));
+                } else if (m_primitiveType == sf::PrimitiveType::TrianglesStrip) {
+                    Vector3f v1 = m_vertices[i*1+1].position - m_vertices[i*1].position;
+                    Vector3f v2 = m_vertices[i*1+2].position - m_vertices[i*1+1].position;
+                    math::Vec3f v1f (v1.x, v1.y, v1.z);
+                    math::Vec3f v2f (v2.x, v2.y, v2.z);
+                    math::Vec3f n = v1f.cross(v2f).normalize();
+                    m_normals.push_back(Vector3f(n.x, n.y, n.z));
+                } else if (m_primitiveType == sf::PrimitiveType::TrianglesFan) {
+                    Vector3f v1 = m_vertices[i+1].position - m_vertices[0].position;
+                    Vector3f v2 = m_vertices[i+2].position - m_vertices[1].position;
+                    math::Vec3f v1f (v1.x, v1.y, v1.z);
+                    math::Vec3f v2f (v2.x, v2.y, v2.z);
+                    math::Vec3f n = v1f.cross(v2f).normalize();
+                    m_normals.push_back(Vector3f(n.x, n.y, n.z));
+                }
+            }
+        }
         bool VertexBuffer::isLoop() {
             return loop;
         }
@@ -339,6 +377,7 @@ namespace odfaeg {
             m_normals.push_back(sf::Vector3f(id, vertexId, 0));
         }
         void VertexBuffer::update() {
+            computeNormals();
             if (!m_vertices.empty()) {
 
                 if (GLEW_ARB_vertex_buffer_object) {
