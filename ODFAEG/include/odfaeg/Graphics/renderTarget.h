@@ -328,6 +328,7 @@ namespace odfaeg {
             std::string getName() {
                 return m_name;
             }
+            void setEnableCubeMap(bool enableCubeMap);
         protected :
             void setVersionMajor(unsigned int version);
             void setVersionMinor(unsigned int version);
@@ -423,7 +424,7 @@ namespace odfaeg {
             View        m_view;  ///< Current view
             StatesCache m_cache;  ///< Render states cache
             unsigned int m_vao, m_versionMajor, m_versionMinor, m_framebufferId;
-            bool enableAlphaTest;
+            bool enableAlphaTest, enableCubeMap;
             std::string m_name;
         };
     }

@@ -25,6 +25,7 @@ namespace odfaeg {
             sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
             reflectRefractBuffer.create (window.getView().getSize().x, window.getView().getSize().y, settings);
             reflectRefractTex.create(window.getView().getSize().x, window.getView().getSize().y, settings);
+            reflectRefractTex.setEnableCubeMap(true);
             reflectRefractTexSprite = Sprite(reflectRefractTex.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             settings.depthBits = 24;
             depthBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
@@ -80,12 +81,14 @@ namespace odfaeg {
                                                                    out vec3 pos;
                                                                    out vec4 frontColor;
                                                                    out vec2 fTexCoords;
+                                                                   out vec3 texCoord;
                                                                    void main() {
                                                                        normal = mat3(transpose(inverse(worldMat))) * normals;
                                                                        pos = vec3(worldMat * vec4(position, 1.0));
                                                                        gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
                                                                        fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
                                                                        frontColor = color;
+                                                                       texCoord = position;
                                                                    }
                                                                   )";
                 const std::string perPixReflectRefractVertexNormalShader = R"(#version 460 core
@@ -100,10 +103,14 @@ namespace odfaeg {
                                                                    out vec2 fTexCoords;
                                                                    out vec3 normal;
                                                                    out vec3 pos;
+                                                                   out vec3 texCoord;
                                                                    void main() {
                                                                        gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.f);
                                                                        fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
                                                                        frontColor = color;
+                                                                       texCoord = position;
+                                                                       normal = normals;
+                                                                       pos = position;
                                                                    }
                                                                   )";
                 const std::string buildDepthBufferFragmentShader = R"(#version 460 core
@@ -148,10 +155,12 @@ namespace odfaeg {
                                                                 in vec2 fTexCoords;
                                                                 in vec3 normal;
                                                                 in vec3 pos;
+                                                                in vec3 texCoord;
                                                                 uniform vec3 cameraPos;
                                                                 uniform samplerCube sceneBox;
                                                                 layout (location = 0) out vec4 fColor;
                                                                 void main () {
+                                                                    vec3 tc = (texCoord - cameraPos) / 100;
                                                                     float ratio = 1.00 / 1.33;
                                                                     vec3 i = normalize(pos - cameraPos);
                                                                     vec3 r = reflect (i, normalize(normal));
@@ -390,6 +399,7 @@ namespace odfaeg {
                         Entity* reflectEntity = m_reflInstances[i].getVertexArrays()[0]->getEntity()->getRootEntity();
                         View reflectView(view.getSize().x, view.getSize().y,0, 1000);
                         reflectView.setCenter(view.getPosition());
+                        images.clear();
                         for (unsigned int m = 0; m < 6; m++) {
                             math::Vec3f target = reflectView.getPosition() + dirs[m];
                             reflectView.lookAt(target.x, target.y, target.z);
@@ -404,7 +414,6 @@ namespace odfaeg {
                             pplls[m]->setView(reflectView);
                             pplls[m]->clear();
                             pplls[m]->drawNextFrame();
-                            std::vector<sf::Image> images;
                             images.push_back(pplls[m]->getFrameBufferTexture().copyToImage());
                             int width = view.getSize().x;
                             int height = view.getSize().y;
@@ -443,10 +452,31 @@ namespace odfaeg {
                             vb.update();
                         }
                         currentStates.blendMode = sf::BlendNone;
-                        currentStates.texture = m_reflInstances[i].getMaterial().getTexture();
                         currentStates.shader = &sReflectRefract;
                         currentStates.texture = &cubeMapTex;
                         reflectRefractTex.drawInstanced(vb, m_reflInstances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_reflInstances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
+                        /*sReflectRefractNormal.setParameter("viewMatrix", viewMatrix);
+                        sReflectRefractNormal.setParameter("projectionMatrix", projMatrix);
+                        sReflectRefractNormal.setParameter("cameraPos", view.getPosition().x, view.getPosition().y, view.getPosition().z);
+                        g3d::Cube cube(view.getPosition(), 100, 100, 100, sf::Color::White);
+                        Batcher cubeBatcher;
+                        cubeBatcher.clear();
+                        for (unsigned int n = 0; n < cube.getNbFaces(); n++) {
+                            cubeBatcher.addFace(cube.getFace(n));
+                        }
+                        std::vector<Instance> cubeInstances = cubeBatcher.getInstances();
+                        for (unsigned int n = 0; n < cubeInstances.size(); n++) {
+                            if (cubeInstances[n].getAllVertices().getVertexCount() > 0) {
+                                vb.clear();
+                                vb.setPrimitiveType(cubeInstances[n].getAllVertices().getPrimitiveType());
+                                for (unsigned int k = 0; k < cubeInstances[n].getAllVertices().getVertexCount(); k++) {
+                                    vb.append(cubeInstances[n].getAllVertices()[k]);
+                                }
+                                vb.update();
+                                currentStates.shader = &sReflectRefractNormal;
+                                reflectRefractTex.drawVertexBuffer(vb, currentStates);
+                            }
+                        }*/
                     }
                 }
                 for (unsigned int i = 0; i < m_reflNormals.size(); i++) {
@@ -454,6 +484,7 @@ namespace odfaeg {
                         Entity* reflectEntity = m_reflNormals[i].getVertexArrays()[0]->getEntity()->getRootEntity();
                         View reflectView(reflectEntity->getSize().x, reflectEntity->getSize().y,0, 1000);
                         reflectView.setCenter(reflectEntity->getCenter());
+                        images.clear();
                         for (unsigned int m = 0; m < 6; m++) {
                             math::Vec3f target = reflectView.getPosition() + dirs[m];
                             reflectView.lookAt(target.x, target.y, target.z);
@@ -468,7 +499,6 @@ namespace odfaeg {
                             pplls[m]->setView(reflectView);
                             pplls[m]->clear();
                             pplls[m]->drawNextFrame();
-                            std::vector<sf::Image> images;
                             images.push_back(pplls[m]->getFrameBufferTexture().copyToImage());
                             int width = view.getSize().x;
                             int height = view.getSize().y;

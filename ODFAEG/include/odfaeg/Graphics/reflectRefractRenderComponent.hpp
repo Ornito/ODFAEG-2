@@ -8,6 +8,7 @@
 #include "rectangleShape.h"
 #include "world.h"
 #include "perPixelLinkedListRenderComponent.hpp"
+#include "3D/cube.h"
 namespace odfaeg {
     namespace graphic {
         class ReflectRefractRenderComponent : public HeavyComponent {
@@ -86,6 +87,7 @@ namespace odfaeg {
             Sprite frameBufferSprite, depthBufferSprite, reflectRefractSprite, reflectRefractTexSprite, ppllsSprites[6];
             VertexBuffer vb;
             std::vector<float> matrices;
+            std::vector<sf::Image> images;
             math::Vec3f dirs[6];
         };
     }

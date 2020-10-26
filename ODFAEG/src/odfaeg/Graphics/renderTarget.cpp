@@ -48,6 +48,7 @@ namespace odfaeg {
             m_cache.glStatesSet = false;
             m_vao = m_versionMajor = m_versionMinor = 0;
             enableAlphaTest = true;
+            enableCubeMap = false;
         }
         void RenderTarget::setVersionMajor (unsigned int versionMajor) {
             m_versionMajor = versionMajor;
@@ -527,7 +528,11 @@ namespace odfaeg {
                 }
                 glCheck(glAlphaFunc(GL_GREATER, 0.f));
                 glCheck(glDepthFunc(GL_GREATER));
-                glCheck(glEnable(GL_TEXTURE_2D));
+                if (!enableCubeMap) {
+                    glCheck(glEnable(GL_TEXTURE_2D));
+                } else {
+                    glCheck(glEnable(GL_TEXTURE_CUBE_MAP));
+                }
                 glCheck(glEnable(GL_BLEND));
                 glCheck(glClearDepth(0));
                 glCheck(glDepthMask(GL_TRUE));
@@ -634,6 +639,9 @@ namespace odfaeg {
         void RenderTarget::applyShader(const Shader* shader)
         {
             Shader::bind(shader);
+        }
+        void RenderTarget::setEnableCubeMap(bool enableCubeMap) {
+            this->enableCubeMap = enableCubeMap;
         }
     }
 }
