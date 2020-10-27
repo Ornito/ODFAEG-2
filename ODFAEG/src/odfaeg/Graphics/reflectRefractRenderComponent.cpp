@@ -163,7 +163,7 @@ namespace odfaeg {
                                                                     vec3 tc = (texCoord - cameraPos) / 100;
                                                                     float ratio = 1.00 / 1.33;
                                                                     vec3 i = normalize(pos - cameraPos);
-                                                                    vec3 r = reflect (i, normalize(normal));
+                                                                    vec3 r = refract (i, normalize(normal), ratio);
                                                                     fColor = texture(sceneBox, r);
                                                                 }
                                                               )";
@@ -244,11 +244,9 @@ namespace odfaeg {
                 sBuildReflectRefractNormal.setParameter("maxRefraction", Material::getMaxRefraction());
                 sReflectRefract.setParameter("maxRefraction", Material::getMaxRefraction());
                 sReflectRefract.setParameter("resolution", resolution.x, resolution.y, resolution.z);
-                sReflectRefract.setParameter("texture", Shader::CurrentTexture);
                 sReflectRefract.setParameter("sceneBox", cubeMapTex);
                 sReflectRefractNormal.setParameter("maxRefraction", Material::getMaxRefraction());
                 sReflectRefractNormal.setParameter("resolution", resolution.x, resolution.y, resolution.z);
-                sReflectRefractNormal.setParameter("texture", Shader::CurrentTexture);
                 sReflectRefractNormal.setParameter("sceneBox", cubeMapTex);
                 sHiding.setParameter("texture", Shader::CurrentTexture);
                 sHiding.setParameter("resolution", resolution.x, resolution.y, resolution.z);
@@ -364,7 +362,7 @@ namespace odfaeg {
                             }
                             vb.update();
                         }
-                        currentStates.blendMode = sf::BlendNone;
+                        currentStates.blendMode = sf::BlendAlpha;
                         currentStates.texture = m_reflInstances[i].getMaterial().getTexture();
                         currentStates.shader = &sBuildReflectRefract;
                         reflectRefractBuffer.drawInstanced(vb, m_reflInstances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_reflInstances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
@@ -415,9 +413,17 @@ namespace odfaeg {
                             pplls[m]->clear();
                             pplls[m]->drawNextFrame();
                             images.push_back(pplls[m]->getFrameBufferTexture().copyToImage());
+                            /*for (unsigned int x = 0; x < images.back().getSize().x; x++) {
+                                for (unsigned int y = 0; y < images.back().getSize().y; y++) {
+                                    sf::Color pixel = images.back().getPixel(x, y);
+                                    std::cout<<"pixel : "<<(int) pixel.r<<","<<(int) pixel.g<<","<<(int) pixel.b<<","<<(int) pixel.a<<std::endl;
+                                }
+                            }*/
                         }
+                        reflectRefractTex.clear(sf::Color::Transparent);
                         int width = view.getSize().x;
                         int height = view.getSize().y;
+                        glCheck(glEnable(GL_TEXTURE_CUBE_MAP));
                         cubeMapTex.createCubeMap(width, height, images);
                         viewMatrix = view.getViewMatrix().getMatrix().transpose();
                         projMatrix = view.getProjMatrix().getMatrix().transpose();
@@ -500,10 +506,10 @@ namespace odfaeg {
                             pplls[m]->clear();
                             pplls[m]->drawNextFrame();
                             images.push_back(pplls[m]->getFrameBufferTexture().copyToImage());
-                            int width = view.getSize().x;
-                            int height = view.getSize().y;
-                            cubeMapTex.createCubeMap(width, height, images);
                         }
+                        int width = view.getSize().x;
+                        int height = view.getSize().y;
+                        cubeMapTex.createCubeMap(width, height, images);
                         viewMatrix = view.getViewMatrix().getMatrix().transpose();
                         projMatrix = view.getProjMatrix().getMatrix().transpose();
                         sReflectRefractNormal.setParameter("viewMatrix", viewMatrix);
@@ -520,6 +526,7 @@ namespace odfaeg {
                         reflectRefractTex.drawVertexBuffer(vb, currentStates);
                     }
                 }
+                reflectRefractTex.display();
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
                     if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                         if (m_instances[i].getMaterial().getTexture() != nullptr) {

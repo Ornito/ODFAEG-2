@@ -81,7 +81,7 @@ namespace odfaeg {
             Shader sBuildDepthBuffer, sBuildDepthBufferNormal, sReflectRefract, sReflectRefractNormal, sBuildReflectRefract, sBuildReflectRefractNormal, sHiding, sHidingNormal;
             View view;
             std::string expression;
-            bool update;
+            bool update, cubeMapCreated;
             unsigned int vboWorldMatrices;
             Texture cubeMapTex;
             Sprite frameBufferSprite, depthBufferSprite, reflectRefractSprite, reflectRefractTexSprite, ppllsSprites[6];

@@ -25,7 +25,7 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <GL/glew.h>
+#include "ExtLib/GLEW/glew-2.0.0/include/GL/glew.h"
 #include "../../../include/odfaeg/Graphics/texture.h"
 #include "../../../include/odfaeg/Window/window.hpp"
 #include "glCheck.h"
@@ -178,7 +178,6 @@ namespace odfaeg {
                       << std::endl;
                 return false;
             }
-
             // All the validity checks passed, we can store the new texture settings
             m_size.x        = width;
             m_size.y        = height;
@@ -189,19 +188,31 @@ namespace odfaeg {
                 GLuint texture;
                 glCheck(glGenTextures(1, &texture));
                 m_texture = static_cast<unsigned int>(texture);
-                glCheck(glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture));
-                for (unsigned int i = 0; i < 6; i++) {
-                    glCheck(glTexImage2D(
-                        GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                        0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, images[i].getPixelsPtr())
-                    );
-                }
-                glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-                glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-                glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-                glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
                 //glCheck(glBindImageTextures(0, 1, &m_texture));
             }
+            glCheck(glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture));
+            for (unsigned int i = 0; i < 6; i++) {
+                glCheck(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                                     0,
+                                     GL_RGBA,
+                                     width,
+                                     height,
+                                     0,
+                                     GL_RGBA,
+                                     GL_UNSIGNED_BYTE,
+                                     images[i].getPixelsPtr())
+                );
+                /*for (unsigned int x = 0; x < images[i].getSize().x; x++) {
+                    for (unsigned int y = 0; y < images[i].getSize().y; y++) {
+                        sf::Color pixel = images[i].getPixel(x, y);
+                        std::cout<<"pixel : "<<(int) pixel.r<<","<<(int) pixel.g<<","<<(int) pixel.b<<","<<(int) pixel.a<<std::endl;
+                    }
+                }*/
+            }
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
             m_cacheId = getUniqueId();
             return true;
         }
@@ -501,10 +512,11 @@ namespace odfaeg {
             if (texture && texture->m_texture)
             {
                 // Bind the texture
-                if (!texture->m_isCubeMap)
+                if (!texture->m_isCubeMap) {
                     glCheck(glBindTexture(GL_TEXTURE_2D, texture->m_texture));
-                else
+                } else {
                     glCheck(glBindTexture(GL_TEXTURE_CUBE_MAP, texture->m_texture));
+                }
                 // Check if we need to define a special texture matrix
                 if ((coordinateType == Pixels) || texture->m_pixelsFlipped)
                 {
@@ -540,7 +552,7 @@ namespace odfaeg {
             {
                 // Bind no texture
                 glCheck(glBindTexture(GL_TEXTURE_2D, 0));
-                glCheck(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
+                //glCheck(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
             }
         }
         math::Matrix4f Texture::getTextureMatrix() const {
