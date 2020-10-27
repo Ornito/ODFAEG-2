@@ -285,9 +285,9 @@ namespace sorrok {
         op->setVisible(false);
         op->setEventContextActivated(false);*/
         getRenderComponentManager().addComponent(frc1);
-        /*getRenderComponentManager().addComponent(src);
+        getRenderComponentManager().addComponent(src);
         getRenderComponentManager().addComponent(frc2);
-        getRenderComponentManager().addComponent(lrc);*/
+        getRenderComponentManager().addComponent(lrc);
         getRenderComponentManager().addComponent(rrrc);
         /*getRenderComponentManager().addComponent(textArea);
         getRenderComponentManager().addComponent(op);*/
@@ -361,10 +361,10 @@ namespace sorrok {
     void MyAppli::onRender(RenderComponentManager *cm) {
         // draw everything here...
         World::drawOnComponents("E_BIGTILE", 0);
-        /*World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PARTICLES", 2);*/
+        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PARTICLES", 2);
         World::drawOnComponents("E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION+E_HERO", 1);
-        /*World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO", 3);
-        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", 4);*/
+        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO", 3);
+        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", 4);
         fpsCounter++;
         if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {
             std::cout<<"FPS : "<<fpsCounter<<std::endl;
