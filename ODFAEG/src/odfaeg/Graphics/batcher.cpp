@@ -206,6 +206,8 @@ namespace odfaeg {
             }
             Face::Face(sf::PrimitiveType primType, TransformMatrix& tm) : transform(&tm) {
                 m_vertices.setPrimitiveType(primType);
+                m_material = Material();
+                m_material.addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
             }
             Face::Face(VertexArray va, Material mat, TransformMatrix& tm) : transform(&tm) {
                 m_vertices = va;

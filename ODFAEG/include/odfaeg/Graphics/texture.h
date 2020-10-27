@@ -534,6 +534,7 @@ namespace odfaeg
             bool         m_isRepeated;    ///< Is the texture in repeat mode?
             mutable bool m_pixelsFlipped; ///< To work around the inconsistency in Y orientation
             sf::Uint64       m_cacheId;       ///< Unique number that identifies the texture to the render target's cache
+            bool m_isCubeMap;
 
         };
     }

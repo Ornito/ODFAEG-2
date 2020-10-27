@@ -415,10 +415,10 @@ namespace odfaeg {
                             pplls[m]->clear();
                             pplls[m]->drawNextFrame();
                             images.push_back(pplls[m]->getFrameBufferTexture().copyToImage());
-                            int width = view.getSize().x;
-                            int height = view.getSize().y;
-                            cubeMapTex.createCubeMap(width, height, images);
                         }
+                        int width = view.getSize().x;
+                        int height = view.getSize().y;
+                        cubeMapTex.createCubeMap(width, height, images);
                         viewMatrix = view.getViewMatrix().getMatrix().transpose();
                         projMatrix = view.getProjMatrix().getMatrix().transpose();
                         sReflectRefract.setParameter("viewMatrix", viewMatrix);

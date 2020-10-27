@@ -102,11 +102,9 @@ namespace odfaeg {
         m_params        (),
         m_vertexAttribs ()
         {
-            shading_language_version_major = getVersionMajor();
-            shading_language_version_minor = getVersionMinor();
+            /*shading_language_version_major = getVersionMajor();
+            shading_language_version_minor = getVersionMinor();*/
         }
-
-
         ////////////////////////////////////////////////////////////
         Shader::~Shader()
         {
@@ -420,14 +418,15 @@ namespace odfaeg {
             if (m_shaderProgram)
             {
 
-                 /*if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
-                    glCheck(glUseProgram(m_shaderProgram));
+
+                 if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                   /* glCheck(glUseProgram(m_shaderProgram));
                     GLint location = getParamLocation(name);
                     if (location != -1) {
                         glCheck(glUniformMatrix4fv(location, 1, GL_FALSE,matrix.toGlMatrix().data()));
                     }
-                    glCheck(glUseProgram(0));
-                } else {*/
+                    glCheck(glUseProgram(0));*/
+                } else {
                     // Enable program
                     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                     glCheck(glUseProgramObjectARB(m_shaderProgram));
@@ -446,7 +445,7 @@ namespace odfaeg {
                     }
                     // Disable program
                     glCheck(glUseProgramObjectARB(program));
-                //}
+                }
             }
         }
 

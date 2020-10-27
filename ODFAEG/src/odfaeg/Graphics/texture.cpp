@@ -62,6 +62,7 @@ namespace odfaeg {
         m_isSmooth     (false),
         m_isRepeated   (false),
         m_pixelsFlipped(false),
+        m_isCubeMap(false),
         m_cacheId      (getUniqueId())
         {
 
@@ -76,6 +77,7 @@ namespace odfaeg {
         m_isSmooth     (copy.m_isSmooth),
         m_isRepeated   (copy.m_isRepeated),
         m_pixelsFlipped(false),
+        m_isCubeMap(copy.m_isCubeMap),
         m_cacheId      (getUniqueId())
         {
             if (copy.m_texture)
@@ -99,6 +101,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         bool Texture::create(unsigned int width, unsigned int height, GLenum precision, GLenum format, GLenum type)
         {
+            m_isCubeMap = false;
             // Check if texture parameters are valid before creating it
             if ((width == 0) || (height == 0))
             {
@@ -154,6 +157,7 @@ namespace odfaeg {
             return true;
         }
         bool Texture::createCubeMap(unsigned int width, unsigned int height, std::vector<sf::Image> images) {
+            m_isCubeMap = true;
             // Check if texture parameters are valid before creating it
             if ((width == 0) || (height == 0))
             {
@@ -497,8 +501,10 @@ namespace odfaeg {
             if (texture && texture->m_texture)
             {
                 // Bind the texture
-                glCheck(glBindTexture(GL_TEXTURE_2D, texture->m_texture));
-
+                if (!texture->m_isCubeMap)
+                    glCheck(glBindTexture(GL_TEXTURE_2D, texture->m_texture));
+                else
+                    glCheck(glBindTexture(GL_TEXTURE_CUBE_MAP, texture->m_texture));
                 // Check if we need to define a special texture matrix
                 if ((coordinateType == Pixels) || texture->m_pixelsFlipped)
                 {
@@ -534,6 +540,7 @@ namespace odfaeg {
             {
                 // Bind no texture
                 glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+                glCheck(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
             }
         }
         math::Matrix4f Texture::getTextureMatrix() const {

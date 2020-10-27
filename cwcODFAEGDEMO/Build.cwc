@@ -73,7 +73,7 @@
  
  
 -lsfml-network-s -lsfml-audio-s -lsfml-graphics-s -lsfml-window-s  -lsfml-system-s  
--lfreetype   -lws2_32 -lglew32s  -lwinmm -luser32 -lssl -lcrypto -lgdi32 -lopengl32 -lassimp -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis  -logg -lsndfile   
+-lfreetype   -lws2_32 -lglew32s  -lwinmm -luser32 -lssl -lcrypto -lgdi32 -lopengl32 -lassimp -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis  -logg -lsndfile -lglm_static  
   
 ;-lnghttp2 -lcurl -lssh2 
 >
