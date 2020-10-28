@@ -1187,32 +1187,23 @@ namespace odfaeg {
                         }
                     }
                 }
-                vector<string> types = core::split(type, "+");
-                for (unsigned int i = 0; i < types.size(); i++) {
-                    for (unsigned int j = 0; j < allEntitiesInRect.size(); j++) {
-                        Entity* entity = allEntitiesInRect[j];
-                        if (entity->getRootType() == types[i]) {
-                            BoneAnimation* ba = dynamic_cast<BoneAnimation*>(entity->getRootEntity());
-                            if (ba != nullptr) {
-                                if (ba->getBoneIndex() == entity->getBoneIndex()) {
-                                    std::cout<<"add bone animation"<<std::endl;
-                                    entities.push_back(entity);
-                                }
-                            } else {
-                                entities.push_back(entity);
-                            }
-                        }
-
-                    }
-                }
                 return entities;
             }
             vector<string> types = core::split(type, "+");
             for (unsigned int i = 0; i < types.size(); i++) {
-                 for (unsigned int j = 0; j < allEntitiesInRect.size(); j++) {
+                for (unsigned int j = 0; j < allEntitiesInRect.size(); j++) {
                     Entity* entity = allEntitiesInRect[j];
-                    if (entity->getRootType() == types[i])
-                        entities.push_back(entity);
+                    if (entity->getRootType() == types[i]) {
+                        BoneAnimation* ba = dynamic_cast<BoneAnimation*>(entity->getRootEntity());
+                        if (ba != nullptr) {
+                            if (ba->getBoneIndex() == entity->getBoneIndex()) {
+                                entities.push_back(entity);
+                            }
+                        } else {
+                            entities.push_back(entity);
+                        }
+                    }
+
                 }
             }
             return entities;
