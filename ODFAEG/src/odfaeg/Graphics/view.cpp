@@ -237,6 +237,7 @@ namespace odfaeg {
         void View::setPerspective (double left, double right, double bottom, double top, double front, double back) {
             projMatrix.setGlOrthoMatrix(left, right, bottom, top, front, back);
             viewUpdated = true;
+            ortho = true;
         }
         void View::setPerspective(double left, double right, double bottom, double top, double fovy, double aspect, double front, double back) {
             double tangent = math::Math::tang(math::Math::toRadians(fovy) * 0.5f);   // tangent of half fovY
@@ -244,6 +245,10 @@ namespace odfaeg {
             double hwidth = (hheight * aspect);
             projMatrix.setGlPerspectiveMatrix(-hwidth, hwidth, -hheight, hheight, front, back);
             viewUpdated = true;
+            ortho = false;
+        }
+        bool View::isOrtho() {
+            return ortho;
         }
         void View::setConstrains (float lockTeta, float lockPhi) {
             this->lockTeta = lockTeta;

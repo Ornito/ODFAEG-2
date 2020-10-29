@@ -143,9 +143,8 @@ namespace sorrok {
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 400, 100, 100)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 500, 100, 100)));
         tiles[0]->getFaces()[0]->getMaterial().setTexId("WATER");
-        tiles[0]->getFaces()[0]->getMaterial().setReflectionFactor(0.5f);
         tiles[0]->setReflectable(true);
-        tiles[0]->getFaces()[0]->getMaterial().setRefractionFactor(-0.1f);
+        tiles[0]->setWater(true);
         walls[0]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[1]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[2]->getFaces()[0]->getMaterial().setTexId("WALLS");

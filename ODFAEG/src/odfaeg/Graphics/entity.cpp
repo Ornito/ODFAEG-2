@@ -32,6 +32,13 @@ namespace odfaeg {
             drawOnComponent = true;
             reflectable = false;
             refractDir = math::Vec3f(0, 0, 1);
+            water = false;
+        }
+        void Entity::setWater (bool water) {
+            this->water = water;
+        }
+        bool Entity::isWater() {
+            return water;
         }
         void Entity::setDrawMode(DrawMode dm) {
             drawMode = dm;

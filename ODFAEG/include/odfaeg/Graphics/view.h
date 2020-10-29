@@ -220,6 +220,7 @@ namespace odfaeg {
             * \fn void computeVectorsFromAngles();
             * \brief compute the vectors from angles to pass form polar coordinates to cartesian coordinates.
             */
+            bool isOrtho();
         private :
 
             void computeVectorsFromAngles();
@@ -229,7 +230,7 @@ namespace odfaeg {
             * \brief compute the angles from vectors to pass form cartesian coordinates to polar coordinates.
             */
             void computeAnglesFromVectors();
-            bool viewUpdated; /**> if the view matrix has been updated.*/
+            bool viewUpdated, ortho; /**> if the view matrix has been updated.*/
             ProjMatrix projMatrix; /**> The projection matrix.*/
             ViewMatrix viewMatrix; /**> The view matrix.*/
             math::Vec3f position, up, target, forward, left; /**> The position, the up vector, the target, the forward and the left vector of the view.*/

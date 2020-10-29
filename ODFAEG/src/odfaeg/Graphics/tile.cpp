@@ -33,6 +33,7 @@ namespace odfaeg {
             Face* face = new Face(va, material,getTransform());
             addFace(face);
             parent = tile.parent;
+            water = tile.water;
         }
         Tile* Tile::clone() {
             return new Tile(getFaces()[0]->getMaterial().getTexture(), getPosition(), getSize(), getFaces()[0]->getMaterial().getTexRect(),getFaces()[0]->getVertexArray()[0].color,getParent());

@@ -1,6 +1,7 @@
 #include "../../../include/odfaeg/Graphics/perPixelLinkedListRenderComponent.hpp"
 #include "glCheck.h"
 #include "../../../include/odfaeg/Physics/particuleSystem.h"
+#include "../../../include/odfaeg/Core/application.h"
 namespace odfaeg {
     namespace graphic {
         PerPixelLinkedListRenderComponent::PerPixelLinkedListRenderComponent(RenderWindow& window, int layer, std::string expression, window::ContextSettings settings) :
@@ -16,6 +17,7 @@ namespace odfaeg {
             frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
             frameBufferSprite = Sprite(frameBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             frameBuffer.setView(view);
+            sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
             //window.setActive();
             glCheck(glGenBuffers(1, &atomicBuffer));
             glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
@@ -44,6 +46,8 @@ namespace odfaeg {
             if (settings.versionMajor >= 4 && settings.versionMinor >= 3) {
                 glGenBuffers(1, &vboWorldMatrices);
                 const std::string vertexShader = R"(#version 460 core
+                                                    #define M_PI 3.1415926535897932384626433832795
+                                                    #define FPI M_PI/4
                                                     layout (location = 0) in vec3 position;
                                                     layout (location = 1) in vec4 color;
                                                     layout (location = 2) in vec2 texCoords;
@@ -52,10 +56,20 @@ namespace odfaeg {
                                                     uniform mat4 projectionMatrix;
                                                     uniform mat4 viewMatrix;
                                                     uniform mat4 textureMatrix;
+                                                    uniform float water;
+                                                    uniform float time;
+                                                    uniform vec3 resolution;
                                                     out vec2 fTexCoords;
                                                     out vec4 frontColor;
                                                     void main() {
-                                                        gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
+                                                        float xOff = 0;
+                                                        float yOff = 0;
+                                                        if (water > 0.9f) {
+                                                            yOff = 0.05*sin(position.x*12+time*FPI)*resolution.y;
+                                                            if((position.x != resolution.x * 0.5f && position.x != -resolution.x * 0.5f))
+                                                                xOff = 0.025*cos(position.x*12+time*FPI)*resolution.x;
+                                                        }
+                                                        gl_Position = projectionMatrix * viewMatrix * worldMat * vec4((position.x - xOff), (position.y + yOff), position.z, 1.f);
                                                         fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
                                                         frontColor = color;
                                                     }
@@ -68,24 +82,37 @@ namespace odfaeg {
                                                         uniform mat4 projectionMatrix;
                                                         uniform mat4 viewMatrix;
                                                         uniform mat4 worldMat;
+                                                        uniform float water;
+                                                        uniform float time;
                                                         void main () {
                                                             gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
                                                         })";
                 const std::string  simpleVertexShader2 = R"(#version 460 core
-                                                        layout (location = 0) in vec3 position;
-                                                        layout (location = 1) in vec4 color;
-                                                        layout (location = 2) in vec2 texCoords;
-                                                        layout (location = 3) in vec3 normals;
-                                                        uniform mat4 textureMatrix;
-                                                        uniform mat4 projectionMatrix;
-                                                        uniform mat4 viewMatrix;
-                                                        out vec2 fTexCoords;
-                                                        out vec4 frontColor;
-                                                        void main () {
-                                                            gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.f);
-                                                            fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
-                                                            frontColor = color;
-                                                        })";
+                                                            #define M_PI 3.1415926535897932384626433832795
+                                                            #define FPI M_PI/4
+                                                            layout (location = 0) in vec3 position;
+                                                            layout (location = 1) in vec4 color;
+                                                            layout (location = 2) in vec2 texCoords;
+                                                            layout (location = 3) in vec3 normals;
+                                                            uniform mat4 textureMatrix;
+                                                            uniform mat4 projectionMatrix;
+                                                            uniform mat4 viewMatrix;
+                                                            uniform float water;
+                                                            uniform float time;
+                                                            out vec2 fTexCoords;
+                                                            out vec4 frontColor;
+                                                            void main () {
+                                                                float xOff = 0;
+                                                                float yOff = 0;
+                                                                if (water > 0.9f) {
+                                                                    yOff = 0.05*sin(position.x*12+time*FPI);
+                                                                    if((position.x != 1.0 && position.x != -1.0))
+                                                                        xOff = 0.025*cos(position.x*12+time*FPI);
+                                                                }
+                                                                gl_Position = projectionMatrix * viewMatrix * vec4((position.x - xOff), (position.y + yOff), position.z, 1.f);
+                                                                fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                                                frontColor = color;
+                                                            })";
                 const std::string fragmentShader = R"(#version 460 core
                                                       struct NodeType {
                                                           vec4 color;
@@ -100,6 +127,7 @@ namespace odfaeg {
                                                       uniform uint maxNodes;
                                                       uniform float haveTexture;
                                                       uniform sampler2D texture;
+                                                      uniform float water;
                                                       in vec4 frontColor;
                                                       in vec2 fTexCoords;
                                                       layout (location = 0) out vec4 fcolor;
@@ -192,6 +220,7 @@ namespace odfaeg {
                    }*/
                    perPixelLinkedList.setParameter("maxNodes", maxNodes);
                    perPixelLinkedList.setParameter("texture", Shader::CurrentTexture);
+                   perPixelLinkedList.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                    perPixelLinkedList2.setParameter("maxNodes", maxNodes);
                    perPixelLinkedList2.setParameter("texture", Shader::CurrentTexture);
                    math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
@@ -353,6 +382,15 @@ namespace odfaeg {
                 perPixelLinkedList2.setParameter("viewMatrix", viewMatrix);
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
                     if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                        if (m_instances[i].getVertexArrays()[0]->getEntity()->isWater()) {
+                            perPixelLinkedList.setParameter("water", 1.0f);
+                        } else {
+                            perPixelLinkedList.setParameter("water", 0.0f);
+                        }
+                        if (core::Application::app != nullptr) {
+                            float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
+                            perPixelLinkedList.setParameter("time", time);
+                        }
                         vb.clear();
                         vb.setPrimitiveType(m_instances[i].getVertexArrays()[0]->getPrimitiveType());
                         matrices.clear();

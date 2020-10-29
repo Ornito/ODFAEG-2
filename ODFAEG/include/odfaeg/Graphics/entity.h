@@ -386,6 +386,8 @@ namespace odfaeg {
                 math::Vec3f getRefractDir();
                 void setReflectable(bool refractable);
                 bool isReflectable();
+                void setWater(bool water);
+                bool isWater();
             protected :
                 math::Vec3f shadowCenter, shadowScale, shadowRotationAxis, shadowOrigin, refractDir; /**> The center of the shadow of the entity.*/
                 float shadowRotationAngle;
@@ -400,7 +402,7 @@ namespace odfaeg {
                 std::unique_ptr<physic::BoundingVolume> collisionVolume; /** the collision volume of the entity*/
                 Entity(const Entity& entity) = delete; /**> an entity if not copiable.*/
                 Entity& operator=(const Entity& entity) = delete; /**> an entity is not affectable*/
-                bool alreadySerialized, drawOnComponent, reflectable;
+                bool alreadySerialized, drawOnComponent, reflectable, water;
                 unsigned int boneIndex;
                 DrawMode drawMode;
         };

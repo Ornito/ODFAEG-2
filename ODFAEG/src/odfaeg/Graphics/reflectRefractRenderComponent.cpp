@@ -430,7 +430,12 @@ namespace odfaeg {
                     }
                 }
                 depthBuffer.display();
-                View reflectView(view.getSize().x, view.getSize().y,0, 1000);
+                View reflectView;
+                if (view.isOrtho()) {
+                    reflectView = View (view.getSize().x, view.getSize().y,0, 1000);
+                } else {
+                    reflectView = View (view.getSize().x, view.getSize().y, 90, 0, 1000);
+                }
                 reflectView.setCenter(view.getPosition());
                 for (unsigned int m = 0; m < 6; m++) {
                     math::Vec3f target = reflectView.getPosition() + dirs[m];
