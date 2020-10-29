@@ -70,6 +70,7 @@ namespace odfaeg
                 virtual void updateTexture(unsigned int textureId) = 0;
                 virtual unsigned int getFramebufferId() = 0;
                 virtual void bind() = 0;
+                virtual void selectCubemapFace(int face, int textureID) = 0;
             };
         }
 

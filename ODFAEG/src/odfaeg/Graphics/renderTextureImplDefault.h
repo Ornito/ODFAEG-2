@@ -80,6 +80,7 @@ namespace odfaeg
                 ////////////////////////////////////////////////////////////
                 // Member data
                 ////////////////////////////////////////////////////////////
+                void selectCubemapFace(int face, int textureID);
                 unsigned int m_width;   ///< Width of the P-Buffer
                 unsigned int m_height;  ///< Height of the P-Buffer
             };

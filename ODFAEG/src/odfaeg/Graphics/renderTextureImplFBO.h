@@ -84,6 +84,7 @@ namespace odfaeg {
                 ////////////////////////////////////////////////////////////
                 virtual void updateTexture(unsigned textureId);
                 virtual unsigned int getFramebufferId();
+                void selectCubemapFace(int face, int textureID);
                 ////////////////////////////////////////////////////////////
                 // Member data
                 ////////////////////////////////////////////////////////////

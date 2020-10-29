@@ -66,7 +66,8 @@ namespace odfaeg {
             enum Type
             {
                 Vertex,  ///< Vertex shader
-                Fragment ///< Fragment (pixel) shader
+                Fragment, ///< Fragment (pixel) shader
+                Geometry
             };
 
             ////////////////////////////////////////////////////////////
@@ -133,6 +134,7 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             bool loadFromFile(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename);
+            bool loadFromFile(const std::string& vertexShaderFilename, const std::string& fragmentShaderFileName, const std::string& geometryShaderFileName);
 
             ////////////////////////////////////////////////////////////
             /// \brief Load either the vertex or fragment shader from a source code in memory
@@ -174,6 +176,8 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             bool loadFromMemory(const std::string& vertexShader, const std::string& fragmentShader);
+            bool loadFromMemory(const std::string& vertexShader, const std::string& fragmentShader, const std::string& geometryShader);
+
 
             ////////////////////////////////////////////////////////////
             /// \brief Load either the vertex or fragment shader from a custom stream
@@ -215,6 +219,7 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             bool loadFromStream(sf::InputStream& vertexShaderStream, sf::InputStream& fragmentShaderStream);
+            bool loadFromStream(sf::InputStream& vertexShaderStream, sf::InputStream& fragmentShaderStream, sf::InputStream& geometryShaderStream);
             ////////////////////////////////////////////////////////////
             /// \brief Bind a vertex attribute of the shader.
             /// The vertex attribute value's location is defined in the C code with the function glVertexAttributePointer.
@@ -527,7 +532,7 @@ namespace odfaeg {
             /// \return True on success, false if any error happened
             ///
             ////////////////////////////////////////////////////////////
-            bool compile(const char* vertexShaderCode, const char* fragmentShaderCode);
+            bool compile(const char* vertexShaderCode, const char* fragmentShaderCode, const char* geometryShaderCode);
 
             ////////////////////////////////////////////////////////////
             /// \brief Bind all the textures used by the shader

@@ -72,22 +72,20 @@ namespace odfaeg {
             View& getView();
             ~ReflectRefractRenderComponent();
         private :
-            PerPixelLinkedListRenderComponent* pplls[6];
-            Batcher batcher, normalBatcher, reflBatcher, reflNormalBatcher;
+            RectangleShape quad;
+            Batcher batcher, normalBatcher, reflBatcher, reflNormalBatcher, rvBatcher, normalRvBatcher;
             sf::Color backgroundColor; /**> The background color.*/
-            std::vector<Instance> m_instances, m_normals, m_reflInstances, m_reflNormals; /**> Instances to draw. (Instanced rendering.) */
+            std::vector<Instance> m_instances, m_normals, m_reflInstances, m_reflNormals, m_rvInstances, m_rvNormals; /**> Instances to draw. (Instanced rendering.) */
             std::vector<Entity*> visibleEntities;
-            RenderTexture depthBuffer, reflectRefractTex;
-            Shader sBuildDepthBuffer, sBuildDepthBufferNormal, sReflectRefract, sReflectRefractNormal;
+            RenderTexture depthBuffer, reflectRefractTex, environmentMap;
+            Shader sBuildDepthBuffer, sBuildDepthBufferNormal, sReflectRefract, sReflectRefractNormal, sLinkedList, sLinkedListNormal, sLinkedList2;
             View view;
             std::string expression;
             bool update, cubeMapCreated;
-            unsigned int vboWorldMatrices;
-            Texture cubeMapTex;
-            Sprite depthBufferSprite, reflectRefractTexSprite, ppllsSprites[6];
-            VertexBuffer vb;
+            unsigned int vboWorldMatrices, atomicBuffer, linkedListBuffer, clearBuf, headPtrTex;
+            Sprite depthBufferSprite, reflectRefractTexSprite;
+            VertexBuffer vb, vb2;
             std::vector<float> matrices;
-            std::vector<sf::Image> images;
             math::Vec3f dirs[6];
         };
     }

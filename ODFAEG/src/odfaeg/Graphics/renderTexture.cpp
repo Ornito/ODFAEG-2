@@ -55,7 +55,7 @@ namespace odfaeg
 
 
         ////////////////////////////////////////////////////////////
-        bool RenderTexture::create(unsigned int width, unsigned int height, window::ContextSettings settings, bool useSeparateContext, unsigned int precision, unsigned int format, unsigned int type)
+        bool RenderTexture::create(unsigned int width, unsigned int height, window::ContextSettings settings, unsigned int textureType, bool useSeparateContext, unsigned int precision, unsigned int format, unsigned int type)
         {
 
             if (useSeparateContext)
@@ -63,10 +63,18 @@ namespace odfaeg
             RenderTarget::setVersionMajor(m_context->getSettings().versionMajor);
             RenderTarget::setVersionMinor(m_context->getSettings().versionMinor);
             // Create the texture
-            if(!m_texture.create(width, height))
-            {
-                std::cerr<< "Impossible to create render texture (failed to create the target texture)" << std::endl;
-                return false;
+            if (textureType == GL_TEXTURE_2D) {
+                if(!m_texture.create(width, height))
+                {
+                    std::cerr<< "Impossible to create render texture (failed to create the target texture)" << std::endl;
+                    return false;
+                }
+            } else if (textureType = GL_TEXTURE_CUBE_MAP) {
+                if(!m_texture.createCubeMap(width, height))
+                {
+                    std::cerr<< "Impossible to create render texture (failed to create the target texture)" << std::endl;
+                    return false;
+                }
             }
             // We disable smoothing by default for render textures
             setSmooth(false);
@@ -181,6 +189,10 @@ namespace odfaeg
         }
         unsigned int RenderTexture::getClearBuff() {
             return m_clearBuff;
+        }
+        void RenderTexture::selectCubemapFace(int cubemapFace) {
+            if(m_impl && m_texture.isCubemap())
+                m_impl->selectCubemapFace(cubemapFace, m_texture.getNativeHandle());
         }
     }
 }

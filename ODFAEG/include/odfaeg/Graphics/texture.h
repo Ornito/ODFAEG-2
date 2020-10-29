@@ -104,7 +104,9 @@ namespace odfaeg
             ///
             ////////////////////////////////////////////////////////////
             bool create(unsigned int width, unsigned int height, unsigned int precision = 0x8058, unsigned int format = 0x1908, unsigned int type = 0x1401);
+            bool createCubeMap (unsigned int width, unsigned int height);
             bool createCubeMap(unsigned int width, unsigned int height, std::vector<sf::Image> images);
+            bool createCubeMap(unsigned int width, unsigned int height, std::vector<const Texture*> images);
             void clear();
             ////////////////////////////////////////////////////////////
             /// \brief Load the texture from a file on disk
@@ -502,6 +504,7 @@ namespace odfaeg
             void onLoad(std::vector<sf::Uint8>& pixels);
             void onSave(std::vector<sf::Uint8>& pixels);
             unsigned int getNativeHandle() const;
+            bool isCubemap();
         private :
 
             friend class RenderTexture;

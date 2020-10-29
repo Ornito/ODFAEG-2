@@ -88,7 +88,7 @@ namespace odfaeg {
             /// \return True if creation has been successful
             ///
             ////////////////////////////////////////////////////////////
-            bool create(unsigned int width, unsigned int height, window::ContextSettings = window::ContextSettings(), bool useSeparateContext = true, unsigned int precision = 0x8058,unsigned int format = 0x1908, unsigned int type = 0x1401);
+            bool create(unsigned int width, unsigned int height, window::ContextSettings = window::ContextSettings(), unsigned int textureType = 0x0DE1, bool useSeparateContext = true, unsigned int precision = 0x8058,unsigned int format = 0x1908, unsigned int type = 0x1401);
             ////////////////////////////////////////////////////////////
             /// \brief Enable or disable texture smoothing
             ///
@@ -196,6 +196,7 @@ namespace odfaeg {
             unsigned int getLinkedListBuffer();
             unsigned int getHeadPtrTex();
             unsigned int getClearBuff();
+            void selectCubemapFace(int face);
         private :
             bool activate(bool active);
             ////////////////////////////////////////////////////////////

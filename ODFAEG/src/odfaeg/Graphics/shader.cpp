@@ -133,9 +133,11 @@ namespace odfaeg {
 
             // Compile the shader program
             if (type == Vertex)
-                return compile(&shader[0], NULL);
+                return compile(&shader[0], NULL, NULL);
+            else if (type == Fragment)
+                return compile(NULL, &shader[0], NULL);
             else
-                return compile(NULL, &shader[0]);
+                return compile(NULL, NULL, &shader[0]);
         }
 
 
@@ -159,7 +161,38 @@ namespace odfaeg {
             }
 
             // Compile the shader program
-            return compile(&vertexShader[0], &fragmentShader[0]);
+            return compile(&vertexShader[0], &fragmentShader[0], NULL);
+        }
+
+        ////////////////////////////////////////////////////////////
+        bool Shader::loadFromFile(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename, const std::string& geometryShaderFilename)
+        {
+            // Read the vertex shader file
+            std::vector<char> vertexShader;
+            if (!getFileContents(vertexShaderFilename, vertexShader))
+            {
+                err() << "Failed to open vertex shader file \"" << vertexShaderFilename << "\"" << std::endl;
+                return false;
+            }
+
+            // Read the fragment shader file
+            std::vector<char> fragmentShader;
+            if (!getFileContents(fragmentShaderFilename, fragmentShader))
+            {
+                err() << "Failed to open fragment shader file \"" << fragmentShaderFilename << "\"" << std::endl;
+                return false;
+            }
+
+            // Read the fragment shader file
+            std::vector<char> geometryShader;
+            if (!getFileContents(geometryShaderFilename, geometryShader))
+            {
+                err() << "Failed to open geometry shader file \"" << fragmentShaderFilename << "\"" << std::endl;
+                return false;
+            }
+
+            // Compile the shader program
+            return compile(&vertexShader[0], &fragmentShader[0], NULL);
         }
 
 
@@ -168,9 +201,11 @@ namespace odfaeg {
         {
             // Compile the shader program
             if (type == Vertex)
-                return compile(shader.c_str(), NULL);
+                return compile(shader.c_str(), NULL, NULL);
+            else if (type == Fragment)
+                return compile(NULL, shader.c_str(), NULL);
             else
-                return compile(NULL, shader.c_str());
+                return compile(NULL, NULL, shader.c_str());
         }
 
 
@@ -178,7 +213,14 @@ namespace odfaeg {
         bool Shader::loadFromMemory(const std::string& vertexShader, const std::string& fragmentShader)
         {
             // Compile the shader program
-            return compile(vertexShader.c_str(), fragmentShader.c_str());
+            return compile(vertexShader.c_str(), fragmentShader.c_str(), NULL);
+        }
+
+        ////////////////////////////////////////////////////////////
+        bool Shader::loadFromMemory(const std::string& vertexShader, const std::string& fragmentShader, const std::string& geometryShader)
+        {
+            // Compile the shader program
+            return compile(vertexShader.c_str(), fragmentShader.c_str(), geometryShader.c_str());
         }
 
 
@@ -195,9 +237,11 @@ namespace odfaeg {
 
             // Compile the shader program
             if (type == Vertex)
-                return compile(&shader[0], NULL);
+                return compile(&shader[0], NULL, NULL);
+            else if (type == Fragment)
+                return compile(NULL, &shader[0], NULL);
             else
-                return compile(NULL, &shader[0]);
+                return compile(NULL, NULL, &shader[0]);
         }
 
 
@@ -221,7 +265,36 @@ namespace odfaeg {
             }
 
             // Compile the shader program
-            return compile(&vertexShader[0], &fragmentShader[0]);
+            return compile(&vertexShader[0], &fragmentShader[0], NULL);
+        }
+        ////////////////////////////////////////////////////////////
+        bool Shader::loadFromStream(InputStream& vertexShaderStream, InputStream& fragmentShaderStream, InputStream& geometryShaderStream)
+        {
+            // Read the vertex shader code from the stream
+            std::vector<char> vertexShader;
+            if (!getStreamContents(vertexShaderStream, vertexShader))
+            {
+                err() << "Failed to read vertex shader from stream" << std::endl;
+                return false;
+            }
+
+            // Read the fragment shader code from the stream
+            std::vector<char> fragmentShader;
+            if (!getStreamContents(fragmentShaderStream, fragmentShader))
+            {
+                err() << "Failed to read fragment shader from stream" << std::endl;
+                return false;
+            }
+
+            std::vector<char> geometryShader;
+            if (!getStreamContents(geometryShaderStream, geometryShader))
+            {
+                err() << "Failed to read geometry shader from stream" << std::endl;
+                return false;
+            }
+
+            // Compile the shader program
+            return compile(&vertexShader[0], &fragmentShader[0], &geometryShader[0]);
         }
         ////////////////////////////////////////////////////////////
         void Shader::setParameter(const std::string& name, unsigned int x)
@@ -569,7 +642,7 @@ namespace odfaeg {
 
 
         ////////////////////////////////////////////////////////////
-        bool Shader::compile(const char* vertexShaderCode, const char* fragmentShaderCode)
+        bool Shader::compile(const char* vertexShaderCode, const char* fragmentShaderCode, const char* geometryShaderCode)
         {
 
 
@@ -695,6 +768,50 @@ namespace odfaeg {
                     glCheck(glDeleteObjectARB(fragmentShader));
                 }
             }
+            if (geometryShaderCode) {
+                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    GLuint geometryShaderID = glCreateShader(GL_GEOMETRY_SHADER);
+                    glCheck(glShaderSource(geometryShaderID, 1, &geometryShaderCode, nullptr));
+                    glCheck(glCompileShader(geometryShaderID));
+                    GLint success;
+                    glCheck(glGetShaderiv(geometryShaderID, GL_COMPILE_STATUS,&success));
+                    if (success == GL_FALSE) {
+                        int infoLogLength;
+                        glCheck(glGetShaderiv(geometryShaderID, GL_INFO_LOG_LENGTH, &infoLogLength));
+                        char log[infoLogLength];
+                        glCheck(glGetShaderInfoLog(geometryShaderID, infoLogLength, 0, &log[0]));
+                        std::cerr << "Failed to compile geometry shader:" << std::endl
+                        << log << std::endl;
+                        glCheck(glDeleteShader(geometryShaderID));
+                        glCheck(glDeleteProgram(m_shaderProgram));
+                        m_shaderProgram = 0;
+                        return false;
+                    }
+                    glCheck(glAttachShader(m_shaderProgram, geometryShaderID));
+                    glCheck(glDeleteShader(geometryShaderID));
+                } else {
+                    GLhandleARB geometryShader = glCreateShaderObjectARB(GL_GEOMETRY_SHADER_ARB);
+                    glCheck(glShaderSourceARB(geometryShader, 1, &geometryShaderCode, NULL));
+                    glCheck(glCompileShaderARB(geometryShader));
+
+                    // Check the compile log
+                    GLint success;
+                    glCheck(glGetObjectParameterivARB(geometryShader, GL_OBJECT_COMPILE_STATUS_ARB, &success));
+                    if (success == GL_FALSE)
+                    {
+                        char log[1024];
+                        glCheck(glGetInfoLogARB(geometryShader, sizeof(log), 0, log));
+                        std::cerr << "Failed to compile fragment shader:" << std::endl
+                              << log << std::endl;
+                        glCheck(glDeleteObjectARB(geometryShader));
+                        glCheck(glDeleteObjectARB(m_shaderProgram));
+                        m_shaderProgram = 0;
+                        return false;
+                    }
+                    glCheck(glAttachObjectARB(m_shaderProgram, geometryShader));
+                    glCheck(glDeleteObjectARB(geometryShader));
+                }
+            }
             if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
                 glCheck(glLinkProgram(m_shaderProgram));
                 GLint success;
@@ -702,10 +819,10 @@ namespace odfaeg {
                 if (success == GL_FALSE) {
                     int infoLogLength;
                     glCheck(glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &infoLogLength));
-                    std::vector<char> programErrorMessage(std::max(infoLogLength, int(1)) );
-                    glCheck(glGetProgramInfoLog(m_shaderProgram, infoLogLength, nullptr, &programErrorMessage[0]));
+                    char log[infoLogLength];
+                    glCheck(glGetProgramInfoLog(m_shaderProgram, infoLogLength, nullptr, &log[0]));
                     std::cerr << "Failed to link shader:" << std::endl
-                         /* << log << std::endl*/;
+                          << log << std::endl;
                     glCheck(glDeleteProgram(m_shaderProgram));
                     m_shaderProgram = 0;
                     return false;

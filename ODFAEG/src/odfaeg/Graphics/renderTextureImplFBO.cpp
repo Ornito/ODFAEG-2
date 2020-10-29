@@ -132,13 +132,16 @@ namespace odfaeg {
                         glCheck(glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, m_depthBuffer));
                     }
                 }
+                glCheck(glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT));
                 if (m_versionMajor >= 3 && m_versionMinor >= 3) {
-                    glCheck(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId, 0));
+                    glCheck(glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureId, 0));
 
                 } else {
                     // Link the texture to the frame buffer
-                    glCheck(glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, textureId, 0));
+                    glCheck(glFramebufferTextureEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, textureId, 0));
                 }
+
+
                 if (m_versionMajor >= 3 && m_versionMinor >= 3) {
                     // A final check, just to be sure.
                     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -156,7 +159,6 @@ namespace odfaeg {
                         return false;
                     }
                 }
-
                 return true;
             }
             //bool RenderTextureImplFBO::activate(bool active) {
@@ -174,6 +176,16 @@ namespace odfaeg {
             }
             void RenderTextureImplFBO::bind() {
                 glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBuffer));
+            }
+            void RenderTextureImplFBO::selectCubemapFace (int face, int textureID) {
+                if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                    glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer));
+                else
+                    glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBuffer));
+                if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                    glCheck(glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, textureID, 0));
+                else
+                    glCheck(glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0,GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, textureID, 0));
             }
         }
 

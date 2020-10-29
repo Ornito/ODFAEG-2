@@ -156,6 +156,66 @@ namespace odfaeg {
             m_precision = precision;
             return true;
         }
+        bool Texture::createCubeMap(unsigned int width, unsigned int height) {
+            m_isCubeMap = true;
+            // Check if texture parameters are valid before creating it
+            if ((width == 0) || (height == 0))
+            {
+                err() << "Failed to create texture, invalid size (" << width << "x" << height << ")" << std::endl;
+                return false;
+            }
+
+            // Compute the internal texture dimensions depending on NPOT textures support
+            Vector2u actualSize(getValidSize(width), getValidSize(height));
+
+            // Check the maximum texture size
+            unsigned int maxSize = getMaximumSize();
+            if ((actualSize.x > maxSize) || (actualSize.y > maxSize))
+            {
+                err() << "Failed to create texture, its internal size is too high "
+                      << "(" << actualSize.x << "x" << actualSize.y << ", "
+                      << "maximum is " << maxSize << "x" << maxSize << ")"
+                      << std::endl;
+                return false;
+            }
+            // All the validity checks passed, we can store the new texture settings
+            m_size.x        = width;
+            m_size.y        = height;
+            m_actualSize    = actualSize;
+            m_pixelsFlipped = false;
+            if (!m_texture)
+            {
+                GLuint texture;
+                glCheck(glGenTextures(1, &texture));
+                m_texture = static_cast<unsigned int>(texture);
+                //glCheck(glBindImageTextures(0, 1, &m_texture));
+            }
+            glCheck(glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture));
+            for (unsigned int i = 0; i < 6; i++) {
+                glCheck(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                                     0,
+                                     GL_RGBA,
+                                     width,
+                                     height,
+                                     0,
+                                     GL_RGBA,
+                                     GL_UNSIGNED_BYTE,
+                                     nullptr)
+                );
+                /*for (unsigned int x = 0; x < images[i].getSize().x; x++) {
+                    for (unsigned int y = 0; y < images[i].getSize().y; y++) {
+                        sf::Color pixel = images[i].getPixel(x, y);
+                        std::cout<<"pixel : "<<(int) pixel.r<<","<<(int) pixel.g<<","<<(int) pixel.b<<","<<(int) pixel.a<<std::endl;
+                    }
+                }*/
+            }
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+            m_cacheId = getUniqueId();
+            return true;
+        }
         bool Texture::createCubeMap(unsigned int width, unsigned int height, std::vector<sf::Image> images) {
             m_isCubeMap = true;
             // Check if texture parameters are valid before creating it
@@ -202,6 +262,57 @@ namespace odfaeg {
                                      GL_UNSIGNED_BYTE,
                                      images[i].getPixelsPtr())
                 );
+                /*for (unsigned int x = 0; x < images[i].getSize().x; x++) {
+                    for (unsigned int y = 0; y < images[i].getSize().y; y++) {
+                        sf::Color pixel = images[i].getPixel(x, y);
+                        std::cout<<"pixel : "<<(int) pixel.r<<","<<(int) pixel.g<<","<<(int) pixel.b<<","<<(int) pixel.a<<std::endl;
+                    }
+                }*/
+            }
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+            m_cacheId = getUniqueId();
+            return true;
+        }
+        bool Texture::createCubeMap(unsigned int width, unsigned int height, std::vector<const Texture*> images) {
+            m_isCubeMap = true;
+            // Check if texture parameters are valid before creating it
+            if ((width == 0) || (height == 0))
+            {
+                err() << "Failed to create texture, invalid size (" << width << "x" << height << ")" << std::endl;
+                return false;
+            }
+
+            // Compute the internal texture dimensions depending on NPOT textures support
+            Vector2u actualSize(getValidSize(width), getValidSize(height));
+
+            // Check the maximum texture size
+            unsigned int maxSize = getMaximumSize();
+            if ((actualSize.x > maxSize) || (actualSize.y > maxSize))
+            {
+                err() << "Failed to create texture, its internal size is too high "
+                      << "(" << actualSize.x << "x" << actualSize.y << ", "
+                      << "maximum is " << maxSize << "x" << maxSize << ")"
+                      << std::endl;
+                return false;
+            }
+            // All the validity checks passed, we can store the new texture settings
+            m_size.x        = width;
+            m_size.y        = height;
+            m_actualSize    = actualSize;
+            m_pixelsFlipped = false;
+            if (!m_texture)
+            {
+                GLuint texture;
+                glCheck(glGenTextures(1, &texture));
+                m_texture = static_cast<unsigned int>(texture);
+                //glCheck(glBindImageTextures(0, 1, &m_texture));
+            }
+            glCheck(glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture));
+            for (unsigned int i = 0; i < 6; i++) {
+                glCheck(glCopyImageSubData(images[i]->m_texture, GL_TEXTURE_2D,0,0,0,0,m_texture,GL_TEXTURE_CUBE_MAP,0,0,0,i,width,height,1));
                 /*for (unsigned int x = 0; x < images[i].getSize().x; x++) {
                     for (unsigned int y = 0; y < images[i].getSize().y; y++) {
                         sf::Color pixel = images[i].getPixel(x, y);
@@ -644,6 +755,9 @@ namespace odfaeg {
         }
         unsigned int Texture::getNativeHandle() const {
             return m_texture;
+        }
+        bool Texture::isCubemap() {
+            return m_isCubeMap;
         }
     }
 } // namespace sf
