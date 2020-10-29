@@ -48,16 +48,16 @@ namespace odfaeg {
                 void updateParticleSystems();
                 ~ShadowRenderComponent();
             private :
-                Batcher batcher, shadowBatcher, normalBatcher; /**> A group of faces using the same materials and primitive type.*/
+                Batcher batcher, shadowBatcher, normalBatcher, normalShadowBatcher; /**> A group of faces using the same materials and primitive type.*/
                 std::vector<Instance> m_instances, m_normals; /**> Instances to draw. (Instanced rendering.) */
-                std::vector<Instance> m_shadow_instances;
+                std::vector<Instance> m_shadow_instances, m_shadow_normals;
                 std::vector<Entity*> visibleEntities; /**> Entities loaded*/
                 RenderTexture stencilBuffer; /**> the stencil buffer.*/
                 RenderTexture shadowMap; /**> the shadow map.*/
                 RenderTexture depthBuffer;
                 Sprite stencilBufferTile, shadowTile, depthBufferTile; /**> the stencil and shadow map buffer.*/
                 Shader buildShadowMapShader, buildShadowMapNormalShader; /**> the shader to generate the stencil buffer.*/
-                Shader perPixShadowShader; /**> the shader to generate the shadow map.*/
+                Shader perPixShadowShader, perPixShadowShaderNormal; /**> the shader to generate the shadow map.*/
                 Shader depthGenShader, depthGenNormalShader;
                 View view; /**> the view of the component.*/
                 std::string expression;
