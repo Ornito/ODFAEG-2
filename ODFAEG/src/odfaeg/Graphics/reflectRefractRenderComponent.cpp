@@ -7,10 +7,15 @@ namespace odfaeg {
                           math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0),
                           math::Vec3f(window.getView().getSize().x + window.getView().getSize().x * 0.5f, window.getView().getPosition().y + window.getView().getSize().y * 0.5f, layer)),
             view(window.getView()),
-            expression(expression),
-            quad(math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, window.getSize().y * 0.5f))
+            expression(expression)
             {
-            quad.move(math::Vec3f(-window.getView().getSize().x * 0.5f, 0/*-window.getView().getSize().y * 0.5f*/, 0));
+            if (window.getView().getSize().x > window.getView().getSize().y) {
+                squareSize = window.getView().getSize().x;
+            } else {
+                squareSize = window.getView().getSize().y;
+            }
+            quad = RectangleShape(math::Vec3f(squareSize, squareSize, squareSize * 0.5f));
+            quad.move(math::Vec3f(-squareSize * 0.5f, -squareSize * 0.5f, 0));
             dirs[0] = math::Vec3f(1, 0, 0);
             dirs[1] = math::Vec3f(-1, 0, 0);
             dirs[2] = math::Vec3f(0, 1, 0);
@@ -25,8 +30,8 @@ namespace odfaeg {
             reflectRefractTex.create(window.getView().getSize().x, window.getView().getSize().y, settings);
             reflectRefractTex.setEnableCubeMap(true);
             reflectRefractTexSprite = Sprite(reflectRefractTex.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-            environmentMap.create(window.getView().getSize().x, window.getView().getSize().y, settings, GL_TEXTURE_CUBE_MAP);
-            GLuint maxNodes = 20 * window.getView().getSize().x * window.getView().getSize().y;
+            environmentMap.create(squareSize, squareSize, settings, GL_TEXTURE_CUBE_MAP);
+            GLuint maxNodes = 20 * squareSize * squareSize;
             GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
             glCheck(glGenBuffers(1, &atomicBuffer));
             glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
@@ -38,10 +43,10 @@ namespace odfaeg {
             glCheck(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0));
             glCheck(glGenTextures(1, &headPtrTex));
             glCheck(glBindTexture(GL_TEXTURE_2D, headPtrTex));
-            glCheck(glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, window.getView().getSize().x, window.getView().getSize().y));
+            glCheck(glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, squareSize, squareSize));
             glCheck(glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI));
             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
-            std::vector<GLuint> headPtrClearBuf(window.getView().getSize().x*window.getView().getSize().y, 0xffffffff);
+            std::vector<GLuint> headPtrClearBuf(squareSize*squareSize, 0xffffffff);
             glCheck(glGenBuffers(1, &clearBuf));
             glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf));
             glCheck(glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint),
@@ -355,8 +360,10 @@ namespace odfaeg {
                 sLinkedList.setParameter("texture", Shader::CurrentTexture);
                 sLinkedListNormal.setParameter("maxNodes", maxNodes);
                 sLinkedListNormal.setParameter("texture", Shader::CurrentTexture);
-                math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
-                math::Matrix4f projMatrix = view.getProjMatrix().getMatrix().transpose();
+                View defaultView = window.getDefaultView();
+                defaultView.setPerspective(-squareSize * 0.5f, squareSize * 0.5f, -squareSize * 0.5f, squareSize * 0.5f, defaultView.getPosition().z, defaultView.getDepth());
+                math::Matrix4f viewMatrix = defaultView.getViewMatrix().getMatrix().transpose();
+                math::Matrix4f projMatrix = defaultView.getProjMatrix().getMatrix().transpose();
                 sLinkedList2.setParameter("viewMatrix", viewMatrix);
                 sLinkedList2.setParameter("projectionMatrix", projMatrix);
             }
@@ -432,9 +439,9 @@ namespace odfaeg {
                 depthBuffer.display();
                 View reflectView;
                 if (view.isOrtho()) {
-                    reflectView = View (view.getSize().x, view.getSize().y,0, 1000);
+                    reflectView = View (squareSize, squareSize,0, 1000);
                 } else {
-                    reflectView = View (view.getSize().x, view.getSize().y, 90, 0, 1000);
+                    reflectView = View (squareSize, squareSize, 90, 0, 1000);
                 }
                 reflectView.setCenter(view.getPosition());
                 for (unsigned int m = 0; m < 6; m++) {
@@ -448,14 +455,14 @@ namespace odfaeg {
                         }
                     }
                     environmentMap.setActive();
-                    environmentMap.setView(view);
+                    environmentMap.setView(reflectView);
                     GLuint zero = 0;
                     glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
                     glCheck(glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero));
                     glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0));
                     glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf));
                     glCheck(glBindTexture(GL_TEXTURE_2D, headPtrTex));
-                    glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, view.getSize().x, view.getSize().y, GL_RED_INTEGER,
+                    glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, squareSize, squareSize, GL_RED_INTEGER,
                     GL_UNSIGNED_INT, NULL));
                     glCheck(glBindTexture(GL_TEXTURE_2D, 0));
                     environmentMap.resetGLStates();

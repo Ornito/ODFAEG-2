@@ -290,7 +290,7 @@ int main(int argc, char* argv[])
     EXPORT_CLASS_GUID(EntityAnimation, Entity, Anim)
     EXPORT_CLASS_GUID(EntityHero, Entity, Hero)
     EXPORT_CLASS_GUID(EntityMesh, Entity, Mesh)
-    MyAppli app(sf::VideoMode(800, 800), "Test odfaeg");
+    MyAppli app(sf::VideoMode(800, 600), "Test odfaeg");
     return app.exec();
 // create the window
     RenderWindow window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, ContextSettings(32, 0, 4, 3, 3));

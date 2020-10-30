@@ -83,6 +83,7 @@ namespace odfaeg {
             std::string expression;
             bool update, cubeMapCreated;
             unsigned int vboWorldMatrices, atomicBuffer, linkedListBuffer, clearBuf, headPtrTex;
+            float squareSize;
             Sprite depthBufferSprite, reflectRefractTexSprite;
             VertexBuffer vb, vb2;
             std::vector<float> matrices;

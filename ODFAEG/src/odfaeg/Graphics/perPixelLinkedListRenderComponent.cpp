@@ -11,7 +11,7 @@ namespace odfaeg {
             view(window.getView()),
             expression(expression),
             quad(math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, window.getSize().y * 0.5f)) {
-            quad.move(math::Vec3f(-window.getView().getSize().x * 0.5f, 0/*-window.getView().getSize().y * 0.5f*/, 0));
+            quad.move(math::Vec3f(-window.getView().getSize().x * 0.5f, -window.getView().getSize().y * 0.5f, 0));
             GLuint maxNodes = 20 * window.getView().getSize().x * window.getView().getSize().y;
             GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
             frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
@@ -223,8 +223,8 @@ namespace odfaeg {
                    perPixelLinkedList.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                    perPixelLinkedList2.setParameter("maxNodes", maxNodes);
                    perPixelLinkedList2.setParameter("texture", Shader::CurrentTexture);
-                   math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
-                   math::Matrix4f projMatrix = view.getProjMatrix().getMatrix().transpose();
+                   math::Matrix4f viewMatrix = window.getDefaultView().getViewMatrix().getMatrix().transpose();
+                   math::Matrix4f projMatrix = window.getDefaultView().getProjMatrix().getMatrix().transpose();
                    perPixelLinkedListP2.setParameter("viewMatrix", viewMatrix);
                    perPixelLinkedListP2.setParameter("projectionMatrix", projMatrix);
             } else {
