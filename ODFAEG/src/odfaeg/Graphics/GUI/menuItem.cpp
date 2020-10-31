@@ -49,6 +49,9 @@ namespace odfaeg {
                 std::string MenuItem::getText() {
                     return text.getString();
                 }
+                void MenuItem::setText(std::string t) {
+                    text.setString(t);
+                }
                 void MenuItem::onEventPushed(window::IEvent event, RenderWindow& window) {
                     if (&window == &getWindow())
                         getListener().pushEvent(event);

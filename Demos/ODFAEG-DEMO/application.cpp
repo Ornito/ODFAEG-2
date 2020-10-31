@@ -16,7 +16,7 @@ namespace sorrok {
         getView().move(0, 400, 0);
         fpsCounter = 0;
         addClock(sf::Clock(), "FPS");
-        day = false;
+        day = true;
         sf::Listener::setUpVector(0.f, 0.f, 1.f);
         ps = new ParticleSystem(Vec3f(0, 0, 150),Vec3f(100, 100, 0));
     }

@@ -348,11 +348,9 @@ namespace odfaeg {
                 }
                 sBuildDepthBuffer.setParameter("texture", Shader::CurrentTexture);
                 sBuildDepthBufferNormal.setParameter("texture", Shader::CurrentTexture);
-                sReflectRefract.setParameter("maxRefraction", Material::getMaxRefraction());
                 sReflectRefract.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                 sReflectRefract.setParameter("depthBuffer", depthBuffer.getTexture());
                 sReflectRefract.setParameter("sceneBox", environmentMap.getTexture());
-                sReflectRefractNormal.setParameter("maxRefraction", Material::getMaxRefraction());
                 sReflectRefractNormal.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                 sReflectRefractNormal.setParameter("sceneBox", environmentMap.getTexture());
                 sReflectRefractNormal.setParameter("depthBuffer", depthBuffer.getTexture());
@@ -564,6 +562,7 @@ namespace odfaeg {
                     currentStates.shader = &sLinkedList2;
                     environmentMap.drawVertexBuffer(vb2, currentStates);
                     glCheck(glFinish());
+                    glCheck(glMemoryBarrier(GL_ALL_BARRIER_BITS));
                 }
                 environmentMap.display();
                 for (unsigned int i = 0; i < m_reflInstances.size(); i++) {
@@ -661,8 +660,8 @@ namespace odfaeg {
         }
         void ReflectRefractRenderComponent::clear() {
             depthBuffer.clear(sf::Color::Transparent);
-            reflectRefractTex.clear(sf::Color::Transparent);
             environmentMap.clear(sf::Color::Transparent);
+            reflectRefractTex.clear(sf::Color::Transparent);
         }
         void ReflectRefractRenderComponent::setBackgroundColor (sf::Color color) {
             this->backgroundColor = color;

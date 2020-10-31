@@ -37,7 +37,7 @@ namespace
     // Compute the normal of a segment
     sf::Vector3f computeNormal(const sf::Vector3f& p1, const sf::Vector3f& p2)
     {
-        sf::Vector3f normal(p2.x - p1.x, p1.y - p2.y, 0);
+        sf::Vector3f normal(p1.y - p2.y, p2.x - p1.x, 0);
         float length = odfaeg::math::Math::sqrt(normal.x * normal.x + normal.y * normal.y);
         if (length != 0.f)
             normal /= length;

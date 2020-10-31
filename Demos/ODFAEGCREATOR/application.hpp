@@ -21,6 +21,7 @@
 #include "odfaeg/Graphics/shadowRenderComponent.hpp"
 #include "odfaeg/Graphics/lightRenderComponent.hpp"
 #include "odfaeg/Graphics/entitiesUpdater.h"
+#include "rectangularSelection.hpp"
 class ODFAEGCreator : public odfaeg::core::Application,
                       public odfaeg::graphic::gui::MenuItemListener,
                       public odfaeg::graphic::gui::ActionListener {
@@ -60,7 +61,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::MenuBar* menuBar;
         odfaeg::graphic::gui::Menu *menu1, *menu2, *menu3, *menu4;
         odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item21, *item22, *item23, *item31, *item32, *item33,
-        *item34, *item41, *item42, *item43;
+        *item34, *item41, *item42, *item43, *item44, *item45;
         odfaeg::core::ResourceCache<> cache;
         odfaeg::graphic::gui::FileDialog* fdTexturePath;
         odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent;
@@ -76,8 +77,8 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::vector<std::string> textPaths;
         std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode, rootMaterialNode, rootInfosNode;
         odfaeg::graphic::CircleShape cursor;
-        odfaeg::math::Vec3f guiSize, guiPos;
-        bool isGuiShown, showGrid, alignToGrid;
+        odfaeg::math::Vec3f guiSize, guiPos, mousePosition;
+        bool isGuiShown, showGrid, alignToGrid, showRectSelect;
         std::vector<std::unique_ptr<odfaeg::graphic::Shape>> shapes;
         odfaeg::graphic::Transformable* selectedObject;
         odfaeg::graphic::gui::TextArea *tPosX, *tPosY, *tPosZ, *tRColor, *tGColor, *tBColor, *tAColor,
@@ -92,5 +93,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::vector<odfaeg::graphic::ConvexShape> cshapes;
         std::vector<odfaeg::graphic::Entity*> entities;
         odfaeg::graphic::Map* theMap;
+        unsigned int gridWidth, gridHeight;
+        RectangularSelection rectSelect;
 };
 #endif

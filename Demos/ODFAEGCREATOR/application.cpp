@@ -15,6 +15,9 @@ Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0
     dpSelectTexture = nullptr;
     showGrid = false;
     alignToGrid = false;
+    showRectSelect = false;
+    gridWidth = 100;
+    gridHeight = 50;
 }
 void ODFAEGCreator::onLoad() {
     FontManager<Fonts> fm;
@@ -76,7 +79,7 @@ void ODFAEGCreator::onInit() {
     menu3->addMenuItem(item31);
     menu3->addMenuItem(item32);
     menu3->addMenuItem(item33);
-    menu4->addMenuItem(item34);
+    menu3->addMenuItem(item34);
     item41 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Undo");
     item41->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item41);
@@ -86,9 +89,17 @@ void ODFAEGCreator::onInit() {
     item43 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "Show grid");
     item43->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item43);
+    item44 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "Align to grid");
+    item44->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item44);
+    item45 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "Rect selection");
+    item45->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item45);
     menu4->addMenuItem(item41);
     menu4->addMenuItem(item42);
     menu4->addMenuItem(item43);
+    menu4->addMenuItem(item44);
+    menu4->addMenuItem(item45);
     Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Z);
     Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Q);
     Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::S);
@@ -272,6 +283,25 @@ void ODFAEGCreator::onInit() {
     Action moveCursorAction (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
     Command moveCursorCommand (moveCursorAction, FastDelegate<void>(&ODFAEGCreator::moveCursor, this, sf::Vector2f(-1, -1)));
     getListener().connect("MoveCursor", moveCursorCommand);
+    cshapes.clear();
+    for (int i = 0; i < getRenderWindow().getSize().x; i+=gridWidth) {
+        for (int j = 0; j < getRenderWindow().getSize().y; j+=gridHeight) {
+            ConvexShape cshape(4);
+            cshape.setFillColor(sf::Color::Transparent);
+            cshape.setOutlineColor(sf::Color(75, 75, 75));
+            cshape.setOutlineThickness(1.f);
+            Vec2f points[4];
+            points[0] = Vec2f(0, 0);
+            points[1] = Vec2f(gridWidth, 0);
+            points[2] = Vec2f(gridWidth, gridHeight);
+            points[3] = Vec2f(0, gridHeight);
+            for (unsigned int n = 0; n < 4; n++) {
+                points[n] += Vec2f(i, j);
+                cshape.setPoint(n, sf::Vector3f(points[n].x, points[n].y, 0));
+            }
+            cshapes.push_back(cshape);
+        }
+    }
 }
 void ODFAEGCreator::updateScriptText(Shape* shape, Texture* text) {
     /*TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
@@ -313,7 +343,11 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
                     window->draw(cshapes[i]);
             }
         }
+        if (showRectSelect) {
+            window->draw(rectSelect);
+        }
         window->setView(currentView);
+
     }
 }
 void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
@@ -325,6 +359,36 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_PRESSED) {
         sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
         getListener().setCommandSlotParams("MoveCursor", this, mousePos);
+        if (showRectSelect) {
+            if (alignToGrid) {
+                int x = ((int) mousePos.x / gridWidth * gridWidth)-getRenderWindow().getSize().x * 0.5f;
+                int y = ((int) mousePos.y / gridHeight * gridHeight)-getRenderWindow().getSize().y * 0.5f;
+                mousePosition = Vec3f(x, y, 0);
+            } else {
+                int x = mousePos.x-getRenderWindow().getSize().x * 0.5f;
+                int y = mousePos.y-getRenderWindow().getSize().y * 0.5f;
+                mousePosition = Vec3f(x, y, 0);
+            }
+        }
+    }
+    if (&getRenderWindow() == window && event.type == IEvent::MOUSE_MOTION_EVENT && IMouse::isButtonPressed(IMouse::Left)) {
+        sf::Vector2f mousePos (event.mouseMotion.x, event.mouseMotion.y);
+        if (showRectSelect) {
+            if (alignToGrid) {
+                int x = ((int) mousePos.x / gridWidth * gridWidth)-getRenderWindow().getSize().x * 0.5f;
+                int y = ((int) mousePos.y / gridHeight * gridHeight)-getRenderWindow().getSize().y * 0.5f;
+                int width = x - mousePosition.x;
+                int height = y - mousePosition.y;
+                rectSelect.setRect(x, y, width, height);
+            } else {
+                int x = mousePos.x-getRenderWindow().getSize().x * 0.5f;
+                int y = mousePos.y-getRenderWindow().getSize().y * 0.5f;
+                int width = x - mousePosition.x;
+                int height = y - mousePosition.y;
+                if (width > 0 && height > 0)
+                    rectSelect.setRect(mousePosition.x, mousePosition.y, width, height);
+            }
+        }
     }
     if (wApplicationNew == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
         wApplicationNew->setVisible(false);
@@ -355,7 +419,6 @@ void ODFAEGCreator::onExec() {
         std::cout<<"appli dir : "<<appliDir<<std::endl;
         std::string relativePath = path.substr(appliDir.size()+1);*/
         TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
-        std::cout<<"add image : "<<ImgName<<std::endl;
         tm.fromFileWithAlias(path, ImgName);
         textPaths.push_back(ImgName);
         /*unsigned int pos = cppAppliContent.find("TextureManager<>& tm");
@@ -577,6 +640,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         theMap->setBaseChangementMatrix(bcm);
         World::addEntityManager(theMap);
         World::setCurrentEntityManager(taMapName->getText());
+        cshapes.clear();
         for (int i = 0; i < getRenderWindow().getSize().x; i+=100) {
             for (int j = 0; j < getRenderWindow().getSize().y; j+=50) {
                 ConvexShape cshape(4);
@@ -665,8 +729,29 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "Redo") {
         stateStack.redo();
     }
-    if (item->getText() == "Show grid") {
+    if (item == item43) {
         showGrid = !showGrid;
+        if (showGrid) {
+            item43->setText("v Show grid");
+        } else {
+            item43->setText("Show grid");
+        }
+    }
+    if (item == item44) {
+        alignToGrid = !alignToGrid;
+        if (alignToGrid) {
+            item44->setText("v Align to grid");
+        } else {
+            item44->setText("Align to grid");
+        }
+    }
+    if (item == item45) {
+        showRectSelect = !showRectSelect;
+        if (showRectSelect) {
+            item45->setText("v Rect selection");
+        } else {
+            item45->setText("Rect selection");
+        }
     }
     if (item->getText() == "New scene") {
         wNewMap->setVisible(true);
@@ -1104,7 +1189,13 @@ void ODFAEGCreator::displayInfos (Tile* tile) {
 void ODFAEGCreator::moveCursor(sf::Vector2f mousePos) {
     BoundingBox bb (guiPos.x, guiPos.y, guiPos.z, guiSize.x, guiSize.y, guiSize.z);
     if (bb.isPointInside(Vec3f(mousePos.x, mousePos.y, 0))) {
-        cursor.setPosition(Vec3f(mousePos.x-getRenderWindow().getView().getSize().x * 0.5f, mousePos.y-getRenderWindow().getView().getSize().y * 0.5f, 0));
+        if (!alignToGrid) {
+            cursor.setPosition(Vec3f(mousePos.x-getRenderWindow().getView().getSize().x * 0.5f, mousePos.y-getRenderWindow().getView().getSize().y * 0.5f, 0));
+        } else {
+            int x = ((int) mousePos.x/gridWidth*gridWidth)-getRenderWindow().getView().getSize().x * 0.5f;
+            int y = ((int) mousePos.y/gridHeight*gridHeight)-getRenderWindow().getView().getSize().y * 0.5f;
+            cursor.setPosition(Vec3f(x, y, 0));
+        }
     }
 }
 void ODFAEGCreator::updateScriptPos(Transformable* shape) {
