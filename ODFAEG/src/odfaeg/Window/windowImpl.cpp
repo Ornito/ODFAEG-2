@@ -48,7 +48,7 @@ namespace odfaeg {
                 if ((style & Style::Close) || (style & Style::Resize))
                     style |= Style::Titlebar;
             #endif
-            // Recreate the WindowImpl implementation
+            // Recreate the WindowImpl implementation*/
             WindowImplType::create(mode, title, style, settings);
 std::cout<<"create context"<<std::endl;
             m_context.create(getSystemHandle(), settings, nullptr, mode.bitsPerPixel);

@@ -146,12 +146,12 @@ namespace odfaeg {
         m_lastCursor      (LoadCursor(NULL, IDC_ARROW)),
         m_icon            (NULL),
         m_keyRepeatEnabled(true),
-        m_lastSize        (mode.width, mode.height),
+        m_lastSize        (0, 0),
         m_resizing        (false),
         m_surrogate       (0),
         m_mouseInside     (false),
-        m_fullscreen      ((style & Style::Fullscreen) != 0),
-        m_cursorGrabbed   (m_fullscreen),
+        m_fullscreen      (false),
+        m_cursorGrabbed   (false),
         m_opened(false),
         m_destroyed(true)
         {
@@ -177,6 +177,9 @@ namespace odfaeg {
             m_destroyed = false;
         }
         void Win32Window::create (VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings) {
+            m_fullscreen = (style & Style::Fullscreen) != 0;
+            m_cursorGrabbed = m_fullscreen;
+            m_lastSize = sf::Vector2u(mode.width, mode.height);
             // Set that this process is DPI aware and can handle DPI scaling
             setProcessDpiAware();
 
@@ -216,6 +219,7 @@ namespace odfaeg {
 
             // Create the window
             m_handle = CreateWindowW(className, title.toWideString().c_str(), win32Style, left, top, width, height, NULL, NULL, GetModuleHandle(NULL), this);
+            std::cout<<"window created handle : "<<m_handle<<std::endl;
 
             // Register to receive device interface change notifications (used for joystick connection handling)
             DEV_BROADCAST_DEVICEINTERFACE deviceInterface = {sizeof(DEV_BROADCAST_DEVICEINTERFACE), DBT_DEVTYP_DEVICEINTERFACE, 0, GUID_DEVINTERFACE_HID, 0};
@@ -247,38 +251,40 @@ namespace odfaeg {
             // TODO should we restore the cursor shape and visibility?
 
             // Destroy the custom icon, if any
-            if (m_icon)
-                DestroyIcon(m_icon);
+            if (!m_destroyed) {
+                if (m_icon)
+                    DestroyIcon(m_icon);
 
-            // If it's the last window handle we have to poll for joysticks again
-            if (m_handle)
-            {
-                --handleCount;
-
-                /*if (handleCount == 0)
-                    JoystickImpl::setLazyUpdates(false);*/
-            }
-
-            if (!m_callback)
-            {
-                // Destroy the window
+                // If it's the last window handle we have to poll for joysticks again
                 if (m_handle)
-                    DestroyWindow(m_handle);
+                {
+                    --handleCount;
 
-                // Decrement the window count
-                windowCount--;
+                    /*if (handleCount == 0)
+                        JoystickImpl::setLazyUpdates(false);*/
+                }
 
-                // Unregister window class if we were the last window
-                if (windowCount == 0)
-                    UnregisterClassW(className, GetModuleHandleW(NULL));
+                if (!m_callback)
+                {
+                    // Destroy the window
+                    if (m_handle)
+                        DestroyWindow(m_handle);
+
+                    // Decrement the window count
+                    windowCount--;
+
+                    // Unregister window class if we were the last window
+                    if (windowCount == 0)
+                        UnregisterClassW(className, GetModuleHandleW(NULL));
+                }
+                else
+                {
+                    // The window is external: remove the hook on its message callback
+                    SetWindowLongPtrW(m_handle, GWLP_WNDPROC, m_callback);
+                }
+                m_destroyed = true;
+                m_opened = false;
             }
-            else
-            {
-                // The window is external: remove the hook on its message callback
-                SetWindowLongPtrW(m_handle, GWLP_WNDPROC, m_callback);
-            }
-            m_destroyed = true;
-            m_opened = false;
         }
 
         ////////////////////////////////////////////////////////////
@@ -287,35 +293,37 @@ namespace odfaeg {
             // TODO should we restore the cursor shape and visibility?
 
             // Destroy the custom icon, if any
-            if (m_icon)
-                DestroyIcon(m_icon);
+            if (!m_destroyed) {
+                if (m_icon)
+                    DestroyIcon(m_icon);
 
-            // If it's the last window handle we have to poll for joysticks again
-            if (m_handle)
-            {
-                --handleCount;
-
-                /*if (handleCount == 0)
-                    JoystickImpl::setLazyUpdates(false);*/
-            }
-
-            if (!m_callback)
-            {
-                // Destroy the window
+                // If it's the last window handle we have to poll for joysticks again
                 if (m_handle)
-                    DestroyWindow(m_handle);
+                {
+                    --handleCount;
 
-                // Decrement the window count
-                windowCount--;
+                    /*if (handleCount == 0)
+                        JoystickImpl::setLazyUpdates(false);*/
+                }
 
-                // Unregister window class if we were the last window
-                if (windowCount == 0)
-                    UnregisterClassW(className, GetModuleHandleW(NULL));
-            }
-            else
-            {
-                // The window is external: remove the hook on its message callback
-                SetWindowLongPtrW(m_handle, GWLP_WNDPROC, m_callback);
+                if (!m_callback)
+                {
+                    // Destroy the window
+                    if (m_handle)
+                        DestroyWindow(m_handle);
+
+                    // Decrement the window count
+                    windowCount--;
+
+                    // Unregister window class if we were the last window
+                    if (windowCount == 0)
+                        UnregisterClassW(className, GetModuleHandleW(NULL));
+                }
+                else
+                {
+                    // The window is external: remove the hook on its message callback
+                    SetWindowLongPtrW(m_handle, GWLP_WNDPROC, m_callback);
+                }
             }
         }
 

@@ -12,6 +12,7 @@ typedef odfaeg::window::X11Window WindowImplType;
 #include "../../../include/odfaeg/Window/Windows/win32Window.hpp"
 typedef odfaeg::window::Win32Window WindowImplType;
 #endif
+#include "iWindow.hpp"
 namespace odfaeg {
     namespace window {
         class WindowImpl : public WindowImplType, GLResource {
