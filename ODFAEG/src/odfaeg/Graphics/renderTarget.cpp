@@ -513,11 +513,11 @@ namespace odfaeg {
 
                 #endif
                 // Make sure that extensions are initialized
-                if (GL_ARB_multitexture)
+                /*if (GL_ARB_multitexture)
                 {
                     glCheck(glClientActiveTexture(GL_TEXTURE0));
                     glCheck(glActiveTexture(GL_TEXTURE0));
-                }
+                }*/
                 glCheck(glDisable(GL_CULL_FACE));
                 glCheck(glDisable(GL_LIGHTING));
                 glCheck(glEnable(GL_DEPTH_TEST));

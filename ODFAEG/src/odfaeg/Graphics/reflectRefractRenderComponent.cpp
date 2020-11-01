@@ -31,7 +31,7 @@ namespace odfaeg {
             reflectRefractTex.setEnableCubeMap(true);
             reflectRefractTexSprite = Sprite(reflectRefractTex.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             environmentMap.create(squareSize, squareSize, settings, GL_TEXTURE_CUBE_MAP);
-            GLuint maxNodes = 20 * squareSize * squareSize;
+            GLuint maxNodes = 10 * squareSize * squareSize;
             GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
             glCheck(glGenBuffers(1, &atomicBuffer));
             glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
@@ -266,7 +266,7 @@ namespace odfaeg {
                  const std::string fragmentShader2 =
                    R"(
                    #version 460
-                   #define MAX_FRAGMENTS 20
+                   #define MAX_FRAGMENTS 10
                    struct NodeType {
                       vec4 color;
                       float depth;
@@ -705,6 +705,10 @@ namespace odfaeg {
         }
         ReflectRefractRenderComponent::~ReflectRefractRenderComponent() {
             glDeleteBuffers(1, &vboWorldMatrices);
+            glDeleteBuffers(1, &atomicBuffer);
+            glDeleteBuffers(1, &linkedListBuffer);
+            glDeleteBuffers(1, &clearBuf);
+            glDeleteTextures(1, &headPtrTex);
         }
     }
 }

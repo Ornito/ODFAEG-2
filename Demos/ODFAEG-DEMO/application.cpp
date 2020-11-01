@@ -277,8 +277,6 @@ namespace sorrok {
         textArea->addFocusListener(this);
         textArea->setVisible(false);
         textArea->setEventContextActivated(false);*/
-        frc1->setView(view);
-        //frc2->setView(view);
         /*op = new gui::OptionPane(Vec2f(200, 175), Vec2f(400, 200), fm.getResourceByAlias("FreeSerif"), "Test",gui::OptionPane::TYPE::CONFIRMATION_DIALOG);
         std::this_thread::sleep_for(std::chrono::seconds(1));
         op->setVisible(false);

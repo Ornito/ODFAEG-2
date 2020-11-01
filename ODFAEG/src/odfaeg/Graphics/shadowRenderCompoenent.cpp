@@ -663,6 +663,7 @@ namespace odfaeg {
             }
             ShadowRenderComponent::~ShadowRenderComponent() {
                 glDeleteBuffers(1, &vboWorldMatrices);
+                glDeleteBuffers(1, &vboShadowProjMatrices);
             }
         }
     }
