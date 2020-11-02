@@ -126,9 +126,14 @@ namespace odfaeg {
 
             math::Vec3f p = bm.unchangeOfBase(point);
             math::Vec3f v1;
-            v1.x = (int) p.x / cellWidth * cellWidth;
-            v1.y = (int) p.y / cellHeight * cellHeight;
-
+            v1.x = (int) p.x / cellWidth;
+            v1.y = (int) p.y / cellHeight;
+            if (p.x < 0)
+                v1.x--;
+            if (p.y < 0)
+                v1.y--;
+            v1.x *= cellWidth;
+            v1.y *= cellHeight;
             math::Vec2f v[4];
             v[0] = math::Vec2f (v1.x, v1.y);
             v[1] = math::Vec2f (v1.x + deltaX, v1.y);
@@ -355,20 +360,18 @@ namespace odfaeg {
 
         math::Vec2f GridMap::getCoordinatesAt(math::Vec2f &point) {
             math::Vec2f p = bm.unchangeOfBase(point);
+            math::Vec2f f;
             if (cellWidth > 0)
-                p.x /= cellWidth;
+                f.x = (int) p.x / cellWidth;
             else
-                p.x = 0;
+                f.x = 0;
             if (cellHeight > 0)
-                p.y /= cellHeight;
+                f.y = (int) p.y / cellHeight;
             else
-                p.y = 0;
-
-            math::Vec2f f((int) p.x, (int) p.y);
-
-            if (f.x <= 0 && cellWidth > 0)
+                f.y = 0;
+            if (p.x < 0 && cellWidth > 0)
                 f.x--;
-            if (f.y <= 0 && cellHeight > 0)
+            if (p.y < 0 && cellHeight > 0)
                 f.y--;
             return f;
         }

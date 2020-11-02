@@ -195,6 +195,7 @@ namespace odfaeg {
             *   \brief virtual method to redefine to get all the cells containing the entities.
             *   \return std::vector<CellMap<Entity>*> all the cells containing the entities.
             */
+            virtual math::Vec3f getCoordinatesAt(math::Vec3f point) = 0;
             virtual std::vector<CellMap*> getCasesMap() = 0;
             virtual void changeVisibleEntity(Entity* toRemove, Entity* toAdd) = 0;
             virtual void removeAnimatedVisibleEntity(Entity* toRemove, std::vector<Entity*>& entities, View& view, bool& removed) = 0;

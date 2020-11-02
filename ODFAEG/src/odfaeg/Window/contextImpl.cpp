@@ -224,7 +224,6 @@ namespace odfaeg {
             sharedContext->setActive(false);
             initialize(settings);
             //checkSettings(settings);*/
-            std::cout<<"context impl created"<<std::endl;
         }
         bool ContextImpl::setActive(bool active) {
             if (active) {

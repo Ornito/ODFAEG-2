@@ -219,7 +219,6 @@ namespace odfaeg {
 
             // Create the window
             m_handle = CreateWindowW(className, title.toWideString().c_str(), win32Style, left, top, width, height, NULL, NULL, GetModuleHandle(NULL), this);
-            std::cout<<"window created handle : "<<m_handle<<std::endl;
 
             // Register to receive device interface change notifications (used for joystick connection handling)
             DEV_BROADCAST_DEVICEINTERFACE deviceInterface = {sizeof(DEV_BROADCAST_DEVICEINTERFACE), DBT_DEVTYP_DEVICEINTERFACE, 0, GUID_DEVINTERFACE_HID, 0};

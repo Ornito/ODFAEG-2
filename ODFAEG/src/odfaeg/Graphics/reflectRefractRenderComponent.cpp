@@ -58,7 +58,7 @@ namespace odfaeg {
             getListener().connect("UPDATE", cmd);
             if (settings.versionMajor >= 4 && settings.versionMinor >= 3) {
                 glGenBuffers(1, &vboWorldMatrices);
-                const std::string linkedListVertexShader = R"(#version 460 core
+                const std::string linkedListVertexShader = R"(#version 460
                                                     layout (location = 0) in vec3 position;
                                                     layout (location = 1) in vec4 color;
                                                     layout (location = 2) in vec2 texCoords;
@@ -75,7 +75,7 @@ namespace odfaeg {
                                                         vColor = color;
                                                     }
                                                     )";
-                const std::string  linkedListNormalVertexShader = R"(#version 460 core
+                const std::string  linkedListNormalVertexShader = R"(#version 460
                                                         layout (location = 0) in vec3 position;
                                                         layout (location = 1) in vec4 color;
                                                         layout (location = 2) in vec2 texCoords;
@@ -90,7 +90,7 @@ namespace odfaeg {
                                                             vTexCoord = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
                                                             vColor = color;
                                                         })";
-                const std::string vertexShader = R"(#version 460 core
+                const std::string vertexShader = R"(#version 460
                                                     layout (location = 0) in vec3 position;
                                                     layout (location = 1) in vec4 color;
                                                     layout (location = 2) in vec2 texCoords;
@@ -107,7 +107,7 @@ namespace odfaeg {
                                                         frontColor = color;
                                                     }
                                                     )";
-                const std::string  normalVertexShader = R"(#version 460 core
+                const std::string  normalVertexShader = R"(#version 460
                                                         layout (location = 0) in vec3 position;
                                                         layout (location = 1) in vec4 color;
                                                         layout (location = 2) in vec2 texCoords;
@@ -122,7 +122,7 @@ namespace odfaeg {
                                                             fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
                                                             frontColor = color;
                                                         })";
-                const std::string  linkedListVertexShader2 = R"(#version 460 core
+                const std::string  linkedListVertexShader2 = R"(#version 460
                                                                 layout (location = 0) in vec3 position;
                                                                 layout (location = 1) in vec4 color;
                                                                 layout (location = 2) in vec2 texCoords;
@@ -133,7 +133,7 @@ namespace odfaeg {
                                                                 void main () {
                                                                     gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
                                                                 })";
-                const std::string geometryShader = R"(#version 460 core
+                const std::string geometryShader = R"(#version 460
                                                       #extension GL_EXT_geometry_shader4 : enable
                                                       layout (triangles) in;
                                                       layout (triangle_strip, max_vertices = 4) out;
@@ -159,7 +159,7 @@ namespace odfaeg {
                                                         EndPrimitive();
                                                       }
                                                       )";
-                const std::string perPixReflectRefractVertexShader = R"(#version 460 core
+                const std::string perPixReflectRefractVertexShader = R"(#version 460
                                                                    layout (location = 0) in vec3 position;
                                                                    layout (location = 1) in vec4 color;
                                                                    layout (location = 2) in vec2 texCoords;
@@ -177,7 +177,7 @@ namespace odfaeg {
                                                                        frontColor = color;
                                                                    }
                                                                   )";
-                const std::string perPixReflectRefractVertexNormalShader = R"(#version 460 core
+                const std::string perPixReflectRefractVertexNormalShader = R"(#version 460
                                                                    layout (location = 0) in vec3 position;
                                                                    layout (location = 1) in vec4 color;
                                                                    layout (location = 2) in vec2 texCoords;
@@ -195,7 +195,7 @@ namespace odfaeg {
                                                                        pos = position;
                                                                    }
                                                                   )";
-                const std::string buildDepthBufferFragmentShader = R"(#version 460 core
+                const std::string buildDepthBufferFragmentShader = R"(#version 460
                                                                           in vec4 frontColor;
                                                                           in vec2 fTexCoords;
                                                                           uniform sampler2D texture;
@@ -212,7 +212,7 @@ namespace odfaeg {
                                                                               fColor = vec4(0, 0, z, current_alpha);
                                                                           }
                                                                         )";
-                const std::string buildFramebufferShader = R"(#version 460 core
+                const std::string buildFramebufferShader = R"(#version 460
                                                                 in vec4 frontColor;
                                                                 in vec3 normal;
                                                                 in vec3 pos;
@@ -234,7 +234,7 @@ namespace odfaeg {
                                                                     }
                                                                 }
                                                               )";
-                const std::string fragmentShader = R"(#version 460 core
+                const std::string fragmentShader = R"(#version 460
                                                       struct NodeType {
                                                           vec4 color;
                                                           float depth;
@@ -464,7 +464,7 @@ namespace odfaeg {
                     GL_UNSIGNED_INT, NULL));
                     glCheck(glBindTexture(GL_TEXTURE_2D, 0));
                     environmentMap.resetGLStates();
-                    glCheck(glEnable(GL_TEXTURE_CUBE_MAP));
+                    //glCheck(glEnable(GL_TEXTURE_CUBE_MAP));
                     environmentMap.selectCubemapFace(m);
                     viewMatrix = reflectView.getViewMatrix().getMatrix().transpose();
                     projMatrix = reflectView.getProjMatrix().getMatrix().transpose();
@@ -560,18 +560,19 @@ namespace odfaeg {
                     math::Matrix4f matrix = quad.getTransform().getMatrix().transpose();
                     sLinkedList2.setParameter("worldMat", matrix);
                     currentStates.shader = &sLinkedList2;
+                    currentStates.texture = nullptr;
                     environmentMap.drawVertexBuffer(vb2, currentStates);
                     glCheck(glFinish());
                     glCheck(glMemoryBarrier(GL_ALL_BARRIER_BITS));
                 }
                 environmentMap.display();
+                viewMatrix = view.getViewMatrix().getMatrix().transpose();
+                projMatrix = view.getProjMatrix().getMatrix().transpose();
+                sReflectRefract.setParameter("viewMatrix", viewMatrix);
+                sReflectRefract.setParameter("projectionMatrix", projMatrix);
+                sReflectRefract.setParameter("cameraPos", view.getPosition().x, view.getPosition().y, view.getPosition().z);
                 for (unsigned int i = 0; i < m_reflInstances.size(); i++) {
                     if (m_reflInstances[i].getAllVertices().getVertexCount() > 0) {
-                        viewMatrix = view.getViewMatrix().getMatrix().transpose();
-                        projMatrix = view.getProjMatrix().getMatrix().transpose();
-                        sReflectRefract.setParameter("viewMatrix", viewMatrix);
-                        sReflectRefract.setParameter("projectionMatrix", projMatrix);
-                        sReflectRefract.setParameter("cameraPos", view.getPosition().x, view.getPosition().y, view.getPosition().z);
                         vb.clear();
                         vb.setPrimitiveType(m_reflInstances[i].getVertexArrays()[0]->getPrimitiveType());
                         matrices.clear();
@@ -598,13 +599,13 @@ namespace odfaeg {
                         reflectRefractTex.drawInstanced(vb, m_reflInstances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_reflInstances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
                     }
                 }
+                viewMatrix = view.getViewMatrix().getMatrix().transpose();
+                projMatrix = view.getProjMatrix().getMatrix().transpose();
+                sReflectRefractNormal.setParameter("viewMatrix", viewMatrix);
+                sReflectRefractNormal.setParameter("projectionMatrix", projMatrix);
+                sReflectRefractNormal.setParameter("cameraPos", view.getPosition().x, view.getPosition().y, view.getPosition().z);
                 for (unsigned int i = 0; i < m_reflNormals.size(); i++) {
                     if (m_reflNormals[i].getAllVertices().getVertexCount() > 0) {
-                        viewMatrix = view.getViewMatrix().getMatrix().transpose();
-                        projMatrix = view.getProjMatrix().getMatrix().transpose();
-                        sReflectRefractNormal.setParameter("viewMatrix", viewMatrix);
-                        sReflectRefractNormal.setParameter("projectionMatrix", projMatrix);
-                        sReflectRefractNormal.setParameter("cameraPos", view.getPosition().x, view.getPosition().y, view.getPosition().z);
                         vb.clear();
                         vb.setPrimitiveType(m_reflNormals[i].getAllVertices().getPrimitiveType());
                         for (unsigned int j = 0; j < m_reflNormals[i].getAllVertices().getVertexCount(); j++) {

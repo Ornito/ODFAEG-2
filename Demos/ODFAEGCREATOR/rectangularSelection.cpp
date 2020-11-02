@@ -16,8 +16,8 @@ void RectangularSelection::addItem(Transformable* item) {
     items.push_back(item);
 }
 BoundingBox RectangularSelection::getSelectionRect() {
-    BoundingBox selectionRect(selectionRect.getPosition().x, selectionRect.getPosition().y, 0, selectionRect.getSize().x, selectionRect.getSize().y, 0);
-    return selectionRect;
+    BoundingBox rect(selectionRect.getPosition().x, selectionRect.getPosition().y, 0, selectionRect.getSize().x, selectionRect.getSize().y, 0);
+    return rect;
 }
 std::vector<Transformable*> RectangularSelection::getItems() {
     return items;

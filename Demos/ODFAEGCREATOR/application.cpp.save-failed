@@ -1218,24 +1218,14 @@ void ODFAEGCreator::moveCursor(sf::Vector2f mousePos) {
                 cursor.setPosition(Vec3f(x, y, 0));
             } else {
                 BaseChangementMatrix bcm = World::getBaseChangementMatrix();
-                int x = mousePos.x-getRenderWindow().getView().getSize().x * 0.5f;
-                int y = mousePos.y-getRenderWindow().getView().getSize().y * 0.5f;
-                Vec3f c = bcm.unchangeOfBase(Vec3f(x, y, 0));
-                Vec3f v1, p;
-                p.x = (int) c.x / gridWidth;
-                p.y = (int) c.y / gridHeight;
-                if (c.x < 0)
-                    p.x--;
-                if (c.y < 0)
-                    p.y--;
-                v1.x = p.x * gridWidth;
-                v1.y = p.y * gridHeight;
-                Vec3f newPos = bcm.changeOfBase(Vec3f(v1.x, v1.y, 0));
-                if (bcm.isIso2DMatrix())
-                    newPos.x -= gridWidth * 0.5f;
+                Vec3f coordinates = bcm.unchangeOfBase(Vec3f(mousePos.x-getRenderWindow().getView().getSize().x * 0.5f, mousePos.y-getRenderWindow().getView().getSize().y * 0.5f, 0));
+                Vec2f f((int) p.x, (int) p.y);
+                if (f.x <= 0)
+                    f.x--;
+                if (f.y <= 0)
+                    f.y--;
+                Vec3f newPos = bcm.changeOfBase(Vec3f(f.x * gridWidth, f.y * gridHeight, 0));
                 cursor.setPosition(newPos);
-                Vec3f coordinates = World::getCoordinatesAt(Vec3f(x, y, 0));
-                std::cout<<"coordinates : "<<coordinates<<std::endl;
             }
         }
     }

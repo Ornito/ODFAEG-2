@@ -53,7 +53,6 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void WglContext::create(IContext* shared)
         {
-            std::cout<<"create wgl context 1"<<std::endl;
             // Save the creation settings
             m_settings = ContextSettings();
             WglContext* w32shared = (shared != nullptr) ? static_cast<WglContext*>(shared) : nullptr;
@@ -76,7 +75,6 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void WglContext::create(HWND owner,  const ContextSettings& settings, IContext* shared, unsigned int bitsPerPixel)
         {
-            std::cout<<"create wgl context 2 : "<<owner<<std::endl;
             // Save the creation settings
             m_settings = settings;
 
@@ -99,7 +97,6 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void WglContext::create(const ContextSettings& settings, unsigned int width, unsigned int height, IContext* shared)
         {
-            std::cout<<"create wgl context 3"<<std::endl;
             // Save the creation settings
             m_settings = settings;
 
@@ -561,7 +558,6 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void WglContext::createContext(WglContext* shared)
         {
-            std::cout<<"create context"<<std::endl;
             // Get a working copy of the context settings
             ContextSettings settings = m_settings;
 
@@ -698,7 +694,6 @@ namespace odfaeg {
                         err() << "Failed to share the OpenGL context: " << getErrorString(GetLastError()).toAnsiString() << std::endl;
                 }
             }
-            std::cout<<"context created"<<std::endl;
         }
     }
 }

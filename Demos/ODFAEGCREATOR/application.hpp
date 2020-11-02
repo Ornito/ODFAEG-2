@@ -93,7 +93,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::vector<odfaeg::graphic::ConvexShape> cshapes;
         std::vector<odfaeg::graphic::Entity*> entities;
         odfaeg::graphic::Map* theMap;
-        unsigned int gridWidth, gridHeight;
+        int gridWidth, gridHeight;
         RectangularSelection rectSelect;
 };
 #endif

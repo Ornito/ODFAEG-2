@@ -395,6 +395,11 @@ namespace odfaeg {
                     }
                     return nullptr;
                 }
+                static math::Vec3f getCoordinatesAt(math::Vec3f point) {
+                    if (currentEntityManager != nullptr) {
+                        return currentEntityManager->getCoordinatesAt(point);
+                    }
+                }
                 static void updateParticle() {
                     if (currentEntityManager != nullptr) {
                         currentEntityManager->updateParticles();

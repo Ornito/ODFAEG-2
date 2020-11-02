@@ -92,8 +92,8 @@ namespace odfaeg {
     namespace graphic {
         ////////////////////////////////////////////////////////////
         Shader::CurrentTextureType Shader::CurrentTexture;
-        unsigned int Shader::shading_language_version_major = 4;
-        unsigned int Shader::shading_language_version_minor = 6;
+        unsigned int Shader::shading_language_version_major = 0;
+        unsigned int Shader::shading_language_version_minor = 0;
         ////////////////////////////////////////////////////////////
         Shader::Shader() :
         m_shaderProgram (0),
@@ -102,8 +102,8 @@ namespace odfaeg {
         m_params        (),
         m_vertexAttribs ()
         {
-            /*shading_language_version_major = getVersionMajor();
-            shading_language_version_minor = getVersionMinor();*/
+            shading_language_version_major = getVersionMajor();
+            shading_language_version_minor = getVersionMinor();
         }
         ////////////////////////////////////////////////////////////
         Shader::~Shader()

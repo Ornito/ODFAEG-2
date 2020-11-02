@@ -20,6 +20,7 @@ namespace odfaeg {
           */
         class ODFAEG_GRAPHICS_API BaseChangementMatrix {
         public :
+            BaseChangementMatrix();
             /** \fn void set2DIsoMatrix();
             *   \brief set the 2D isometric base changement matrix.
             */
@@ -43,9 +44,11 @@ namespace odfaeg {
             *    \return the base changement matrix.
             */
             math::Matrix2f getMatrix();
+            bool isIso2DMatrix();
         private :
             math::Matrix2f matrix2f; /** > the base changement matrix.*/
             math::Matrix2f invMatrix2f; /**> the inverse of the base changement matrix.*/
+            bool iso2DMatrix;
         };
     }
 }
