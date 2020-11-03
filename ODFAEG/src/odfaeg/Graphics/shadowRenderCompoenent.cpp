@@ -343,7 +343,7 @@ namespace odfaeg {
                     depthGenShader.setParameter("projectionMatrix", projMatrix);
                     depthGenShader.setParameter("viewMatrix", viewMatrix);
                     depthGenNormalShader.setParameter("projectionMatrix", projMatrix);
-                    depthGenNormalShader.setParameter("view matrix", viewMatrix);
+                    depthGenNormalShader.setParameter("viewMatrix", viewMatrix);
                     RenderStates states;
                     for (unsigned int i = 0; i < m_instances.size(); i++) {
                         if (m_instances[i].getAllVertices().getVertexCount() > 0) {

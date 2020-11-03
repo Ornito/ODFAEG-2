@@ -1234,8 +1234,6 @@ void ODFAEGCreator::moveCursor(sf::Vector2f mousePos) {
                 if (bcm.isIso2DMatrix())
                     newPos.x -= gridWidth * 0.5f;
                 cursor.setPosition(newPos);
-                Vec3f coordinates = World::getCoordinatesAt(Vec3f(x, y, 0));
-                std::cout<<"coordinates : "<<coordinates<<std::endl;
             }
         }
     }

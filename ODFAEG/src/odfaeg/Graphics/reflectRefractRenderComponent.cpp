@@ -31,7 +31,7 @@ namespace odfaeg {
             reflectRefractTex.setEnableCubeMap(true);
             reflectRefractTexSprite = Sprite(reflectRefractTex.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             environmentMap.create(squareSize, squareSize, settings, GL_TEXTURE_CUBE_MAP);
-            GLuint maxNodes = 10 * squareSize * squareSize;
+            GLuint maxNodes = 5 * squareSize * squareSize;
             GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
             glCheck(glGenBuffers(1, &atomicBuffer));
             glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
@@ -266,7 +266,7 @@ namespace odfaeg {
                  const std::string fragmentShader2 =
                    R"(
                    #version 460
-                   #define MAX_FRAGMENTS 10
+                   #define MAX_FRAGMENTS 5
                    struct NodeType {
                       vec4 color;
                       float depth;
@@ -350,9 +350,9 @@ namespace odfaeg {
                 sBuildDepthBufferNormal.setParameter("texture", Shader::CurrentTexture);
                 sReflectRefract.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                 sReflectRefract.setParameter("depthBuffer", depthBuffer.getTexture());
-                sReflectRefract.setParameter("sceneBox", environmentMap.getTexture());
+                sReflectRefract.setParameter("sceneBox", Shader::CurrentTexture);
                 sReflectRefractNormal.setParameter("resolution", resolution.x, resolution.y, resolution.z);
-                sReflectRefractNormal.setParameter("sceneBox", environmentMap.getTexture());
+                sReflectRefractNormal.setParameter("sceneBox", Shader::CurrentTexture);
                 sReflectRefractNormal.setParameter("depthBuffer", depthBuffer.getTexture());
                 sLinkedList.setParameter("maxNodes", maxNodes);
                 sLinkedList.setParameter("texture", Shader::CurrentTexture);

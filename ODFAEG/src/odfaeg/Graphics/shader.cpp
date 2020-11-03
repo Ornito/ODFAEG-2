@@ -192,7 +192,7 @@ namespace odfaeg {
             }
 
             // Compile the shader program
-            return compile(&vertexShader[0], &fragmentShader[0], NULL);
+            return compile(&vertexShader[0], &fragmentShader[0], &geometryShader[0]);
         }
 
 
