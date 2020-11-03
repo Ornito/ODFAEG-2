@@ -50,6 +50,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onSelectedTextureChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onTexCoordsChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedEmChanged(odfaeg::graphic::gui::DropDownList* dp);
+    void onSelectedRTChanged(odfaeg::graphic::gui::DropDownList* dp);
     void addShape(odfaeg::graphic::Shape *shape);
     bool removeShape (unsigned int id);
     void updateScriptPos(odfaeg::graphic::Transformable* shape);
@@ -60,12 +61,12 @@ class ODFAEGCreator : public odfaeg::core::Application,
     private :
         odfaeg::graphic::gui::MenuBar* menuBar;
         odfaeg::graphic::gui::Menu *menu1, *menu2, *menu3, *menu4;
-        odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item21, *item22, *item23, *item31, *item32, *item33,
+        odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item14, *item21, *item22, *item23, *item31, *item32, *item33,
         *item34, *item41, *item42, *item43, *item44, *item45;
         odfaeg::core::ResourceCache<> cache;
         odfaeg::graphic::gui::FileDialog* fdTexturePath;
-        odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent;
-        odfaeg::graphic::gui::TextArea* ta, *taComponentExpression, *taComponentLayer;
+        odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent, *wNewEntitiesUpdater;
+        odfaeg::graphic::gui::TextArea* ta, *taComponentExpression, *taComponentLayer, *taEntitiesUpdaterName;
         odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
         odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight;
@@ -86,7 +87,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition, *lColor, *lRColor,
         *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage;
         odfaeg::graphic::gui::TabPane* tabPane;
-        odfaeg::graphic::gui::Button* bChooseText, *bCreateComponent, *bCreateScene;
+        odfaeg::graphic::gui::Button* bChooseText, *bCreateComponent, *bCreateScene, *bCreateEntitiesUpdater;
         odfaeg::graphic::Shape* sTextRect;
         odfaeg::core::StateStack stateStack;
         ODFAEGCreatorStateExecutor se;

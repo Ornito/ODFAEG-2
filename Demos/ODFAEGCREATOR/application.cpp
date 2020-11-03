@@ -51,9 +51,13 @@ void ODFAEGCreator::onInit() {
     item13 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"New component");
     item13->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item13);
+    item14 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "New entities updater");
+    item14->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item14);
     menu1->addMenuItem(item11);
     menu1->addMenuItem(item12);
     menu1->addMenuItem(item13);
+    menu1->addMenuItem(item14);
     item21 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Build");
     item21->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item21);
@@ -179,15 +183,26 @@ void ODFAEGCreator::onInit() {
     dpComponentType = new DropDownList(*wNewComponent, Vec3f(200, 100, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif),"LinkedList", 15);
     dpComponentType->addItem("Shadow", 15);
     dpComponentType->addItem("Light", 15);
+    dpComponentType->addItem("Refraction", 15);
     getRenderComponentManager().addComponent(dpComponentType);
     bCreateComponent = new Button(Vec3f(0, 150, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif),"Create component",15,*wNewComponent);
     bCreateComponent->addActionListener(this);
     getRenderComponentManager().addComponent(bCreateComponent);
     addWindow(wNewComponent);
     wNewComponent->setVisible(false);
+    //Create entities updater.
+    wNewEntitiesUpdater = new RenderWindow(sf::VideoMode(400, 300), "Create new entities updater", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
+    Label* lEntitiesUpdaterName = new Label (*wNewEntitiesUpdater,Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "entities updater name : ", 15);
+    getRenderComponentManager().addComponent(lEntitiesUpdaterName);
+    taEntitiesUpdaterName = new TextArea(Vec3f(200, 0, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEntitiesUpdater);
+    getRenderComponentManager().addComponent(taEntitiesUpdaterName);
+    bCreateEntitiesUpdater = new Button(Vec3f(200, 50, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Create entities updater",15,*wNewEntitiesUpdater);
+    bCreateEntitiesUpdater->addActionListener(this);
+    getRenderComponentManager().addComponent(bCreateEntitiesUpdater);
+    addWindow(wNewEntitiesUpdater);
+    wNewEntitiesUpdater->setVisible(false);
     //Create panel for project files.
     pProjects = new Panel(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
-    pProjects->setName("PPROJECTS");
     rootNode = std::make_unique<Node> ("projects", pProjects, Vec2f(0.f, 0.015f), Vec2f(1.f / 6.f, 1.f));
     pProjects->setBorderColor(sf::Color(128, 128, 128));
     pProjects->setBackgroundColor(sf::Color::White);
@@ -326,6 +341,11 @@ void ODFAEGCreator::onRender(RenderComponentManager *cm) {
 }
 void ODFAEGCreator::onDisplay(RenderWindow* window) {
     if (window == &getRenderWindow()) {
+        std::vector<Entity*> visibleEntities = World::getVisibleEntities("*");
+        for (unsigned int i = 0; i < visibleEntities.size(); i++) {
+            if (!visibleEntities[i]->getDrawOnComponent())
+                window->draw(*visibleEntities[i]);
+        }
         for (unsigned int i = 0; i < shapes.size(); i++)
             window->draw(*shapes[i]);
 
@@ -392,6 +412,9 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     }
     if (wApplicationNew == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
         wApplicationNew->setVisible(false);
+    }
+    if (wNewEntitiesUpdater == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
+        wNewEntitiesUpdater->setVisible(false);
     }
     if (&getRenderWindow() == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_RESIZED) {
         getRenderWindow().getDefaultView().reset(BoundingBox(0, 0, getRenderWindow().getDefaultView().getPosition().z, event.window.data1, event.window.data2, getRenderWindow().getDefaultView().getDepth()));
@@ -659,6 +682,9 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 cshapes.push_back(cshape);
             }
         }
+        if (dpSelectEm != nullptr) {
+            dpSelectEm->addItem(taMapName->getText(), 15);
+        }
     }
     if (button->getText() == "Create component") {
         wNewComponent->setVisible(false);
@@ -677,6 +703,13 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             LightRenderComponent* lrc = new LightRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 3, 0));
             getRenderComponentManager().addComponent(lrc);
         }
+    }
+    if(button==bCreateEntitiesUpdater) {
+        std::string name = taEntitiesUpdaterName->getText();
+        EntitiesUpdater* eu = new EntitiesUpdater();
+        eu->setName(name);
+        World::addWorker(eu);
+        wNewEntitiesUpdater->setVisible(false);
     }
 }
 void ODFAEGCreator::actionPerformed(MenuItem* item) {
@@ -718,7 +751,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     }
     if (item->getText() == "Tile") {
         if (!showRectSelect) {
-            Tile* tile = new Tile(nullptr, cursor.getPosition(),Vec3f(100, 50, 0), sf::IntRect(0, 0, 0, 0));
+            Tile* tile = new Tile(nullptr, cursor.getPosition(),Vec3f(100, 50, 0), sf::IntRect(0, 0, gridWidth, gridHeight));
             selectedObject = tile;
             displayInfos(tile);
             if (World::getCurrentEntityManager() == nullptr)
@@ -729,7 +762,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
             BoundingBox rect = rectSelect.getSelectionRect();
             for (int x = rect.getPosition().x; x < rect.getPosition().x + rect.getSize().x-gridWidth; x+=gridWidth) {
                 for (int y = rect.getPosition().y; y <  rect.getPosition().y + rect.getSize().y-gridHeight; y+=gridHeight) {
-                    Tile* tile = new Tile(nullptr,Vec3f(x, y, 0),Vec3f(gridWidth, gridHeight, 0),sf::IntRect(0, 0, 0, 0));
+                    Tile* tile = new Tile(nullptr,Vec3f(x, y, 0),Vec3f(gridWidth, gridHeight, 0),sf::IntRect(0, 0, gridWidth, gridHeight));
                     rectSelect.addItem(tile);
                     if (rectSelect.getItems().size() == 1) {
                         selectedObject = tile;
@@ -780,6 +813,10 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "New component") {
         wNewComponent->setVisible(true);
         bCreateComponent->setEventContextActivated(true);
+    }
+    if (item->getText() == "New entities updater") {
+        wNewEntitiesUpdater->setVisible(true);
+        bCreateEntitiesUpdater->setEventContextActivated(true);
     }
 }
 void ODFAEGCreator::addShape(Shape *shape) {
@@ -1036,6 +1073,7 @@ void ODFAEGCreator::displayInfos (Tile* tile) {
     pInfos->addChild(lEmList);
     Node* lEmListNode = new Node("LabEmList", lEmList, Vec2f(0, 0), Vec2f(0.25, 0.025), rootInfosNode.get());
     dpSelectEm = new DropDownList(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif),"NONE", 15);
+    dpSelectEm->setName("DPSELECTEM");
     for (unsigned int i = 0; i < ems.size(); i++) {
         dpSelectEm->addItem(ems[i]->getName(), 15);
     }
@@ -1044,6 +1082,19 @@ void ODFAEGCreator::displayInfos (Tile* tile) {
     Command cmdEmChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectEm), FastDelegate<void>(&ODFAEGCreator::onSelectedEmChanged, this, dpSelectEm));
     dpSelectEm->getListener().connect("EmChanged", cmdEmChanged);
     lEmListNode->addOtherComponent(dpSelectEm, Vec2f(0.75, 0.025));
+    dpSelectEm->setPriority(-2);
+    Label* lSelectRT = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Render target : ", 15);
+    lSelectRT->setParent(pInfos);
+    pInfos->addChild(lSelectRT);
+    Node* selectRT = new Node("SelectRT", lSelectRT, Vec2f(0, 0), Vec2f(0.25, 0.025), rootInfosNode.get());
+    DropDownList* dpSelectRT = new DropDownList(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif),"COMPONENTS", 15);
+    dpSelectRT->setName("DPSELECTRT");
+    dpSelectRT->addItem("WINDOW", 15);
+    dpSelectRT->setParent(pInfos);
+    pInfos->addChild(dpSelectRT);
+    Command cmdRTChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectRT), FastDelegate<void>(&ODFAEGCreator::onSelectedRTChanged, this, dpSelectRT));
+    dpSelectRT->getListener().connect("RTChanged", cmdRTChanged);
+    selectRT->addOtherComponent(dpSelectRT, Vec2f(0.75, 0.025));
     lPosition = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Position : ", 15);
     lPosition->setParent(pTransform);
     Node* lPosNode = new Node("LabPosition",lPosition,Vec2f(0, 0), Vec2f(1, 0.025),rootPropNode.get());
@@ -1390,6 +1441,11 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                     static_cast<Shape*>(selectedObject)->setTexture(text);
                     textRect = static_cast<Shape*>(selectedObject)->getTextureRect();
                 }
+                if (dynamic_cast<Tile*>(selectedObject)) {
+                    static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().clearTextures();
+                    static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().addTexture(text, sf::IntRect(0, 0, text->getSize().x, text->getSize().y));
+                    textRect = sf::IntRect(0, 0, text->getSize().x, text->getSize().y);
+                }
                 tTexCoordX->setText(conversionIntString(textRect.left));
                 tTexCoordY->setText(conversionIntString(textRect.top));
                 tTexCoordW->setText(conversionIntString(textRect.width));
@@ -1511,6 +1567,17 @@ void ODFAEGCreator::onSelectedEmChanged(DropDownList* dp) {
             }
             World::setCurrentEntityManager(dp->getSelectedItem());
             World::addEntity(dynamic_cast<Entity*>(selectedObject));
+        }
+    }
+}
+void ODFAEGCreator::onSelectedRTChanged(DropDownList *dp) {
+    if (dp->getSelectedItem() == "WINDOW") {
+        if (dynamic_cast<Entity*>(selectedObject)) {
+            static_cast<Entity*>(selectedObject)->setDrawOnComponent(false);
+        }
+    } else {
+        if (dynamic_cast<Entity*>(selectedObject)) {
+            static_cast<Entity*>(selectedObject)->setDrawOnComponent(true);
         }
     }
 }

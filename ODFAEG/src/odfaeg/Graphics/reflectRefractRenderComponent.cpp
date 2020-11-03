@@ -464,7 +464,6 @@ namespace odfaeg {
                     GL_UNSIGNED_INT, NULL));
                     glCheck(glBindTexture(GL_TEXTURE_2D, 0));
                     environmentMap.resetGLStates();
-                    //glCheck(glEnable(GL_TEXTURE_CUBE_MAP));
                     environmentMap.selectCubemapFace(m);
                     viewMatrix = reflectView.getViewMatrix().getMatrix().transpose();
                     projMatrix = reflectView.getProjMatrix().getMatrix().transpose();

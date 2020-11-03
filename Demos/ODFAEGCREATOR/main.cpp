@@ -8,6 +8,8 @@ int main(int argc, char* argv[]) {
     EXPORT_CLASS_GUID(ShapeRectShape, Shape, RectangleShape)
     ODFAEGCreator app(sf::VideoMode(1000,700),"ODFAEG Creator");
     return app.exec();
+
+
     /*RenderWindow window(sf::VideoMode(1200, 700), "Scissor test");
     RenderWindow window2(sf::VideoMode(800, 600), "SubWindow");
     window.getView().move(600, 350, 0);

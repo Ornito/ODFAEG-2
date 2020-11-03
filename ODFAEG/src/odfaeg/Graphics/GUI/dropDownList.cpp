@@ -51,6 +51,12 @@ namespace odfaeg {
                 }
             }
             bool DropDownList::isMouseOnTriangle() {
+                /*if (getName() == "DPSELECTRT") {
+                    for (unsigned int i = 0; i < bp.getPoints().size(); i++) {
+                        std::cout<<"point : "<<i<<" : "<<bp.getPoint(i)<<std::endl;
+                    }
+                    std::cout<<"mouse pos : "<<mousePos<<std::endl;
+                }*/
                 return bp.isPointInside(mousePos);
             }
             void DropDownList::onTriangleClicked() {
@@ -86,9 +92,9 @@ namespace odfaeg {
                 math::Vec3f points[shape.getPointCount()];
                 for (unsigned int i = 0; i < shape.getPointCount(); i++) {
                     sf::Vector3f position = shape.getPoint(i);
-                    points[i] = getTransform().transform(math::Vec3f(position.x, position.y, position.z));
+                    points[i] = shape.getTransform().transform(math::Vec3f(position.x, position.y, position.z));
                 }
-                bp = physic::BoundingPolyhedron(math::Vec3f(getPosition().x + getSize().x - 25, getPosition().y + getSize().y, 0), math::Vec3f(getPosition().x + getSize().x - 50, getPosition().y, 0), math::Vec3f(getPosition().x + getSize().x, getSize().y, 0),true);
+                bp = physic::BoundingPolyhedron(points[1], points[0], points[2],true);
                 target.draw(rect, states);
                 if (!dropDown && selectedItem != nullptr) {
                     selectedItem->setPosition(getPosition());

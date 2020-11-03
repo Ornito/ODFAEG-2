@@ -85,6 +85,9 @@ namespace odfaeg {
             unsigned int getPriority() {
                 return priority;
             }
+            void setPriority(unsigned int priority) {
+                this->priority = priority;
+            }
             virtual void onVisibilityChanged(bool visible);
             virtual void onEventContextActivated(bool activate);
             virtual void processEvents();
