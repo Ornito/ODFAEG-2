@@ -7,7 +7,7 @@ public :
     void setRect(int posX, int posY, int width, int height);
     void addItem(odfaeg::graphic::Transformable* item);
     odfaeg::physic::BoundingBox getSelectionRect();
-    std::vector<odfaeg::graphic::Transformable*> getItems();
+    std::vector<odfaeg::graphic::Transformable*>& getItems();
     void draw (odfaeg::graphic::RenderTarget& target, odfaeg::graphic::RenderStates states);
 private :
     odfaeg::graphic::RectangleShape selectionRect;

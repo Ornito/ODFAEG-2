@@ -379,6 +379,9 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_PRESSED && event.mouseButton.button == IMouse::Left) {
         sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
         getListener().setCommandSlotParams("MoveCursor", this, mousePos);
+    }
+    if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_PRESSED && event.mouseButton.button == IMouse::Right) {
+        sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
         if (showRectSelect) {
             if (alignToGrid) {
                 int x = ((int) mousePos.x / gridWidth * gridWidth)-getRenderWindow().getSize().x * 0.5f;
@@ -391,7 +394,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
             }
         }
     }
-    if (&getRenderWindow() == window && event.type == IEvent::MOUSE_MOTION_EVENT && IMouse::isButtonPressed(IMouse::Left)) {
+    if (&getRenderWindow() == window && event.type == IEvent::MOUSE_MOTION_EVENT && IMouse::isButtonPressed(IMouse::Right)) {
         sf::Vector2f mousePos (event.mouseMotion.x, event.mouseMotion.y);
         if (showRectSelect) {
             if (alignToGrid) {
@@ -410,7 +413,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
             }
         }
     }
-    if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_RELEASED && event.mouseButton.button == IMouse::Left) {
+    if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_RELEASED && event.mouseButton.button == IMouse::Right) {
         if (showRectSelect) {
             rectSelect.getItems().clear();
             if (World::getCurrentEntityManager() != nullptr) {
@@ -428,9 +431,12 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
             }
             for (unsigned int i = 0; i < shapes.size(); i++) {
                 if (rectSelect.getSelectionRect().intersects(shapes[i]->getGlobalBounds())) {
+                    std::cout<<"add shape to selection : "<<shapes[i].get()<<std::endl;
                     rectSelect.getItems().push_back(shapes[i].get());
                 }
             }
+            if (rectSelect.getItems().size() > 0)
+                selectedObject = rectSelect.getItems()[0];
         }
     }
     if (wApplicationNew == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
@@ -770,6 +776,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         displayInfos(shape.get());
         selectedObject = shape.get();
         addShape(shape.get());
+        std::cout<<"add shape : "<<shape.get()<<std::endl;
         shapes.push_back(std::move(shape));
     }
     if (item->getText() == "Tile") {
@@ -843,8 +850,6 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     }
 }
 void ODFAEGCreator::addShape(Shape *shape) {
-    std::unique_ptr<Shape> ptr;
-    ptr.reset(shape);
     /*unsigned int pos = cppAppliContent.find("tm.getResourceByAlias");
     if (pos != std::string::npos && pos < cppAppliContent.size()) {
         std::string subs = cppAppliContent.substr(pos);
@@ -861,7 +866,6 @@ void ODFAEGCreator::addShape(Shape *shape) {
     std::string toInsert = "    std::unique_ptr<sf::RectangleShape> shape"+conversionUIntString(shape->getId())+" = std::make_unique<RectangleShape>(Vec3f(100, 50, 0));\n"
                            "    drawables.push_back(std::move(shape));\n";
     cppAppliContent.insert(pos, toInsert);*/
-    shapes.push_back(std::move(ptr));
 }
 bool ODFAEGCreator::removeShape (unsigned int id) {
     for (auto it = shapes.begin(); it != shapes.end();it++) {
@@ -1527,9 +1531,17 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
     if (dynamic_cast<Shape*>(selectedObject)) {
         oldTexture = static_cast<Shape*>(selectedObject)->getTexture();
     }
+    if (dynamic_cast<Tile*>(selectedObject)) {
+        oldTexture = static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().getTexture();
+    }
     if (dp->getSelectedItem() == "NONE") {
         if (dynamic_cast<Shape*>(selectedObject)) {
             static_cast<Shape*>(selectedObject)->setTexture(nullptr);
+        }
+        if (dynamic_cast<Tile*>(selectedObject)) {
+            Tile* selectedTile = static_cast<Tile*>(selectedObject);
+            selectedTile->getFace(0)->getMaterial().clearTextures();
+            selectedTile->getFace(0)->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, gridWidth, gridHeight));
         }
     } else {
         TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
@@ -1568,8 +1580,48 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
     if (dynamic_cast<Shape*>(selectedObject)) {
         state->addParameter("NEWVALUE",static_cast<Shape*>(selectedObject)->getTexture());
     }
+    if (dynamic_cast<Tile*>(selectedObject)) {
+        state->addParameter("NEWVALUE",static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().getTexture());
+    }
     state->addParameter("OBJECT", selectedObject);
     sg->addState(state);
+    for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+        if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
+            oldTexture = static_cast<Shape*>(rectSelect.getItems()[i])->getTexture();
+        }
+        if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
+            oldTexture = static_cast<Tile*>(rectSelect.getItems()[i])->getFace(0)->getMaterial().getTexture();
+        }
+        if (dp->getSelectedItem() == "NONE") {
+            if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
+                static_cast<Shape*>(rectSelect.getItems()[i])->setTexture(nullptr);
+            }
+            if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
+                Tile* selectedTile = static_cast<Tile*>(rectSelect.getItems()[i]);
+                selectedTile->getFace(0)->getMaterial().clearTextures();
+                selectedTile->getFace(0)->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, gridWidth, gridHeight));
+            }
+        } else {
+            TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
+            const Texture* text = tm.getResourceByAlias(dp->getSelectedItem());
+            if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
+                static_cast<Shape*>(rectSelect.getItems()[i])->setTexture(text);
+            }
+            if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
+                static_cast<Tile*>(rectSelect.getItems()[i])->getFace(0)->getMaterial().clearTextures();
+                static_cast<Tile*>(rectSelect.getItems()[i])->getFace(0)->getMaterial().addTexture(text, sf::IntRect(0, 0, text->getSize().x, text->getSize().y));
+            }
+        }
+        State* selectState = new State("SCHANGETEXTURE", &se);
+        selectState->addParameter("OLDVALUE", oldTexture);
+        if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
+            selectState->addParameter("NEWVALUE",static_cast<Shape*>(rectSelect.getItems()[i])->getTexture());
+        }
+        if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
+            selectState->addParameter("NEWVALUE",static_cast<Tile*>(rectSelect.getItems()[i])->getFace(0)->getMaterial().getTexture());
+        }
+        sg->addState(selectState);
+    }
     stateStack.addStateGroup(sg);
     pMaterial->updateScrolls();
 }

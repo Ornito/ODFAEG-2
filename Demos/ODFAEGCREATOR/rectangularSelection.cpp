@@ -13,13 +13,19 @@ void RectangularSelection::setRect(int posX, int posY, int width, int height) {
     selectionRect.setPosition(Vec3f(posX, posY, 0));
 }
 void RectangularSelection::addItem(Transformable* item) {
-    items.push_back(item);
+    bool contains = false;
+    for (unsigned int i = 0; i < items.size() && !contains; i++) {
+        if (items[i] == item)
+            contains = true;
+    }
+    if (!contains)
+        items.push_back(item);
 }
 BoundingBox RectangularSelection::getSelectionRect() {
     BoundingBox rect(selectionRect.getPosition().x, selectionRect.getPosition().y, 0, selectionRect.getSize().x, selectionRect.getSize().y, 0);
     return rect;
 }
-std::vector<Transformable*> RectangularSelection::getItems() {
+std::vector<Transformable*>& RectangularSelection::getItems() {
     return items;
 }
 void RectangularSelection::draw(RenderTarget& target, RenderStates states) {

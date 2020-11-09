@@ -350,6 +350,9 @@ namespace odfaeg {
             return flat;
         }
         bool BoundingBox::intersects (BoundingBox& other) {
+            if (width == 0 && height == 0 && depth == 0
+                || other.width == 0 && other.height == 0 && other.depth == 0)
+                    return false;
             int hx1 = width * 0.5;
             int hy1 = height * 0.5;
             int hz1 = depth * 0.5;
