@@ -862,15 +862,13 @@ namespace odfaeg {
             {
                 GLint index = static_cast<GLsizei>(i + 1);
                 if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
-                    glCheck(glActiveTexture(GL_TEXTURE0 + index));
-                    Texture::bind(it->second);
                     glCheck(glUniform1i(it->first, index));
+                    glCheck(glActiveTexture(GL_TEXTURE0 + index));
                 } else {
-                    glCheck(glActiveTextureARB(GL_TEXTURE0_ARB + index));
-                    Texture::bind(it->second);
                     glCheck(glUniform1iARB(it->first, index));
+                    glCheck(glActiveTextureARB(GL_TEXTURE0_ARB + index));
                 }
-
+                Texture::bind(it->second);
                 ++it;
             }
             if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
