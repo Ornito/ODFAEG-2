@@ -27,7 +27,10 @@ namespace odfaeg {
                 void setBorderColor(sf::Color color);
                 void updateScrolls();
                 void addChild(LightComponent* child);
+                void onUpdate(RenderWindow* window, window::IEvent& event);
+                bool isMouseInside();
             private :
+                math::Vec3f mousePos;
                 bool scrollX, scrollY;
                 RectangleShape rect;
                 RectangleShape vertScrollBar, horScrollBar, corner;

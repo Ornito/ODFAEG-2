@@ -198,6 +198,17 @@ namespace odfaeg {
                 shape->setPosition(getPosition() + shape->getPosition());
                 shapes.push_back(shape);
             }
+            bool Panel::isMouseInside() {
+                physic::BoundingBox bb(getPosition().x, getPosition().y, 0, getSize().x, getSize().y, 0);
+                return bb.isPointInside(mousePos);
+            }
+            void Panel::onUpdate(RenderWindow* window, window::IEvent& event) {
+                LightComponent::onUpdate(window, event);
+                if (&getWindow() == window) {
+                    if (event.type == window::IEvent::MOUSE_MOTION_EVENT)
+                        mousePos = math::Vec3f(event.mouseMotion.x, event.mouseMotion.y, 0);
+                }
+            }
         }
     }
 }

@@ -302,11 +302,13 @@ namespace odfaeg {
             if (m_shaderProgram)
             {
                 if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
                     if (location != -1) {
                         glCheck(glUniform1ui(location, x));
                     }
+                    glCheck(glUseProgram(program));
                 } else {
                     // Enable program
                     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
@@ -328,11 +330,13 @@ namespace odfaeg {
             if (m_shaderProgram)
             {
                 if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
                     if (location != -1) {
                         glCheck(glUniform1f(location, x));
                     }
+                    glCheck(glUseProgram(program));
                 } else {
                     // Enable program
                     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
@@ -356,11 +360,13 @@ namespace odfaeg {
             if (m_shaderProgram)
             {
                 if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
                     if (location != -1) {
                         glCheck(glUniform2f(location, x, y));
                     }
+                    glCheck(glUseProgram(program));
                 } else {
                     // Enable program
                     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
@@ -384,11 +390,13 @@ namespace odfaeg {
             if (m_shaderProgram)
             {
                  if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                     glCheck(glUseProgram(m_shaderProgram));
-                    GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
+                    GLint location = getParamLocation(name);
                     if (location != -1) {
                         glCheck(glUniform3f(location, x, y, z));
                     }
+                    glCheck(glUseProgram(program));
                 } else {
                     // Enable program
                     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
@@ -414,11 +422,13 @@ namespace odfaeg {
 
 
                  if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
                     if (location != -1) {
                         glCheck(glUniform4f(location, x, y, z, w));
                     }
+                    glCheck(glUseProgram(program));
                 } else {
                     // Enable program
                     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
@@ -463,12 +473,13 @@ namespace odfaeg {
             {
 
                  if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = getParamLocation(name);
                     if (location != -1) {
                         glCheck(glUniformMatrix4fv(location, 1, GL_FALSE,matrix.toGlMatrix().data()));
                     }
-                    glCheck(glUseProgram(0));
+                    glCheck(glUseProgram(program));
                 } else {
                     // Enable program
                     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);

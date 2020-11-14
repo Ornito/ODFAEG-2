@@ -382,7 +382,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     }
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_PRESSED && event.mouseButton.button == IMouse::Right) {
         sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
-        if (showRectSelect) {
+        if (showRectSelect && !pScriptsFiles->isMouseInside()) {
             if (alignToGrid) {
                 int x = ((int) mousePos.x / gridWidth * gridWidth)-getRenderWindow().getSize().x * 0.5f;
                 int y = ((int) mousePos.y / gridHeight * gridHeight)-getRenderWindow().getSize().y * 0.5f;
@@ -392,17 +392,29 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                 int y = mousePos.y-getRenderWindow().getSize().y * 0.5f;
                 mousePosition = Vec3f(x, y, 0);
             }
+        } else if (pScriptsFiles->isMouseInside()) {
+            if (alignToGrid) {
+                int x = ((int) mousePos.x / gridWidth * gridWidth);
+                int y = ((int) mousePos.y / gridHeight * gridHeight);
+                mousePosition = Vec3f(x, y, 0);
+            } else {
+                int x = mousePos.x;
+                int y = mousePos.y;
+                mousePosition = Vec3f(x, y, 0);
+            }
         }
     }
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_MOTION_EVENT && IMouse::isButtonPressed(IMouse::Right)) {
         sf::Vector2f mousePos (event.mouseMotion.x, event.mouseMotion.y);
-        if (showRectSelect) {
+        if (showRectSelect && !pScriptsFiles->isMouseInside()) {
             if (alignToGrid) {
                 int x = ((int) mousePos.x / gridWidth * gridWidth)-getRenderWindow().getSize().x * 0.5f;
                 int y = ((int) mousePos.y / gridHeight * gridHeight)-getRenderWindow().getSize().y * 0.5f;
                 int width = x - mousePosition.x;
                 int height = y - mousePosition.y;
-                rectSelect.setRect(x, y, width, height);
+                if (width > 0 && height > 0)
+                    rectSelect.setRect(mousePosition.x, mousePosition.y, width, height);
+
             } else {
                 int x = mousePos.x-getRenderWindow().getSize().x * 0.5f;
                 int y = mousePos.y-getRenderWindow().getSize().y * 0.5f;
@@ -412,9 +424,32 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                     rectSelect.setRect(mousePosition.x, mousePosition.y, width, height);
             }
         }
+        if (alignToGrid) {
+            int x = ((int) mousePos.x / gridWidth * gridWidth);
+            int y = ((int) mousePos.y / gridHeight * gridHeight);
+            int width = x - mousePosition.x;
+            int height = y - mousePosition.y;
+            if (pScriptsFiles->isMouseInside()) {
+                if (width > 0 && height > 0) {
+                    sTextRect->setPosition(Vec3f(mousePosition.x, mousePosition.y, 0));
+                    sTextRect->setSize(Vec3f(width, height, 0));
+                }
+            }
+        } else {
+            int x = mousePos.x;
+            int y = mousePos.y;
+            int width = x - mousePosition.x;
+            int height = y - mousePosition.y;
+            if (pScriptsFiles->isMouseInside()) {
+                if (width > 0 && height > 0) {
+                    sTextRect->setPosition(Vec3f(mousePosition.x, mousePosition.y, 0));
+                    sTextRect->setSize(Vec3f(width, height, 0));
+                }
+            }
+        }
     }
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_RELEASED && event.mouseButton.button == IMouse::Right) {
-        if (showRectSelect) {
+        if (showRectSelect && !pScriptsFiles->isMouseInside()) {
             rectSelect.getItems().clear();
             if (World::getCurrentEntityManager() != nullptr) {
                 std::vector<Entity*> entities = World::getVisibleEntities("*");
@@ -437,6 +472,14 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
             }
             if (rectSelect.getItems().size() > 0)
                 selectedObject = rectSelect.getItems()[0];
+        }
+        if (pScriptsFiles->isMouseInside()) {
+            int x = sTextRect->getPosition().x - pScriptsFiles->getPosition().x;
+            int y = sTextRect->getPosition().y - (bChooseText->getPosition().y + bChooseText->getSize().y);
+            tTexCoordX->setText(conversionIntString(x));
+            tTexCoordY->setText(conversionIntString(y));
+            tTexCoordW->setText(conversionIntString(sTextRect->getSize().x));
+            tTexCoordH->setText(conversionIntString(sTextRect->getSize().y));
         }
     }
     if (wApplicationNew == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
