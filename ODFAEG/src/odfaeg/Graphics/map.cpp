@@ -507,8 +507,8 @@ namespace odfaeg {
                 bt = new BigTile(math::Vec3f(startX, startY, startY + endY * 0.5f));
             else
                 bt = new BigTile(math::Vec3f(startX, startY, rect.getPosition().z),tileSize,rect.getWidth() / tileSize.x);
-            bt->setSize(rect.getSize());
-            bt->setCenter(math::Vec3f(rect.getCenter().x, rect.getCenter().y, rect.getPosition().z));
+            /*bt->setSize(rect.getSize());
+            bt->setCenter(math::Vec3f(rect.getCenter().x, rect.getCenter().y, rect.getPosition().z));*/
             //Positions de d\E9part et d'arriv\E9es en fonction de la taille, de la position et de la taille des cellules de la map.
             for (int y = startY; y < endY;  y+=tileSize.y) {
                 for (int x = startX; x < endX; x+=tileSize.x) {
@@ -520,9 +520,7 @@ namespace odfaeg {
                     if (x == startX && y == startY && walls.size() >= 4) {
                         g2d::Wall *w = new g2d::Wall(new Tile(*walls[3]),&g2d::AmbientLight::getAmbientLight());
                         w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[3]->getSize().y * 0.5f));
-                        std::cout<<"add wall"<<std::endl;
                         addEntity(w);
-                        std::cout<<"wall 4 added"<<std::endl;
                         gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
 
                         //Mur du coin en haut \E0 droite.
@@ -1136,11 +1134,14 @@ namespace odfaeg {
             vector<string> types = core::split(type, "+");
             for (unsigned int t = 0; t < types.size(); t++) {
                 unsigned int type = Entity::getIntOfType(types[t]);
+                //std::cout<<"type : "<<type<<std::endl<<"size : "<<visibleEntities.size()<<std::endl;
                 if (type < visibleEntities.size()) {
                     vector<Entity*> visibleEntitiesType = visibleEntities[type];
                     for (unsigned int i = 0; i < visibleEntitiesType.size(); i++) {
                         bool found = false;
                         for (unsigned int j = 0; j < types.size(); j++) {
+                            /*if (visibleEntitiesType[i] != nullptr)
+                                std::cout<<"root type  : "<<visibleEntitiesType[i]->getRootType()<<std::endl;*/
                             if (visibleEntitiesType[i] != nullptr && visibleEntitiesType[i]->getRootType() == types[j]) {
                                 found = true;
                             }

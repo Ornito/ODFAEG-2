@@ -359,7 +359,7 @@ namespace odfaeg {
                 sLinkedListNormal.setParameter("maxNodes", maxNodes);
                 sLinkedListNormal.setParameter("texture", Shader::CurrentTexture);
                 View defaultView = window.getDefaultView();
-                defaultView.setPerspective(-squareSize * 0.5f, squareSize * 0.5f, -squareSize * 0.5f, squareSize * 0.5f, defaultView.getPosition().z, defaultView.getDepth());
+                defaultView.setPerspective(-squareSize * 0.5f, squareSize * 0.5f, -squareSize * 0.5f, squareSize * 0.5f, 0, 1000);
                 math::Matrix4f viewMatrix = defaultView.getViewMatrix().getMatrix().transpose();
                 math::Matrix4f projMatrix = defaultView.getProjMatrix().getMatrix().transpose();
                 sLinkedList2.setParameter("viewMatrix", viewMatrix);
@@ -547,8 +547,8 @@ namespace odfaeg {
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
                     vb2.clear();
                     vb2.setPrimitiveType(sf::Quads);
-                    Vertex v1 (sf::Vector3f(0, 0, 0));
-                    Vertex v2 (sf::Vector3f(quad.getSize().x,0, 0));
+                    Vertex v1 (sf::Vector3f(0, 0, quad.getSize().z));
+                    Vertex v2 (sf::Vector3f(quad.getSize().x,0, quad.getSize().z));
                     Vertex v3 (sf::Vector3f(quad.getSize().x, quad.getSize().y, quad.getSize().z));
                     Vertex v4 (sf::Vector3f(0, quad.getSize().y, quad.getSize().z));
                     vb2.append(v1);

@@ -495,6 +495,7 @@ namespace odfaeg {
         }
         void RenderTarget::setAlphaTestEnable(bool enabled) {
             enableAlphaTest = enabled;
+
         }
         ////////////////////////////////////////////////////////////
         void RenderTarget::resetGLStates()
@@ -530,8 +531,10 @@ namespace odfaeg {
                 glCheck(glDepthFunc(GL_GREATER));
                 if (!enableCubeMap) {
                     glCheck(glEnable(GL_TEXTURE_2D));
+                    glCheck(glDisable(GL_TEXTURE_CUBE_MAP));
                 } else {
                     glCheck(glEnable(GL_TEXTURE_CUBE_MAP));
+                    glCheck(glDisable(GL_TEXTURE_2D));
                 }
                 glCheck(glEnable(GL_BLEND));
                 glCheck(glClearDepth(0));
@@ -642,6 +645,7 @@ namespace odfaeg {
         }
         void RenderTarget::setEnableCubeMap(bool enableCubeMap) {
             this->enableCubeMap = enableCubeMap;
+            m_cache.glStatesSet = false;
         }
     }
 }

@@ -149,7 +149,9 @@ enum Camera_Movement {
     FORWARD,
     BACKWARD,
     LEFT,
-    RIGHT
+    RIGHT,
+    UP,
+    DOWN
 };
 
 // Default camera values
@@ -202,7 +204,26 @@ public:
     {
         return glm::lookAt(Position, Position + Front, Up);
     }
-
+    glm::mat4 lookAt (Camera_Movement direction) {
+        if (direction == FORWARD) {
+            return glm::lookAt(Position, Position + Front, Up);
+        }
+        if (direction == BACKWARD) {
+            return glm::lookAt(Position, Position - Front, Up);
+        }
+        if (direction == LEFT) {
+            return glm::lookAt(Position, Position - Right, Up);
+        }
+        if (direction == RIGHT) {
+            return glm::lookAt(Position, Position + Right, Up);
+        }
+        if (direction == UP) {
+            return glm::lookAt(Position, Position + Up, Up);
+        }
+        if (direction == DOWN) {
+            return glm::lookAt(Position, Position - Up, Up);
+        }
+    }
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
     void ProcessKeyboard(Camera_Movement direction, float deltaTime)
     {
@@ -271,6 +292,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera2;
 float lastX = (float)SCR_WIDTH / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
 bool firstMouse = true;
@@ -278,6 +300,10 @@ bool firstMouse = true;
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+float speed = 10.f;
+float sensivity = 0.1f;
+float oldX = (float)SCR_WIDTH / 2.0;
+float oldY = (float)SCR_HEIGHT / 2.0;
 
 int main(int argc, char* argv[])
 {
@@ -292,19 +318,24 @@ int main(int argc, char* argv[])
     MyAppli app(sf::VideoMode(800, 600), "Test odfaeg");
     return app.exec();*/
 // create the window
-    sf::Window window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, sf::ContextSettings(24, 0, 4, 4, 6));
-    glewInit();
+    RenderWindow window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, ContextSettings(24, 0, 4, 4, 6));
+    View view1 (800, 600, 80, 0.1, 1000);
+    view1.move(0, 50, 0);
+    window.setView(view1);
+    View view3 (800, 800, 90, 0, 1000);
+    View view2 (800, 800, 0, 100);
     window.setVerticalSyncEnabled(true);
 
     // activate the window
     window.setActive(true);
     // load resources, initialize the OpenGL states, ...
-    glEnable(GL_DEPTH_TEST);
     // build and compile shaders
     // -------------------------
     const std::string cubeMapsVS = R"(#version 460
                                     layout (location = 0) in vec3 aPos;
-                                    layout (location = 1) in vec3 aNormal;
+                                    layout (location = 1) in vec4 color;
+                                    layout (location = 2) in vec2 texCoords;
+                                    layout (location = 3) in vec3 aNormal;
                                     out vec3 Normal;
                                     out vec3 Position;
                                     uniform mat4 model;
@@ -331,162 +362,145 @@ int main(int argc, char* argv[])
                                         }
                                    )";
     const std::string skyboxVS = R"(#version 460
-                                    layout (location = 0) in vec3 aPos;
-                                    out vec3 TexCoords;
+                                    layout (location = 0) in vec3 position;
+                                    layout (location = 1) in vec4 color;
+                                    layout (location = 2) in vec2 texCoords;
+                                    layout (location = 3) in vec3 normal;
+                                    out vec2 TexCoords;
+                                    out vec4 frontColor;
                                     uniform mat4 projection;
                                     uniform mat4 view;
+                                    uniform mat4 model;
+                                    uniform mat4 textureMatrix;
                                     void main()
                                     {
-                                        TexCoords = aPos;
-                                        vec4 pos = projection * view * vec4(aPos, 1.0);
-                                        gl_Position = pos.xyww;
+                                        TexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                        frontColor = color;
+                                        gl_Position = projection * view * model * vec4(position, 1.0);;
                                     }
                                 )";
     const std::string skyboxFS = R"(#version 460
                                     out vec4 FragColor;
-                                    in vec3 TexCoords;
-                                    uniform samplerCube skybox;
+                                    in vec2 TexCoords;
+                                    in vec4 frontColor;
+                                    uniform sampler2D skybox;
                                     void main()
                                     {
-                                        FragColor = texture(skybox, TexCoords);
+                                        FragColor = frontColor * texture2D(skybox, TexCoords);
                                     }
                                     )";
-    odfaeg::graphic::Shader shader, skyboxShader;
+    const std::string perPixelLinkedListP2VS = R"(#version 460 core
+                                                        layout (location = 0) in vec3 position;
+                                                        uniform mat4 projection;
+                                                        uniform mat4 view;
+                                                        uniform mat4 model;
+                                                        void main () {
+                                                            gl_Position = projection * view * model * vec4(position, 1.f);
+                                                        })";
+    const std::string perPixelLinkedListP1FS = R"(#version 460 core
+                                                      struct NodeType {
+                                                          vec4 color;
+                                                          float depth;
+                                                          uint next;
+                                                      };
+                                                      layout(binding = 0, offset = 0) uniform atomic_uint nextNodeCounter;
+                                                      layout(binding = 0, r32ui) uniform uimage2D headPointers;
+                                                      layout(binding = 0, std430) buffer linkedLists {
+                                                          NodeType nodes[];
+                                                      };
+                                                      uniform uint maxNodes;
+                                                      uniform sampler2D skybox;
+                                                      in vec2 TexCoords;
+                                                      in vec4 frontColor;
+                                                      layout (location = 0) out vec4 fcolor;
+                                                      void main() {
+                                                           uint nodeIdx = atomicCounterIncrement(nextNodeCounter);
+                                                           vec4 color = frontColor * texture2D(skybox, TexCoords);
+                                                           if (nodeIdx < maxNodes) {
+                                                                uint prevHead = imageAtomicExchange(headPointers, ivec2(gl_FragCoord.xy), nodeIdx);
+                                                                nodes[nodeIdx].color = color;
+                                                                nodes[nodeIdx].depth = gl_FragCoord.z;
+                                                                nodes[nodeIdx].next = prevHead;
+                                                           }
+                                                           fcolor = vec4(0, 0, 0, 0);
+                                                      })";
+    const std::string perPixelLinkedListP2FS =
+                   R"(
+                   #version 460
+                   #define MAX_FRAGMENTS 5
+                   struct NodeType {
+                      vec4 color;
+                      float depth;
+                      uint next;
+                   };
+                   layout(binding = 0, r32ui) uniform uimage2D headPointers;
+                   layout(binding = 0, std430) buffer linkedLists {
+                       NodeType nodes[];
+                   };
+                   layout(location = 0) out vec4 fcolor;
+                   void main() {
+                      NodeType frags[MAX_FRAGMENTS];
+                      int count = 0;
+                      uint n = imageLoad(headPointers, ivec2(gl_FragCoord.xy)).r;
+                      while( n != 0xffffffffu && count < MAX_FRAGMENTS) {
+                           frags[count] = nodes[n];
+                           n = frags[count].next;
+                           count++;
+                      }
+                      //merge sort
+                      int i, j1, j2, k;
+                      int a, b, c;
+                      int step = 1;
+                      NodeType leftArray[MAX_FRAGMENTS/2]; //for merge sort
+                      while (step <= count)
+                      {
+                          i = 0;
+                          while (i < count - step)
+                          {
+                              ////////////////////////////////////////////////////////////////////////
+                              //merge(step, i, i + step, min(i + step + step, count));
+                              a = i;
+                              b = i + step;
+                              c = (i + step + step) >= count ? count : (i + step + step);
+                              for (k = 0; k < step; k++)
+                                  leftArray[k] = frags[a + k];
+                              j1 = 0;
+                              j2 = 0;
+                              for (k = a; k < c; k++)
+                              {
+                                  if (b + j1 >= c || (j2 < step && leftArray[j2].depth > frags[b + j1].depth))
+                                      frags[k] = leftArray[j2++];
+                                  else
+                                      frags[k] = frags[b + j1++];
+                              }
+                              ////////////////////////////////////////////////////////////////////////
+                              i += 2 * step;
+                          }
+                          step *= 2;
+                      }
+                      vec4 color = vec4(0, 0, 0, 0);
+                      for( int i = count-1; i >= 0; i--)
+                      {
+                        color.rgb = frags[i].color.rgb * frags[i].color.a + color.rgb * (1 - frags[i].color.a);
+                        color.a = frags[i].color.a + color.a * (1 - frags[i].color.a);
+                      }
+                      fcolor = color;
+                   })";
+    odfaeg::graphic::Shader shader, skyboxShader, perPixelLinkedListP1Shader, perPixelLinkedListP2Shader;
     shader.loadFromMemory(cubeMapsVS, cubeMapsFS);
     skyboxShader.loadFromMemory(skyboxVS, skyboxFS);
-    /*GLuint atomicBuffer, linkedListBuffer, headPtrTex, clearBuf;
-    GLuint maxNodes = 5 * SCR_WIDTH * SCR_HEIGHT;
-    GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
-    glGenBuffers(1, &atomicBuffer);
-    glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer);
-    glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
-    glGenBuffers(1, &linkedListBuffer);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, linkedListBuffer);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-    glGenTextures(1, &headPtrTex);
-    glBindTexture(GL_TEXTURE_2D, headPtrTex);
-    glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, SCR_WIDTH, SCR_HEIGHT);
-    glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    std::vector<GLuint> headPtrClearBuf(SCR_WIDTH*SCR_HEIGHT, 0xffffffff);
-    glGenBuffers(1, &clearBuf);
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf);
-    glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint),
-    &headPtrClearBuf[0], GL_STATIC_COPY);
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);*/
+    perPixelLinkedListP1Shader.loadFromMemory(skyboxVS, perPixelLinkedListP1FS);
+    perPixelLinkedListP2Shader.loadFromMemory(perPixelLinkedListP2VS, perPixelLinkedListP2FS);
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    float cubeVertices[] = {
-        // positions          // normals
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-    };
-    float skyboxVertices[] = {
-        // positions
-        -1.0f,  1.0f, -1.0f,
-        -1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-
-        -1.0f, -1.0f,  1.0f,
-        -1.0f, -1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
-
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-
-        -1.0f, -1.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f, -1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
-
-        -1.0f,  1.0f, -1.0f,
-         1.0f,  1.0f, -1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f,
-        -1.0f,  1.0f, -1.0f,
-
-        -1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f,  1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f,  1.0f,
-         1.0f, -1.0f,  1.0f
-    };
-    // cube VAO
-    unsigned int cubeVAO, cubeVBO;
-    glGenVertexArrays(1, &cubeVAO);
-    glGenBuffers(1, &cubeVBO);
-    glBindVertexArray(cubeVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    // skybox VAO
-    unsigned int skyboxVAO, skyboxVBO;
-    glGenVertexArrays(1, &skyboxVAO);
-    glGenBuffers(1, &skyboxVBO);
-    glBindVertexArray(skyboxVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
+    g3d::Cube skybox (Vec3f(-400, -1000, -300), 800, 2000, 600, sf::Color::White);
+    /*skybox.move(Vec3f(0.f, 0.f, 50));
+    skybox.rotate(45, Vec3f(0, 0, 1));
+    skybox.setOrigin(Vec3f(0, 0, 0));
+    skybox.scale(Vec3f(10, 10, 10));*/
+    g3d::Cube cubeMap (Vec3f(-50, 10, -50), 100, 100, 100, sf::Color::White);
+    RectangleShape fullScreenQuad(Vec3f(800, 600, 300));
+    fullScreenQuad.move(Vec3f(-400, -400, 0));
     // load textures
     // -------------
     vector<std::string> faces
@@ -498,26 +512,56 @@ int main(int argc, char* argv[])
         "tilesets/skybox/front.jpg",
         "tilesets/skybox/back.jpg"
     };
-    std::vector<sf::Image> images;
+    Texture texs[6];
     for (unsigned int i = 0; i < 6; i++) {
-        sf::Image image;
-        image.loadFromFile(faces[i]);
-        images.push_back(image);
+        texs[i].loadFromFile(faces[i]);
+        sf::IntRect texRect (0, 0, texs[i].getSize().x, texs[i].getSize().y);
+        skybox.getFace(i)->getMaterial().clearTextures();
+        skybox.getFace(i)->getMaterial().addTexture(&texs[i], sf::IntRect(0, 0, texs[i].getSize().x, texs[i].getSize().y));
+        skybox.setTexCoords(i, texRect);
     }
-    int width = images[0].getSize().x;
-    int height = images[0].getSize().y;
-    odfaeg::graphic::Texture cubeMapTex;
-    cubeMapTex.createCubeMap(width, height, images);
+    Matrix4f texMatrix = skybox.getFace(0)->getMaterial().getTexture()->getTextureMatrix();
+    skyboxShader.setParameter("textureMatrix", texMatrix);
+    perPixelLinkedListP1Shader.setParameter("textureMatrix", texMatrix);
+    RenderTexture rtCubeMap;
+    rtCubeMap.create(800, 800, ContextSettings(0, 0, 4, 4, 6), GL_TEXTURE_CUBE_MAP);
+    for (unsigned int i = 0; i < 6; i++) {
+        cubeMap.getFace(i)->getMaterial().clearTextures();
+        cubeMap.getFace(i)->getMaterial().addTexture(&rtCubeMap.getTexture(), sf::IntRect(0, 0, 800, 800));
+    }
+    GLuint atomicBuffer, linkedListBuffer, headPtrTex, clearBuf;
+    GLuint maxNodes = 5 * SCR_WIDTH * SCR_WIDTH;
+    GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
+    glGenBuffers(1, &atomicBuffer);
+    glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer);
+    glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
+    glGenBuffers(1, &linkedListBuffer);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, linkedListBuffer);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+    glGenTextures(1, &headPtrTex);
+    glBindTexture(GL_TEXTURE_2D, headPtrTex);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, SCR_WIDTH, SCR_WIDTH);
+    glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    std::vector<GLuint> headPtrClearBuf(SCR_WIDTH*SCR_WIDTH, 0xffffffff);
+    glGenBuffers(1, &clearBuf);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf);
+    glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint),
+    &headPtrClearBuf[0], GL_STATIC_COPY);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+    glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer);
    // shader configuration
     // --------------------
-    shader.setParameter("skybox", cubeMapTex);
-    skyboxShader.setParameter("skybox", cubeMapTex);
-    int oldX = sf::Mouse::getPosition(window).x;
-    int oldY = sf::Mouse::getPosition(window).y;
+    shader.setParameter("skybox", rtCubeMap.getTexture());
+    skyboxShader.setParameter("skybox", odfaeg::graphic::Shader::CurrentTexture);
+    perPixelLinkedListP1Shader.setParameter("maxNodes", maxNodes);
+    perPixelLinkedListP1Shader.setParameter("skybox", odfaeg::graphic::Shader::CurrentTexture);
     sf::Clock time;
     // run the main loop
     bool running = true;
-    glEnable(GL_TEXTURE_CUBE_MAP);
     while (running)
     {
          // per-frame time logic
@@ -528,143 +572,144 @@ int main(int argc, char* argv[])
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
         // handle events
-        sf::Event event;
+        IEvent event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED)
             {
                 // end the program
                 running = false;
             }
-            else if (event.type == sf::Event::Resized)
-            {
-                // adjust the viewport when the window is resized
-                glViewport(0, 0, event.size.width, event.size.height);
-            }
-            else if (event.type == sf::Event::MouseMoved) {
-                if (firstMouse)
-                {
-                    lastX = event.mouseMove.x;
-                    lastY = event.mouseMove.y;
-                    firstMouse = false;
-                }
-
-                float xoffset = event.mouseMove.x - lastX;
-                float yoffset = lastY - event.mouseMove.y; // reversed since y-coordinates go from bottom to top
-
-                lastX = event.mouseMove.x;
-                lastY = event.mouseMove.y;
-
-                camera.ProcessMouseMovement(xoffset, yoffset);
+            else if (event.type == IEvent::MOUSE_MOTION_EVENT) {
+                int relX = (event.mouseMotion.x - oldX) * sensivity;
+                int relY = (event.mouseMotion.y - oldY) * sensivity;
+                //Rotate the view, (Polar coordinates) but you can also use the lookAt function to look at a point.
+                int teta = view1.getTeta() - relX;
+                int phi = view1.getPhi() - relY;
+                view1.rotate(teta, phi);
+                oldX = event.mouseMotion.x;
+                oldY = event.mouseMotion.y;
             } else if (event.type == sf::Event::MouseWheelScrolled) {
-                camera.ProcessMouseScroll(event.mouseWheelScroll.delta);
+                //camera.ProcessMouseScroll(event.mouseWheelScroll.delta);
             }
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            camera.ProcessKeyboard(FORWARD, deltaTime);
+        if (IKeyboard::isKeyPressed(IKeyboard::Up)) {
+            view1.move(view1.getForward(), -speed * deltaTime);
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            camera.ProcessKeyboard(BACKWARD, deltaTime);
+        if (IKeyboard::isKeyPressed(IKeyboard::Down)) {
+            view1.move(view1.getForward(), speed * deltaTime);
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            camera.ProcessKeyboard(RIGHT, deltaTime);
+        if (IKeyboard::isKeyPressed(IKeyboard::Right)) {
+            view1.move(view1.getLeft(), speed * deltaTime);
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            camera.ProcessKeyboard(LEFT, deltaTime);
+        if (IKeyboard::isKeyPressed(IKeyboard::Left)) {
+            view1.move(view1.getLeft(), -speed * deltaTime);
         }
         // clear the buffers
         // render
         // ------
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        /*rtCubeMap.clear();
+        for (unsigned int i = 0; i < 6; i++) {
+            GLuint zero = 0;
+            glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer);
+            glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero);
+            glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
+            glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf);
+            glBindTexture(GL_TEXTURE_2D, headPtrTex);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, SCR_WIDTH, SCR_WIDTH, GL_RED_INTEGER,
+                GL_UNSIGNED_INT, NULL);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            rtCubeMap.resetGLStates();
+            rtCubeMap.selectCubemapFace(i);
+            if (i == 0) {
+                view3.lookAt(1, 0, 0);
+            }
+            if (i == 1) {
+                view3.lookAt(-1, 0, 0);
+            }
+            if (i == 2) {
+                view3.lookAt(0, 0, 1);
+            }
+            if (i == 3) {
+                view3.lookAt(0, 0, -1);
+            }
+            if (i == 4) {
+                view3.lookAt(0, 1, 0);
+            }
+            if (i == 5) {
+                view3.lookAt(0, -1, 0);
+            }
+            RenderStates states;
+            states.shader = &perPixelLinkedListP1Shader;
+            Matrix4f viewMatrix = view3.getViewMatrix().getMatrix().transpose();
+            Matrix4f projectionMatrix = view3.getProjMatrix().getMatrix().transpose();
+            Matrix4f modelMatrix = skybox.getTransform().getMatrix().transpose();
+            perPixelLinkedListP1Shader.setParameter("model", modelMatrix);
+            perPixelLinkedListP1Shader.setParameter("view", viewMatrix);
+            perPixelLinkedListP1Shader.setParameter("projection", projectionMatrix);
+            // skybox cube
+            rtCubeMap.setView(view3);
+            rtCubeMap.draw(skybox, states);
+            glFinish();
+            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+            states.shader = &perPixelLinkedListP2Shader;
+            rtCubeMap.setView(view2);
+            modelMatrix = fullScreenQuad.getTransform().getMatrix().transpose();
+            viewMatrix = view2.getViewMatrix().getMatrix().transpose();
+            projectionMatrix = view2.getProjMatrix().getMatrix().transpose();
+            perPixelLinkedListP2Shader.setParameter("model", modelMatrix);
+            perPixelLinkedListP2Shader.setParameter("view", viewMatrix);
+            perPixelLinkedListP2Shader.setParameter("projection", projectionMatrix);
+            rtCubeMap.draw(fullScreenQuad, states);
+            glFinish();
+        }
+        glMemoryBarrier(GL_ALL_BARRIER_BITS);
+        rtCubeMap.display();*/
+        window.clear();
+        window.setView(view1);
         // draw...
-        odfaeg::graphic::Shader::bind(&shader);
-        glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 view = camera.GetViewMatrix();
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        odfaeg::math::Matrix4f modelMatrix(model[0][0],model[0][1],model[0][2],model[0][3],
-                                  model[1][0],model[1][1],model[1][2],model[1][3],
-                                  model[2][0],model[2][1],model[2][2],model[2][3],
-                                  model[3][0],model[3][1],model[3][2],model[3][3]);
-        odfaeg::math::Matrix4f viewMatrix(view[0][0],view[0][1],view[0][2],view[0][3],
-                                  view[1][0],view[1][1],view[1][2],view[1][3],
-                                  view[2][0],view[2][1],view[2][2],view[2][3],
-                                  view[3][0],view[3][1],view[3][2],view[3][3]);
-        odfaeg::math::Matrix4f projectionMatrix(projection[0][0],projection[0][1],projection[0][2],projection[0][3],
-                                  projection[1][0],projection[1][1],projection[1][2],projection[1][3],
-                                  projection[2][0],projection[2][1],projection[2][2],projection[2][3],
-                                  projection[3][0],projection[3][1],projection[3][2],projection[3][3]);
-        shader.setParameter("model", modelMatrix);
+        RenderStates states;
+        states.shader = &shader;
+        Matrix4f modelMatrix = cubeMap.getTransform().getMatrix().transpose();
+        Matrix4f viewMatrix = view1.getViewMatrix().getMatrix().transpose();
+        Matrix4f projectionMatrix = view1.getProjMatrix().getMatrix().transpose();
+        /*shader.setParameter("model", modelMatrix);
         shader.setParameter("view", viewMatrix);
         shader.setParameter("projection", projectionMatrix);
         shader.setParameter("cameraPos", camera.Position.x,camera.Position.y,camera.Position.z);
         // cubes
-        glBindVertexArray(cubeVAO);
-        glActiveTexture(GL_TEXTURE0);
-        odfaeg::graphic::Texture::bind(&cubeMapTex, odfaeg::graphic::Texture::Normalized);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
+        window.setEnableCubeMap(true);
+        window.draw(cubeMap, states);
+        window.setEnableCubeMap(false);*/
         // draw skybox as last
-        glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-        odfaeg::graphic::Shader::bind(&skyboxShader);
-        view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
-        viewMatrix = odfaeg::math::Matrix4f(view[0][0],view[0][1],view[0][2],view[0][3],
-                                  view[1][0],view[1][1],view[1][2],view[1][3],
-                                  view[2][0],view[2][1],view[2][2],view[2][3],
-                                  view[3][0],view[3][1],view[3][2],view[3][3]);
+        states.shader = &skyboxShader;
+        viewMatrix = Matrix4f(Matrix3f(view1.getViewMatrix().getMatrix())).transpose();
+        modelMatrix = skybox.getTransform().getMatrix().transpose();
+        skyboxShader.setParameter("model", modelMatrix);
         skyboxShader.setParameter("view", viewMatrix);
         skyboxShader.setParameter("projection", projectionMatrix);
         // skybox cube
-        glBindVertexArray(skyboxVAO);
-        glActiveTexture(GL_TEXTURE0);
-        odfaeg::graphic::Texture::bind(&cubeMapTex, odfaeg::graphic::Texture::Normalized);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
-        glDepthFunc(GL_LESS); // set depth function back to default
+
+        for (unsigned int i = 0; i < skybox.getNbFaces(); i++) {
+            states.texture = skybox.getFace(i)->getMaterial().getTexture();
+            VertexBuffer vb;
+            vb.setPrimitiveType(skybox.getFace(i)->getVertexArray().getPrimitiveType());
+            for (unsigned int j = 0; j < skybox.getFace(i)->getVertexArray().getVertexCount(); j++) {
+                vb.append(skybox.getFace(i)->getVertexArray()[j]);
+            }
+            vb.update();
+            window.drawVertexBuffer(vb, states);
+        }
         // end the current frame (internally swaps the front and back buffers)
         window.display();
-        oldX = sf::Mouse::getPosition(window).x;
-        oldY = sf::Mouse::getPosition(window).y;
     }
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    glDeleteVertexArrays(1, &cubeVAO);
-    glDeleteVertexArrays(1, &skyboxVAO);
-    glDeleteBuffers(1, &cubeVBO);
-    glDeleteBuffers(1, &skyboxVAO);
+
     // release resources...
 
     return 0;
-}
-unsigned int loadCubemap(vector<std::string> faces)
-{
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-    int width, height;
-    for (unsigned int i = 0; i < faces.size(); i++)
-    {
-        sf::Image image;
-        image.loadFromFile(faces[i]);
-        width = image.getSize().x;
-        height = image.getSize().y;
-        if (image.getPixelsPtr())
-        {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
-        }
-        else
-        {
-            std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
-        }
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    return textureID;
 }
 Matrix4f glmToODFAEGMatrix(glm::mat4 mat) {
     Matrix4f odfaegMatrix(mat[0][0], mat[0][1], mat[0][2], mat[0][3],

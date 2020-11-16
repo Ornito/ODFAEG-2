@@ -82,8 +82,6 @@ namespace odfaeg {
                                                         uniform mat4 projectionMatrix;
                                                         uniform mat4 viewMatrix;
                                                         uniform mat4 worldMat;
-                                                        uniform float water;
-                                                        uniform float time;
                                                         void main () {
                                                             gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
                                                         })";
@@ -433,6 +431,7 @@ namespace odfaeg {
                 }
                 for (unsigned int i = 0; i < m_normals.size(); i++) {
                    if (m_normals[i].getAllVertices().getVertexCount() > 0) {
+                        //std::cout<<"draw normal"<<std::endl;
                         if (m_normals[i].getMaterial().getTexture() == nullptr) {
                             perPixelLinkedList2.setParameter("haveTexture", 0.f);
                         } else {
@@ -457,8 +456,8 @@ namespace odfaeg {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
                 vb2.clear();
                 vb2.setPrimitiveType(sf::Quads);
-                Vertex v1 (sf::Vector3f(0, 0, 0));
-                Vertex v2 (sf::Vector3f(quad.getSize().x,0, 0));
+                Vertex v1 (sf::Vector3f(0, 0, quad.getSize().z));
+                Vertex v2 (sf::Vector3f(quad.getSize().x,0, quad.getSize().z));
                 Vertex v3 (sf::Vector3f(quad.getSize().x, quad.getSize().y, quad.getSize().z));
                 Vertex v4 (sf::Vector3f(0, quad.getSize().y, quad.getSize().z));
                 vb2.append(v1);
@@ -572,8 +571,10 @@ namespace odfaeg {
                 if ( vEntities[i]->isLeaf() && vEntities[i]->getDrawOnComponent()) {
                     for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
                          if (vEntities[i]->getDrawMode() == Entity::INSTANCED) {
+                            //std::cout<<"draw instanced"<<std::endl;
                             batcher.addFace( vEntities[i]->getFace(j));
                          } else {
+                            //std::cout<<"draw normal"<<std::endl;
                             normalBatcher.addFace(vEntities[i]->getFace(j));
                          }
                     }

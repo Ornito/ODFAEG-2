@@ -33,7 +33,8 @@ namespace odfaeg {
                 bool isLeaf() const {
                     return true;
                 }
-                void onDraw(RenderTarget &target, RenderStates states) const;
+                void onDraw(RenderTarget &target, RenderStates states);
+                void setTexCoords (int face, sf::IntRect texRect);
             private:
                 sf::Color m_color;
             };
