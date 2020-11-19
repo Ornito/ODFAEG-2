@@ -437,23 +437,36 @@ namespace odfaeg {
                 depthBuffer.display();
                 View reflectView;
                 if (view.isOrtho()) {
-                    reflectView = View (squareSize, squareSize,0, 1000);
+                    reflectView = View (squareSize, squareSize, view.getViewport().getPosition().z, view.getViewport().getSize().z);
                 } else {
-                    reflectView = View (squareSize, squareSize, 90, 0, 1000);
+                    reflectView = View (squareSize, squareSize, 90, view.getViewport().getPosition().z, view.getViewport().getSize().z);
                 }
                 reflectView.setCenter(view.getPosition());
                 for (unsigned int m = 0; m < 6; m++) {
                     math::Vec3f target = reflectView.getPosition() + dirs[m];
                     reflectView.lookAt(target.x, target.y, target.z);
                     std::vector<Entity*> visibleReflEntities = World::getEntitiesInRect(reflectView.getViewVolume(), expression);
-                    std::vector<Entity*> copy;
+                    std::vector<Entity*> vEntities;
                     for (unsigned int j = 0; j < visibleReflEntities.size(); j++)  {
                         if (!visibleReflEntities[j]->isReflectable()) {
-                            copy.push_back(visibleReflEntities[j]);
+                            vEntities.push_back(visibleReflEntities[j]);
                         }
                     }
-                    environmentMap.setActive();
+                    rvBatcher.clear();
+                    normalRvBatcher.clear();
+                    for (unsigned int j = 0; j < vEntities.size(); j++) {
+                        for (unsigned int n = 0; n < vEntities[j]->getNbFaces(); n++) {
+                            if (vEntities[j]->getDrawMode() == Entity::INSTANCED) {
+                                rvBatcher.addFace(vEntities[j]->getFace(n));
+                            } else {
+                                normalRvBatcher.addFace(vEntities[j]->getFace(n));
+                            }
+                        }
+                    }
+                    std::vector<Instance> rvInstances = rvBatcher.getInstances();
+                    std::vector<Instance> rvNormals = normalRvBatcher.getInstances();
                     environmentMap.setView(reflectView);
+                    environmentMap.setActive();
                     GLuint zero = 0;
                     glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
                     glCheck(glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero));
@@ -469,19 +482,6 @@ namespace odfaeg {
                     projMatrix = reflectView.getProjMatrix().getMatrix().transpose();
                     sLinkedList.setParameter("viewMatrix", viewMatrix);
                     sLinkedList.setParameter("projectionMatrix", projMatrix);
-                    rvBatcher.clear();
-                    normalRvBatcher.clear();
-                    for (unsigned int j = 0; j < copy.size(); j++) {
-                        for (unsigned int n = 0; n < copy[j]->getNbFaces(); n++) {
-                            if (copy[j]->getDrawMode() == Entity::INSTANCED) {
-                                rvBatcher.addFace(copy[j]->getFace(n));
-                            } else {
-                                normalRvBatcher.addFace(copy[j]->getFace(n));
-                            }
-                        }
-                    }
-                    std::vector<Instance> rvInstances = rvBatcher.getInstances();
-                    std::vector<Instance> rvNormals = normalRvBatcher.getInstances();
                     for (unsigned int i = 0; i < rvInstances.size(); i++) {
                         if (rvInstances[i].getAllVertices().getVertexCount() > 0) {
                             vb.clear();

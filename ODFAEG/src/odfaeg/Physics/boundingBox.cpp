@@ -574,6 +574,14 @@ namespace odfaeg {
                 return false;
             }
         }
+        bool BoundingBox::isInside(BoundingBox &other) {
+            for (unsigned int i = 0; i < other.getVertices().size(); i++) {
+                if (!isPointInside(other.getVertices()[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
         //Test if a point is inside our box.
         bool BoundingBox::isPointInside (math::Vec3f point) {
             //Check the min and max values of the medians of our box.
@@ -720,10 +728,10 @@ namespace odfaeg {
             points[2] = math::Vec3f (getPosition().x + getWidth(), getPosition().y + getHeight(), getPosition().z);
             points[3] = math::Vec3f (getPosition().x, getPosition().y + getHeight(), getPosition().z);
             //Derrière
-            points[4] = math::Vec3f (getPosition().x, getPosition().y, getPosition().z - getDepth());
-            points[5] = math::Vec3f (getPosition().x, getPosition().y + getHeight(), getPosition().z - getDepth());
-            points[6] = math::Vec3f (getPosition().x + getWidth(), getPosition().y + getHeight(), getPosition().z - getDepth());
-            points[7] = math::Vec3f (getPosition().x + getWidth(), getPosition().y, getPosition().z - getDepth());
+            points[4] = math::Vec3f (getPosition().x, getPosition().y, getPosition().z + getDepth());
+            points[5] = math::Vec3f (getPosition().x, getPosition().y + getHeight(), getPosition().z + getDepth());
+            points[6] = math::Vec3f (getPosition().x + getWidth(), getPosition().y + getHeight(), getPosition().z + getDepth());
+            points[7] = math::Vec3f (getPosition().x + getWidth(), getPosition().y, getPosition().z + getDepth());
             for (unsigned int i = 0; i < points.size(); i++) {
                 points[i] = tm.transform(points[i]);
             }

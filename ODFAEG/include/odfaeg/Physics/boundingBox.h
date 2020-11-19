@@ -100,6 +100,7 @@ namespace odfaeg {
                 *   \param the point to test in.
                 *   \return the result of the collision test.
                 */
+                bool isInside(BoundingBox& other);
                 bool isPointInside (math::Vec3f point);
                 /**\fn Vec2f getCenter()
                 *  \brief gives the center of the bounding box.

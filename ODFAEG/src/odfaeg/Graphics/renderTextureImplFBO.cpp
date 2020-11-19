@@ -55,7 +55,7 @@ namespace odfaeg {
                 if (m_depthBuffer)
                 {
                     GLuint depthBuffer = static_cast<GLuint>(m_depthBuffer);
-                    if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                    if (m_versionMajor > 3 || m_versionMajor == 3 && m_versionMinor >= 3)
                         glCheck(glDeleteRenderbuffers(1, &depthBuffer));
                     else
                         glCheck(glDeleteRenderbuffersEXT(1, &depthBuffer));
@@ -65,7 +65,7 @@ namespace odfaeg {
                 if (m_frameBuffer)
                 {
                     GLuint frameBuffer = static_cast<GLuint>(m_frameBuffer);
-                    if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                    if (m_versionMajor > 3 || m_versionMajor == 3 && m_versionMinor >= 3)
                         glCheck(glDeleteFramebuffers(1, &frameBuffer));
                     else
                         glCheck(glDeleteFramebuffersEXT(1, &frameBuffer));
@@ -94,7 +94,7 @@ namespace odfaeg {
                 GLuint frameBuffer = 0;
                 m_versionMajor = settings.versionMajor;
                 m_versionMinor = settings.versionMinor;
-                if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                if (m_versionMajor > 3 || m_versionMajor == 3 && m_versionMinor >= 3)
                     glCheck(glGenFramebuffers(1, &frameBuffer));
                 else
                     glCheck(glGenFramebuffersEXT(1, &frameBuffer));
@@ -104,7 +104,7 @@ namespace odfaeg {
                     std::cerr << "Impossible to create render texture (failed to create the frame buffer object)" << std::endl;
                     return false;
                 }
-                if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                if (m_versionMajor > 3 || m_versionMajor == 3 && m_versionMinor >= 3)
                     glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer));
                 else
                     glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBuffer));
@@ -112,7 +112,7 @@ namespace odfaeg {
                 if (settings.depthBits > 0)
                 {
                     GLuint depth = 0;
-                    if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                    if (m_versionMajor > 3 || m_versionMajor == 3 && m_versionMinor >= 3)
                         glCheck(glGenRenderbuffers(1, &depth));
                     else
                         glCheck(glGenRenderbuffersEXT(1, &depth));
@@ -122,7 +122,7 @@ namespace odfaeg {
                         std::cerr << "Impossible to create render texture (failed to create the attached depth buffer)" << std::endl;
                         return false;
                     }
-                    if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                    if (m_versionMajor > 3 || m_versionMajor == 3 && m_versionMinor >= 3) {
                         glCheck(glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuffer));
                         glCheck(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height));
                         glCheck(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer));
@@ -133,7 +133,7 @@ namespace odfaeg {
                     }
                 }
                 glCheck(glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT));
-                if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                if (m_versionMajor > 3 || m_versionMajor == 3 && m_versionMinor >= 3) {
                     glCheck(glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureId, 0));
 
                 } else {
@@ -142,7 +142,7 @@ namespace odfaeg {
                 }
 
 
-                if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                if (m_versionMajor > 3 || m_versionMajor == 3 && m_versionMinor >= 3) {
                     // A final check, just to be sure.
                     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
                     {
@@ -178,11 +178,11 @@ namespace odfaeg {
                 glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBuffer));
             }
             void RenderTextureImplFBO::selectCubemapFace (int face, int textureID) {
-                if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                /*if (m_versionMajor >= 3 && m_versionMinor >= 3)
                     glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer));
                 else
-                    glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBuffer));
-                if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                    glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBuffer));*/
+                if (m_versionMajor > 3 || m_versionMajor == 3 && m_versionMinor >= 3)
                     glCheck(glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, textureID, 0));
                 else
                     glCheck(glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0,GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, textureID, 0));

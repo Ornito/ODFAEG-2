@@ -6,31 +6,31 @@ using namespace odfaeg::core;
 using namespace odfaeg::graphic;
 using namespace odfaeg::window;
 MyAppli::MyAppli(Vec2f size, std::string title) :
-    Application(sf::VideoMode(size.x, size.y), title, sf::Style::Default, ContextSettings(0, 0, 4, 3, 0)) {
+    Application(sf::VideoMode(size.x, size.y), title, sf::Style::Default, ContextSettings(0, 0, 4, 3, 0)),
+    view3D(size.x, size.y, 80, 0.1f, 1000) {
     //In perspective projection the x and y coordinates of the view are always between -1 and 1 with opengl.
 
     //Rotate the cube around a vector.
 
     //The default view have a perspective projection, but you can set another view with the setView function.
-    View view(size.x, size.y, 80, 0.1f, 1000);
-    view.move(0, 50, 0);
+    view3D.move(0, 50, 0);
     ps = new ParticleSystem(Vec3f(0, 0, 0), Vec3f(100, 100, 100));
-    billboard = new BillBoard(view, *ps);
-    view.setConstrains(0, 10);
+    billboard = new BillBoard(view3D, *ps);
+    view3D.setConstrains(0, 10);
     //getRenderWindow().setView(view);
     //getView().setPerspective(-size.x * 0.5f, size.x * 0.5f, -size.y * 0.5f, size.y * 0.5f, -1000, 1000);
-    PerPixelLinkedListRenderComponent* frc = new PerPixelLinkedListRenderComponent(getRenderWindow(), 0, "E_BIGTILE+E_CUBE", ContextSettings(0, 0, 4, 4, 6));
-    frc->setView(view);
+    PerPixelLinkedListRenderComponent* frc = new PerPixelLinkedListRenderComponent(getRenderWindow(), 0, "E_CUBE", ContextSettings(0, 0, 4, 4, 6));
+    frc->setView(view3D);
     /*ShadowRenderComponent* src = new ShadowRenderComponent(getRenderWindow(), 1, "E_CUBE+E_3DMODEL");
-    src->setView(view);
-    OITRenderComponent* oit = new OITRenderComponent(getRenderWindow(), 1, "E_3DMODEL+E_CUBE");
-    oit->setView(view);
+    src->setView(view);*/
+    PerPixelLinkedListRenderComponent* frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(), 1, "E_BIGTILE",ContextSettings(0, 0, 4, 4, 6));
+    frc2->setView(view3D);
     /*LightRenderComponent* lrc = new LightRenderComponent(getRenderWindow(), 3, "E_BIGTILE+E_CUBE+E_3DMODEL+E_PONCTUAL_LIGHT");
     lrc->setView(view);*/
     //getView().setPerspective(-size.x * 0.5f, size.x * 0.5f, -size.y * 0.5f, size.y * 0.5f,-1000, 1000);
     getRenderComponentManager().addComponent(frc);
     //getRenderComponentManager().addComponent(src);
-    //getRenderComponentManager().addComponent(oit);
+    getRenderComponentManager().addComponent(frc2);
     //getRenderComponentManager().addComponent(lrc);
     speed = 10.f;
     sensivity = 0.1f;
@@ -55,12 +55,32 @@ void MyAppli::onInit() {
     theMap->setBaseChangementMatrix(bcm);
     World::addEntityManager(theMap);
     World::setCurrentEntityManager("Map test");
-    cube = new g3d::Cube(Vec3f(-1, -1, -1), 2, 2, 2, sf::Color(255, 0, 0));
-    cube->move(Vec3f(0.f, 0.f, 50));
+    cube = new g3d::Cube(Vec3f(-400, -400, -400), 800, 800, 800, sf::Color::White);
+    cube->setPosition(view3D.getPosition());
+
+    /*cube->move(Vec3f(0.f, 0.f, 50));
     cube->rotate(45, Vec3f(0, 0, 1));
     cube->setOrigin(Vec3f(0, 0, 0));
     cube->scale(Vec3f(10, 10, 10));
-    cube->setShadowCenter(Vec3f(0, 20, 0));
+    cube->setShadowCenter(Vec3f(0, 20, 0));*/
+    std::vector<std::string> faces
+    {
+        "tilesets/skybox/right.jpg",
+        "tilesets/skybox/left.jpg",
+        "tilesets/skybox/top.jpg",
+        "tilesets/skybox/bottom.jpg",
+        "tilesets/skybox/front.jpg",
+        "tilesets/skybox/back.jpg"
+    };
+    Texture* texs[6];
+    for (unsigned int i = 0; i < 6; i++) {
+        texs[i] = new Texture();
+        texs[i]->loadFromFile(faces[i]);
+        sf::IntRect texRect (0, 0, texs[i]->getSize().x, texs[i]->getSize().y);
+        cube->getFace(i)->getMaterial().clearTextures();
+        cube->getFace(i)->getMaterial().addTexture(texs[i], texRect);
+        static_cast<g3d::Cube*>(cube)->setTexCoords(i, texRect);
+    }
     World::addEntity(cube);
     std::vector<Tile*> tGround;
     std::vector<Tile*> tWall;
@@ -111,7 +131,7 @@ void MyAppli::onInit() {
 void MyAppli::onRender(RenderComponentManager* frcm) {
     World::drawOnComponents("E_BIGTILE+E_CUBE", 0);
     //World::drawOnComponents("E_CUBE+E_3DMODEL", 1);
-    //World::drawOnComponents("E_3DMODEL+E_CUBE", 2);
+    World::drawOnComponents("E_BIGTILE", 1);
     //World::drawOnComponents("E_BIGTILE+E_CUBE+E_3DMODEL+E_PONCTUAL_LIGHT", 3);
     fpsCounter++;
     if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {
@@ -163,7 +183,6 @@ void MyAppli::onUpdate (RenderWindow* window, IEvent& event) {
             int phi = view.getPhi() - relY;
             view.rotate(teta, phi);
             billboard->setView(view);
-
             World::update();
         } /*else if (event.type == sf::Event::MouseWheelMoved) {
             if (event.mouseWheel.delta > 0) {
@@ -184,7 +203,6 @@ void MyAppli::onUpdate (RenderWindow* window, IEvent& event) {
 }
 void MyAppli::onExec() {
     if (IKeyboard::isKeyPressed(IKeyboard::Up)) {
-        std::cout<<"key up pressed"<<std::endl;
         //Move the view along a vector, but you case also move the view at a point.
         for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
             View view = getRenderComponentManager().getRenderComponent(i)->getView();

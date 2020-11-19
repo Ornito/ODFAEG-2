@@ -95,6 +95,23 @@ namespace odfaeg {
                 }
                 closedir(current);
             }
+            #else if defined (ODFAEG_SYSTEM_WINDOWS)
+            if (DIR* current = opendir(startDir.c_str())) {
+                dirent* ent;
+                while ((ent = readdir(current)) != NULL) {
+                    if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..")) {
+                       std::string path = startDir + "\\" + std::string(ent->d_name);
+                       struct stat st;
+                       stat(path.c_str(), &st);
+                       if (S_ISDIR(st.st_mode)) {
+                            findFiles(keyword, files, path);
+                       } else if (path.find(keyword) != std::string::npos) {
+                           path = std::string(ent->d_name);
+                           files.push_back(path);
+                       }
+                    }
+                }
+            }
             #endif
         }
         bool is_number(const std::string& s)

@@ -212,7 +212,6 @@ namespace odfaeg {
                    if (!perPixelLinkedList2.loadFromMemory(simpleVertexShader2, fragmentShader)) {
                        throw core::Erreur(56, "Failed to load per pixel linked list 2 shader");
                    }
-                   std::cout<<"ppll shaders 1 compilated"<<std::endl;
                    /*if (!filterNotOpaque.loadFromMemory(simpleVertexShader, filterNotOpaquePixels)) {
                         throw core::Erreur(54, "Failed to load filter not opaque shader");
                    }*/
@@ -436,6 +435,8 @@ namespace odfaeg {
                             perPixelLinkedList2.setParameter("haveTexture", 0.f);
                         } else {
                             math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
+                            /*if (m_normals[i].getVertexArrays()[0]->getEntity()->getName() == "CUBE")
+                                std::cout<<"texture matrix  : "<<texMatrix<<std::endl;*/
                             perPixelLinkedList2.setParameter("textureMatrix", texMatrix);
                             perPixelLinkedList2.setParameter("haveTexture", 1.f);
                         }
@@ -446,6 +447,8 @@ namespace odfaeg {
                         vb.setPrimitiveType(m_normals[i].getAllVertices().getPrimitiveType());
                         for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
                             vb.append(m_normals[i].getAllVertices()[j]);
+                            /*if (m_normals[i].getVertexArrays()[0]->getEntity()->getName() == "CUBE")
+                                std::cout<<"position : "<<m_normals[i].getAllVertices()[j].position.x<<","<<m_normals[i].getAllVertices()[j].position.y<<m_normals[i].getAllVertices()[j].position.z<<std::endl;*/
                         }
                         vb.update();
                         frameBuffer.drawVertexBuffer(vb, currentStates);

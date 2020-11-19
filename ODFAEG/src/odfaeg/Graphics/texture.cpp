@@ -63,7 +63,8 @@ namespace odfaeg {
         m_isRepeated   (false),
         m_pixelsFlipped(false),
         m_isCubeMap(false),
-        m_cacheId      (getUniqueId())
+        m_cacheId      (getUniqueId()),
+        m_name("")
         {
 
         }
@@ -78,7 +79,8 @@ namespace odfaeg {
         m_isRepeated   (copy.m_isRepeated),
         m_pixelsFlipped(false),
         m_isCubeMap(copy.m_isCubeMap),
-        m_cacheId      (getUniqueId())
+        m_cacheId      (getUniqueId()),
+        m_name(copy.m_name)
         {
             if (copy.m_texture)
                 loadFromImage(copy.copyToImage());
@@ -673,6 +675,9 @@ namespace odfaeg {
                        0.f, 0.f, 0.f, 1.f);
             matrix.m11 = 1.f / m_actualSize.x;
             matrix.m22 = 1.f / m_actualSize.y;
+            /*if (m_name == "CUBE") {
+                std::cout<<"actual size : "<<m_actualSize.x<<","<<m_actualSize.y<<std::endl;
+            }*/
            /* if (m_pixelsFlipped)
             {
                 matrix.m22 = -matrix.m22;
@@ -758,6 +763,9 @@ namespace odfaeg {
         }
         bool Texture::isCubemap() {
             return m_isCubeMap;
+        }
+        void Texture::setName (std::string name) {
+            m_name = name;
         }
     }
 } // namespace sf

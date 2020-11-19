@@ -18,6 +18,7 @@ Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0
     showRectSelect = false;
     gridWidth = 100;
     gridHeight = 50;
+    appliname = "";
 }
 void ODFAEGCreator::onLoad() {
     FontManager<Fonts> fm;
@@ -54,10 +55,14 @@ void ODFAEGCreator::onInit() {
     item14 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "New entities updater");
     item14->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item14);
+    item15 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Open application");
+    item15->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item15);
     menu1->addMenuItem(item11);
     menu1->addMenuItem(item12);
     menu1->addMenuItem(item13);
     menu1->addMenuItem(item14);
+    menu1->addMenuItem(item15);
     item21 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Build");
     item21->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item21);
@@ -116,6 +121,11 @@ void ODFAEGCreator::onInit() {
     fdTexturePath->setEventContextActivated(false);
     addWindow(&fdTexturePath->getWindow(), false);
     getRenderComponentManager().addComponent(fdTexturePath);
+    fdProjectPath = new FileDialog(Vec3f(0, 0, 0), Vec3f(800, 600, 0), fm.getResourceByAlias(Fonts::Serif));
+    fdProjectPath->setVisible(false);
+    fdProjectPath->setEventContextActivated(false);
+    addWindow(&fdProjectPath->getWindow(), false);
+    getRenderComponentManager().addComponent(fdProjectPath);
     wApplicationNew = new RenderWindow(sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
     //wApplicationNew->setName("WAPPLICATIONNEW");
     /*View waView = wApplicationNew->getDefaultView();
@@ -139,9 +149,9 @@ void ODFAEGCreator::onInit() {
     taHeight =  new TextArea(Vec3f(250, 100, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"", *wApplicationNew);
     getRenderComponentManager().addComponent(taWidth);
     getRenderComponentManager().addComponent(taHeight);
-    Button* button = new Button(Vec3f(0, 200, 0), Vec3f(400, 100, 0), fm.getResourceByAlias(Fonts::Serif),"Create", 15, *wApplicationNew);
-    button->addActionListener(this);
-    getRenderComponentManager().addComponent(button);
+    bCreateAppli = new Button(Vec3f(0, 200, 0), Vec3f(400, 100, 0), fm.getResourceByAlias(Fonts::Serif),"Create", 15, *wApplicationNew);
+    bCreateAppli->addActionListener(this);
+    getRenderComponentManager().addComponent(bCreateAppli);
     addWindow(wApplicationNew);
     wApplicationNew->setVisible(false);
     //Create map window.
@@ -207,8 +217,6 @@ void ODFAEGCreator::onInit() {
     pProjects->setBorderColor(sf::Color(128, 128, 128));
     pProjects->setBackgroundColor(sf::Color::White);
     pProjects->setBorderThickness(5);
-    std::ifstream applis("applis");
-    std::string line;
     unsigned int i = 0;
     Label* lab = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 35, 0),fm.getResourceByAlias(Fonts::Serif),"GUI", 15);
     lab->setBackgroundColor(sf::Color::White);
@@ -219,36 +227,6 @@ void ODFAEGCreator::onInit() {
     Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
     Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, lab), FastDelegate<void>(&ODFAEGCreator::showGUI, this, lab));
     lab->getListener().connect("SHOWGUI", cmd);
-    if (applis) {
-        while(getline(applis, line)) {
-            Label* lab = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),line, 15);
-            Node* node = new Node("test",lab,Vec2f(0, 0),Vec2f(1.f, 0.025f),rootNode.get());
-            lab->setParent(pProjects);
-            lab->setForegroundColor(sf::Color::Red);
-            lab->setBackgroundColor(sf::Color::White);
-            pProjects->addChild(lab);
-            Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
-            Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, lab), FastDelegate<void>(&ODFAEGCreator::showProjectsFiles, this, lab));
-            lab->getListener().connect("SHOWPFILES", cmd);
-            i++;
-            appliname = line;
-        }
-    }
-    applis.close();
-    const char* lcars = appliname.c_str();
-    char* ucars = new char[appliname.size()];
-    for (unsigned int i = 0; i < appliname.length(); i++) {
-        ucars[i] = std::tolower(lcars[i]);
-    }
-    minAppliname = std::string(ucars, appliname.length());
-    if (appliname != "") {
-        std::string path = fdTexturePath->getAppiDir() + "/" + appliname;
-        std::ifstream source (path+"/"+minAppliname+".cpp");
-        while(getline(source, line)) {
-            cppAppliContent += line+"\n";
-        }
-        source.close();
-    }
     getRenderComponentManager().addComponent(pProjects);
     pScriptsEdit = new Panel(getRenderWindow(),Vec3f(200, 10, 0),Vec3f(800, 700, 0));
     pScriptsEdit->setRelPosition(1.f / 6.f, 0.01f);
@@ -526,6 +504,43 @@ void ODFAEGCreator::onExec() {
     } else if (dpSelectTexture != nullptr && !dpSelectTexture->isDroppedDown()) {
         bChooseText->setEventContextActivated(true);
     }
+    std::string projectPath = fdProjectPath->getPathChosen();
+    if (projectPath != "") {
+        FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+        std::ifstream applis(projectPath);
+        std::string line;
+        if (applis) {
+            while(getline(applis, line)) {
+                Label* lab = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),line, 15);
+                Node* node = new Node("test",lab,Vec2f(0, 0),Vec2f(1.f, 0.025f),rootNode.get());
+                lab->setParent(pProjects);
+                lab->setForegroundColor(sf::Color::Red);
+                lab->setBackgroundColor(sf::Color::White);
+                pProjects->addChild(lab);
+                Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+                Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, lab), FastDelegate<void>(&ODFAEGCreator::showProjectsFiles, this, lab));
+                lab->getListener().connect("SHOWPFILES", cmd);
+                appliname = line;
+            }
+        }
+        applis.close();
+        const char* lcars = appliname.c_str();
+        char* ucars = new char[appliname.size()];
+        for (unsigned int i = 0; i < appliname.length(); i++) {
+            ucars[i] = std::tolower(lcars[i]);
+        }
+        minAppliname = std::string(ucars, appliname.length());
+        if (appliname != "") {
+            std::string path = fdProjectPath->getAppiDir() + "/" + appliname;
+            std::ifstream source (path+"/"+minAppliname+".cpp");
+            while(getline(source, line)) {
+                cppAppliContent += line+"\n";
+            }
+            source.close();
+        }
+        fdProjectPath->setVisible(false);
+        fdProjectPath->setEventContextActivated(false);
+    }
     World::update();
 }
 void ODFAEGCreator::showGUI(Label* label) {
@@ -534,7 +549,6 @@ void ODFAEGCreator::showGUI(Label* label) {
 }
 void ODFAEGCreator::showProjectsFiles(Label* label) {
     isGuiShown = false;
-    getRenderComponentManager().getRenderComponent(0)->setVisible(false);
     pScriptsEdit->setVisible(true);
     Node* node = rootNode->findNode(label);
     if (node->getNodes().size() == 0) {
@@ -565,12 +579,17 @@ void ODFAEGCreator::showProjectsFiles(Label* label) {
     }
 }
 void ODFAEGCreator::showHeadersFiles(Label* label) {
+    std::cout<<"show header files"<<std::endl;
     Node* node = rootNode->findNode(label);
     if (node->getNodes().size() == 0) {
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
         std::vector<std::string> files;
         std::string cpath = getCurrentPath();
+        #if defined (ODFAEG_SYSTEM_LINUX)
         findFiles("hpp", files, cpath+"/"+appliname);
+        #else if defined (ODFAEG_SYSTEM_WINDOWS)
+        findFiles("hpp", files, cpath+"\\"+appliname);
+        #endif // if
         for (unsigned int i = 0; i < files.size(); i++) {
             Label* lab = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), files[i], 15);
             lab->setParent(pProjects);
@@ -594,7 +613,11 @@ void ODFAEGCreator::showSourcesFiles(Label* label) {
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
         std::vector<std::string> files;
         std::string cpath = getCurrentPath();
+        #if defined (ODFAEG_SYSTEM_LINUX)
         findFiles("cpp", files, cpath+"/"+appliname);
+        #else if defined (ODFAEG_SYSTEM_WINDOWS)
+        findFiles("cpp", files, cpath+"\\"+appliname);
+        #endif // if
         for (unsigned int i = 0; i < files.size(); i++) {
             Label* lab = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), files[i], 15);
             Node* lNode = new Node("source files", lab, Vec2f(0, 0), Vec2f(1.f, 0.025f), node);
@@ -633,11 +656,15 @@ void ODFAEGCreator::processKeyHeldDown (IKeyboard::Key key) {
 void ODFAEGCreator::actionPerformed(Button* button) {
     if (button->getText() == "Create") {
         appliname = ta->getText();
-        std::ofstream applis("applis");
+        std::ofstream applis(appliname+".oc");
         applis<<appliname<<std::endl;
         applis.close();
         applitype = dpList->getSelectedItem();
-        path = fdTexturePath->getAppiDir() + "/" + appliname;
+        #if defined (ODFAEG_SYSTEM_LINUX)
+        path = fdProjectPath->getAppiDir() + "/" + appliname;
+        #else if defined (ODFAEG_SYSTEM_WINDOWS)
+        path = fdProjectPath->getAppiDir() + "\\" + appliname;
+        #endif // if
         const char* lcars = appliname.c_str();
         char* ucars = new char[appliname.size()];
         for (unsigned int i = 0; i < appliname.length(); i++) {
@@ -654,9 +681,25 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             std::cerr<<"Failed to create application directory!";
             std::cerr << "Error: " << strerror(errno);
         }
+        FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
         wApplicationNew->setVisible(false);
+        bCreateAppli->setEventContextActivated(false);
+        Label* lab = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),appliname, 15);
+        Node* node = new Node("test",lab,Vec2f(0, 0),Vec2f(1.f, 0.025f),rootNode.get());
+        lab->setParent(pProjects);
+        lab->setForegroundColor(sf::Color::Red);
+        lab->setBackgroundColor(sf::Color::White);
+        pProjects->addChild(lab);
+        Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+        Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, lab), FastDelegate<void>(&ODFAEGCreator::showProjectsFiles, this, lab));
+        lab->getListener().connect("SHOWPFILES", cmd);
         if (applitype == "Normal") {
+            #if defined (ODFAEG_SYSTEM_LINUX)
             std::ofstream header(path+"/"+minAppliname+".hpp");
+            #else if defined (ODFAEG_SYSTEM_WINDOWS)
+            std::ofstream header(path+"\\"+minAppliname+".hpp");
+            #endif // if
+            std::cout<<"path : "<<path<<std::endl;
             header<<"#ifndef "<<majAppliname<<"_HPP"<<std::endl;
             header<<"#define "<<majAppliname<<"_HPP"<<std::endl;
             header<<"#include \"/usr/local/include/odfaeg/Core/application.h\""<<std::endl;
@@ -706,12 +749,20 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             oss<<"void "<<appliname<<"::onExec () {"<<std::endl;
             oss<<"}"<<std::endl;
             cppAppliContent = oss.str();
+            #if defined (ODFAEG_SYSTEM_LINUX)
             std::ofstream source(path+"/"+minAppliname+".cpp");
+            #else if defined (ODFAEG_SYSTEM_WINDOWS)
+            std::ofstream source(path+"\\"+minAppliname+".cpp");
+            #endif // if
             source<<cppAppliContent;
             source.close();
             std::string width = taWidth->getText();
             std::string height = taHeight->getText();
+            #if defined (ODFAEG_SYSTEM_LINUX)
             std::ofstream main(path+"/main.cpp");
+            #else if defined (ODFAEG_SYSTEM_WINDOWS)
+            std::ofstream main(path+"\\main.cpp");
+            #endif // if
             main<<"#include \""<<minAppliname<<".hpp\""<<std::endl;
             main<<"int main(int argc, char* argv[]) {"<<std::endl;
             main<<"    "<<appliname<<" app(sf::VideoMode("<<width<<","<<height<<"),\""<<appliname<<"\");"<<std::endl;
@@ -788,6 +839,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "New application") {
         std::cout<<"new application"<<std::endl;
         wApplicationNew->setVisible(true);
+        bCreateAppli->setEventContextActivated(true);
     }
     if (item->getText() == "Build") {
         std::string command = "clang++-3.6 -Wall -std=c++14 -g "+appliname+"/"+"*.cpp -o "+appliname+"/"+minAppliname+".out "
@@ -814,37 +866,40 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         std::system(command.c_str());
     }
     if (item->getText() == "Rectangle shape") {
-        std::unique_ptr<RectangleShape> shape = std::make_unique<RectangleShape>(Vec3f(100, 50, 0));
-        shape->setPosition(cursor.getPosition());
-        displayInfos(shape.get());
-        selectedObject = shape.get();
-        addShape(shape.get());
-        std::cout<<"add shape : "<<shape.get()<<std::endl;
-        shapes.push_back(std::move(shape));
+        if (appliname != "") {
+            std::unique_ptr<RectangleShape> shape = std::make_unique<RectangleShape>(Vec3f(100, 50, 0));
+            shape->setPosition(cursor.getPosition());
+            displayInfos(shape.get());
+            selectedObject = shape.get();
+            addShape(shape.get());
+            shapes.push_back(std::move(shape));
+        }
     }
     if (item->getText() == "Tile") {
-        if (!showRectSelect) {
-            std::unique_ptr<Tile> tile = std::make_unique<Tile>(nullptr, cursor.getPosition(),Vec3f(100, 50, 0), sf::IntRect(0, 0, gridWidth, gridHeight));
-            selectedObject = tile.get();
-            displayInfos(tile.get());
-            if (World::getCurrentEntityManager() == nullptr)
-                entities.push_back(std::move(tile));
-            else
-                World::addEntity(tile.release());
-        } else {
-            BoundingBox rect = rectSelect.getSelectionRect();
-            for (int x = rect.getPosition().x; x < rect.getPosition().x + rect.getSize().x-gridWidth; x+=gridWidth) {
-                for (int y = rect.getPosition().y; y <  rect.getPosition().y + rect.getSize().y-gridHeight; y+=gridHeight) {
-                    std::unique_ptr<Tile> tile = std::make_unique<Tile>(nullptr,Vec3f(x, y, 0),Vec3f(gridWidth, gridHeight, 0),sf::IntRect(0, 0, gridWidth, gridHeight));
-                    rectSelect.addItem(tile.get());
-                    if (rectSelect.getItems().size() == 1) {
-                        selectedObject = tile.get();
-                        displayInfos(tile.get());
+        if (appliname != "") {
+            if (!showRectSelect) {
+                std::unique_ptr<Tile> tile = std::make_unique<Tile>(nullptr, cursor.getPosition(),Vec3f(100, 50, 0), sf::IntRect(0, 0, gridWidth, gridHeight));
+                selectedObject = tile.get();
+                displayInfos(tile.get());
+                if (World::getCurrentEntityManager() == nullptr)
+                    entities.push_back(std::move(tile));
+                else
+                    World::addEntity(tile.release());
+            } else {
+                BoundingBox rect = rectSelect.getSelectionRect();
+                for (int x = rect.getPosition().x; x < rect.getPosition().x + rect.getSize().x-gridWidth; x+=gridWidth) {
+                    for (int y = rect.getPosition().y; y <  rect.getPosition().y + rect.getSize().y-gridHeight; y+=gridHeight) {
+                        std::unique_ptr<Tile> tile = std::make_unique<Tile>(nullptr,Vec3f(x, y, 0),Vec3f(gridWidth, gridHeight, 0),sf::IntRect(0, 0, gridWidth, gridHeight));
+                        rectSelect.addItem(tile.get());
+                        if (rectSelect.getItems().size() == 1) {
+                            selectedObject = tile.get();
+                            displayInfos(tile.get());
+                        }
+                        if (World::getCurrentEntityManager() == nullptr)
+                            entities.push_back(std::move(tile));
+                        else
+                            World::addEntity(tile.release());
                     }
-                    if (World::getCurrentEntityManager() == nullptr)
-                        entities.push_back(std::move(tile));
-                    else
-                        World::addEntity(tile.release());
                 }
             }
         }
@@ -890,6 +945,10 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "New entities updater") {
         wNewEntitiesUpdater->setVisible(true);
         bCreateEntitiesUpdater->setEventContextActivated(true);
+    }
+    if (item == item15) {
+        fdProjectPath->setVisible(true);
+        fdProjectPath->setEventContextActivated(true);
     }
 }
 void ODFAEGCreator::addShape(Shape *shape) {

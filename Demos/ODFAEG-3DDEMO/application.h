@@ -38,4 +38,5 @@ private :
     odfaeg::core::ResourceCache<> cache;
     odfaeg::graphic::BigTile* heightmap;
     unsigned int fpsCounter;
+    odfaeg::graphic::View view3D;
 };

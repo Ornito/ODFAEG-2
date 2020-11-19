@@ -507,8 +507,8 @@ namespace odfaeg {
                 bt = new BigTile(math::Vec3f(startX, startY, startY + endY * 0.5f));
             else
                 bt = new BigTile(math::Vec3f(startX, startY, rect.getPosition().z),tileSize,rect.getWidth() / tileSize.x);
-            /*bt->setSize(rect.getSize());
-            bt->setCenter(math::Vec3f(rect.getCenter().x, rect.getCenter().y, rect.getPosition().z));*/
+            bt->setSize(rect.getSize());
+            //bt->setCenter(math::Vec3f(rect.getCenter().x, rect.getCenter().y, rect.getPosition().z));
             //Positions de d\E9part et d'arriv\E9es en fonction de la taille, de la position et de la taille des cellules de la map.
             for (int y = startY; y < endY;  y+=tileSize.y) {
                 for (int x = startX; x < endX; x+=tileSize.x) {
@@ -780,7 +780,6 @@ namespace odfaeg {
             removeEntity(entity);
             entity->move(math::Vec3f(dx, dy, dz));
             addEntity(entity);
-            std::cout<<"entity added"<<std::endl;
             /*for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
                 if (frcm->getRenderComponent(i) != nullptr) {
                     frcm->getRenderComponent(i)->updateTransformMatrices();
@@ -821,11 +820,12 @@ namespace odfaeg {
                                 if (cell != nullptr) {
                                     for (unsigned int n = 0; n < cell->getNbEntitiesInside(); n++) {
                                        Entity* entity = cell->getEntityInside(n);
-
-                                       //std::cout<<"entity : "<<entity->getPosition()<<entity->getSize()<<std::endl;
                                        physic::BoundingBox& bounds = entity->getGlobalBounds();
-
-                                       if (bx.intersects(bounds) && visibleEntities[entity->getRootTypeInt()][entity->getId()] != entity) {
+                                       /*if (entity->getRootType() == "E_CUBE") {
+                                            std::cout<<"bounds : "<<bounds.getPosition()<<bounds.getSize()<<"view : "<<bx.getPosition()<<bx.getSize()<<std::endl;
+                                            std::cout<<"is inside : "<<bounds.isInside(bx)<<std::endl;
+                                       }*/
+                                       if (bx.intersects(bounds) || bx.isInside(bounds) || bounds.isInside(bx) && visibleEntities[entity->getRootTypeInt()][entity->getId()] != entity) {
                                            visibleEntities[entity->getRootTypeInt()][entity->getId()] = entity;
                                        }
 
@@ -1140,8 +1140,8 @@ namespace odfaeg {
                     for (unsigned int i = 0; i < visibleEntitiesType.size(); i++) {
                         bool found = false;
                         for (unsigned int j = 0; j < types.size(); j++) {
-                            /*if (visibleEntitiesType[i] != nullptr)
-                                std::cout<<"root type  : "<<visibleEntitiesType[i]->getRootType()<<std::endl;*/
+                            if (visibleEntitiesType[i] != nullptr && visibleEntitiesType[i]->getRootType() == "E_CUBE")
+                                std::cout<<"root type  : "<<visibleEntitiesType[i]->getRootType()<<std::endl;
                             if (visibleEntitiesType[i] != nullptr && visibleEntitiesType[i]->getRootType() == types[j]) {
                                 found = true;
                             }

@@ -68,8 +68,6 @@ namespace odfaeg {
             * \return the size of the transformable object.
             */
             math::Vec3f getSize() const {
-                if (name == "RXPBAR")
-                    std::cout<<"transformable size : "<<m_size<<std::endl;
                 return m_size;
             }
             /**

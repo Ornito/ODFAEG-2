@@ -307,7 +307,7 @@ float oldY = (float)SCR_HEIGHT / 2.0;
 
 int main(int argc, char* argv[])
 {
-    /*EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
+    EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
     EXPORT_CLASS_GUID(EntityTile, Entity, Tile)
     EXPORT_CLASS_GUID(EntityTile, Entity, BigTile)
     EXPORT_CLASS_GUID(EntityWall, Entity, g2d::Wall)
@@ -316,7 +316,7 @@ int main(int argc, char* argv[])
     EXPORT_CLASS_GUID(EntityHero, Entity, Hero)
     EXPORT_CLASS_GUID(EntityMesh, Entity, Mesh)
     MyAppli app(sf::VideoMode(800, 600), "Test odfaeg");
-    return app.exec();*/
+    return app.exec();
 // create the window
     RenderWindow window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, ContextSettings(24, 0, 4, 4, 6));
     View view1 (800, 600, 80, 0.1, 1000);
@@ -331,176 +331,20 @@ int main(int argc, char* argv[])
     // load resources, initialize the OpenGL states, ...
     // build and compile shaders
     // -------------------------
-    const std::string cubeMapsVS = R"(#version 460
-                                    layout (location = 0) in vec3 aPos;
-                                    layout (location = 1) in vec4 color;
-                                    layout (location = 2) in vec2 texCoords;
-                                    layout (location = 3) in vec3 aNormal;
-                                    out vec3 Normal;
-                                    out vec3 Position;
-                                    uniform mat4 model;
-                                    uniform mat4 view;
-                                    uniform mat4 projection;
-                                    void main()
-                                    {
-                                        Normal = mat3(transpose(inverse(model))) * aNormal;
-                                        Position = vec3(model * vec4(aPos, 1.0));
-                                        gl_Position = projection * view * model * vec4(aPos, 1.0);
-                                    }
-                                )";
-    const std::string cubeMapsFS = R"(#version 460
-                                        out vec4 FragColor;
-                                        in vec3 Normal;
-                                        in vec3 Position;
-                                        uniform vec3 cameraPos;
-                                        uniform samplerCube skybox;
-                                        void main()
-                                        {
-                                            vec3 I = normalize(Position - cameraPos);
-                                            vec3 R = reflect(I, normalize(Normal));
-                                            FragColor = vec4(texture(skybox, R).rgb, 1.0);
-                                        }
-                                   )";
-    const std::string skyboxVS = R"(#version 460
-                                    layout (location = 0) in vec3 position;
-                                    layout (location = 1) in vec4 color;
-                                    layout (location = 2) in vec2 texCoords;
-                                    layout (location = 3) in vec3 normal;
-                                    out vec2 TexCoords;
-                                    out vec4 frontColor;
-                                    uniform mat4 projection;
-                                    uniform mat4 view;
-                                    uniform mat4 model;
-                                    uniform mat4 textureMatrix;
-                                    void main()
-                                    {
-                                        TexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
-                                        frontColor = color;
-                                        gl_Position = projection * view * model * vec4(position, 1.0);;
-                                    }
-                                )";
-    const std::string skyboxFS = R"(#version 460
-                                    out vec4 FragColor;
-                                    in vec2 TexCoords;
-                                    in vec4 frontColor;
-                                    uniform sampler2D skybox;
-                                    void main()
-                                    {
-                                        FragColor = frontColor * texture2D(skybox, TexCoords);
-                                    }
-                                    )";
-    const std::string perPixelLinkedListP2VS = R"(#version 460 core
-                                                        layout (location = 0) in vec3 position;
-                                                        uniform mat4 projection;
-                                                        uniform mat4 view;
-                                                        uniform mat4 model;
-                                                        void main () {
-                                                            gl_Position = projection * view * model * vec4(position, 1.f);
-                                                        })";
-    const std::string perPixelLinkedListP1FS = R"(#version 460 core
-                                                      struct NodeType {
-                                                          vec4 color;
-                                                          float depth;
-                                                          uint next;
-                                                      };
-                                                      layout(binding = 0, offset = 0) uniform atomic_uint nextNodeCounter;
-                                                      layout(binding = 0, r32ui) uniform uimage2D headPointers;
-                                                      layout(binding = 0, std430) buffer linkedLists {
-                                                          NodeType nodes[];
-                                                      };
-                                                      uniform uint maxNodes;
-                                                      uniform sampler2D skybox;
-                                                      in vec2 TexCoords;
-                                                      in vec4 frontColor;
-                                                      layout (location = 0) out vec4 fcolor;
-                                                      void main() {
-                                                           uint nodeIdx = atomicCounterIncrement(nextNodeCounter);
-                                                           vec4 color = frontColor * texture2D(skybox, TexCoords);
-                                                           if (nodeIdx < maxNodes) {
-                                                                uint prevHead = imageAtomicExchange(headPointers, ivec2(gl_FragCoord.xy), nodeIdx);
-                                                                nodes[nodeIdx].color = color;
-                                                                nodes[nodeIdx].depth = gl_FragCoord.z;
-                                                                nodes[nodeIdx].next = prevHead;
-                                                           }
-                                                           fcolor = vec4(0, 0, 0, 0);
-                                                      })";
-    const std::string perPixelLinkedListP2FS =
-                   R"(
-                   #version 460
-                   #define MAX_FRAGMENTS 5
-                   struct NodeType {
-                      vec4 color;
-                      float depth;
-                      uint next;
-                   };
-                   layout(binding = 0, r32ui) uniform uimage2D headPointers;
-                   layout(binding = 0, std430) buffer linkedLists {
-                       NodeType nodes[];
-                   };
-                   layout(location = 0) out vec4 fcolor;
-                   void main() {
-                      NodeType frags[MAX_FRAGMENTS];
-                      int count = 0;
-                      uint n = imageLoad(headPointers, ivec2(gl_FragCoord.xy)).r;
-                      while( n != 0xffffffffu && count < MAX_FRAGMENTS) {
-                           frags[count] = nodes[n];
-                           n = frags[count].next;
-                           count++;
-                      }
-                      //merge sort
-                      int i, j1, j2, k;
-                      int a, b, c;
-                      int step = 1;
-                      NodeType leftArray[MAX_FRAGMENTS/2]; //for merge sort
-                      while (step <= count)
-                      {
-                          i = 0;
-                          while (i < count - step)
-                          {
-                              ////////////////////////////////////////////////////////////////////////
-                              //merge(step, i, i + step, min(i + step + step, count));
-                              a = i;
-                              b = i + step;
-                              c = (i + step + step) >= count ? count : (i + step + step);
-                              for (k = 0; k < step; k++)
-                                  leftArray[k] = frags[a + k];
-                              j1 = 0;
-                              j2 = 0;
-                              for (k = a; k < c; k++)
-                              {
-                                  if (b + j1 >= c || (j2 < step && leftArray[j2].depth > frags[b + j1].depth))
-                                      frags[k] = leftArray[j2++];
-                                  else
-                                      frags[k] = frags[b + j1++];
-                              }
-                              ////////////////////////////////////////////////////////////////////////
-                              i += 2 * step;
-                          }
-                          step *= 2;
-                      }
-                      vec4 color = vec4(0, 0, 0, 0);
-                      for( int i = count-1; i >= 0; i--)
-                      {
-                        color.rgb = frags[i].color.rgb * frags[i].color.a + color.rgb * (1 - frags[i].color.a);
-                        color.a = frags[i].color.a + color.a * (1 - frags[i].color.a);
-                      }
-                      fcolor = color;
-                   })";
-    odfaeg::graphic::Shader shader, skyboxShader, perPixelLinkedListP1Shader, perPixelLinkedListP2Shader;
-    shader.loadFromMemory(cubeMapsVS, cubeMapsFS);
-    skyboxShader.loadFromMemory(skyboxVS, skyboxFS);
-    perPixelLinkedListP1Shader.loadFromMemory(skyboxVS, perPixelLinkedListP1FS);
-    perPixelLinkedListP2Shader.loadFromMemory(perPixelLinkedListP2VS, perPixelLinkedListP2FS);
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    g3d::Cube skybox (Vec3f(-400, -1000, -300), 800, 2000, 600, sf::Color::White);
-    /*skybox.move(Vec3f(0.f, 0.f, 50));
+    g3d::Cube skybox (Vec3f(-1, -1, -1), 2, 2, 2, sf::Color::White);
+    skybox.move(Vec3f(0.f, 0.f, 50));
     skybox.rotate(45, Vec3f(0, 0, 1));
     skybox.setOrigin(Vec3f(0, 0, 0));
-    skybox.scale(Vec3f(10, 10, 10));*/
+    skybox.scale(Vec3f(10, 10, 10));
     g3d::Cube cubeMap (Vec3f(-50, 10, -50), 100, 100, 100, sf::Color::White);
-    RectangleShape fullScreenQuad(Vec3f(800, 600, 300));
-    fullScreenQuad.move(Vec3f(-400, -400, 0));
+    PerPixelLinkedListRenderComponent ppllrc(window, 0, "E_CUBE", ContextSettings(0, 0, 4, 4, 6));
+    ppllrc.setView(view1);
+    std::vector<Entity*> entities;
+    entities.push_back(&skybox);
+    ppllrc.loadEntitiesOnComponent(entities);
+    ppllrc.drawNextFrame();
     // load textures
     // -------------
     vector<std::string> faces
@@ -520,45 +364,6 @@ int main(int argc, char* argv[])
         skybox.getFace(i)->getMaterial().addTexture(&texs[i], sf::IntRect(0, 0, texs[i].getSize().x, texs[i].getSize().y));
         skybox.setTexCoords(i, texRect);
     }
-    Matrix4f texMatrix = skybox.getFace(0)->getMaterial().getTexture()->getTextureMatrix();
-    skyboxShader.setParameter("textureMatrix", texMatrix);
-    perPixelLinkedListP1Shader.setParameter("textureMatrix", texMatrix);
-    RenderTexture rtCubeMap;
-    rtCubeMap.create(800, 800, ContextSettings(0, 0, 4, 4, 6), GL_TEXTURE_CUBE_MAP);
-    for (unsigned int i = 0; i < 6; i++) {
-        cubeMap.getFace(i)->getMaterial().clearTextures();
-        cubeMap.getFace(i)->getMaterial().addTexture(&rtCubeMap.getTexture(), sf::IntRect(0, 0, 800, 800));
-    }
-    GLuint atomicBuffer, linkedListBuffer, headPtrTex, clearBuf;
-    GLuint maxNodes = 5 * SCR_WIDTH * SCR_WIDTH;
-    GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
-    glGenBuffers(1, &atomicBuffer);
-    glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer);
-    glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
-    glGenBuffers(1, &linkedListBuffer);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, linkedListBuffer);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-    glGenTextures(1, &headPtrTex);
-    glBindTexture(GL_TEXTURE_2D, headPtrTex);
-    glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, SCR_WIDTH, SCR_WIDTH);
-    glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    std::vector<GLuint> headPtrClearBuf(SCR_WIDTH*SCR_WIDTH, 0xffffffff);
-    glGenBuffers(1, &clearBuf);
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf);
-    glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint),
-    &headPtrClearBuf[0], GL_STATIC_COPY);
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-    glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer);
-   // shader configuration
-    // --------------------
-    shader.setParameter("skybox", rtCubeMap.getTexture());
-    skyboxShader.setParameter("skybox", odfaeg::graphic::Shader::CurrentTexture);
-    perPixelLinkedListP1Shader.setParameter("maxNodes", maxNodes);
-    perPixelLinkedListP1Shader.setParameter("skybox", odfaeg::graphic::Shader::CurrentTexture);
     sf::Clock time;
     // run the main loop
     bool running = true;
@@ -605,102 +410,9 @@ int main(int argc, char* argv[])
         if (IKeyboard::isKeyPressed(IKeyboard::Left)) {
             view1.move(view1.getLeft(), -speed * deltaTime);
         }
-        // clear the buffers
-        // render
-        // ------
-        /*rtCubeMap.clear();
-        for (unsigned int i = 0; i < 6; i++) {
-            GLuint zero = 0;
-            glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer);
-            glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero);
-            glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
-            glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf);
-            glBindTexture(GL_TEXTURE_2D, headPtrTex);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, SCR_WIDTH, SCR_WIDTH, GL_RED_INTEGER,
-                GL_UNSIGNED_INT, NULL);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            rtCubeMap.resetGLStates();
-            rtCubeMap.selectCubemapFace(i);
-            if (i == 0) {
-                view3.lookAt(1, 0, 0);
-            }
-            if (i == 1) {
-                view3.lookAt(-1, 0, 0);
-            }
-            if (i == 2) {
-                view3.lookAt(0, 0, 1);
-            }
-            if (i == 3) {
-                view3.lookAt(0, 0, -1);
-            }
-            if (i == 4) {
-                view3.lookAt(0, 1, 0);
-            }
-            if (i == 5) {
-                view3.lookAt(0, -1, 0);
-            }
-            RenderStates states;
-            states.shader = &perPixelLinkedListP1Shader;
-            Matrix4f viewMatrix = view3.getViewMatrix().getMatrix().transpose();
-            Matrix4f projectionMatrix = view3.getProjMatrix().getMatrix().transpose();
-            Matrix4f modelMatrix = skybox.getTransform().getMatrix().transpose();
-            perPixelLinkedListP1Shader.setParameter("model", modelMatrix);
-            perPixelLinkedListP1Shader.setParameter("view", viewMatrix);
-            perPixelLinkedListP1Shader.setParameter("projection", projectionMatrix);
-            // skybox cube
-            rtCubeMap.setView(view3);
-            rtCubeMap.draw(skybox, states);
-            glFinish();
-            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-            states.shader = &perPixelLinkedListP2Shader;
-            rtCubeMap.setView(view2);
-            modelMatrix = fullScreenQuad.getTransform().getMatrix().transpose();
-            viewMatrix = view2.getViewMatrix().getMatrix().transpose();
-            projectionMatrix = view2.getProjMatrix().getMatrix().transpose();
-            perPixelLinkedListP2Shader.setParameter("model", modelMatrix);
-            perPixelLinkedListP2Shader.setParameter("view", viewMatrix);
-            perPixelLinkedListP2Shader.setParameter("projection", projectionMatrix);
-            rtCubeMap.draw(fullScreenQuad, states);
-            glFinish();
-        }
-        glMemoryBarrier(GL_ALL_BARRIER_BITS);
-        rtCubeMap.display();*/
-        window.clear();
-        window.setView(view1);
+        window.setView(view2);
         // draw...
-        RenderStates states;
-        states.shader = &shader;
-        Matrix4f modelMatrix = cubeMap.getTransform().getMatrix().transpose();
-        Matrix4f viewMatrix = view1.getViewMatrix().getMatrix().transpose();
-        Matrix4f projectionMatrix = view1.getProjMatrix().getMatrix().transpose();
-        /*shader.setParameter("model", modelMatrix);
-        shader.setParameter("view", viewMatrix);
-        shader.setParameter("projection", projectionMatrix);
-        shader.setParameter("cameraPos", camera.Position.x,camera.Position.y,camera.Position.z);
-        // cubes
-        window.setEnableCubeMap(true);
-        window.draw(cubeMap, states);
-        window.setEnableCubeMap(false);*/
-        // draw skybox as last
-        states.shader = &skyboxShader;
-        viewMatrix = Matrix4f(Matrix3f(view1.getViewMatrix().getMatrix())).transpose();
-        modelMatrix = skybox.getTransform().getMatrix().transpose();
-        skyboxShader.setParameter("model", modelMatrix);
-        skyboxShader.setParameter("view", viewMatrix);
-        skyboxShader.setParameter("projection", projectionMatrix);
-        // skybox cube
-
-        for (unsigned int i = 0; i < skybox.getNbFaces(); i++) {
-            states.texture = skybox.getFace(i)->getMaterial().getTexture();
-            VertexBuffer vb;
-            vb.setPrimitiveType(skybox.getFace(i)->getVertexArray().getPrimitiveType());
-            for (unsigned int j = 0; j < skybox.getFace(i)->getVertexArray().getVertexCount(); j++) {
-                vb.append(skybox.getFace(i)->getVertexArray()[j]);
-            }
-            vb.update();
-            window.drawVertexBuffer(vb, states);
-        }
+        window.draw(ppllrc);
         // end the current frame (internally swaps the front and back buffers)
         window.display();
     }

@@ -75,7 +75,7 @@ namespace odfaeg {
             RectangleShape quad;
             Batcher batcher, normalBatcher, reflBatcher, reflNormalBatcher, rvBatcher, normalRvBatcher;
             sf::Color backgroundColor; /**> The background color.*/
-            std::vector<Instance> m_instances, m_normals, m_reflInstances, m_reflNormals, m_rvInstances, m_rvNormals; /**> Instances to draw. (Instanced rendering.) */
+            std::vector<Instance> m_instances, m_normals, m_reflInstances, m_reflNormals; /**> Instances to draw. (Instanced rendering.) */
             std::vector<Entity*> visibleEntities;
             RenderTexture depthBuffer, reflectRefractTex, environmentMap;
             Shader sBuildDepthBuffer, sBuildDepthBufferNormal, sReflectRefract, sReflectRefractNormal, sLinkedList, sLinkedListNormal, sLinkedList2;

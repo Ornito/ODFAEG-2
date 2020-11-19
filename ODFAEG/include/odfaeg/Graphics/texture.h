@@ -505,6 +505,7 @@ namespace odfaeg
             void onSave(std::vector<sf::Uint8>& pixels);
             unsigned int getNativeHandle() const;
             bool isCubemap();
+            void setName(std::string name);
         private :
 
             friend class RenderTexture;
@@ -538,6 +539,7 @@ namespace odfaeg
             mutable bool m_pixelsFlipped; ///< To work around the inconsistency in Y orientation
             sf::Uint64       m_cacheId;       ///< Unique number that identifies the texture to the render target's cache
             bool m_isCubeMap;
+            std::string m_name;
 
         };
     }

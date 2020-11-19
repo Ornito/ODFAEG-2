@@ -112,7 +112,7 @@ namespace odfaeg {
 
             // Destroy effect program
             if (m_shaderProgram) {
-                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3)
+                if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3)
                     glCheck(glDeleteProgram(m_shaderProgram));
                 else
                     glCheck(glDeleteObjectARB(m_shaderProgram));
@@ -301,7 +301,7 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
@@ -329,7 +329,7 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
@@ -359,7 +359,7 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
@@ -389,7 +389,7 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                 if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                 if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = getParamLocation(name);
@@ -421,7 +421,7 @@ namespace odfaeg {
             {
 
 
-                 if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                 if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
@@ -472,7 +472,7 @@ namespace odfaeg {
             if (m_shaderProgram)
             {
 
-                 if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                 if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = getParamLocation(name);
@@ -503,7 +503,7 @@ namespace odfaeg {
             {
 
 
-                 if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                 if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                    /* glCheck(glUseProgram(m_shaderProgram));
                     GLint location = getParamLocation(name);
                     if (location != -1) {
@@ -576,7 +576,7 @@ namespace odfaeg {
                 GLint n;
                 glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &n);
                 if (location < n) {
-                    if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                         glCheck(glBindAttribLocation(m_shaderProgram,location,name.c_str()));
                     } else {
                         glCheck(glBindAttribLocationARB(m_shaderProgram,location,name.c_str()));
@@ -608,7 +608,7 @@ namespace odfaeg {
 
             if (shader && shader->m_shaderProgram)
             {
-                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                     glCheck(glUseProgram(shader->m_shaderProgram));
                     shader->bindTextures();
                     // Bind the current texture
@@ -629,7 +629,7 @@ namespace odfaeg {
             }
             else
             {
-                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                     glCheck(glUseProgram(0));
                 } else {
                     // Bind no shader
@@ -679,14 +679,14 @@ namespace odfaeg {
             m_params.clear();
 
             // Create the program
-            if (shading_language_version_major >= 3 && shading_language_version_minor >= 3)
+            if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3)
                 m_shaderProgram = glCreateProgram();
             else
                 m_shaderProgram = glCreateProgramObjectARB();
             // Create the vertex shader if needed
             if (vertexShaderCode)
             {
-                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                     GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
                     glCheck(glShaderSource(vertexShaderID, 1, &vertexShaderCode, nullptr));
                     glCheck(glCompileShader(vertexShaderID));
@@ -736,7 +736,7 @@ namespace odfaeg {
             if (fragmentShaderCode)
             {
                 // Create and compile the shader
-                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                     GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
                     glCheck(glShaderSource(fragmentShaderID, 1, &fragmentShaderCode, nullptr));
                     glCheck(glCompileShader(fragmentShaderID));
@@ -780,7 +780,7 @@ namespace odfaeg {
                 }
             }
             if (geometryShaderCode) {
-                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                     GLuint geometryShaderID = glCreateShader(GL_GEOMETRY_SHADER);
                     glCheck(glShaderSource(geometryShaderID, 1, &geometryShaderCode, nullptr));
                     glCheck(glCompileShader(geometryShaderID));
@@ -823,7 +823,7 @@ namespace odfaeg {
                     glCheck(glDeleteObjectARB(geometryShader));
                 }
             }
-            if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+            if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                 glCheck(glLinkProgram(m_shaderProgram));
                 GLint success;
                 glCheck(glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &success));
@@ -872,7 +872,7 @@ namespace odfaeg {
             for (std::size_t i = 0; i < m_textures.size(); ++i)
             {
                 GLint index = static_cast<GLsizei>(i + 1);
-                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                     glCheck(glUniform1i(it->first, index));
                     glCheck(glActiveTexture(GL_TEXTURE0 + index));
                 } else {
@@ -882,7 +882,7 @@ namespace odfaeg {
                 Texture::bind(it->second);
                 ++it;
             }
-            if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+            if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                 glCheck(glActiveTexture(GL_TEXTURE0));
             } else {
                 // Make sure that the texture unit which is left active is the number 0
@@ -895,7 +895,7 @@ namespace odfaeg {
                 return it->second;
             } else {
                 int location;
-                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                     location = glGetAttribLocation(m_shaderProgram,name.c_str());
                 } else {
                     location = glGetAttribLocationARB(m_shaderProgram,name.c_str());
@@ -929,7 +929,7 @@ namespace odfaeg {
             {
                 // Not in cache, request the location from OpenGL
                 int location;
-                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
                     location = glGetUniformLocation(m_shaderProgram, name.c_str());
                 } else {
                     location = glGetUniformLocationARB(m_shaderProgram, name.c_str());

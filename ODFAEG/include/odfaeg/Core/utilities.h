@@ -8,6 +8,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 /**
  *\namespace odfaeg
  * the namespace of the Opensource Development Framework Adapted for Every Games.
