@@ -1,7 +1,7 @@
 #include <SFML/OpenGL.hpp>
 #include "../../../include/odfaeg/Graphics/renderWindow.h"
 #include "glCheck.h"
-//#include "GlDebug.hpp"
+
 
 namespace odfaeg {
     namespace graphic {

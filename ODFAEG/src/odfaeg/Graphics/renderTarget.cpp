@@ -4,7 +4,7 @@
 #include <SFML/OpenGL.hpp>
 #include "glCheck.h"
 #include "../../../include/odfaeg/Graphics/drawable.h"
-
+#include "GlDebug.hpp"
 namespace
 {
     // Convert an sf::BlendMode::Factor constant to the corresponding OpenGL constant.
@@ -574,6 +574,10 @@ namespace odfaeg {
                 GLuint vaoID;
                 glCheck(glGenVertexArrays(1, &vaoID));
                 m_vao = static_cast<unsigned int>(vaoID);
+            }
+            if (m_versionMajor > 4) {
+                OpenGL::LoadDebugFunctions();
+                OpenGL::InitialiseDebugFunctions();
             }
             // Setup the default and current views
             m_defaultView = View (static_cast<float>(getSize().x), static_cast<float>(getSize().y), -static_cast<float>(getSize().y) - 100, static_cast<float>(getSize().y)+100);

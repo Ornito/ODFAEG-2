@@ -149,6 +149,10 @@ namespace odfaeg {
             unsigned int size = 0;
             if (m_primitiveType == sf::PrimitiveType::Quads) {
                 size = m_vertices.size() / 4;
+            } else if (m_primitiveType == sf::PrimitiveType::Triangles) {
+                size = m_vertices.size() / 3;
+            } else if (m_primitiveType == sf::PrimitiveType::TriangleStrip || m_primitiveType == sf::PrimitiveType::TriangleFan) {
+                size = m_vertices.size() - 2;
             }
             for (unsigned int i = 0; i < size; i++) {
                 if (m_primitiveType == sf::PrimitiveType::Quads) {
@@ -166,6 +170,86 @@ namespace odfaeg {
                         } else {
                             v3 = math::Vec3f (m_vertices[i*4+n+1].position.x, m_vertices[i*4+n+1].position.y, m_vertices[i*4+n+1].position.z);
                         }
+                        math::Vec3f dir1 = v2 - v1;
+                        math::Vec3f dir2 = v3 - v1;
+                        math::Vec3f normal = dir1.cross(dir2).normalize();
+                        m_normals.push_back(Vector3f(normal.x, normal.y, normal.z));
+                    }
+                } else if (m_primitiveType == sf::PrimitiveType::Triangles) {
+                    for (unsigned int n = 0; n < 3; n++) {
+                        math::Vec3f v1 (m_vertices[i*3+n].position.x, m_vertices[i*3+n].position.y, m_vertices[i*3+n].position.z);
+                        math::Vec3f v2;
+                        math::Vec3f v3;
+                        if (n-1<0) {
+                            v2 = math::Vec3f (m_vertices[i*3+3].position.x, m_vertices[i*3+3].position.y, m_vertices[i*3+3].position.z);
+                        } else {
+                            v2 = math::Vec3f (m_vertices[i*3+n-1].position.x, m_vertices[i*3+n-1].position.y, m_vertices[i*3+n-1].position.z);
+                        }
+                        if (n+1>=3) {
+                            v3 = math::Vec3f (m_vertices[i*3].position.x, m_vertices[i*3].position.y, m_vertices[i*3].position.z);
+                        } else {
+                            v3 = math::Vec3f (m_vertices[i*3+n+1].position.x, m_vertices[i*3+n+1].position.y, m_vertices[i*3+n+1].position.z);
+                        }
+                        math::Vec3f dir1 = v2 - v1;
+                        math::Vec3f dir2 = v3 - v1;
+                        math::Vec3f normal = dir1.cross(dir2).normalize();
+                        m_normals.push_back(Vector3f(normal.x, normal.y, normal.z));
+                    }
+                } else if (m_primitiveType == sf::PrimitiveType::TriangleStrip) {
+                    if (i == 0) {
+                        for (unsigned int n = 0; n < 3; n++) {
+                            math::Vec3f v1 (m_vertices[n].position.x, m_vertices[n].position.y, m_vertices[n].position.z);
+                            math::Vec3f v2;
+                            math::Vec3f v3;
+                            if (n-1<0) {
+                                v2 = math::Vec3f (m_vertices[3].position.x, m_vertices[3].position.y, m_vertices[3].position.z);
+                            } else {
+                                v2 = math::Vec3f (m_vertices[n-1].position.x, m_vertices[n-1].position.y, m_vertices[n-1].position.z);
+                            }
+                            if (n+1>=3) {
+                                v3 = math::Vec3f (m_vertices[0].position.x, m_vertices[0].position.y, m_vertices[0].position.z);
+                            } else {
+                                v3 = math::Vec3f (m_vertices[n+1].position.x, m_vertices[n+1].position.y, m_vertices[n+1].position.z);
+                            }
+                            math::Vec3f dir1 = v2 - v1;
+                            math::Vec3f dir2 = v3 - v1;
+                            math::Vec3f normal = dir1.cross(dir2).normalize();
+                            m_normals.push_back(Vector3f(normal.x, normal.y, normal.z));
+                        }
+                    } else {
+                        math::Vec3f v1 (m_vertices[i+2].position.x, m_vertices[i+2].position.y, m_vertices[i+2].position.z);
+                        math::Vec3f v2 (m_vertices[i+1].position.x, m_vertices[i+1].position.y, m_vertices[i+1].position.z);
+                        math::Vec3f v3 (m_vertices[i].position.x, m_vertices[i].position.y, m_vertices[i].position.z);
+                        math::Vec3f dir1 = v2 - v1;
+                        math::Vec3f dir2 = v3 - v1;
+                        math::Vec3f normal = dir1.cross(dir2).normalize();
+                        m_normals.push_back(Vector3f(normal.x, normal.y, normal.z));
+                    }
+                } else if (m_primitiveType == sf::TriangleFan) {
+                    if (i == 0) {
+                        for (unsigned int n = 0; n < 3; n++) {
+                            math::Vec3f v1 (m_vertices[n].position.x, m_vertices[n].position.y, m_vertices[n].position.z);
+                            math::Vec3f v2;
+                            math::Vec3f v3;
+                            if (n-1<0) {
+                                v2 = math::Vec3f (m_vertices[3].position.x, m_vertices[3].position.y, m_vertices[3].position.z);
+                            } else {
+                                v2 = math::Vec3f (m_vertices[n-1].position.x, m_vertices[n-1].position.y, m_vertices[n-1].position.z);
+                            }
+                            if (n+1>=3) {
+                                v3 = math::Vec3f (m_vertices[0].position.x, m_vertices[0].position.y, m_vertices[0].position.z);
+                            } else {
+                                v3 = math::Vec3f (m_vertices[n+1].position.x, m_vertices[n+1].position.y, m_vertices[n+1].position.z);
+                            }
+                            math::Vec3f dir1 = v2 - v1;
+                            math::Vec3f dir2 = v3 - v1;
+                            math::Vec3f normal = dir1.cross(dir2).normalize();
+                            m_normals.push_back(Vector3f(normal.x, normal.y, normal.z));
+                        }
+                    } else {
+                        math::Vec3f v1 (m_vertices[i+2].position.x, m_vertices[i+2].position.y, m_vertices[i+2].position.z);
+                        math::Vec3f v2 (m_vertices[i+1].position.x, m_vertices[i+1].position.y, m_vertices[i+1].position.z);
+                        math::Vec3f v3 (m_vertices[0].position.x, m_vertices[0].position.y, m_vertices[0].position.z);
                         math::Vec3f dir1 = v2 - v1;
                         math::Vec3f dir2 = v3 - v1;
                         math::Vec3f normal = dir1.cross(dir2).normalize();
@@ -404,15 +488,15 @@ namespace odfaeg {
                         if (oldVerticesSize != m_vertices.size()) {
                             //std::cout<<"size changed : update vbo normal buffer"<<std::endl;
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboNormalBuffer));
-                            glCheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(math::Vec3f), &m_normals[0], GL_DYNAMIC_DRAW));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(sf::Vector3f), &m_normals[0], GL_DYNAMIC_DRAW));
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                         } else {
                             //std::cout<<"update vbo normal buffer"<<std::endl;
                             GLvoid *pos_vbo = nullptr;
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboNormalBuffer));
-                            pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+                            glCheck(pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
                             if (pos_vbo != nullptr) {
-                                memcpy(pos_vbo,&m_normals[0],  m_normals.size() * sizeof(math::Vec3f));
+                                memcpy(pos_vbo,&m_normals[0],  m_normals.size() * sizeof(sf::Vector3f));
                                 glCheck(glUnmapBuffer(GL_ARRAY_BUFFER));
                                 pos_vbo = nullptr;
                             }
