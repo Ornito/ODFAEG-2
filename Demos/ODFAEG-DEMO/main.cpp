@@ -182,7 +182,7 @@ float oldY = (float)SCR_HEIGHT / 2.0;
 
 int main(int argc, char* argv[])
 {
-    /*EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
+    EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
     EXPORT_CLASS_GUID(EntityTile, Entity, Tile)
     EXPORT_CLASS_GUID(EntityTile, Entity, BigTile)
     EXPORT_CLASS_GUID(EntityWall, Entity, g2d::Wall)
@@ -191,7 +191,7 @@ int main(int argc, char* argv[])
     EXPORT_CLASS_GUID(EntityHero, Entity, Hero)
     EXPORT_CLASS_GUID(EntityMesh, Entity, Mesh)
     MyAppli app(sf::VideoMode(800, 600), "Test odfaeg");
-    return app.exec();*/
+    return app.exec();
 // create the window
     sf::Window window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, sf::ContextSettings(24, 0, 4, 4, 6));
     glewInit();
@@ -248,7 +248,7 @@ int main(int argc, char* argv[])
                                             vec3 I = normalize(Position - cameraPos);
                                             vec3 R = reflect(I, normalize(Normal));
                                             R = normalize(R);
-                                            FragColor = vec4(abs(R.r), abs(R.g), abs(R.b), 1); /*vec4(texture(skybox, R).rgb, 1.0);*/
+                                            FragColor = /*vec4(abs(R.r), abs(R.g), abs(R.b), 1);*/ vec4(texture(skybox, R).rgb, 1.0);
                                         }
                                    )";
     const std::string skyboxVS = R"(#version 460
@@ -578,8 +578,6 @@ int main(int argc, char* argv[])
             glDrawArrays(GL_TRIANGLES, 0, 36);
             glBindVertexArray(0);
         }
-        glMemoryBarrier(GL_ALL_BARRIER_BITS);
-        glFlush();
         //window.setActive(true);
         context2.setActive(true);
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
