@@ -19,131 +19,6 @@ using namespace odfaeg::window;
 using namespace odfaeg::audio;
 using namespace sorrok;
 using namespace std;
-class Shader
-{
-public:
-    unsigned int ID;
-    // constructor generates the shader on the fly
-    // ------------------------------------------------------------------------
-    Shader(std::string vertexCode, std::string fragmentCode)
-    {
-        // 1. retrieve the vertex/fragment source code from filePath
-        const char* vShaderCode = vertexCode.c_str();
-        const char * fShaderCode = fragmentCode.c_str();
-        // 2. compile shaders
-        unsigned int vertex, fragment;
-        // vertex shader
-        vertex = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertex, 1, &vShaderCode, NULL);
-        glCompileShader(vertex);
-        checkCompileErrors(vertex, "VERTEX");
-        // fragment Shader
-        fragment = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragment, 1, &fShaderCode, NULL);
-        glCompileShader(fragment);
-        checkCompileErrors(fragment, "FRAGMENT");
-        // shader Program
-        ID = glCreateProgram();
-        glAttachShader(ID, vertex);
-        glAttachShader(ID, fragment);
-        glLinkProgram(ID);
-        checkCompileErrors(ID, "PROGRAM");
-        // delete the shaders as they're linked into our program now and no longer necessery
-        glDeleteShader(vertex);
-        glDeleteShader(fragment);
-    }
-    // activate the shader
-    // ------------------------------------------------------------------------
-    void use()
-    {
-        glUseProgram(ID);
-    }
-    // utility uniform functions
-    // ------------------------------------------------------------------------
-    void setBool(const std::string &name, bool value) const
-    {
-        glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
-    }
-    // ------------------------------------------------------------------------
-    void setInt(const std::string &name, int value) const
-    {
-        glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
-    }
-    // ------------------------------------------------------------------------
-    void setFloat(const std::string &name, float value) const
-    {
-        glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
-    }
-    // ------------------------------------------------------------------------
-    void setVec2(const std::string &name, const glm::vec2 &value) const
-    {
-        glUniform2fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
-    }
-    void setVec2(const std::string &name, float x, float y) const
-    {
-        glUniform2f(glGetUniformLocation(ID, name.c_str()), x, y);
-    }
-    // ------------------------------------------------------------------------
-    void setVec3(const std::string &name, const glm::vec3 &value) const
-    {
-        glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
-    }
-    void setVec3(const std::string &name, float x, float y, float z) const
-    {
-        glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z);
-    }
-    // ------------------------------------------------------------------------
-    void setVec4(const std::string &name, const glm::vec4 &value) const
-    {
-        glUniform4fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
-    }
-    void setVec4(const std::string &name, float x, float y, float z, float w)
-    {
-        glUniform4f(glGetUniformLocation(ID, name.c_str()), x, y, z, w);
-    }
-    // ------------------------------------------------------------------------
-    void setMat2(const std::string &name, const glm::mat2 &mat) const
-    {
-        glUniformMatrix2fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-    }
-    // ------------------------------------------------------------------------
-    void setMat3(const std::string &name, const glm::mat3 &mat) const
-    {
-        glUniformMatrix3fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-    }
-    // ------------------------------------------------------------------------
-    void setMat4(const std::string &name, const glm::mat4 &mat) const
-    {
-        glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-    }
-
-private:
-    // utility function for checking shader compilation/linking errors.
-    // ------------------------------------------------------------------------
-    void checkCompileErrors(GLuint shader, std::string type)
-    {
-        GLint success;
-        GLchar infoLog[1024];
-        if(type != "PROGRAM")
-        {
-            glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-            if(!success)
-            {
-                glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-                std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
-            }
-        }
-        else
-        {
-            glGetProgramiv(shader, GL_LINK_STATUS, &success);
-            if(!success)
-            {
-                glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-                std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
-            }
-        }
-    }
-};
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
     FORWARD,
@@ -307,7 +182,7 @@ float oldY = (float)SCR_HEIGHT / 2.0;
 
 int main(int argc, char* argv[])
 {
-    EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
+    /*EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
     EXPORT_CLASS_GUID(EntityTile, Entity, Tile)
     EXPORT_CLASS_GUID(EntityTile, Entity, BigTile)
     EXPORT_CLASS_GUID(EntityWall, Entity, g2d::Wall)
@@ -316,35 +191,213 @@ int main(int argc, char* argv[])
     EXPORT_CLASS_GUID(EntityHero, Entity, Hero)
     EXPORT_CLASS_GUID(EntityMesh, Entity, Mesh)
     MyAppli app(sf::VideoMode(800, 600), "Test odfaeg");
-    return app.exec();
+    return app.exec();*/
 // create the window
-    RenderWindow window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, ContextSettings(24, 0, 4, 4, 6));
-    View view1 (800, 600, 80, 0.1, 1000);
-    view1.move(0, 50, 0);
-    window.setView(view1);
-    View view3 (800, 800, 90, 0, 1000);
-    View view2 (800, 800, 0, 100);
+    sf::Window window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, sf::ContextSettings(24, 0, 4, 4, 6));
+    glewInit();
     window.setVerticalSyncEnabled(true);
 
     // activate the window
     window.setActive(true);
     // load resources, initialize the OpenGL states, ...
+    glEnable(GL_DEPTH_TEST);
     // build and compile shaders
     // -------------------------
+    const std::string refractCubeVS = R"(#version 460
+                                         layout (location = 0) in vec3 aPos;
+                                         layout (location = 1) in vec2 aTexCoords;
+                                         uniform mat4 model;
+                                         uniform mat4 view;
+                                         uniform mat4 projection;
+                                         out vec2 texCoords;
+                                         void main() {
+                                             gl_Position = projection * view * model * vec4(aPos, 1.0);
+                                             texCoords = aTexCoords;
+                                         }
+                                         )";
+    const std::string refractCubeFS = R"(#version 460
+                                         uniform sampler2D texture;
+                                         in vec2 texCoords;
+                                         out vec4 FragColor;
+                                         void main() {
+                                            FragColor = texture2D (texture, texCoords);
+                                         })";
+    const std::string cubeMapsVS = R"(#version 460
+                                    layout (location = 0) in vec3 aPos;
+                                    layout (location = 1) in vec3 aNormal;
+                                    out vec3 Normal;
+                                    out vec3 Position;
+                                    uniform mat4 model;
+                                    uniform mat4 view;
+                                    uniform mat4 projection;
+                                    void main()
+                                    {
+                                        Normal = mat3(transpose(inverse(model))) * aNormal;
+                                        Position = vec3(model * vec4(aPos, 1.0));
+                                        gl_Position = projection * view * model * vec4(aPos, 1.0);
+                                    }
+                                )";
+    const std::string cubeMapsFS = R"(#version 460
+                                        out vec4 FragColor;
+                                        in vec3 Normal;
+                                        in vec3 Position;
+                                        uniform vec3 cameraPos;
+                                        uniform samplerCube skybox;
+                                        void main()
+                                        {
+                                            vec3 I = normalize(Position - cameraPos);
+                                            vec3 R = reflect(I, normalize(Normal));
+                                            R = normalize(R);
+                                            FragColor = vec4(abs(R.r), abs(R.g), abs(R.b), 1); /*vec4(texture(skybox, R).rgb, 1.0);*/
+                                        }
+                                   )";
+    const std::string skyboxVS = R"(#version 460
+                                    layout (location = 0) in vec3 aPos;
+                                    out vec3 TexCoords;
+                                    uniform mat4 projection;
+                                    uniform mat4 view;
+                                    void main()
+                                    {
+                                        TexCoords = aPos;
+                                        vec4 pos = projection * view * vec4(aPos, 1.0);
+                                        gl_Position = pos.xyww;
+                                    }
+                                )";
+    const std::string skyboxFS = R"(#version 460
+                                    out vec4 FragColor;
+                                    in vec3 TexCoords;
+                                    uniform samplerCube skybox;
+                                    void main()
+                                    {
+                                        FragColor = texture(skybox, TexCoords);
+                                    }
+                                    )";
+    odfaeg::graphic::Shader shader, skyboxShader, refractCubeShader;
+    shader.loadFromMemory(cubeMapsVS, cubeMapsFS);
+    skyboxShader.loadFromMemory(skyboxVS, skyboxFS);
+    refractCubeShader.loadFromMemory(refractCubeVS, refractCubeFS);
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    g3d::Cube skybox (Vec3f(-1, -1, -1), 2, 2, 2, sf::Color::White);
-    skybox.move(Vec3f(0.f, 0.f, 50));
-    skybox.rotate(45, Vec3f(0, 0, 1));
-    skybox.setOrigin(Vec3f(0, 0, 0));
-    skybox.scale(Vec3f(10, 10, 10));
-    g3d::Cube cubeMap (Vec3f(-50, 10, -50), 100, 100, 100, sf::Color::White);
-    PerPixelLinkedListRenderComponent ppllrc(window, 0, "E_CUBE", ContextSettings(0, 0, 4, 4, 6));
-    ppllrc.setView(view1);
-    std::vector<Entity*> entities;
-    entities.push_back(&skybox);
-    ppllrc.loadEntitiesOnComponent(entities);
-    ppllrc.drawNextFrame();
+    float cubeVertices[] = {
+        // positions          // normals
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+    };
+    // set up vertex data (and buffer(s)) and configure vertex attributes
+    // ------------------------------------------------------------------
+    float skyboxVertices[] = {
+        // positions
+        -1.0f,  1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+        -1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f
+    };
+    float fullScreenQuadVertices2[] = {
+        // positions        //TexCoords
+        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+         1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+    };
+    // cube VAO
+    unsigned int cubeVAO, cubeVBO;
+    glGenVertexArrays(1, &cubeVAO);
+    glGenBuffers(1, &cubeVBO);
+    glBindVertexArray(cubeVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    // skybox VAO
+    unsigned int skyboxVAO, skyboxVBO;
+    glGenVertexArrays(1, &skyboxVAO);
+    glGenBuffers(1, &skyboxVBO);
+    glBindVertexArray(skyboxVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
     // load textures
     // -------------
     vector<std::string> faces
@@ -356,17 +409,74 @@ int main(int argc, char* argv[])
         "tilesets/skybox/front.jpg",
         "tilesets/skybox/back.jpg"
     };
-    Texture texs[6];
+    std::vector<sf::Image> images;
     for (unsigned int i = 0; i < 6; i++) {
-        texs[i].loadFromFile(faces[i]);
-        sf::IntRect texRect (0, 0, texs[i].getSize().x, texs[i].getSize().y);
-        skybox.getFace(i)->getMaterial().clearTextures();
-        skybox.getFace(i)->getMaterial().addTexture(&texs[i], sf::IntRect(0, 0, texs[i].getSize().x, texs[i].getSize().y));
-        skybox.setTexCoords(i, texRect);
+        sf::Image image;
+        image.loadFromFile(faces[i]);
+        images.push_back(image);
     }
+    int width = images[0].getSize().x;
+    int height = images[0].getSize().y;
+    odfaeg::graphic::Texture cubeMapTex, cubeMapFBOTex, refractTex;
+    cubeMapTex.createCubeMap(width, height, images);
+    cubeMapFBOTex.createCubeMap(SCR_WIDTH, SCR_WIDTH);
+    refractTex.create(SCR_WIDTH, SCR_HEIGHT);
+    glEnable(GL_TEXTURE_CUBE_MAP);
+    sf::Context context(sf::ContextSettings(0, 0, 4, 4, 6), SCR_WIDTH, SCR_WIDTH);
+    context.setActive(true);
+    unsigned int skyboxVAOFBO;
+    glGenVertexArrays(1, &skyboxVAOFBO);
+    glBindVertexArray(skyboxVAOFBO);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+
+    GLuint frameBufferID;
+    glGenFramebuffers(1, &frameBufferID);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
+    glDrawBuffer(GL_COLOR_ATTACHMENT0);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, cubeMapFBOTex.getNativeHandle(), 0);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        std::cerr << "Impossible to create render texture (failed to link the target texture to the frame buffer)" << std::endl;
+        return false;
+    }
+    sf::Context context2(sf::ContextSettings(0, 0, 4, 4, 6), SCR_WIDTH, SCR_WIDTH);
+    context2.setActive(true);
+    unsigned int fsQuadVAOFBO, fsQuadVBOFBO;
+    glGenVertexArrays(1, &fsQuadVAOFBO);
+    glBindVertexArray(fsQuadVAOFBO);
+    glGenBuffers(1, &fsQuadVBOFBO);
+    glBindBuffer(GL_ARRAY_BUFFER, fsQuadVBOFBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(fullScreenQuadVertices2), &fullScreenQuadVertices2, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    GLuint frameBufferID2;
+    glGenFramebuffers(1, &frameBufferID2);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID2);
+    glDrawBuffer(GL_COLOR_ATTACHMENT0);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, refractTex.getNativeHandle(), 0);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        std::cerr << "Impossible to create render texture (failed to link the target texture to the frame buffer)" << std::endl;
+        return false;
+    }
+   // shader configuration
+    // --------------------
+    shader.setParameter("skybox", cubeMapFBOTex);
+    skyboxShader.setParameter("skybox", cubeMapTex);
+    refractCubeShader.setParameter("texture", refractTex);
+    int oldX = sf::Mouse::getPosition(window).x;
+    int oldY = sf::Mouse::getPosition(window).y;
     sf::Clock time;
     // run the main loop
     bool running = true;
+    glEnable(GL_TEXTURE_CUBE_MAP);
     while (running)
     {
          // per-frame time logic
@@ -377,48 +487,164 @@ int main(int argc, char* argv[])
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
         // handle events
-        IEvent event;
+        sf::Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED)
+            if (event.type == sf::Event::Closed)
             {
                 // end the program
                 running = false;
             }
-            else if (event.type == IEvent::MOUSE_MOTION_EVENT) {
-                int relX = (event.mouseMotion.x - oldX) * sensivity;
-                int relY = (event.mouseMotion.y - oldY) * sensivity;
-                //Rotate the view, (Polar coordinates) but you can also use the lookAt function to look at a point.
-                int teta = view1.getTeta() - relX;
-                int phi = view1.getPhi() - relY;
-                view1.rotate(teta, phi);
-                oldX = event.mouseMotion.x;
-                oldY = event.mouseMotion.y;
+            else if (event.type == sf::Event::Resized)
+            {
+                // adjust the viewport when the window is resized
+                glViewport(0, 0, event.size.width, event.size.height);
+            }
+            else if (event.type == sf::Event::MouseMoved) {
+                if (firstMouse)
+                {
+                    lastX = event.mouseMove.x;
+                    lastY = event.mouseMove.y;
+                    firstMouse = false;
+                }
+
+                float xoffset = event.mouseMove.x - lastX;
+                float yoffset = lastY - event.mouseMove.y; // reversed since y-coordinates go from bottom to top
+
+                lastX = event.mouseMove.x;
+                lastY = event.mouseMove.y;
+
+                camera.ProcessMouseMovement(xoffset, yoffset);
             } else if (event.type == sf::Event::MouseWheelScrolled) {
-                //camera.ProcessMouseScroll(event.mouseWheelScroll.delta);
+                camera.ProcessMouseScroll(event.mouseWheelScroll.delta);
             }
         }
-        if (IKeyboard::isKeyPressed(IKeyboard::Up)) {
-            view1.move(view1.getForward(), -speed * deltaTime);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+            camera.ProcessKeyboard(FORWARD, deltaTime);
         }
-        if (IKeyboard::isKeyPressed(IKeyboard::Down)) {
-            view1.move(view1.getForward(), speed * deltaTime);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+            camera.ProcessKeyboard(BACKWARD, deltaTime);
         }
-        if (IKeyboard::isKeyPressed(IKeyboard::Right)) {
-            view1.move(view1.getLeft(), speed * deltaTime);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+            camera.ProcessKeyboard(RIGHT, deltaTime);
         }
-        if (IKeyboard::isKeyPressed(IKeyboard::Left)) {
-            view1.move(view1.getLeft(), -speed * deltaTime);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+            camera.ProcessKeyboard(LEFT, deltaTime);
         }
-        window.setView(view2);
+        // clear the buffers
+        // render
+        // ------
+        window.setActive(true);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        context2.setActive(true);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        context.setActive(true);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        for (unsigned int i = 0; i < 6; i++) {
+            glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubeMapFBOTex.getNativeHandle(), 0);
+            glViewport(0, 0, SCR_WIDTH, SCR_WIDTH);
+            glm::mat4 view;
+            if (i == 0) {
+                view = camera2.lookAt(FORWARD);
+            }
+            if (i == 1) {
+                view = camera2.lookAt(BACKWARD);
+            }
+            if (i == 2) {
+                view = camera2.lookAt(UP);
+            }
+            if (i == 3) {
+                view = camera2.lookAt(DOWN);
+            }
+            if (i == 4) {
+                view = camera2.lookAt(RIGHT);
+            }
+            if (i == 5) {
+                view = camera2.lookAt(LEFT);
+            }
+            glm::mat4 projection = glm::perspective(glm::radians(camera2.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+            odfaeg::graphic::Shader::bind(&skyboxShader);
+            Matrix4f viewMatrix = glmToODFAEGMatrix(view);
+            Matrix4f projectionMatrix = glmToODFAEGMatrix(projection);
+            skyboxShader.setParameter("view", viewMatrix);
+            skyboxShader.setParameter("projection", projectionMatrix);
+            // skybox cube
+            glBindVertexArray(skyboxVAOFBO);
+            glActiveTexture(GL_TEXTURE0);
+            odfaeg::graphic::Texture::bind(&cubeMapTex, odfaeg::graphic::Texture::Normalized);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glBindVertexArray(0);
+        }
+        glMemoryBarrier(GL_ALL_BARRIER_BITS);
+        glFlush();
+        //window.setActive(true);
+        context2.setActive(true);
+        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         // draw...
-        window.draw(ppllrc);
-        // end the current frame (internally swaps the front and back buffers)
+        odfaeg::graphic::Shader::bind(&shader);
+        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        Matrix4f modelMatrix = glmToODFAEGMatrix(model);
+        Matrix4f viewMatrix = glmToODFAEGMatrix(view);
+        Matrix4f projectionMatrix = glmToODFAEGMatrix(projection);
+        shader.setParameter("model", modelMatrix);
+        shader.setParameter("view", viewMatrix);
+        shader.setParameter("projection", projectionMatrix);
+        shader.setParameter("cameraPos", camera.Position.x,camera.Position.y,camera.Position.z);
+        // cubes
+        glBindVertexArray(cubeVAO);
+        glActiveTexture(GL_TEXTURE0);
+        odfaeg::graphic::Texture::bind(&cubeMapFBOTex, odfaeg::graphic::Texture::Normalized);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+        window.setActive(true);
+        //Draw skybox.
+        glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+        odfaeg::graphic::Shader::bind(&skyboxShader);
+        view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+        projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        viewMatrix = glmToODFAEGMatrix(view);
+        skyboxShader.setParameter("view", viewMatrix);
+        skyboxShader.setParameter("projection", projectionMatrix);
+        // skybox cube
+        glBindVertexArray(skyboxVAO);
+        glActiveTexture(GL_TEXTURE0);
+        odfaeg::graphic::Texture::bind(&cubeMapTex, odfaeg::graphic::Texture::Normalized);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+        // refract cube.
+        glDepthFunc(GL_LESS);
+        model = glm::mat4(1.0f);
+        view = camera2.GetViewMatrix();
+        projection = glm::ortho(-1, 1, -1, 1);
+        modelMatrix = glmToODFAEGMatrix(model);
+        viewMatrix = glmToODFAEGMatrix(view);
+        projectionMatrix = glmToODFAEGMatrix(projection);
+        refractCubeShader.setParameter("model", modelMatrix);
+        refractCubeShader.setParameter("view", viewMatrix);
+        refractCubeShader.setParameter("projection", projectionMatrix);
+        odfaeg::graphic::Shader::bind(&refractCubeShader);
+        glBindVertexArray(fsQuadVAOFBO);
+        glActiveTexture(GL_TEXTURE0);
+        odfaeg::graphic::Texture::bind(&refractTex, odfaeg::graphic::Texture::Normalized);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
         window.display();
+        oldX = sf::Mouse::getPosition(window).x;
+        oldY = sf::Mouse::getPosition(window).y;
     }
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-
+    glDeleteVertexArrays(1, &cubeVAO);
+    glDeleteVertexArrays(1, &skyboxVAO);
+    glDeleteVertexArrays(1, &skyboxVAOFBO);
+    glDeleteBuffers(1, &cubeVBO);
+    glDeleteBuffers(1, &skyboxVAO);
     // release resources...
 
     return 0;

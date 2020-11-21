@@ -225,12 +225,14 @@ namespace odfaeg {
                                                                     vec2 position = (gl_FragCoord.xy / resolution.xy);
                                                                     vec4 depth = texture2D(depthBuffer, position);
                                                                     float ratio = 1.00 / 1.33;
-                                                                    vec3 i = normalize(pos - cameraPos);
+                                                                    vec3 i = (pos - cameraPos);
                                                                     vec3 r = refract (i, normalize(normal), ratio);
+                                                                    vec3 n = normalize(normal);
+                                                                    r = normalize(r);
                                                                     if (depth.z > 0) {
-                                                                        fColor = texture(sceneBox, r) * (1 - depth.a);
+                                                                        fColor = /*vec4(abs(r.r), abs(r.g), abs(r.b), 1);*/texture(sceneBox, r) * (1 - depth.a);
                                                                     } else {
-                                                                        fColor = texture(sceneBox, r);
+                                                                        fColor = /*vec4(abs(r.r), abs(r.g), abs(r.b), 1);*/texture(sceneBox, r);
                                                                     }
                                                                 }
                                                               )";

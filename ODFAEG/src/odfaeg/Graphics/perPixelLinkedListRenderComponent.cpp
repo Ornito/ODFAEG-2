@@ -45,7 +45,7 @@ namespace odfaeg {
 
             if (settings.versionMajor >= 4 && settings.versionMinor >= 3) {
                 glGenBuffers(1, &vboWorldMatrices);
-                const std::string vertexShader = R"(#version 460 core
+                const std::string vertexShader = R"(#version 460
                                                     #define M_PI 3.1415926535897932384626433832795
                                                     #define FPI M_PI/4
                                                     layout (location = 0) in vec3 position;
@@ -74,7 +74,7 @@ namespace odfaeg {
                                                         frontColor = color;
                                                     }
                                                     )";
-                const std::string  simpleVertexShader = R"(#version 460 core
+                const std::string  simpleVertexShader = R"(#version 460
                                                         layout (location = 0) in vec3 position;
                                                         layout (location = 1) in vec4 color;
                                                         layout (location = 2) in vec2 texCoords;
@@ -85,7 +85,7 @@ namespace odfaeg {
                                                         void main () {
                                                             gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
                                                         })";
-                const std::string  simpleVertexShader2 = R"(#version 460 core
+                const std::string  simpleVertexShader2 = R"(#version 460
                                                             #define M_PI 3.1415926535897932384626433832795
                                                             #define FPI M_PI/4
                                                             layout (location = 0) in vec3 position;
@@ -111,7 +111,7 @@ namespace odfaeg {
                                                                 fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
                                                                 frontColor = color;
                                                             })";
-                const std::string fragmentShader = R"(#version 460 core
+                const std::string fragmentShader = R"(#version 460
                                                       struct NodeType {
                                                           vec4 color;
                                                           float depth;

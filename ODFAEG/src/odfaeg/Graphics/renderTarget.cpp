@@ -536,18 +536,7 @@ namespace odfaeg {
                 glCheck(glClearDepth(0));
                 glCheck(glDepthMask(GL_TRUE));
                 glCheck(glDisable(GL_SCISSOR_TEST));
-                /*if (m_versionMajor >= 3 && m_versionMinor >= 3) {
-                    glCheck(glBindVertexArray(m_vao));
-                    for (unsigned int i = 0; i < 12; i++) {
-                        glCheck(glEnableVertexAttribArray(i));
-                    }
-                    glCheck(glBindVertexArray(0));
-                } else {
-                    glCheck(glEnableClientState(GL_COLOR_ARRAY));
-                    glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
-                    glCheck(glEnableClientState(GL_VERTEX_ARRAY));
-                    glCheck(glEnableClientState(GL_NORMAL_ARRAY));
-                }*/
+
                 m_cache.glStatesSet = true;
 
                 // Apply the default SFML states

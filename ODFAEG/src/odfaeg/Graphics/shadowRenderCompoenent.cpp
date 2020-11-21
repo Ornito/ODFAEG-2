@@ -29,7 +29,7 @@ namespace odfaeg {
                 if (settings.versionMajor >= 3 && settings.versionMinor >= 3) {
                     glGenBuffers(1, &vboWorldMatrices);
                     glGenBuffers(1, &vboShadowProjMatrices);
-                    const std::string buildDepthBufferVertexShaderNormal = R"(#version 460 core
+                    const std::string buildDepthBufferVertexShaderNormal = R"(#version 460
                                                                               layout (location = 0) in vec3 position;
                                                                               layout (location = 1) in vec4 color;
                                                                               layout (location = 2) in vec2 texCoords;
@@ -45,7 +45,7 @@ namespace odfaeg {
                                                                                   frontColor = color;
                                                                               }
                                                                               )";
-                    const std::string buildDepthBufferVertexShader = R"(#version 460 core
+                    const std::string buildDepthBufferVertexShader = R"(#version 460
                                                                         layout (location = 0) in vec3 position;
                                                                         layout (location = 1) in vec4 color;
                                                                         layout (location = 2) in vec2 texCoords;
@@ -62,7 +62,7 @@ namespace odfaeg {
                                                                             frontColor = color;
                                                                         }
                                                                      )";
-                    const std::string buildDepthBufferFragmentShader = R"(#version 460 core
+                    const std::string buildDepthBufferFragmentShader = R"(#version 460
                                                                           in vec4 frontColor;
                                                                           in vec2 fTexCoords;
                                                                           uniform sampler2D texture;
@@ -79,7 +79,7 @@ namespace odfaeg {
                                                                               fColor = vec4(0, 0, z, current_alpha);
                                                                           }
                                                                         )";
-                    const std::string buildShadowMapVertexShaderNormal = R"(#version 460 core
+                    const std::string buildShadowMapVertexShaderNormal = R"(#version 460
                                                                             layout (location = 0) in vec3 position;
                                                                             layout (location = 1) in vec4 color;
                                                                             layout (location = 2) in vec2 texCoords;
@@ -94,7 +94,7 @@ namespace odfaeg {
                                                                                 frontColor = color;
                                                                             }
                                                                         )";
-                    const std::string buildShadowMapVertexShader = R"(#version 460 core
+                    const std::string buildShadowMapVertexShader = R"(#version 460
                                                                       layout (location = 0) in vec3 position;
                                                                       layout (location = 1) in vec4 color;
                                                                       layout (location = 2) in vec2 texCoords;
@@ -110,7 +110,7 @@ namespace odfaeg {
                                                                           frontColor = color;
                                                                       }
                                                                     )";
-                    const std::string buildShadowMapFragmentShader = R"(#version 460 core
+                    const std::string buildShadowMapFragmentShader = R"(#version 460
                                                                         in vec4 frontColor;
                                                                         in vec2 fTexCoords;
                                                                         uniform sampler2D texture;
@@ -127,7 +127,7 @@ namespace odfaeg {
                                                                             fColor = vec4(0, 0, z, color);
                                                                         }
                                                                     )";
-                        const std::string perPixShadowVertexShader = R"(#version 460 core
+                        const std::string perPixShadowVertexShader = R"(#version 460
                                                                    layout (location = 0) in vec3 position;
                                                                    layout (location = 1) in vec4 color;
                                                                    layout (location = 2) in vec2 texCoords;
@@ -148,7 +148,7 @@ namespace odfaeg {
                                                                        shadowCoords = depthBiasMatrix * viewMatrix * projectionMatrix * vec4(gl_Position.xyz, 1);
                                                                    }
                                                                   )";
-                        const std::string perPixShadowNormalVertexShader = R"(#version 460 core
+                        const std::string perPixShadowNormalVertexShader = R"(#version 460
                                                                    layout (location = 0) in vec3 position;
                                                                    layout (location = 1) in vec4 color;
                                                                    layout (location = 2) in vec2 texCoords;
@@ -167,7 +167,7 @@ namespace odfaeg {
                                                                        shadowCoords = depthBiasMatrix * viewMatrix * projectionMatrix * vec4(gl_Position.xyz, 1);
                                                                    }
                                                                   )";
-                        const std::string perPixShadowFragmentShader = R"(#version 460 core
+                        const std::string perPixShadowFragmentShader = R"(#version 460
                                                                           in vec4 shadowCoords;
                                                                           in vec4 frontColor;
                                                                           in vec2 fTexCoords;
