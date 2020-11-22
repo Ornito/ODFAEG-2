@@ -8,9 +8,8 @@ namespace odfaeg {
 
         }
         void BigTile::addTile (Tile *tile, math::Vec2f tilePos, float* heights) {
-
-           if (heights != nullptr) {
-                tile->setDrawMode(Entity::NORMAL);
+            tile->setDrawMode(Entity::NORMAL);
+            if (heights != nullptr) {
                 int xPosition = math::Math::abs(getPosition().x) / tileSize.x + tilePos.x / tileSize.x;
                 int yPosition = math::Math::abs(getPosition().y) / tileSize.y + tilePos.y / tileSize.y;
                 int position = yPosition * nbTilesPerRow + xPosition;

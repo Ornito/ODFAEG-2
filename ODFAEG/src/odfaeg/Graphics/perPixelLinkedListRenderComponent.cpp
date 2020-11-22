@@ -97,15 +97,16 @@ namespace odfaeg {
                                                             uniform mat4 viewMatrix;
                                                             uniform float water;
                                                             uniform float time;
+                                                            uniform vec3 resolution;
                                                             out vec2 fTexCoords;
                                                             out vec4 frontColor;
                                                             void main () {
                                                                 float xOff = 0;
                                                                 float yOff = 0;
                                                                 if (water > 0.9f) {
-                                                                    yOff = 0.05*sin(position.x*12+time*FPI);
-                                                                    if((position.x != 1.0 && position.x != -1.0))
-                                                                        xOff = 0.025*cos(position.x*12+time*FPI);
+                                                                    yOff = 0.05*sin(position.x*12+time*FPI)*resolution.y;
+                                                                    if((position.x != resolution.x * 0.5f && position.x != -resolution.x * 0.5f))
+                                                                        xOff = 0.025*cos(position.x*12+time*FPI)*resolution.x;
                                                                 }
                                                                 gl_Position = projectionMatrix * viewMatrix * vec4((position.x - xOff), (position.y + yOff), position.z, 1.f);
                                                                 fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
@@ -220,6 +221,7 @@ namespace odfaeg {
                    perPixelLinkedList.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                    perPixelLinkedList2.setParameter("maxNodes", maxNodes);
                    perPixelLinkedList2.setParameter("texture", Shader::CurrentTexture);
+                   perPixelLinkedList2.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                    math::Matrix4f viewMatrix = window.getDefaultView().getViewMatrix().getMatrix().transpose();
                    math::Matrix4f projMatrix = window.getDefaultView().getProjMatrix().getMatrix().transpose();
                    perPixelLinkedListP2.setParameter("viewMatrix", viewMatrix);
@@ -439,6 +441,15 @@ namespace odfaeg {
                                 std::cout<<"texture matrix  : "<<texMatrix<<std::endl;*/
                             perPixelLinkedList2.setParameter("textureMatrix", texMatrix);
                             perPixelLinkedList2.setParameter("haveTexture", 1.f);
+                        }
+                        if (m_normals[i].getVertexArrays()[0]->getEntity()->isWater()) {
+                            perPixelLinkedList2.setParameter("water", 1.0f);
+                        } else {
+                            perPixelLinkedList2.setParameter("water", 0.0f);
+                        }
+                        if (core::Application::app != nullptr) {
+                            float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
+                            perPixelLinkedList2.setParameter("time", time);
                         }
                         currentStates.blendMode = sf::BlendNone;
                         currentStates.shader = &perPixelLinkedList2;

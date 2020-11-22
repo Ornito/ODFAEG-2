@@ -205,6 +205,7 @@ namespace odfaeg {
             priv::RenderTextureImpl* m_impl;    ///< Platform/hardware specific implementation
             Texture                  m_texture; ///< Target texture to draw on
             window::Context*         m_context; ///< Need to use a separating opengl context otherwise it doesn't work because opengl resource are messed up.
+            window::ContextSettings  m_settings;
             unsigned int m_atomicBuffer, m_linkedListBuffer, m_headPtrTex, m_clearBuff;
         };
     }

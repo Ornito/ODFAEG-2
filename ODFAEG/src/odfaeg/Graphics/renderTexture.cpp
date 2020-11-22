@@ -58,10 +58,14 @@ namespace odfaeg
         bool RenderTexture::create(unsigned int width, unsigned int height, window::ContextSettings settings, unsigned int textureType, bool useSeparateContext, unsigned int precision, unsigned int format, unsigned int type)
         {
 
-            if (useSeparateContext)
+            if (useSeparateContext) {
                 m_context = new window::Context(settings, width, height);
-            RenderTarget::setVersionMajor(m_context->getSettings().versionMajor);
-            RenderTarget::setVersionMinor(m_context->getSettings().versionMinor);
+                m_settings = m_context->getSettings();
+            } else {
+                m_settings = settings;
+            }
+            RenderTarget::setVersionMajor(m_settings.versionMajor);
+            RenderTarget::setVersionMinor(m_settings.versionMinor);
             // Create the texture
             if (textureType == GL_TEXTURE_2D) {
                 if(!m_texture.create(width, height))
@@ -133,7 +137,10 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         bool RenderTexture::setActive(bool active)
         {
-            return m_impl && m_context && m_context->setActive(active);
+            if (m_context)
+                return m_impl && m_context->setActive(active);
+            else
+                return true;
         }
 
 
@@ -162,8 +169,7 @@ namespace odfaeg
             return m_texture;
         }
         const window::ContextSettings& RenderTexture::getSettings() const {
-              ContextSettings empty(0, 0, 0, 0, 0);
-              if(m_context) return m_context->getSettings();
+              return m_settings;
         }
         bool RenderTexture::activate(bool active) {
             return setActive(active);

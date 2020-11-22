@@ -248,7 +248,7 @@ int main(int argc, char* argv[])
                                             vec3 I = normalize(Position - cameraPos);
                                             vec3 R = reflect(I, normalize(Normal));
                                             R = normalize(R);
-                                            FragColor = /*vec4(abs(R.r), abs(R.g), abs(R.b), 1);*/ vec4(texture(skybox, R).rgb, 1.0);
+                                            FragColor = vec4(texture(skybox, R).rgb, 1.0);
                                         }
                                    )";
     const std::string skyboxVS = R"(#version 460
@@ -422,14 +422,14 @@ int main(int argc, char* argv[])
     cubeMapFBOTex.createCubeMap(SCR_WIDTH, SCR_WIDTH);
     refractTex.create(SCR_WIDTH, SCR_HEIGHT);
     glEnable(GL_TEXTURE_CUBE_MAP);
-    sf::Context context(sf::ContextSettings(0, 0, 4, 4, 6), SCR_WIDTH, SCR_WIDTH);
+    /*sf::Context context(sf::ContextSettings(0, 0, 4, 4, 6), SCR_WIDTH, SCR_WIDTH);
     context.setActive(true);
     unsigned int skyboxVAOFBO;
     glGenVertexArrays(1, &skyboxVAOFBO);
     glBindVertexArray(skyboxVAOFBO);
     glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);*/
 
 
     GLuint frameBufferID;
@@ -443,8 +443,8 @@ int main(int argc, char* argv[])
         std::cerr << "Impossible to create render texture (failed to link the target texture to the frame buffer)" << std::endl;
         return false;
     }
-    sf::Context context2(sf::ContextSettings(0, 0, 4, 4, 6), SCR_WIDTH, SCR_WIDTH);
-    context2.setActive(true);
+    /*sf::Context context2(sf::ContextSettings(0, 0, 4, 4, 6), SCR_WIDTH, SCR_WIDTH);
+    context2.setActive(true);*/
     unsigned int fsQuadVAOFBO, fsQuadVBOFBO;
     glGenVertexArrays(1, &fsQuadVAOFBO);
     glBindVertexArray(fsQuadVAOFBO);
@@ -535,15 +535,17 @@ int main(int argc, char* argv[])
         // render
         // ------
         window.setActive(true);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        context2.setActive(true);
+        /*context2.setActive(true);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         context.setActive(true);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
         for (unsigned int i = 0; i < 6; i++) {
+            glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
             glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubeMapFBOTex.getNativeHandle(), 0);
             glViewport(0, 0, SCR_WIDTH, SCR_WIDTH);
             glm::mat4 view;
@@ -572,14 +574,17 @@ int main(int argc, char* argv[])
             skyboxShader.setParameter("view", viewMatrix);
             skyboxShader.setParameter("projection", projectionMatrix);
             // skybox cube
-            glBindVertexArray(skyboxVAOFBO);
+
+            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glBindVertexArray(skyboxVAO);
             glActiveTexture(GL_TEXTURE0);
             odfaeg::graphic::Texture::bind(&cubeMapTex, odfaeg::graphic::Texture::Normalized);
             glDrawArrays(GL_TRIANGLES, 0, 36);
             glBindVertexArray(0);
         }
         //window.setActive(true);
-        context2.setActive(true);
+        //context2.setActive(true);
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         // draw...
         odfaeg::graphic::Shader::bind(&shader);
@@ -597,25 +602,12 @@ int main(int argc, char* argv[])
         glBindVertexArray(cubeVAO);
         glActiveTexture(GL_TEXTURE0);
         odfaeg::graphic::Texture::bind(&cubeMapFBOTex, odfaeg::graphic::Texture::Normalized);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
-        window.setActive(true);
-        //Draw skybox.
-        glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-        odfaeg::graphic::Shader::bind(&skyboxShader);
-        view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
-        projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        viewMatrix = glmToODFAEGMatrix(view);
-        skyboxShader.setParameter("view", viewMatrix);
-        skyboxShader.setParameter("projection", projectionMatrix);
-        // skybox cube
-        glBindVertexArray(skyboxVAO);
-        glActiveTexture(GL_TEXTURE0);
-        odfaeg::graphic::Texture::bind(&cubeMapTex, odfaeg::graphic::Texture::Normalized);
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID2);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
         // refract cube.
-        glDepthFunc(GL_LESS);
         model = glm::mat4(1.0f);
         view = camera2.GetViewMatrix();
         projection = glm::ortho(-1, 1, -1, 1);
@@ -629,8 +621,25 @@ int main(int argc, char* argv[])
         glBindVertexArray(fsQuadVAOFBO);
         glActiveTexture(GL_TEXTURE0);
         odfaeg::graphic::Texture::bind(&refractTex, odfaeg::graphic::Texture::Normalized);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
+        //Draw skybox.
+        glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+        odfaeg::graphic::Shader::bind(&skyboxShader);
+        view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+        projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        viewMatrix = glmToODFAEGMatrix(view);
+        skyboxShader.setParameter("view", viewMatrix);
+        skyboxShader.setParameter("projection", projectionMatrix);
+        // skybox cube
+        glBindVertexArray(skyboxVAO);
+        glActiveTexture(GL_TEXTURE0);
+        odfaeg::graphic::Texture::bind(&cubeMapTex, odfaeg::graphic::Texture::Normalized);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+        glDepthFunc(GL_LESS);
 
         window.display();
         oldX = sf::Mouse::getPosition(window).x;
@@ -640,7 +649,7 @@ int main(int argc, char* argv[])
     // ------------------------------------------------------------------------
     glDeleteVertexArrays(1, &cubeVAO);
     glDeleteVertexArrays(1, &skyboxVAO);
-    glDeleteVertexArrays(1, &skyboxVAOFBO);
+    //glDeleteVertexArrays(1, &skyboxVAOFBO);
     glDeleteBuffers(1, &cubeVBO);
     glDeleteBuffers(1, &skyboxVAO);
     // release resources...

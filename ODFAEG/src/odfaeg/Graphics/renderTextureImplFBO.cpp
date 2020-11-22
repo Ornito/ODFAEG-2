@@ -178,10 +178,10 @@ namespace odfaeg {
                 glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBuffer));
             }
             void RenderTextureImplFBO::selectCubemapFace (int face, int textureID) {
-                /*if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                if (m_versionMajor >= 3 && m_versionMinor >= 3)
                     glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer));
                 else
-                    glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBuffer));*/
+                    glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBuffer));
                 if (m_versionMajor > 3 || m_versionMajor == 3 && m_versionMinor >= 3)
                     glCheck(glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, textureID, 0));
                 else

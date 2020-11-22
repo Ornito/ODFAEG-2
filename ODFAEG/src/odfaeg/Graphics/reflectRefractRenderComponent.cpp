@@ -230,9 +230,9 @@ namespace odfaeg {
                                                                     vec3 n = normalize(normal);
                                                                     r = normalize(r);
                                                                     if (depth.z > 0) {
-                                                                        fColor = /*vec4(abs(r.r), abs(r.g), abs(r.b), 1);*/texture(sceneBox, r) * (1 - depth.a);
+                                                                        fColor = texture(sceneBox, r) * (1 - depth.a);
                                                                     } else {
-                                                                        fColor = /*vec4(abs(r.r), abs(r.g), abs(r.b), 1);*/texture(sceneBox, r);
+                                                                        fColor = texture(sceneBox, r);
                                                                     }
                                                                 }
                                                               )";
@@ -486,8 +486,6 @@ namespace odfaeg {
                     sLinkedList.setParameter("projectionMatrix", projMatrix);
                     for (unsigned int i = 0; i < rvInstances.size(); i++) {
                         if (rvInstances[i].getAllVertices().getVertexCount() > 0) {
-                            vb.clear();
-                            vb.setPrimitiveType(rvInstances[i].getVertexArrays()[0]->getPrimitiveType());
                             matrices.clear();
                             std::vector<TransformMatrix*> tm = rvInstances[i].getTransforms();
                             for (unsigned int j = 0; j < tm.size(); j++) {
@@ -500,6 +498,8 @@ namespace odfaeg {
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
                             glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                            vb.clear();
+                            vb.setPrimitiveType(rvInstances[i].getVertexArrays()[0]->getPrimitiveType());
                             if (rvInstances[i].getVertexArrays().size() > 0) {
                                 for (unsigned int j = 0; j < rvInstances[i].getVertexArrays()[0]->getVertexCount(); j++) {
                                     vb.append((*rvInstances[i].getVertexArrays()[0])[j]);

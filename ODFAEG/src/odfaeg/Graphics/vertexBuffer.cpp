@@ -486,12 +486,10 @@ namespace odfaeg {
                             vboNormalBuffer = static_cast<unsigned int>(vbo);
                         }
                         if (oldVerticesSize != m_vertices.size()) {
-                            //std::cout<<"size changed : update vbo normal buffer"<<std::endl;
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboNormalBuffer));
                             glCheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(sf::Vector3f), &m_normals[0], GL_DYNAMIC_DRAW));
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                         } else {
-                            //std::cout<<"update vbo normal buffer"<<std::endl;
                             GLvoid *pos_vbo = nullptr;
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboNormalBuffer));
                             glCheck(pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
