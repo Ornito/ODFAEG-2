@@ -132,6 +132,25 @@
             </code></pre>
             
            <p> Et voilà maintenant vous savez créer une application ODFAEG! </p>
+            
+            <h1>Structure du framework ODFAEG.</h1>
+            <p>Le framework odfaeg est décomposé en 7 parties : 
+              <li>odfaeg::core pour les fonctions utilitaires</li>
+              <li>odfaeg::math pour les opérations mathématique.</li>
+              <li>odfaeg::physics pour la physique.</li>
+              <li>odfaeg::window pour le fenêtrage.</li>
+              <li>odfaeg::graphic pour le graphisme.</li>
+              <li>odfaeg::network pour le réseau.</li>
+              <li>odfaeg::audio pour le son.</li>
+              Chaque partie peut communiquer entre elle grâce à une classe statique, la classe World par exemple.<br/>
+              Il y a cinq sortes d'objets importants dans ODFAEG : <br/>
+              <li>Les entités, chaque objet dessinable et/ou transformable de ODFAEG (et non de SFML), la classe Tile par exemple.</li> 
+              <li>Les "entity manager" qui contiennent les entités, par exemple, la classe map.</li>
+              <li>Les composants qui dessinent les entités, par exemple, la classe PerPixelLinkedListRenderComponent.</li>
+              <li>Les "entity systems" qui mettent à jour les entités, par exemple la classe AnimationUpdater.</li>
+              <li>Le "monde" (la classe World) qui contient tout ce qui a été cité précédemment.</li>
+              Il y a deux type de composants, les composants de légés qui dessinent des interfaces graphiques et <br/>
+              les composants lourd qui dessinet des entités ODFAEG à l'aide de shaders.<br/>
           </article>
         </div>
       </div>
