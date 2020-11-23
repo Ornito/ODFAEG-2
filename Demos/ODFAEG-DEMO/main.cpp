@@ -1,6 +1,7 @@
 #include "application.h"
-#include <SFML/OpenGL.hpp>
-#include <SFML/Window/WindowStyle.hpp>
+#include "ExtLib/GLEW/glew-2.0.0/include/GL/glew.h"
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include <stdio.h>
 #include <string>
 #include <fstream>
@@ -19,6 +20,132 @@ using namespace odfaeg::window;
 using namespace odfaeg::audio;
 using namespace sorrok;
 using namespace std;
+class Shader
+{
+public:
+    unsigned int ID;
+    // constructor generates the shader on the fly
+    // ------------------------------------------------------------------------
+    Shader(std::string vertexCode, std::string fragmentCode)
+    {
+        // 1. retrieve the vertex/fragment source code from filePath
+        const char* vShaderCode = vertexCode.c_str();
+        const char * fShaderCode = fragmentCode.c_str();
+        // 2. compile shaders
+        unsigned int vertex, fragment;
+        // vertex shader
+        vertex = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vertex, 1, &vShaderCode, NULL);
+        glCompileShader(vertex);
+        checkCompileErrors(vertex, "VERTEX");
+        // fragment Shader
+        fragment = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fragment, 1, &fShaderCode, NULL);
+        glCompileShader(fragment);
+        checkCompileErrors(fragment, "FRAGMENT");
+        // shader Program
+        ID = glCreateProgram();
+        glAttachShader(ID, vertex);
+        glAttachShader(ID, fragment);
+        glLinkProgram(ID);
+        checkCompileErrors(ID, "PROGRAM");
+        // delete the shaders as they're linked into our program now and no longer necessery
+        glDeleteShader(vertex);
+        glDeleteShader(fragment);
+
+    }
+    // activate the shader
+    // ------------------------------------------------------------------------
+    void use()
+    {
+        glUseProgram(ID);
+    }
+    // utility uniform functions
+    // ------------------------------------------------------------------------
+    void setBool(const std::string &name, bool value) const
+    {
+        glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
+    }
+    // ------------------------------------------------------------------------
+    void setInt(const std::string &name, int value) const
+    {
+        glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+    }
+    // ------------------------------------------------------------------------
+    void setFloat(const std::string &name, float value) const
+    {
+        glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+    }
+    // ------------------------------------------------------------------------
+    void setVec2(const std::string &name, const glm::vec2 &value) const
+    {
+        glUniform2fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
+    }
+    void setVec2(const std::string &name, float x, float y) const
+    {
+        glUniform2f(glGetUniformLocation(ID, name.c_str()), x, y);
+    }
+    // ------------------------------------------------------------------------
+    void setVec3(const std::string &name, const glm::vec3 &value) const
+    {
+        glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
+    }
+    void setVec3(const std::string &name, float x, float y, float z) const
+    {
+        glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z);
+    }
+    // ------------------------------------------------------------------------
+    void setVec4(const std::string &name, const glm::vec4 &value) const
+    {
+        glUniform4fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
+    }
+    void setVec4(const std::string &name, float x, float y, float z, float w)
+    {
+        glUniform4f(glGetUniformLocation(ID, name.c_str()), x, y, z, w);
+    }
+    // ------------------------------------------------------------------------
+    void setMat2(const std::string &name, const glm::mat2 &mat) const
+    {
+        glUniformMatrix2fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    }
+    // ------------------------------------------------------------------------
+    void setMat3(const std::string &name, const glm::mat3 &mat) const
+    {
+        glUniformMatrix3fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    }
+    // ------------------------------------------------------------------------
+    void setMat4(const std::string &name, const glm::mat4 &mat) const
+    {
+        glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    }
+
+private:
+    // utility function for checking shader compilation/linking errors.
+    // ------------------------------------------------------------------------
+    void checkCompileErrors(GLuint shader, std::string type)
+    {
+        GLint success;
+        GLchar infoLog[1024];
+        if(type != "PROGRAM")
+        {
+            glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+            if(!success)
+            {
+                glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+                std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+            }
+        }
+        else
+        {
+            glGetProgramiv(shader, GL_LINK_STATUS, &success);
+            if(!success)
+            {
+                glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+                std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+            }
+        }
+    }
+};
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
     FORWARD,
@@ -161,7 +288,6 @@ private:
     }
 };
 unsigned int loadCubemap(vector<std::string> faces);
-Matrix4f glmToODFAEGMatrix(glm::mat4 mat);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -193,7 +319,7 @@ int main(int argc, char* argv[])
     MyAppli app(sf::VideoMode(800, 600), "Test odfaeg");
     return app.exec();
 // create the window
-    sf::Window window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, sf::ContextSettings(24, 0, 4, 4, 6));
+   /* sf::Window window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, sf::ContextSettings(24, 0, 4, 4, 6));
     glewInit();
     window.setVerticalSyncEnabled(true);
 
@@ -203,25 +329,6 @@ int main(int argc, char* argv[])
     glEnable(GL_DEPTH_TEST);
     // build and compile shaders
     // -------------------------
-    const std::string refractCubeVS = R"(#version 460
-                                         layout (location = 0) in vec3 aPos;
-                                         layout (location = 1) in vec2 aTexCoords;
-                                         uniform mat4 model;
-                                         uniform mat4 view;
-                                         uniform mat4 projection;
-                                         out vec2 texCoords;
-                                         void main() {
-                                             gl_Position = projection * view * model * vec4(aPos, 1.0);
-                                             texCoords = aTexCoords;
-                                         }
-                                         )";
-    const std::string refractCubeFS = R"(#version 460
-                                         uniform sampler2D texture;
-                                         in vec2 texCoords;
-                                         out vec4 FragColor;
-                                         void main() {
-                                            FragColor = texture2D (texture, texCoords);
-                                         })";
     const std::string cubeMapsVS = R"(#version 460
                                     layout (location = 0) in vec3 aPos;
                                     layout (location = 1) in vec3 aNormal;
@@ -272,55 +379,97 @@ int main(int argc, char* argv[])
                                         FragColor = texture(skybox, TexCoords);
                                     }
                                     )";
-    odfaeg::graphic::Shader shader, skyboxShader, refractCubeShader;
-    shader.loadFromMemory(cubeMapsVS, cubeMapsFS);
-    skyboxShader.loadFromMemory(skyboxVS, skyboxFS);
-    refractCubeShader.loadFromMemory(refractCubeVS, refractCubeFS);
+    Shader shader(cubeMapsVS, cubeMapsFS);
+    Shader skyboxShader(skyboxVS, skyboxFS);
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float cubeVertices[] = {
-        // positions          // normals
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        // positions
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
 
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
 
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f, -0.5f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+        -0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+    };
+    float cubeNormals[] = {
+        // normals
+         0.0f,  0.0f, -1.0f,
+         0.0f,  0.0f, -1.0f,
+         0.0f,  0.0f, -1.0f,
+         0.0f,  0.0f, -1.0f,
+         0.0f,  0.0f, -1.0f,
+         0.0f,  0.0f, -1.0f,
+
+         0.0f,  0.0f, 1.0f,
+         0.0f,  0.0f, 1.0f,
+         0.0f,  0.0f, 1.0f,
+         0.0f,  0.0f, 1.0f,
+         0.0f,  0.0f, 1.0f,
+         0.0f,  0.0f, 1.0f,
+
+        -1.0f,  0.0f,  0.0f,
+        -1.0f,  0.0f,  0.0f,
+        -1.0f,  0.0f,  0.0f,
+        -1.0f,  0.0f,  0.0f,
+        -1.0f,  0.0f,  0.0f,
+        -1.0f,  0.0f,  0.0f,
+
+         1.0f,  0.0f,  0.0f,
+         1.0f,  0.0f,  0.0f,
+         1.0f,  0.0f,  0.0f,
+         1.0f,  0.0f,  0.0f,
+         1.0f,  0.0f,  0.0f,
+         1.0f,  0.0f,  0.0f,
+
+         0.0f, -1.0f,  0.0f,
+         0.0f, -1.0f,  0.0f,
+         0.0f, -1.0f,  0.0f,
+         0.0f, -1.0f,  0.0f,
+         0.0f, -1.0f,  0.0f,
+         0.0f, -1.0f,  0.0f,
+
+         0.0f,  1.0f,  0.0f,
+         0.0f,  1.0f,  0.0f,
+         0.0f,  1.0f,  0.0f,
+         0.0f,  1.0f,  0.0f,
+         0.0f,  1.0f,  0.0f,
+         0.0f,  1.0f,  0.0f
     };
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -368,26 +517,21 @@ int main(int argc, char* argv[])
         -1.0f, -1.0f,  1.0f,
          1.0f, -1.0f,  1.0f
     };
-    float fullScreenQuadVertices2[] = {
-        // positions        //TexCoords
-        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-         1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-    };
+
     // cube VAO
-    unsigned int cubeVAO, cubeVBO;
+    unsigned int cubeVAO, cubeVBO, cubeNormalsVBO;
     glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &cubeVBO);
     glBindVertexArray(cubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glGenBuffers(1, &cubeNormalsVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, cubeNormalsVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeNormals), &cubeNormals, GL_STATIC_DRAW);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     // skybox VAO
     unsigned int skyboxVAO, skyboxVBO;
     glGenVertexArrays(1, &skyboxVAO);
@@ -409,68 +553,14 @@ int main(int argc, char* argv[])
         "tilesets/skybox/front.jpg",
         "tilesets/skybox/back.jpg"
     };
-    std::vector<sf::Image> images;
-    for (unsigned int i = 0; i < 6; i++) {
-        sf::Image image;
-        image.loadFromFile(faces[i]);
-        images.push_back(image);
-    }
-    int width = images[0].getSize().x;
-    int height = images[0].getSize().y;
-    odfaeg::graphic::Texture cubeMapTex, cubeMapFBOTex, refractTex;
-    cubeMapTex.createCubeMap(width, height, images);
-    cubeMapFBOTex.createCubeMap(SCR_WIDTH, SCR_WIDTH);
-    refractTex.create(SCR_WIDTH, SCR_HEIGHT);
-    glEnable(GL_TEXTURE_CUBE_MAP);
-    /*sf::Context context(sf::ContextSettings(0, 0, 4, 4, 6), SCR_WIDTH, SCR_WIDTH);
-    context.setActive(true);
-    unsigned int skyboxVAOFBO;
-    glGenVertexArrays(1, &skyboxVAOFBO);
-    glBindVertexArray(skyboxVAOFBO);
-    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);*/
-
-
-    GLuint frameBufferID;
-    glGenFramebuffers(1, &frameBufferID);
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
-    glDrawBuffer(GL_COLOR_ATTACHMENT0);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, cubeMapFBOTex.getNativeHandle(), 0);
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-    {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        std::cerr << "Impossible to create render texture (failed to link the target texture to the frame buffer)" << std::endl;
-        return false;
-    }
-    /*sf::Context context2(sf::ContextSettings(0, 0, 4, 4, 6), SCR_WIDTH, SCR_WIDTH);
-    context2.setActive(true);*/
-    unsigned int fsQuadVAOFBO, fsQuadVBOFBO;
-    glGenVertexArrays(1, &fsQuadVAOFBO);
-    glBindVertexArray(fsQuadVAOFBO);
-    glGenBuffers(1, &fsQuadVBOFBO);
-    glBindBuffer(GL_ARRAY_BUFFER, fsQuadVBOFBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(fullScreenQuadVertices2), &fullScreenQuadVertices2, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    GLuint frameBufferID2;
-    glGenFramebuffers(1, &frameBufferID2);
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID2);
-    glDrawBuffer(GL_COLOR_ATTACHMENT0);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, refractTex.getNativeHandle(), 0);
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-    {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        std::cerr << "Impossible to create render texture (failed to link the target texture to the frame buffer)" << std::endl;
-        return false;
-    }
+    unsigned int cubemapTexture = loadCubemap(faces);
    // shader configuration
     // --------------------
-    shader.setParameter("skybox", cubeMapFBOTex);
-    skyboxShader.setParameter("skybox", cubeMapTex);
-    refractCubeShader.setParameter("texture", refractTex);
+    shader.use();
+    shader.setInt("skybox", 0);
+
+    skyboxShader.use();
+    skyboxShader.setInt("skybox", 0);
     int oldX = sf::Mouse::getPosition(window).x;
     int oldY = sf::Mouse::getPosition(window).y;
     sf::Clock time;
@@ -534,113 +624,40 @@ int main(int argc, char* argv[])
         // clear the buffers
         // render
         // ------
-        window.setActive(true);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // render
+        // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        /*context2.setActive(true);
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        context.setActive(true);
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
-        for (unsigned int i = 0; i < 6; i++) {
-            glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
-            glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubeMapFBOTex.getNativeHandle(), 0);
-            glViewport(0, 0, SCR_WIDTH, SCR_WIDTH);
-            glm::mat4 view;
-            if (i == 0) {
-                view = camera2.lookAt(FORWARD);
-            }
-            if (i == 1) {
-                view = camera2.lookAt(BACKWARD);
-            }
-            if (i == 2) {
-                view = camera2.lookAt(UP);
-            }
-            if (i == 3) {
-                view = camera2.lookAt(DOWN);
-            }
-            if (i == 4) {
-                view = camera2.lookAt(RIGHT);
-            }
-            if (i == 5) {
-                view = camera2.lookAt(LEFT);
-            }
-            glm::mat4 projection = glm::perspective(glm::radians(camera2.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-            odfaeg::graphic::Shader::bind(&skyboxShader);
-            Matrix4f viewMatrix = glmToODFAEGMatrix(view);
-            Matrix4f projectionMatrix = glmToODFAEGMatrix(projection);
-            skyboxShader.setParameter("view", viewMatrix);
-            skyboxShader.setParameter("projection", projectionMatrix);
-            // skybox cube
 
-            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glBindVertexArray(skyboxVAO);
-            glActiveTexture(GL_TEXTURE0);
-            odfaeg::graphic::Texture::bind(&cubeMapTex, odfaeg::graphic::Texture::Normalized);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-            glBindVertexArray(0);
-        }
-        //window.setActive(true);
-        //context2.setActive(true);
-        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-        // draw...
-        odfaeg::graphic::Shader::bind(&shader);
+        // draw scene as normal
+        shader.use();
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        Matrix4f modelMatrix = glmToODFAEGMatrix(model);
-        Matrix4f viewMatrix = glmToODFAEGMatrix(view);
-        Matrix4f projectionMatrix = glmToODFAEGMatrix(projection);
-        shader.setParameter("model", modelMatrix);
-        shader.setParameter("view", viewMatrix);
-        shader.setParameter("projection", projectionMatrix);
-        shader.setParameter("cameraPos", camera.Position.x,camera.Position.y,camera.Position.z);
+        shader.setMat4("model", model);
+        shader.setMat4("view", view);
+        shader.setMat4("projection", projection);
+        shader.setVec3("cameraPos", camera.Position);
         // cubes
         glBindVertexArray(cubeVAO);
         glActiveTexture(GL_TEXTURE0);
-        odfaeg::graphic::Texture::bind(&cubeMapFBOTex, odfaeg::graphic::Texture::Normalized);
-        glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID2);
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 36, 1);
         glBindVertexArray(0);
-        // refract cube.
-        model = glm::mat4(1.0f);
-        view = camera2.GetViewMatrix();
-        projection = glm::ortho(-1, 1, -1, 1);
-        modelMatrix = glmToODFAEGMatrix(model);
-        viewMatrix = glmToODFAEGMatrix(view);
-        projectionMatrix = glmToODFAEGMatrix(projection);
-        refractCubeShader.setParameter("model", modelMatrix);
-        refractCubeShader.setParameter("view", viewMatrix);
-        refractCubeShader.setParameter("projection", projectionMatrix);
-        odfaeg::graphic::Shader::bind(&refractCubeShader);
-        glBindVertexArray(fsQuadVAOFBO);
-        glActiveTexture(GL_TEXTURE0);
-        odfaeg::graphic::Texture::bind(&refractTex, odfaeg::graphic::Texture::Normalized);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
-        //Draw skybox.
+
+        // draw skybox as last
         glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-        odfaeg::graphic::Shader::bind(&skyboxShader);
+        skyboxShader.use();
         view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
-        projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        viewMatrix = glmToODFAEGMatrix(view);
-        skyboxShader.setParameter("view", viewMatrix);
-        skyboxShader.setParameter("projection", projectionMatrix);
+        skyboxShader.setMat4("view", view);
+        skyboxShader.setMat4("projection", projection);
         // skybox cube
         glBindVertexArray(skyboxVAO);
         glActiveTexture(GL_TEXTURE0);
-        odfaeg::graphic::Texture::bind(&cubeMapTex, odfaeg::graphic::Texture::Normalized);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
-        glDepthFunc(GL_LESS);
-
+        glDepthFunc(GL_LESS); // set depth function back to default
         window.display();
         oldX = sf::Mouse::getPosition(window).x;
         oldY = sf::Mouse::getPosition(window).y;
@@ -652,17 +669,38 @@ int main(int argc, char* argv[])
     //glDeleteVertexArrays(1, &skyboxVAOFBO);
     glDeleteBuffers(1, &cubeVBO);
     glDeleteBuffers(1, &skyboxVAO);
-    // release resources...
+    // release resources...*/
 
     return 0;
 }
-Matrix4f glmToODFAEGMatrix(glm::mat4 mat) {
-    Matrix4f odfaegMatrix(mat[0][0], mat[0][1], mat[0][2], mat[0][3],
-                         mat[1][0], mat[1][1], mat[1][2], mat[1][3],
-                         mat[2][0], mat[2][1], mat[2][2], mat[2][3],
-                         mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
-    return odfaegMatrix;
+unsigned int loadCubemap(std::vector<std::string>  faces) {
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    int width, height;
+    for (unsigned int i = 0; i < faces.size(); i++)
+    {
+        sf::Image image;
+        image.loadFromFile(faces[i]);
+        if (image.getPixelsPtr())
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
+        }
+        else
+        {
+            std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+        }
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
 }
+
 
 
 

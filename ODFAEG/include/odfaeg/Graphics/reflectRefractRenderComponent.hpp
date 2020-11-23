@@ -77,7 +77,7 @@ namespace odfaeg {
             sf::Color backgroundColor; /**> The background color.*/
             std::vector<Instance> m_instances, m_normals, m_reflInstances, m_reflNormals; /**> Instances to draw. (Instanced rendering.) */
             std::vector<Entity*> visibleEntities;
-            RenderTexture depthBuffer, reflectRefractTex, environmentMap, rDepthBuffer;
+            RenderTexture depthBuffer, reflectRefractTex, environmentMap;
             Shader sBuildDepthBuffer, sBuildDepthBufferNormal, sReflectRefract, sReflectRefractNormal, sLinkedList, sLinkedListNormal, sLinkedList2;
             View view;
             std::string expression;

@@ -41,7 +41,7 @@ namespace odfaeg {
                                                                 layout (location = 0) in vec3 position;
                                                                 layout (location = 1) in vec4 color;
                                                                 layout (location = 2) in vec2 texCoords;
-                                                                /*layout (location = 3) in vec3 normals;*/
+                                                                layout (location = 3) in vec3 normals;
                                                                 uniform mat4 projectionMatrix;
                                                                 uniform mat4 viewMatrix;
                                                                 uniform mat4 textureMatrix;
@@ -57,7 +57,7 @@ namespace odfaeg {
                                                         layout (location = 0) in vec3 position;
                                                         layout (location = 1) in vec4 color;
                                                         layout (location = 2) in vec2 texCoords;
-                                                        /*layout (location = 3) in vec3 normals;*/
+                                                        layout (location = 3) in vec3 normals;
                                                         layout (location = 4) in mat4 worldMat;
                                                         uniform mat4 projectionMatrix;
                                                         uniform mat4 viewMatrix;
@@ -74,7 +74,7 @@ namespace odfaeg {
                                                                     layout (location = 0) in vec3 position;
                                                                     layout (location = 1) in vec4 color;
                                                                     layout (location = 2) in vec2 texCoords;
-                                                                    /*layout (location = 3) in vec3 normals;*/
+                                                                    layout (location = 3) in vec3 normals;
                                                                     uniform mat4 projectionMatrix;
                                                                     uniform mat4 viewMatrix;
                                                                     uniform mat4 worldMatrix;
@@ -202,9 +202,9 @@ namespace odfaeg {
                                                                          vec3 tmpNormal = (normal.xyz);
                                                                          vec3 tangeant = normalize (vec3(size.xy, s21 - s01));
                                                                          vec3 binomial = normalize (vec3(size.yx, s12 - s10));
-                                                                         normal.x = dot(vertexToLight, tangeant);
-                                                                         normal.y = dot(vertexToLight, binomial);
-                                                                         normal.z = dot(vertexToLight, tmpNormal);
+                                                                         normal.x = dot(bump.xyz, tangeant);
+                                                                         normal.y = dot(bump.xyz, binomial);
+                                                                         normal.z = dot(bump.xyz, tmpNormal);
                                                                          normal.w = bump.w;
                                                                      }
                                                                      if (z >= normal.w) {

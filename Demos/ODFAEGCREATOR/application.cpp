@@ -699,10 +699,9 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             #else if defined (ODFAEG_SYSTEM_WINDOWS)
             std::ofstream header(path+"\\"+minAppliname+".hpp");
             #endif // if
-            std::cout<<"path : "<<path<<std::endl;
             header<<"#ifndef "<<majAppliname<<"_HPP"<<std::endl;
             header<<"#define "<<majAppliname<<"_HPP"<<std::endl;
-            header<<"#include \"/usr/local/include/odfaeg/Core/application.h\""<<std::endl;
+            header<<"#include \"odfaeg/Core/application.h\""<<std::endl;
             header<<"class "<<appliname<<" : public odfaeg::core::Application {"<<std::endl;
             header<<"   public : "<<std::endl;
             header<<"   "<<appliname<<"(sf::VideoMode vm, std::string title);"<<std::endl;
@@ -710,7 +709,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             header<<"   void onInit();"<<std::endl;
             header<<"   void onRender(odfaeg::graphic::RenderComponentManager* cm);"<<std::endl;
             header<<"   void onDisplay(odfaeg::graphic::RenderWindow* window);"<<std::endl;
-            header<<"   void onUpdate (odfaeg::graphic::RenderWindow*, sf::Event& event);"<<std::endl;
+            header<<"   void onUpdate (odfaeg::graphic::RenderWindow*, odfaeg::window::IEvent& event);"<<std::endl;
             header<<"   void onExec ();"<<std::endl;
             header<<"   private : "<<std::endl;
             header<<"   std::vector<std::unique_ptr<Drawable>> drawables;"<<std::endl;
@@ -719,11 +718,12 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             header<<"#endif"<<std::endl;
             header.close();
             std::ostringstream oss;
-            oss<<"#include \""+path+"/"+minAppliname+".hpp\""<<std::endl;
+            oss<<"#include \""+minAppliname+".hpp\""<<std::endl;
             oss<<"using namespace odfaeg::graphic;"<<std::endl;
             oss<<"using namespace odfaeg::math;"<<std::endl;
+            oss<<"using namespace odfaeg::window;"<<std::endl;
             oss<<appliname<<"::"<<appliname<<"(sf::VideoMode vm, std::string title) : "<<std::endl;
-            oss<<"Application (vm, title, sf::Style::Resize|sf::Style::Close, sf::ContextSettings(0, 0, 0, 3, 0)) {"<<std::endl;
+            oss<<"Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0, 0, 3, 0)) {"<<std::endl;
             oss<<"}"<<std::endl;
             oss<<"void "<<appliname<<"::onLoad() {"<<std::endl;
             oss<<"  TextureManager<> tm;"<<std::endl;
@@ -741,8 +741,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             oss<<"       }"<<std::endl;
             oss<<"   }"<<std::endl;
             oss<<"}"<<std::endl;
-            oss<<"void "<<appliname<<"::onUpdate (RenderWindow* window, sf::Event& event) {"<<std::endl;
-            oss<<" if (&getRenderWindow() == window && event.type == sf::Event::Closed) {"<<std::endl;
+            oss<<"void "<<appliname<<"::onUpdate (RenderWindow* window, IEvent& event) {"<<std::endl;
+            oss<<" if (&getRenderWindow() == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {"<<std::endl;
             oss<<"  stop();"<<std::endl;
             oss<<" }"<<std::endl;
             oss<<"}"<<std::endl;

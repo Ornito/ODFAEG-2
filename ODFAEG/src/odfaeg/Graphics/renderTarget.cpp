@@ -169,12 +169,12 @@ namespace odfaeg {
                         glCheck(glEnableVertexAttribArray(0));
                         glCheck(glEnableVertexAttribArray(1));
                         glCheck(glEnableVertexAttribArray(2));
-                        glCheck(glEnableVertexAttribArray(3));
                         glCheck(glVertexAttribPointer(0, 3,GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*) 0));
                         glCheck(glVertexAttribPointer(1, 4,GL_UNSIGNED_BYTE,GL_TRUE,sizeof(Vertex),(GLvoid*) 12));
                         glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) 16));
+                        glCheck(glEnableVertexAttribArray(3));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboNormalBuffer));
-                        glCheck(glVertexAttribPointer(3, 3, GL_FLOAT,GL_FALSE,sizeof(sf::Vector3f), (GLvoid*) 0));
+                        glCheck(glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(sf::Vector3f), (GLvoid*) 0));
                         glCheck(glDisableVertexAttribArray(0));
                         glCheck(glDisableVertexAttribArray(1));
                         glCheck(glDisableVertexAttribArray(2));
@@ -390,13 +390,13 @@ namespace odfaeg {
                         glCheck(glVertexAttribPointer(0, 3,GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*) 0));
                         glCheck(glVertexAttribPointer(1, 4,GL_UNSIGNED_BYTE,GL_TRUE,sizeof(Vertex),(GLvoid*) 12));
                         glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) 16));
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboNormalBuffer));
                         glCheck(glEnableVertexAttribArray(3));
-                        glCheck(glVertexAttribPointer(3, 3, GL_FLOAT,GL_FALSE,sizeof(sf::Vector3f), (GLvoid*) 0));
-                        glCheck(glDisableVertexAttribArray(3));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboNormalBuffer));
+                        glCheck(glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(sf::Vector3f), (GLvoid*) 0));
                         glCheck(glDisableVertexAttribArray(0));
                         glCheck(glDisableVertexAttribArray(1));
                         glCheck(glDisableVertexAttribArray(2));
+                        glCheck(glDisableVertexAttribArray(3));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                     } else {
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
@@ -406,9 +406,9 @@ namespace odfaeg {
                         glCheck(glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (GLvoid*) 0 ));
                         glCheck(glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), (GLvoid*) 12));
                         glCheck(glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex),(GLvoid*) 16));
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboNormalBuffer));
                         glCheck(glEnableClientState(GL_NORMAL_ARRAY));
-                        glCheck(glNormalPointer(GL_FLOAT,sizeof(sf::Vector3f),(GLvoid*) 0));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboNormalBuffer));
+                        glCheck(glNormalPointer(GL_FLOAT, sizeof(sf::Vector3f), (GLvoid*) 0));
                         glCheck(glDisableClientState(GL_COLOR_ARRAY));
                         glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
                         glCheck(glDisableClientState(GL_VERTEX_ARRAY));

@@ -83,6 +83,7 @@ namespace odfaeg {
                                                                             layout (location = 0) in vec3 position;
                                                                             layout (location = 1) in vec4 color;
                                                                             layout (location = 2) in vec2 texCoords;
+                                                                            layout (location = 3) in vec3 normals;
                                                                             uniform mat4 projectionMatrix;
                                                                             uniform mat4 viewMatrix;
                                                                             uniform mat4 textureMatrix;
@@ -98,7 +99,8 @@ namespace odfaeg {
                                                                       layout (location = 0) in vec3 position;
                                                                       layout (location = 1) in vec4 color;
                                                                       layout (location = 2) in vec2 texCoords;
-                                                                      layout (location = 3) in mat4 worldMat;
+                                                                      layout (location = 3) in vec3 normals;
+                                                                      layout (location = 4) in mat4 worldMat;
                                                                       uniform mat4 projectionMatrix;
                                                                       uniform mat4 viewMatrix;
                                                                       uniform mat4 textureMatrix;
@@ -196,7 +198,7 @@ namespace odfaeg {
                                                                                 if (depth.z >= z) {
                                                                                     visibility = vec4 (1, 1, 1, depth.a);
                                                                                 } else {
-                                                                                    visibility = vec4 (0, 0, 0, color);
+                                                                                    visibility = vec4 (0.5, 0.5, 0.5, color);
                                                                                 }
                                                                             } else {
                                                                                 visibility = vec4 (1, 1, 1, 1);

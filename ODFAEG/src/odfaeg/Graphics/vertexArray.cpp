@@ -201,12 +201,12 @@ namespace odfaeg {
                         math::Vec3f v1 (m_vertices[i*4+n].position.x, m_vertices[i*4+n].position.y, m_vertices[i*4+n].position.z);
                         math::Vec3f v2;
                         math::Vec3f v3;
-                        if (n-1<0) {
+                        if (n == 0) {
                             v2 = math::Vec3f (m_vertices[i*4+3].position.x, m_vertices[i*4+3].position.y, m_vertices[i*4+3].position.z);
                         } else {
                             v2 = math::Vec3f (m_vertices[i*4+n-1].position.x, m_vertices[i*4+n-1].position.y, m_vertices[i*4+n-1].position.z);
                         }
-                        if (n+1>=4) {
+                        if (n == 3) {
                             v3 = math::Vec3f (m_vertices[i*4].position.x, m_vertices[i*4].position.y, m_vertices[i*4].position.z);
                         } else {
                             v3 = math::Vec3f (m_vertices[i*4+n+1].position.x, m_vertices[i*4+n+1].position.y, m_vertices[i*4+n+1].position.z);
@@ -221,12 +221,12 @@ namespace odfaeg {
                         math::Vec3f v1 (m_vertices[i*3+n].position.x, m_vertices[i*3+n].position.y, m_vertices[i*3+n].position.z);
                         math::Vec3f v2;
                         math::Vec3f v3;
-                        if (n-1<0) {
-                            v2 = math::Vec3f (m_vertices[i*3+3].position.x, m_vertices[i*3+3].position.y, m_vertices[i*3+3].position.z);
+                        if (n == 0) {
+                            v2 = math::Vec3f (m_vertices[i*3+2].position.x, m_vertices[i*3+2].position.y, m_vertices[i*3+2].position.z);
                         } else {
                             v2 = math::Vec3f (m_vertices[i*3+n-1].position.x, m_vertices[i*3+n-1].position.y, m_vertices[i*3+n-1].position.z);
                         }
-                        if (n+1>=3) {
+                        if (n == 3) {
                             v3 = math::Vec3f (m_vertices[i*3].position.x, m_vertices[i*3].position.y, m_vertices[i*3].position.z);
                         } else {
                             v3 = math::Vec3f (m_vertices[i*3+n+1].position.x, m_vertices[i*3+n+1].position.y, m_vertices[i*3+n+1].position.z);
@@ -242,12 +242,12 @@ namespace odfaeg {
                             math::Vec3f v1 (m_vertices[n].position.x, m_vertices[n].position.y, m_vertices[n].position.z);
                             math::Vec3f v2;
                             math::Vec3f v3;
-                            if (n-1<0) {
-                                v2 = math::Vec3f (m_vertices[3].position.x, m_vertices[3].position.y, m_vertices[3].position.z);
+                            if (n == 0) {
+                                v2 = math::Vec3f (m_vertices[2].position.x, m_vertices[2].position.y, m_vertices[2].position.z);
                             } else {
                                 v2 = math::Vec3f (m_vertices[n-1].position.x, m_vertices[n-1].position.y, m_vertices[n-1].position.z);
                             }
-                            if (n+1>=3) {
+                            if (n == 3) {
                                 v3 = math::Vec3f (m_vertices[0].position.x, m_vertices[0].position.y, m_vertices[0].position.z);
                             } else {
                                 v3 = math::Vec3f (m_vertices[n+1].position.x, m_vertices[n+1].position.y, m_vertices[n+1].position.z);
@@ -272,12 +272,12 @@ namespace odfaeg {
                             math::Vec3f v1 (m_vertices[n].position.x, m_vertices[n].position.y, m_vertices[n].position.z);
                             math::Vec3f v2;
                             math::Vec3f v3;
-                            if (n-1<0) {
-                                v2 = math::Vec3f (m_vertices[3].position.x, m_vertices[3].position.y, m_vertices[3].position.z);
+                            if (n == 0) {
+                                v2 = math::Vec3f (m_vertices[2].position.x, m_vertices[2].position.y, m_vertices[2].position.z);
                             } else {
                                 v2 = math::Vec3f (m_vertices[n-1].position.x, m_vertices[n-1].position.y, m_vertices[n-1].position.z);
                             }
-                            if (n+1>=3) {
+                            if (n == 3) {
                                 v3 = math::Vec3f (m_vertices[0].position.x, m_vertices[0].position.y, m_vertices[0].position.z);
                             } else {
                                 v3 = math::Vec3f (m_vertices[n+1].position.x, m_vertices[n+1].position.y, m_vertices[n+1].position.z);
