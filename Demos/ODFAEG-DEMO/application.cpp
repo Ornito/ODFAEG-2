@@ -9,14 +9,14 @@ using namespace odfaeg::core;
 using namespace odfaeg::audio;
 using namespace odfaeg::window;
 namespace sorrok {
-    MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, sf::Style::Default, ContextSettings(0, 0, 4, 4, 6)) {
+    MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, sf::Style::Default, ContextSettings(0, 0, 4, 3, 0)) {
         running = false;
         actualKey = IKeyboard::Key::Unknown;
         previousKey = IKeyboard::Key::Unknown;
         getView().move(0, 400, 0);
         fpsCounter = 0;
         addClock(sf::Clock(), "FPS");
-        day = true;
+        day = false;
         sf::Listener::setUpVector(0.f, 0.f, 1.f);
         ps = new ParticleSystem(Vec3f(0, 0, 150),Vec3f(100, 100, 0));
     }

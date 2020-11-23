@@ -25,6 +25,7 @@ namespace odfaeg {
             settings.depthBits = 24;
             depthBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
             depthBufferSprite = Sprite(depthBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            rDepthBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
             sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
             settings.depthBits = 0;
             reflectRefractTex.create(window.getView().getSize().x, window.getView().getSize().y, settings);
@@ -216,19 +217,27 @@ namespace odfaeg {
                                                                 in vec4 frontColor;
                                                                 in vec3 normal;
                                                                 in vec3 pos;
+                                                                const vec2 size = vec2(2.0,0.0);
+                                                                const ivec3 off = ivec3(-1,0,1);
                                                                 uniform vec3 cameraPos;
                                                                 uniform samplerCube sceneBox;
                                                                 uniform sampler2D depthBuffer;
+                                                                uniform sampler2D rDepthBuffer;
                                                                 uniform vec3 resolution;
                                                                 layout (location = 0) out vec4 fColor;
                                                                 void main () {
                                                                     vec2 position = (gl_FragCoord.xy / resolution.xy);
                                                                     vec4 depth = texture2D(depthBuffer, position);
+                                                                    float s01 = textureOffset(rDepthBuffer, position, off.xy).z;
+                                                                    float s21 = textureOffset(rDepthBuffer, position, off.zy).z;
+                                                                    float s10 = textureOffset(rDepthBuffer, position, off.yx).z;
+                                                                    float s12 = textureOffset(rDepthBuffer, position, off.yz).z;
+                                                                    vec3 va = normalize (vec3(size.xy, s21 - s01));
+                                                                    vec3 vb = normalize (vec3(size.yx, s12 - s10));
+                                                                    vec3 n = cross(va, vb);
                                                                     float ratio = 1.00 / 1.33;
                                                                     vec3 i = (pos - cameraPos);
-                                                                    vec3 r = refract (i, normalize(normal), ratio);
-                                                                    vec3 n = normalize(normal);
-                                                                    r = normalize(r);
+                                                                    vec3 r = refract (i, normalize(n), ratio);
                                                                     if (depth.z > 0) {
                                                                         fColor = texture(sceneBox, r) * (1 - depth.a);
                                                                     } else {
@@ -353,9 +362,11 @@ namespace odfaeg {
                 sReflectRefract.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                 sReflectRefract.setParameter("depthBuffer", depthBuffer.getTexture());
                 sReflectRefract.setParameter("sceneBox", Shader::CurrentTexture);
+                sReflectRefract.setParameter("rDepthBuffer", rDepthBuffer.getTexture());
                 sReflectRefractNormal.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                 sReflectRefractNormal.setParameter("sceneBox", Shader::CurrentTexture);
                 sReflectRefractNormal.setParameter("depthBuffer", depthBuffer.getTexture());
+                sReflectRefractNormal.setParameter("rDepthBuffer", rDepthBuffer.getTexture());
                 sLinkedList.setParameter("maxNodes", maxNodes);
                 sLinkedList.setParameter("texture", Shader::CurrentTexture);
                 sLinkedListNormal.setParameter("maxNodes", maxNodes);
@@ -437,6 +448,63 @@ namespace odfaeg {
                     }
                 }
                 depthBuffer.display();
+                for (unsigned int i = 0; i < m_reflInstances.size(); i++) {
+                    if (m_reflInstances[i].getAllVertices().getVertexCount() > 0) {
+                        if (m_reflInstances[i].getMaterial().getTexture() != nullptr) {
+                            math::Matrix4f texMatrix = m_reflInstances[i].getMaterial().getTexture()->getTextureMatrix();
+                            sBuildDepthBuffer.setParameter("textureMatrix", texMatrix);
+                            sBuildDepthBuffer.setParameter("haveTexture", 1.f);
+                        } else {
+                            sBuildDepthBuffer.setParameter("haveTexture", 0.f);
+                        }
+                        vb.clear();
+                        vb.setPrimitiveType(m_reflInstances[i].getVertexArrays()[0]->getPrimitiveType());
+                        matrices.clear();
+                        std::vector<TransformMatrix*> tm = m_reflInstances[i].getTransforms();
+                        for (unsigned int j = 0; j < tm.size(); j++) {
+                            tm[j]->update();
+                            std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
+                            for (unsigned int n = 0; n < 16; n++) {
+                                matrices.push_back(matrix[n]);
+                            }
+                        }
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+                        glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        if (m_reflInstances[i].getVertexArrays().size() > 0) {
+                            for (unsigned int j = 0; j < m_reflInstances[i].getVertexArrays()[0]->getVertexCount(); j++) {
+                                vb.append((*m_reflInstances[i].getVertexArrays()[0])[j]);
+                            }
+                            vb.update();
+                        }
+                        currentStates.blendMode = sf::BlendNone;
+                        currentStates.shader = &sBuildDepthBuffer;
+                        currentStates.texture = m_reflInstances[i].getMaterial().getTexture();
+                        rDepthBuffer.drawInstanced(vb, m_reflInstances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_reflInstances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
+                    }
+                }
+                for (unsigned int i = 0; i < m_reflNormals.size(); i++) {
+                    if (m_reflNormals[i].getAllVertices().getVertexCount() > 0) {
+                        if (m_reflNormals[i].getMaterial().getTexture() != nullptr) {
+                            math::Matrix4f texMatrix = m_reflNormals[i].getMaterial().getTexture()->getTextureMatrix();
+                            sBuildDepthBufferNormal.setParameter("textureMatrix", texMatrix);
+                            sBuildDepthBufferNormal.setParameter("haveTexture", 1.f);
+                        } else {
+                            sBuildDepthBufferNormal.setParameter("haveTexture", 0.f);
+                        }
+                        vb.clear();
+                        vb.setPrimitiveType(m_reflNormals[i].getAllVertices().getPrimitiveType());
+                        for (unsigned int j = 0; j < m_reflNormals[i].getAllVertices().getVertexCount(); j++) {
+                            vb.append(m_reflNormals[i].getAllVertices()[j]);
+                        }
+                        vb.update();
+                        currentStates.blendMode = sf::BlendNone;
+                        currentStates.shader = &sBuildDepthBufferNormal;
+                        currentStates.texture = m_reflNormals[i].getMaterial().getTexture();
+                        rDepthBuffer.drawVertexBuffer(vb, currentStates);
+                    }
+                }
+                rDepthBuffer.display();
                 View reflectView;
                 if (view.isOrtho()) {
                     reflectView = View (squareSize, squareSize, view.getViewport().getPosition().z, view.getViewport().getSize().z);
