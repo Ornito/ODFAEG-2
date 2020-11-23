@@ -45,15 +45,9 @@
             <h2>Création d'une application graphique.</h2>
             <p>
             Pour créer une application graphique il vaut faudra appeler le constructeur avec arguments,<br/>
-            en lui passant un sf::VideoMode, ainsi que le titre de la fenêtreSFML. (un std::string).<br/>
-            Il est possible de passer des paramètres supplémentaire qui sont les suivants : <br/>
-            Un booléen qui par défaut vaut false, si ce booléen vaut true, ODFAEG va utiliser un thread pour détecter<br/>
-            les événements généré par l'application.</p>
-            <p>
-            Un booléen qui indique si l'on veut utiliser le depthtest par défaut de openGL ou pas, vaut faux par défaut.<br/>
-            sf::Style qui par défaut vaut sf::Style::Defaut qui est le style de la fenêtre SFML.<br/>
-            sf::ContextSettings qui sont les paramètres openGL passé à la SFML.<br/>
-            </p>
+            en lui passant un sf::VideoMode, ainsi que le titre de la fenêtreSFML, (un std::string),
+             le style (sf::Style) ainsi que les paramètres opengl. (odfaeg::window::ContextSettings)<br/>
+            </p>            
             
             <h3>Méthodes virtuelles pouvant être redéfinie.</h3>
             <p>
@@ -69,17 +63,17 @@
             </p>
             <p>
             La troisième méthode est la méthode onRender, elle prend en paramètre un pointeur sur un objet de <br/>
-            typeFastRenderComponentManager. En fait dans cette méthode, odfaeg va décrire tout ce qui devra être affiché sur <br/> 
-            des composants de rendus, nous ce que sont les composants de rendu dans le prochain chapitre, pour l'instant, <br/>
-            considérer les simplements comme des couches sur lesquelles on va pouvoir dessiner différentes partie de notre scène. <br/>
+            type RenderComponentManager. En fait dans cette méthode, odfaeg va décrire tout ce qui devra être affiché sur <br/> 
+            des composants de rendus, nous verrons ce que sont les composants de rendu dans le prochain chapitre, pour l'instant, <br/>
+            considérer les simplements comme des couches sur lesquelles on va pouvoir dessiner différentes parties de notre scène. <br/>
             (Par exemple un composant pour le sol et un autre pour le reste)<br/>
             </p>
             <p>
             La quatrième méthode est la méthode onDisplay, elle prend en paramètre un pointeur sur la fenêtre de rendu, <br/>
             c'est dans cette méthode que ODFAEG va dessiner sur la fenêtre de rendu!<br/>
             
-            La cinquième méthode est la méthode onUpdate, cette dernière prend une référence sur un événement SFML, <br/>
-            à chaque fois qu'un événement SFML est généré, ODFAEG appelle cette méthode, c'est donc dans cette méthode que ODFAEG <br/>
+            La cinquième méthode est la méthode onUpdate, cette dernière prend un pointeur sur la fenêtre qui gère l'évènement et une référence sur un événement (IEvent), <br/>
+            à chaque fois qu'un événement est généré, ODFAEG appelle cette méthode, c'est donc dans cette méthode que ODFAEG <br/>
             va remettre à jour tout les états de vos objets.<br/>
             
             Et la dernière méthode est la méthode onExec, cette dernière fonction membre ne prend aucun paramètre, <br/>
@@ -114,7 +108,7 @@
             <h1>Autres méthodes utiles.</h1>
             
             <p>
-            getTimeClock : cette méthode statique permet de récupérer l'horloge qui mesure le temps écoulé depuis le lancement <br/>
+            Application::getTimeClock : cette méthode statique permet de récupérer l'horloge qui mesure le temps écoulé depuis le lancement <br/>
             du programme.<br/>
             getClock("ClockName") : cette méthode renvoie une horloge liée à l'application, par défaut, il y a une horloge d'ajoutée, <br/>
             appelée LoopTime qui mesure le temps boucle, donc, le temps écoulé depuis le dernière appel à la méthode exec.<br/>
