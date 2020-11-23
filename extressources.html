@@ -58,9 +58,9 @@
       Essayons maintenant de définir un gestionnaire de ressource qui va charger un tileset (Une image remplie de différentes<br/>
       textures d'herbe)<br/>
       Pour des raisons d'optimisation ont charge toujours une grande image sur laquelle on place pleins de petites images.<br/>
-      Pour charger ses grand images il va falloir utiliser la classe odfaeg::core::ResourceManager de ODFAEG, cette classe attend<br/>
+      Pour charger ses grandes images il va falloir utiliser la classe odfaeg::core::ResourceManager de ODFAEG, cette classe attend<br/>
       2 paramètres template : le type des ressources à charger et le type de l'identifiant qui référencera les ressources.<br/>
-      Cependant, ODFAEG possèdes quatre classes prédéfinie qui n'attendent qu'un seul paramètre template, ces<br/>
+      Cependant, ODFAEG possède quatre classes prédéfinie qui n'attendent qu'un seul paramètre template, ces<br/>
       quatre classes sont : TextureManager (pour les images), SoundManager (pour les effets sonores), FontManager (pour les<br/>
       polices de caractère) et ShaderManager (pour les shaders). <br/>
       Si le dernier paramètre template n'est renseigné lors de la déclaration, alors par défaut l'identifiant est de type std::string!<br/>
@@ -74,7 +74,7 @@
       déclarer un gestionnaire de ressource de ce type là : <br/>
       TextureManager&lt;TEXTURES&gt; tm; <br/>
       Donc, il suffit de passer le nom de l'énumération en paramètre template! <br/>
-      Maintenant, pour charger la ressources, il va falloir indiquer que l'on veut charger la ressource en la référençant à partir<br/>
+      Maintenant, pour charger la ressource, il va falloir indiquer que l'on veut charger la ressource en la référençant à partir<br/>
       de son alias, car il y a deux méthodes :<br/>
       La méthode fromFile qui référencera la ressource de part son chemin d'accès sur le disque dur. (Déconseillé)<br/>
       Et la méthode fromFileWithAlias qui référencera la ressource de part son chemin d'accès sur le disque dur mais également<br/>
@@ -101,11 +101,11 @@
       Il est fortement conseillé d'utiliser la première méthode.<br/>
       
       <i>
-      Si vous souhaiter envoyer les identifiants vers les ressources sur un réseau, il faudra bien sûr les convertir les valeurs de vos<br/>
-      énumérations en type entier lors de l'envoi, et les  reconvertir lors de la réception.</i><br/>
+      Si vous souhaiter envoyer les identifiants vers les ressources sur un réseau, il faudra bien sûr convertir les valeurs de vos<br/>
+      énumérations en type entier lors de l'envoi, et les reconvertir au type de l'enumération lors de la réception.</i><br/>
       </p>
       
-      <h2>Charger des ressources de différent types.</h2>
+      <h2>Charger des ressources de différents types.</h2>
       <p>
       Il est fort possible que votre application n'utilise pas que des images mais aussi du son, voir même des ressources d'un type<br/>
       que vous avez défini vous même, ODFAEG possède une classe qui permet de référencer des gestionnaires de ressources<br/>
@@ -116,7 +116,7 @@
       Pour ajouter un gestionnaire de ressources il suffit d'appeler la méthode addResourceManager : <br/>
       cache.addResourceManager(tm); <br/>
       Et pour le récupérer, il suffit d'appeler la méthode resourceManager, cette méthode attend deux paramètres, <br/>
-      le type de ressource géré par le gestionnaire de ressource référencé, et le type de l'indentifiant référençant les ressources : <br/>
+      le type de ressource géré par le gestionnaire de ressource référencé, et le type de l'identifiant référençant les ressources : <br/>
       TextureManager&lt;TEXTURES&gt; &amp;tm = cache.resourceManager&lt;Texture, TEXTURES&gt;("TextureManager"); <br/>
       
       On peut donc à partir de là récupérer un pointeur sur la ressource comme vu ci-dessus.<br/>
@@ -159,12 +159,12 @@
       
       <h1>La libération des ressources</h1>
       <p>
-      ODFAEG utilise le principe RAAI (Resource acquisition is initialization) cela veut dire que les ressources sont libérée de <br/>
+      ODFAEG utilise le principe RAII (Resource acquisition is initialization) cela veut dire que les ressources sont libérée de <br/>
       la mémoire lorsque le gestionnaire de ressources ou bien le cache si l'on utilise des ressources de type différent est détruit.<br/>
       Il y a moyen de libérer les ressources avant, en appelant les méthodes deleteResourceByAlias ou alors deleteResourceByPath au cas<br/>
       ou la RAM est pleine par exemple, mais faîtes attention que aucun autre thread n'utilise la ressource au moment ou vous libérer <br/>
       la ressource.<br/>
-      ODFAEG préfère l'utilisation d'un seul possesseur de la ressources plutôt que de plusieurs possesseurs pour des raisons <br/>
+      ODFAEG préfère l'utilisation d'un seul possesseur de la ressource plutôt que de plusieurs possesseurs pour des raisons <br/>
       de performance.<br/>
       C'est pour cela que ODFAEG ne renvoie pas un std::shared_ptr vers la ressource!<br/>
       Utiliser donc au maximum les méthodes join ou encore std::notify_all_at_thread_exit pour tout les threads utilisant <br/>
