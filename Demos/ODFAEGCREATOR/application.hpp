@@ -74,7 +74,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::string appliname, minAppliname;
         std::string applitype;
         std::string path;
-        std::string cppAppliContent;
+        std::map<std::string, std::string> cppAppliContent;
         std::vector<std::string> textPaths;
         std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode, rootMaterialNode, rootInfosNode;
         odfaeg::graphic::CircleShape cursor;

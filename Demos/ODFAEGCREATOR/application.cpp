@@ -510,7 +510,7 @@ void ODFAEGCreator::onExec() {
         std::ifstream applis(projectPath);
         std::string line;
         if (applis) {
-            while(getline(applis, line)) {
+            if(getline(applis, line)) {
                 Label* lab = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),line, 15);
                 Node* node = new Node("test",lab,Vec2f(0, 0),Vec2f(1.f, 0.025f),rootNode.get());
                 lab->setParent(pProjects);
@@ -523,7 +523,6 @@ void ODFAEGCreator::onExec() {
                 appliname = line;
             }
         }
-        applis.close();
         const char* lcars = appliname.c_str();
         char* ucars = new char[appliname.size()];
         for (unsigned int i = 0; i < appliname.length(); i++) {
@@ -531,13 +530,23 @@ void ODFAEGCreator::onExec() {
         }
         minAppliname = std::string(ucars, appliname.length());
         if (appliname != "") {
-            std::string path = fdProjectPath->getAppiDir() + "/" + appliname;
-            std::ifstream source (path+"/"+minAppliname+".cpp");
-            while(getline(source, line)) {
-                cppAppliContent += line+"\n";
+            while(getline(applis, line)) {
+                #if defined (ODFAEG_SYSTEM_LINUX)
+                std::string path = fdProjectPath->getAppiDir() + "/" + appliname + "/" + line;
+                #else if defined (ODFAEG_SYSTEM_WINDOWS
+                std::string path = fdProjectPath->getAppiDir() + "\\" + appliname + "\\" + line;
+                #endif // if
+                std::ifstream source (path);
+                std::string fileContent;
+                std::string line2;
+                while(getline(source, line2)) {
+                    fileContent += line2+"\n";
+                }
+                source.close();
+                cppAppliContent.insert(std::make_pair(line, fileContent));
             }
-            source.close();
         }
+        applis.close();
         fdProjectPath->setVisible(false);
         fdProjectPath->setEventContextActivated(false);
     }
@@ -636,18 +645,12 @@ void ODFAEGCreator::showSourcesFiles(Label* label) {
     }
 }
 void ODFAEGCreator::showFileContent(Label* lab) {
-    std::ifstream file(appliname+"/"+lab->getText());
-    if (file) {
-        std::string content, line;
-        unsigned int nbLines = 0;
-        while (getline(file, line)) {
-            content += line + "\n";
-            nbLines++;
-        }
+    std::map<std::string, std::string>::iterator it;
+    it = cppAppliContent.find(lab->getText());
+    if (it != cppAppliContent.end()) {
         tScriptEdit->setTextSize(20);
-        tScriptEdit->setText(content);
+        tScriptEdit->setText(it->second);
         pScriptsEdit->updateScrolls();
-        file.close();
     }
 }
 void ODFAEGCreator::processKeyHeldDown (IKeyboard::Key key) {
@@ -658,7 +661,6 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         appliname = ta->getText();
         std::ofstream applis(appliname+".oc");
         applis<<appliname<<std::endl;
-        applis.close();
         applitype = dpList->getSelectedItem();
         #if defined (ODFAEG_SYSTEM_LINUX)
         path = fdProjectPath->getAppiDir() + "/" + appliname;
@@ -699,25 +701,34 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             #else if defined (ODFAEG_SYSTEM_WINDOWS)
             std::ofstream header(path+"\\"+minAppliname+".hpp");
             #endif // if
-            header<<"#ifndef "<<majAppliname<<"_HPP"<<std::endl;
-            header<<"#define "<<majAppliname<<"_HPP"<<std::endl;
-            header<<"#include \"odfaeg/Core/application.h\""<<std::endl;
-            header<<"class "<<appliname<<" : public odfaeg::core::Application {"<<std::endl;
-            header<<"   public : "<<std::endl;
-            header<<"   "<<appliname<<"(sf::VideoMode vm, std::string title);"<<std::endl;
-            header<<"   void onLoad();"<<std::endl;
-            header<<"   void onInit();"<<std::endl;
-            header<<"   void onRender(odfaeg::graphic::RenderComponentManager* cm);"<<std::endl;
-            header<<"   void onDisplay(odfaeg::graphic::RenderWindow* window);"<<std::endl;
-            header<<"   void onUpdate (odfaeg::graphic::RenderWindow*, odfaeg::window::IEvent& event);"<<std::endl;
-            header<<"   void onExec ();"<<std::endl;
-            header<<"   private : "<<std::endl;
-            header<<"   std::vector<std::unique_ptr<Drawable>> drawables;"<<std::endl;
-            header<<"   ResourceCache<> cache;"<<std::endl;
-            header<<"};"<<std::endl;
-            header<<"#endif"<<std::endl;
-            header.close();
             std::ostringstream oss;
+            oss<<"#ifndef "<<majAppliname<<"_HPP"<<std::endl;
+            oss<<"#define "<<majAppliname<<"_HPP"<<std::endl;
+            oss<<"#include \"odfaeg/Core/application.h\""<<std::endl;
+            oss<<"class "<<appliname<<" : public odfaeg::core::Application {"<<std::endl;
+            oss<<"   public : "<<std::endl;
+            oss<<"   "<<appliname<<"(sf::VideoMode vm, std::string title);"<<std::endl;
+            oss<<"   void onLoad();"<<std::endl;
+            oss<<"   void onInit();"<<std::endl;
+            oss<<"   void onRender(odfaeg::graphic::RenderComponentManager* cm);"<<std::endl;
+            oss<<"   void onDisplay(odfaeg::graphic::RenderWindow* window);"<<std::endl;
+            oss<<"   void onUpdate (odfaeg::graphic::RenderWindow*, odfaeg::window::IEvent& event);"<<std::endl;
+            oss<<"   void onExec ();"<<std::endl;
+            oss<<"   private : "<<std::endl;
+            oss<<"   std::vector<std::unique_ptr<Drawable>> drawables;"<<std::endl;
+            oss<<"   ResourceCache<> cache;"<<std::endl;
+            oss<<"};"<<std::endl;
+            oss<<"#endif"<<std::endl;
+            header<<oss.str();
+            header.close();
+            cppAppliContent.insert(std::make_pair(minAppliname+".hpp", oss.str()));
+            oss.str("");
+            oss.clear();
+            #if defined (ODFAEG_SYSTEM_LINUX)
+            std::ofstream source(path+"/"+minAppliname+".cpp");
+            #else if defined (ODFAEG_SYSTEM_WINDOWS)
+            std::ofstream source(path+"\\"+minAppliname+".cpp");
+            #endif // if
             oss<<"#include \""+minAppliname+".hpp\""<<std::endl;
             oss<<"using namespace odfaeg::graphic;"<<std::endl;
             oss<<"using namespace odfaeg::math;"<<std::endl;
@@ -748,14 +759,11 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             oss<<"}"<<std::endl;
             oss<<"void "<<appliname<<"::onExec () {"<<std::endl;
             oss<<"}"<<std::endl;
-            cppAppliContent = oss.str();
-            #if defined (ODFAEG_SYSTEM_LINUX)
-            std::ofstream source(path+"/"+minAppliname+".cpp");
-            #else if defined (ODFAEG_SYSTEM_WINDOWS)
-            std::ofstream source(path+"\\"+minAppliname+".cpp");
-            #endif // if
-            source<<cppAppliContent;
+            source<<oss.str();
             source.close();
+            cppAppliContent.insert(std::make_pair(minAppliname+".cpp", oss.str()));
+            oss.str("");
+            oss.clear();
             std::string width = taWidth->getText();
             std::string height = taHeight->getText();
             #if defined (ODFAEG_SYSTEM_LINUX)
@@ -763,12 +771,18 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             #else if defined (ODFAEG_SYSTEM_WINDOWS)
             std::ofstream main(path+"\\main.cpp");
             #endif // if
-            main<<"#include \""<<minAppliname<<".hpp\""<<std::endl;
-            main<<"int main(int argc, char* argv[]) {"<<std::endl;
-            main<<"    "<<appliname<<" app(sf::VideoMode("<<width<<","<<height<<"),\""<<appliname<<"\");"<<std::endl;
-            main<<"    return app.exec();"<<std::endl;
-            main<<"}"<<std::endl;
+            oss<<"#include \""<<minAppliname<<".hpp\""<<std::endl;
+            oss<<"int main(int argc, char* argv[]) {"<<std::endl;
+            oss<<"    "<<appliname<<" app(sf::VideoMode("<<width<<","<<height<<"),\""<<appliname<<"\");"<<std::endl;
+            oss<<"    return app.exec();"<<std::endl;
+            oss<<"}"<<std::endl;
+            main<<oss.str();
             main.close();
+            cppAppliContent.insert(std::make_pair("main.cpp", oss.str()));
+            applis<<minAppliname+".hpp"<<std::endl;
+            applis<<minAppliname+".cpp"<<std::endl;
+            applis<<"main.cpp"<<std::endl;
+            applis.close();
         }
     }
     if (button->getText() == "New texture") {
@@ -952,35 +966,45 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     }
 }
 void ODFAEGCreator::addShape(Shape *shape) {
-    /*unsigned int pos = cppAppliContent.find("tm.getResourceByAlias");
-    if (pos != std::string::npos && pos < cppAppliContent.size()) {
-        std::string subs = cppAppliContent.substr(pos);
-        pos += subs.find_first_of('\n') + 1;
-        while (subs.find("tm.getResourceByAlias") != std::string::npos) {
-            subs = cppAppliContent.substr(pos);
+    std::map<std::string, std::string>::iterator it;
+    it = cppAppliContent.find(minAppliname+".cpp");
+    if (it != cppAppliContent.end()) {
+        std::string content = it->second;
+        unsigned int pos = content.find("tm.getResourceByAlias");
+        if (pos != std::string::npos && pos < content.size()) {
+            std::string subs = content.substr(pos);
+            pos += subs.find_first_of('\n') + 1;
+            while (subs.find("tm.getResourceByAlias") != std::string::npos) {
+                subs = content.substr(pos);
+                pos += subs.find_first_of('\n') + 1;
+            }
+        } else {
+            pos = content.find("TextureManager<>& tm = cache.resourceManager<Texture, std::string>(\"TextureManager\");");
+            std::string subs = content.substr(pos);
             pos += subs.find_first_of('\n') + 1;
         }
-    } else {
-        pos = cppAppliContent.find("TextureManager<>& tm = cache.resourceManager<Texture, std::string>(\"TextureManager\");");
-        std::string subs = cppAppliContent.substr(pos);
-        pos += subs.find_first_of('\n') + 1;
+        std::string toInsert = "    std::unique_ptr<sf::RectangleShape> shape"+conversionUIntString(shape->getId())+" = std::make_unique<RectangleShape>(Vec3f(100, 50, 0));\n"
+                               "    drawables.push_back(std::move(shape));\n";
+        content.insert(pos, toInsert);
     }
-    std::string toInsert = "    std::unique_ptr<sf::RectangleShape> shape"+conversionUIntString(shape->getId())+" = std::make_unique<RectangleShape>(Vec3f(100, 50, 0));\n"
-                           "    drawables.push_back(std::move(shape));\n";
-    cppAppliContent.insert(pos, toInsert);*/
 }
 bool ODFAEGCreator::removeShape (unsigned int id) {
-    for (auto it = shapes.begin(); it != shapes.end();it++) {
-        if ((*it)->getId() == id) {
-            /*unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(id));
-            do {
-                std::string subs = cppAppliContent.substr(pos);
-                unsigned int endpos = pos + subs.find_first_of('\n') + 1;
-                cppAppliContent.erase(pos, pos - endpos);
-                pos = cppAppliContent.find("shape"+conversionUIntString(id));
-            } while(pos != std::string::npos);*/
-            it = shapes.erase(it);
-            return true;
+    std::map<std::string, std::string>::iterator it;
+    it = cppAppliContent.find(minAppliname+".cpp");
+    if (it != cppAppliContent.end()) {
+        std::string content = it->second;
+        for (auto it = shapes.begin(); it != shapes.end();it++) {
+            if ((*it)->getId() == id) {
+                unsigned int pos = content.find("shape"+conversionUIntString(id));
+                do {
+                    std::string subs = content.substr(pos);
+                    unsigned int endpos = pos + subs.find_first_of('\n') + 1;
+                    content.erase(pos, pos - endpos);
+                    pos = content.find("shape"+conversionUIntString(id));
+                } while(pos != std::string::npos);
+                it = shapes.erase(it);
+                return true;
+            }
         }
     }
     return false;
@@ -1419,20 +1443,27 @@ void ODFAEGCreator::moveCursor(sf::Vector2f mousePos) {
     }
 }
 void ODFAEGCreator::updateScriptPos(Transformable* shape) {
-    /*if(cppAppliContent.find("shape"+conversionUIntString(shape->getId())+"->setPosition") == std::string::npos) {
-        unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(shape->getId())+" = std::make_unique<RectangleShape>");
-        std::string subs = cppAppliContent.substr(pos);
-        pos += subs.find_first_of('\n') + 1;
-        cppAppliContent.insert(pos,"    shape"+conversionUIntString(shape->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
-        +conversionIntString(selectedObject->getPosition().y)+","+conversionIntString(selectedObject->getPosition().z)+");\n");
-    } else {
-        unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(shape->getId())+"->setPosition");
-        std::string subs = cppAppliContent.substr(pos);
-        unsigned int endpos = subs.find_first_of('\n') + pos + 1;
-        cppAppliContent.erase(pos, endpos - pos);
-        cppAppliContent.insert(pos,"shape"+conversionUIntString(shape->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
-        +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+");\n");
-    }*/
+    std::map<std::string, std::string>::iterator it;
+    it = cppAppliContent.find(minAppliname+".cpp");
+    if (it != cppAppliContent.end()) {
+        std::string content = it->second;
+        if (dynamic_cast<Shape*>(shape)) {
+            if(content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition") == std::string::npos) {
+                unsigned int pos = content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+" = std::make_unique<RectangleShape>");
+                std::string subs = content.substr(pos);
+                pos += subs.find_first_of('\n') + 1;
+                content.insert(pos,"    shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
+                +conversionIntString(selectedObject->getPosition().y)+","+conversionIntString(selectedObject->getPosition().z)+");\n");
+            } else {
+                unsigned int pos = content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition");
+                std::string subs = content.substr(pos);
+                unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+                content.erase(pos, endpos - pos);
+                content.insert(pos,"shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
+                +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+");\n");
+            }
+        }
+    }
 }
 void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
     if (ta == tPosX) {

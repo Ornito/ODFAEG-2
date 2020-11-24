@@ -10,7 +10,7 @@ namespace odfaeg {
                 max = math::Vec3f(minF, minF, minF);
             }
             void Model::loadModel(std::string path) {
-                /*Assimp::Importer importer;
+                Assimp::Importer importer;
                 const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
                 if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
                 {
@@ -19,7 +19,7 @@ namespace odfaeg {
                 }
                 directory = path.substr(0, path.find_last_of('/'));
                 processNode(scene->mRootNode, scene);
-                setSize(max - min);*/
+                setSize(max - min);
             }
             bool Model::operator==(Entity& other) {
                 if (!dynamic_cast<Model*>(&other))
@@ -77,11 +77,11 @@ namespace odfaeg {
                     }
                 }
                 std::vector<math::Vec3f> verts;
+                Face* f = new Face(sf::Triangles, getTransform());
+                f->setMaterial(mat);
                 for(unsigned int i = 0; i < mesh->mNumFaces; i++)
                 {
-                    Face* f = new Face(sf::Triangles, getTransform());
                     aiFace face = mesh->mFaces[i];
-                    f->setMaterial(mat);
                     for(unsigned int j = 0; j < face.mNumIndices; j++) {
                         Vertex vertex;
                         vertex.position.x = mesh->mVertices[face.mIndices[j]].x;
@@ -92,8 +92,8 @@ namespace odfaeg {
                         f->append(vertex,face.mIndices[j]);
                         verts.push_back(math::Vec3f(vertex.position.x, vertex.position.y, vertex.position.z));
                     }
-                    emesh->addFace(f);
                 }
+                emesh->addFace(f);
                 std::array<std::array<float, 2>, 3> exts = math::Computer::getExtends(verts);
                 emesh->setSize(math::Vec3f(exts[0][1] - exts[0][0], exts[1][1] - exts[1][0], exts[2][1] - exts[2][0]));
                 if (exts[0][0] < min.x)
