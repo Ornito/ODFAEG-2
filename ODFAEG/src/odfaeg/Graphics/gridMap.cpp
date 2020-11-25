@@ -314,7 +314,7 @@ namespace odfaeg {
                                 if (entities[k] == entity)
                                     contains = true;
                            }
-                           if (!contains && bx.intersects(bx2)) {
+                           if (!contains && bx.intersects(bx2) || bx.isInside(bx2) || bx2.isInside(bx)) {
 
                                 entities.push_back(entity);
                            }

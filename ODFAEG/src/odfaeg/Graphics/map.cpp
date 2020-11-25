@@ -821,10 +821,6 @@ namespace odfaeg {
                                     for (unsigned int n = 0; n < cell->getNbEntitiesInside(); n++) {
                                        Entity* entity = cell->getEntityInside(n);
                                        physic::BoundingBox& bounds = entity->getGlobalBounds();
-                                       /*if (entity->getRootType() == "E_CUBE") {
-                                            std::cout<<"bounds : "<<bounds.getPosition()<<bounds.getSize()<<"view : "<<bx.getPosition()<<bx.getSize()<<std::endl;
-                                            std::cout<<"is inside : "<<bounds.isInside(bx)<<std::endl;
-                                       }*/
                                        if (bx.intersects(bounds) || bx.isInside(bounds) || bounds.isInside(bx) && visibleEntities[entity->getRootTypeInt()][entity->getId()] != entity) {
                                            visibleEntities[entity->getRootTypeInt()][entity->getId()] = entity;
                                        }
@@ -835,7 +831,7 @@ namespace odfaeg {
                         }
                     }
                 }
-                if (c < frcm->getNbComponents() && frcm->getRenderComponent(c) != nullptr) {
+                if (c < frcm->getNbComponents()) {
                     std::vector<Entity*> entities = getVisibleEntities(frcm->getRenderComponent(c)->getExpression());
                     frcm->getRenderComponent(c)->loadEntitiesOnComponent(entities);
                 }
@@ -1172,19 +1168,21 @@ namespace odfaeg {
                 vector<string> excl = core::split(type, "-");
                 for (unsigned int i = 0; i < allEntitiesInRect.size(); i++) {
                     Entity* entity = allEntitiesInRect[i];
-                    bool exclude = false;
-                    for (unsigned int i = 0; i < excl.size(); i++) {
-                        if (entity->getRootType() == excl[i])
-                            exclude = true;
-                    }
-                    if (!exclude) {
-                        BoneAnimation* ba = dynamic_cast<BoneAnimation*>(entity->getRootEntity());
-                        if (ba != nullptr) {
-                            if (ba->getBoneIndex() == entity->getBoneIndex()) {
+                    if (entity != nullptr) {
+                        bool exclude = false;
+                        for (unsigned int i = 0; i < excl.size(); i++) {
+                            if (entity->getRootType() == excl[i])
+                                exclude = true;
+                        }
+                        if (!exclude) {
+                            BoneAnimation* ba = dynamic_cast<BoneAnimation*>(entity->getRootEntity());
+                            if (ba != nullptr) {
+                                if (ba->getBoneIndex() == entity->getBoneIndex()) {
+                                    entities.push_back(entity);
+                                }
+                            } else {
                                 entities.push_back(entity);
                             }
-                        } else {
-                            entities.push_back(entity);
                         }
                     }
                 }
@@ -1194,17 +1192,18 @@ namespace odfaeg {
             for (unsigned int i = 0; i < types.size(); i++) {
                 for (unsigned int j = 0; j < allEntitiesInRect.size(); j++) {
                     Entity* entity = allEntitiesInRect[j];
-                    if (entity->getRootType() == types[i]) {
-                        BoneAnimation* ba = dynamic_cast<BoneAnimation*>(entity->getRootEntity());
-                        if (ba != nullptr) {
-                            if (ba->getBoneIndex() == entity->getBoneIndex()) {
+                    if (entity != nullptr) {
+                        if (entity->getRootType() == types[i]) {
+                            BoneAnimation* ba = dynamic_cast<BoneAnimation*>(entity->getRootEntity());
+                            if (ba != nullptr) {
+                                if (ba->getBoneIndex() == entity->getBoneIndex()) {
+                                    entities.push_back(entity);
+                                }
+                            } else {
                                 entities.push_back(entity);
                             }
-                        } else {
-                            entities.push_back(entity);
                         }
                     }
-
                 }
             }
             return entities;

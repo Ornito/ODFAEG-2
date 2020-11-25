@@ -403,13 +403,6 @@ namespace odfaeg {
                         }
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
                         glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
-                        /*for (unsigned int i = 0; i < 4 ; i++) {
-                            glCheck(glEnableVertexAttribArray(3 + i));
-                            glCheck(glVertexAttribPointer(3 + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
-                                                    (const GLvoid*)(sizeof(GLfloat) * i * 4)));
-                            glCheck(glVertexAttribDivisor(3 + i, 1));
-                            glCheck(glDisableVertexAttribArray(3 + i));
-                        }*/
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                         if (m_instances[i].getVertexArrays().size() > 0) {
                             for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
@@ -437,8 +430,6 @@ namespace odfaeg {
                             perPixelLinkedList2.setParameter("haveTexture", 0.f);
                         } else {
                             math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
-                            /*if (m_normals[i].getVertexArrays()[0]->getEntity()->getName() == "CUBE")
-                                std::cout<<"texture matrix  : "<<texMatrix<<std::endl;*/
                             perPixelLinkedList2.setParameter("textureMatrix", texMatrix);
                             perPixelLinkedList2.setParameter("haveTexture", 1.f);
                         }
@@ -458,8 +449,6 @@ namespace odfaeg {
                         vb.setPrimitiveType(m_normals[i].getAllVertices().getPrimitiveType());
                         for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
                             vb.append(m_normals[i].getAllVertices()[j]);
-                            /*if (m_normals[i].getVertexArrays()[0]->getEntity()->getName() == "CUBE")
-                                std::cout<<"position : "<<m_normals[i].getAllVertices()[j].position.x<<","<<m_normals[i].getAllVertices()[j].position.y<<m_normals[i].getAllVertices()[j].position.z<<std::endl;*/
                         }
                         vb.update();
                         frameBuffer.drawVertexBuffer(vb, currentStates);

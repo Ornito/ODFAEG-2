@@ -445,11 +445,11 @@ namespace odfaeg {
                 for (unsigned int m = 0; m < 6; m++) {
                     math::Vec3f target = reflectView.getPosition() + dirs[m];
                     reflectView.lookAt(target.x, target.y, target.z);
-                    std::vector<Entity*> visibleReflEntities = World::getEntitiesInRect(reflectView.getViewVolume(), expression);
+                    //std::vector<Entity*> visibleReflEntities = World::getEntitiesInRect(reflectView.getViewVolume(), expression);
                     std::vector<Entity*> vEntities;
-                    for (unsigned int j = 0; j < visibleReflEntities.size(); j++)  {
-                        if (!visibleReflEntities[j]->isReflectable()) {
-                            vEntities.push_back(visibleReflEntities[j]);
+                    for (unsigned int j = 0; j < visibleEntities.size(); j++)  {
+                        if (!visibleEntities[j]->isReflectable()) {
+                            vEntities.push_back(visibleEntities[j]);
                         }
                     }
                     rvBatcher.clear();
