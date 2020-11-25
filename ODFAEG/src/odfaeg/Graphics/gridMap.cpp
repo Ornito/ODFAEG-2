@@ -68,7 +68,6 @@ namespace odfaeg {
                             cm = getGridCellAt(pos);
                         }
                         added = true;
-
                         cm->addEntity(entity);
                     }
                 }
@@ -110,15 +109,6 @@ namespace odfaeg {
 
         void GridMap::createCellMap (math::Vec2f &point) {
             math::Vec2f coordsCaseP = getCoordinatesAt(point);
-            int deltaX, deltaY;
-            if (coordsCaseP.x + 1 < 0)
-                deltaX = -cellWidth;
-            else
-                deltaX = cellWidth;
-            if (coordsCaseP.y + 1 < 0)
-                deltaY = - cellHeight;
-            else
-                deltaY = cellHeight;
             minX = (coordsCaseP.x < minX) ? coordsCaseP.x : minX;
             minY = (coordsCaseP.y < minY) ? coordsCaseP.y : minY;
             maxX = (coordsCaseP.x > maxX) ? coordsCaseP.x : maxX;
@@ -136,9 +126,9 @@ namespace odfaeg {
             v1.y *= cellHeight;
             math::Vec2f v[4];
             v[0] = math::Vec2f (v1.x, v1.y);
-            v[1] = math::Vec2f (v1.x + deltaX, v1.y);
-            v[2] = math::Vec2f (v1.x + deltaX, v1.y + deltaY);
-            v[3] = math::Vec2f (v1.x, v1.y + deltaY);
+            v[1] = math::Vec2f (v1.x + cellWidth, v1.y);
+            v[2] = math::Vec2f (v1.x + cellWidth, v1.y + cellHeight);
+            v[3] = math::Vec2f (v1.x, v1.y + cellHeight);
 
             for (unsigned int i = 0; i < 4; i++) {
                 v[i] = bm.changeOfBase(v[i]);

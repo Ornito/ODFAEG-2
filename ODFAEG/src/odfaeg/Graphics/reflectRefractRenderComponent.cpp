@@ -445,7 +445,7 @@ namespace odfaeg {
                 for (unsigned int m = 0; m < 6; m++) {
                     math::Vec3f target = reflectView.getPosition() + dirs[m];
                     reflectView.lookAt(target.x, target.y, target.z);
-                    //std::vector<Entity*> visibleReflEntities = World::getEntitiesInRect(reflectView.getViewVolume(), expression);
+                    /*std::vector<Entity*> visibleReflEntities = World::getEntitiesInRect(reflectView.getViewVolume(), expression);
                     std::vector<Entity*> vEntities;
                     for (unsigned int j = 0; j < visibleEntities.size(); j++)  {
                         if (!visibleEntities[j]->isReflectable()) {
@@ -464,7 +464,7 @@ namespace odfaeg {
                         }
                     }
                     std::vector<Instance> rvInstances = rvBatcher.getInstances();
-                    std::vector<Instance> rvNormals = normalRvBatcher.getInstances();
+                    std::vector<Instance> rvNormals = normalRvBatcher.getInstances();*/
                     environmentMap.setView(reflectView);
                     environmentMap.setActive();
                     GLuint zero = 0;
@@ -482,10 +482,10 @@ namespace odfaeg {
                     projMatrix = reflectView.getProjMatrix().getMatrix().transpose();
                     sLinkedList.setParameter("viewMatrix", viewMatrix);
                     sLinkedList.setParameter("projectionMatrix", projMatrix);
-                    for (unsigned int i = 0; i < rvInstances.size(); i++) {
-                        if (rvInstances[i].getAllVertices().getVertexCount() > 0) {
+                    for (unsigned int i = 0; i < m_instances.size(); i++) {
+                        if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                             matrices.clear();
-                            std::vector<TransformMatrix*> tm = rvInstances[i].getTransforms();
+                            std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
                             for (unsigned int j = 0; j < tm.size(); j++) {
                                 tm[j]->update();
                                 std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
@@ -497,46 +497,46 @@ namespace odfaeg {
                             glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                             vb.clear();
-                            vb.setPrimitiveType(rvInstances[i].getVertexArrays()[0]->getPrimitiveType());
-                            if (rvInstances[i].getVertexArrays().size() > 0) {
-                                for (unsigned int j = 0; j < rvInstances[i].getVertexArrays()[0]->getVertexCount(); j++) {
-                                    vb.append((*rvInstances[i].getVertexArrays()[0])[j]);
+                            vb.setPrimitiveType(m_instances[i].getVertexArrays()[0]->getPrimitiveType());
+                            if (m_instances[i].getVertexArrays().size() > 0) {
+                                for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
+                                    vb.append((*m_instances[i].getVertexArrays()[0])[j]);
                                 }
                                 vb.update();
                             }
                             currentStates.blendMode = sf::BlendNone;
                             currentStates.shader = &sLinkedList;
-                            currentStates.texture =rvInstances[i].getMaterial().getTexture();
-                            if (rvInstances[i].getMaterial().getTexture() != nullptr) {
-                                math::Matrix4f texMatrix = rvInstances[i].getMaterial().getTexture()->getTextureMatrix();
+                            currentStates.texture =m_instances[i].getMaterial().getTexture();
+                            if (m_instances[i].getMaterial().getTexture() != nullptr) {
+                                math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
                                 sLinkedList.setParameter("textureMatrix", texMatrix);
                                 sLinkedList.setParameter("haveTexture", 1.f);
                             } else {
                                 sLinkedList.setParameter("haveTexture", 0.f);
                             }
-                            environmentMap.drawInstanced(vb, rvInstances[i].getVertexArrays()[0]->getPrimitiveType(), 0, rvInstances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
+                            environmentMap.drawInstanced(vb, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
                         }
                     }
                     viewMatrix = reflectView.getViewMatrix().getMatrix().transpose();
                     projMatrix = reflectView.getProjMatrix().getMatrix().transpose();
                     sLinkedListNormal.setParameter("viewMatrix", viewMatrix);
                     sLinkedListNormal.setParameter("projectionMatrix", projMatrix);
-                    for (unsigned int i = 0; i < rvNormals.size(); i++) {
-                       if (rvNormals[i].getAllVertices().getVertexCount() > 0) {
-                            if (rvNormals[i].getMaterial().getTexture() == nullptr) {
+                    for (unsigned int i = 0; i < m_normals.size(); i++) {
+                       if (m_normals[i].getAllVertices().getVertexCount() > 0) {
+                            if (m_normals[i].getMaterial().getTexture() == nullptr) {
                                 sLinkedListNormal.setParameter("haveTexture", 0.f);
                             } else {
-                                math::Matrix4f texMatrix = rvNormals[i].getMaterial().getTexture()->getTextureMatrix();
+                                math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
                                 sLinkedListNormal.setParameter("textureMatrix", texMatrix);
                                 sLinkedListNormal.setParameter("haveTexture", 1.f);
                             }
                             currentStates.blendMode = sf::BlendNone;
                             currentStates.shader = &sLinkedListNormal;
-                            currentStates.texture = rvNormals[i].getMaterial().getTexture();
+                            currentStates.texture = m_normals[i].getMaterial().getTexture();
                             vb.clear();
-                            vb.setPrimitiveType(rvNormals[i].getAllVertices().getPrimitiveType());
-                            for (unsigned int j = 0; j < rvNormals[i].getAllVertices().getVertexCount(); j++) {
-                                vb.append(rvNormals[i].getAllVertices()[j]);
+                            vb.setPrimitiveType(m_normals[i].getAllVertices().getPrimitiveType());
+                            for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
+                                vb.append(m_normals[i].getAllVertices()[j]);
                             }
                             vb.update();
                             environmentMap.drawVertexBuffer(vb, currentStates);

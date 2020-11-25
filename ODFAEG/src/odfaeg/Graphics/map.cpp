@@ -807,10 +807,10 @@ namespace odfaeg {
                     int x = view.getPosition().x;
                     int y = view.getPosition().y;
                     int z = view.getPosition().z;
-                    int endX = view.getPosition().x + view.getWidth() + 100;
-                    int endY = view.getPosition().y + view.getHeight() + 100;
-                    int endZ = view.getDepth() + 100;
-                    physic::BoundingBox bx (x, y, z, endX-view.getPosition().x, endY-view.getPosition().y, endZ);
+                    int endX = view.getPosition().x + view.getWidth();
+                    int endY = view.getPosition().y + view.getHeight()+100;
+                    int endZ = view.getPosition().z + view.getDepth();
+                    physic::BoundingBox bx (x, y, z, endX-view.getPosition().x, endY-view.getPosition().y, endZ-view.getPosition().z);
 
                     for (int i = x; i <= endX; i+=gridMap->getOffsetX()) {
                         for (int j = y; j <= endY; j+=gridMap->getOffsetY()) {
@@ -821,7 +821,7 @@ namespace odfaeg {
                                     for (unsigned int n = 0; n < cell->getNbEntitiesInside(); n++) {
                                        Entity* entity = cell->getEntityInside(n);
                                        physic::BoundingBox& bounds = entity->getGlobalBounds();
-                                       if (bx.intersects(bounds) || bx.isInside(bounds) || bounds.isInside(bx) && visibleEntities[entity->getRootTypeInt()][entity->getId()] != entity) {
+                                       if (bx.intersects(bounds) || bx.isInside(bounds) || bounds.isInside(bx) && visibleEntities[entity->getRootTypeInt()][entity->getId()] == nullptr) {
                                            visibleEntities[entity->getRootTypeInt()][entity->getId()] = entity;
                                        }
 
@@ -1130,14 +1130,12 @@ namespace odfaeg {
             vector<string> types = core::split(type, "+");
             for (unsigned int t = 0; t < types.size(); t++) {
                 unsigned int type = Entity::getIntOfType(types[t]);
-                //std::cout<<"type : "<<type<<std::endl<<"size : "<<visibleEntities.size()<<std::endl;
+                //std::cout<<"type : "<<type<<std::endl;
                 if (type < visibleEntities.size()) {
                     vector<Entity*> visibleEntitiesType = visibleEntities[type];
                     for (unsigned int i = 0; i < visibleEntitiesType.size(); i++) {
                         bool found = false;
                         for (unsigned int j = 0; j < types.size(); j++) {
-                            if (visibleEntitiesType[i] != nullptr && visibleEntitiesType[i]->getRootType() == "E_CUBE")
-                                std::cout<<"root type  : "<<visibleEntitiesType[i]->getRootType()<<std::endl;
                             if (visibleEntitiesType[i] != nullptr && visibleEntitiesType[i]->getRootType() == types[j]) {
                                 found = true;
                             }

@@ -571,8 +571,8 @@ namespace odfaeg {
                 OpenGL::InitialiseDebugFunctions();
             }
             // Setup the default and current views
-            m_defaultView = View (static_cast<float>(getSize().x), static_cast<float>(getSize().y), -static_cast<float>(getSize().y) - 100, static_cast<float>(getSize().y)+100);
-            m_defaultView.reset(physic::BoundingBox(0, 0, -static_cast<float>(getSize().y) - 100,static_cast<float>(getSize().x), static_cast<float>(getSize().y),static_cast<float>(getSize().y)+100));
+            m_defaultView = View (static_cast<float>(getSize().x), static_cast<float>(getSize().y), -static_cast<float>(getSize().y) - 200, static_cast<float>(getSize().y)+200);
+            m_defaultView.reset(physic::BoundingBox(0, 0, -static_cast<float>(getSize().y) - 200,static_cast<float>(getSize().x), static_cast<float>(getSize().y),static_cast<float>(getSize().y)+200));
             m_view = m_defaultView;
 
             // Set GL states only on first draw, so that we don't pollute user's states
