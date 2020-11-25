@@ -12,7 +12,7 @@ namespace odfaeg {
             expression(expression),
             quad(math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, window.getSize().y * 0.5f)) {
             quad.move(math::Vec3f(-window.getView().getSize().x * 0.5f, -window.getView().getSize().y * 0.5f, 0));
-            GLuint maxNodes = 5 * window.getView().getSize().x * window.getView().getSize().y;
+            GLuint maxNodes = 20 * window.getView().getSize().x * window.getView().getSize().y;
             GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
             frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
             frameBufferSprite = Sprite(frameBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
@@ -66,7 +66,7 @@ namespace odfaeg {
                                                         float yOff = 0;
                                                         if (water > 0.9f) {
                                                             yOff = 0.05*sin(position.x*12+time*FPI)*resolution.y;
-                                                            if((position.x != resolution.x * 0.5f && position.x != -resolution.x * 0.5f))
+                                                            /*if((position.x != resolution.x * 0.5f && position.x != -resolution.x * 0.5f))*/
                                                                 xOff = 0.025*cos(position.x*12+time*FPI)*resolution.x;
                                                         }
                                                         gl_Position = projectionMatrix * viewMatrix * worldMat * vec4((position.x - xOff), (position.y + yOff), position.z, 1.f);
@@ -105,7 +105,7 @@ namespace odfaeg {
                                                                 float yOff = 0;
                                                                 if (water > 0.9f) {
                                                                     yOff = 0.05*sin(position.x*12+time*FPI)*resolution.y;
-                                                                    if((position.x != resolution.x * 0.5f && position.x != -resolution.x * 0.5f))
+                                                                    /*if((position.x != resolution.x * 0.5f && position.x != -resolution.x * 0.5f))*/
                                                                         xOff = 0.025*cos(position.x*12+time*FPI)*resolution.x;
                                                                 }
                                                                 gl_Position = projectionMatrix * viewMatrix * vec4((position.x - xOff), (position.y + yOff), position.z, 1.f);
@@ -145,7 +145,7 @@ namespace odfaeg {
                  const std::string fragmentShader2 =
                    R"(
                    #version 460
-                   #define MAX_FRAGMENTS 5
+                   #define MAX_FRAGMENTS 20
                    struct NodeType {
                       vec4 color;
                       float depth;

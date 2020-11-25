@@ -137,10 +137,6 @@ namespace odfaeg {
             math::Vec3f size((int) minsMaxs[0][1] - (int) minsMaxs[0][0], (int) minsMaxs[1][1] - (int) minsMaxs[1][0], (int) minsMaxs[2][1] - (int) minsMaxs[2][0]);
             setLocalBounds(physic::BoundingBox(pos.x, pos.y, pos.z, size.x, size.y, size.z));
             vecs.clear();
-            /*updateTransform();
-            for (unsigned int i = 0; i < child->getNbFaces(); i++) {
-                child->getFace(i)->getTransformMatrix().combine(getTransform().getMatrix());
-            }*/
         }
         void Entity::removeChild (Entity *child) {
             std::vector<std::unique_ptr<Entity>>::iterator it;

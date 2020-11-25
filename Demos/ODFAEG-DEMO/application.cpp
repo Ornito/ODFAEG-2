@@ -136,6 +136,7 @@ namespace sorrok {
         psu = new ParticleSystemUpdater();
         World::addWorker(psu);
         tiles.push_back(new Tile(tm.getResourceByAlias("WATER"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
+        //tiles.push_back(new Tile(tm.getResourceByAlias("GRASS"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 0, 100, 100)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 100, 100, 100)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 200, 100, 100)));
@@ -272,7 +273,6 @@ namespace sorrok {
         ReflectRefractRenderComponent *rrrc = new ReflectRefractRenderComponent(getRenderWindow(), 2, "E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
         ShadowRenderComponent *src = new ShadowRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
         LightRenderComponent *lrc = new LightRenderComponent(getRenderWindow(), 4, "E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", ContextSettings(0, 0, 4, 4, 6));
-
         /*gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
         textArea->addFocusListener(this);
         textArea->setVisible(false);
@@ -282,10 +282,10 @@ namespace sorrok {
         op->setVisible(false);
         op->setEventContextActivated(false);*/
         getRenderComponentManager().addComponent(frc1);
-        getRenderComponentManager().addComponent(src);
         getRenderComponentManager().addComponent(frc2);
-        getRenderComponentManager().addComponent(lrc);
         getRenderComponentManager().addComponent(rrrc);
+        getRenderComponentManager().addComponent(src);
+        getRenderComponentManager().addComponent(lrc);
         /*getRenderComponentManager().addComponent(textArea);
         getRenderComponentManager().addComponent(op);*/
 
