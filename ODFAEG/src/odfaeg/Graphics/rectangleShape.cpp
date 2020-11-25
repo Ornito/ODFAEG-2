@@ -46,7 +46,7 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         void RectangleShape::onScale(math::Vec3f& scale)
         {
-           if(m_size.x == 0) {
+           /*if(m_size.x == 0) {
              m_size.x = getSize().x;
              update();
            }
@@ -69,7 +69,9 @@ namespace odfaeg
            if (scale.z == 0) {
             m_size.z = 0;
             update();
-           }
+           }*/
+           m_size = getSize();
+           update();
         }
 
         ////////////////////////////////////////////////////////////

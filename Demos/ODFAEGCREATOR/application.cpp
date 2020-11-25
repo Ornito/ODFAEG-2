@@ -13,6 +13,7 @@ using namespace odfaeg::window;
 ODFAEGCreator::ODFAEGCreator(sf::VideoMode vm, std::string title) :
 Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0, 0, 3, 0)), isGuiShown (false), cursor(10), se(this) {
     dpSelectTexture = nullptr;
+    dpSelectEm = nullptr;
     showGrid = false;
     alignToGrid = false;
     showRectSelect = false;
@@ -1434,9 +1435,21 @@ void ODFAEGCreator::moveCursor(sf::Vector2f mousePos) {
                     p.y--;
                 v1.x = p.x * gridWidth;
                 v1.y = p.y * gridHeight;
-                Vec3f newPos = bcm.changeOfBase(Vec3f(v1.x, v1.y, 0));
-                if (bcm.isIso2DMatrix())
-                    newPos.x -= gridWidth * 0.5f;
+                Vec3f ve1(v1.x, v1.y, 0);
+                Vec3f ve2(v1.x + gridWidth, v1.y, 0);
+                Vec3f ve3(v1.x + gridWidth, v1.y + gridHeight, 0);
+                Vec3f ve4(v1.x, v1.y + gridHeight, 0);
+                Vec3f p1 = bcm.changeOfBase(ve1);
+                Vec3f p2 = bcm.changeOfBase(ve2);
+                Vec3f p3 = bcm.changeOfBase(ve3);
+                Vec3f p4 = bcm.changeOfBase(ve4);
+                std::vector<Vec3f> points;
+                points.push_back(p1);
+                points.push_back(p2);
+                points.push_back(p3);
+                points.push_back(p4);
+                std::array<std::array<float, 2>, 3> extends = Computer::getExtends(points);
+                Vec3f newPos (extends[0][0], extends[1][0], extends[2][0]);
                 cursor.setPosition(newPos);
             }
         }

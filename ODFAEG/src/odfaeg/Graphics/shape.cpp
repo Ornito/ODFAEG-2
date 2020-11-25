@@ -199,7 +199,8 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         void Shape::draw(RenderTarget& target, RenderStates states)
         {
-            states.transform.combine(getTransform().getMatrix());
+            states.transform = getTransform();
+            states.transform.setScale(math::Vec3f(1, 1, 1));
             /*if (getName() == "RPSCRIPTFILES") {
                 std::cout<<"size : "<<getSize()<<"position : "<<getPosition()<<std::endl;
                 for (unsigned int i = 0; i < m_vertices.getVertexCount(); i++)

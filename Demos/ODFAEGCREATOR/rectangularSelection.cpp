@@ -4,7 +4,7 @@ using namespace odfaeg::graphic;
 using namespace odfaeg::math;
 using namespace odfaeg::physic;
 RectangularSelection::RectangularSelection() {
-    selectionRect.setOutlineThickness(0.1f);
+    selectionRect.setOutlineThickness(1.f);
     selectionRect.setFillColor(sf::Color::Transparent);
     selectionRect.setOutlineColor(sf::Color::Red);
 }
