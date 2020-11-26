@@ -20,6 +20,7 @@
 #include "odfaeg/Graphics/zSortingRenderComponent.hpp"
 #include "odfaeg/Graphics/shadowRenderComponent.hpp"
 #include "odfaeg/Graphics/lightRenderComponent.hpp"
+#include "odfaeg/Graphics/reflectRefractRenderComponent.hpp"
 #include "odfaeg/Graphics/entitiesUpdater.h"
 #include "rectangularSelection.hpp"
 class ODFAEGCreator : public odfaeg::core::Application,
@@ -51,9 +52,13 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onTexCoordsChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedEmChanged(odfaeg::graphic::gui::DropDownList* dp);
     void addShape(odfaeg::graphic::Shape *shape);
+    void addTile(odfaeg::graphic::Tile *tile);
     bool removeShape (unsigned int id);
     void updateScriptPos(odfaeg::graphic::Transformable* shape);
+    void updateScriptColor(odfaeg::graphic::Transformable* shape);
+    void updateScriptTextCoords(odfaeg::graphic::Transformable* shape);
     void updateScriptText(odfaeg::graphic::Shape* shape, const odfaeg::graphic::Texture* text);
+    void updateScriptText(odfaeg::graphic::Tile* tile, const odfaeg::graphic::Texture* text);
     enum Fonts {
         Serif
     };

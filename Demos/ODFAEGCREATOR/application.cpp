@@ -326,6 +326,37 @@ void ODFAEGCreator::updateScriptText(Shape* shape, const Texture* text) {
         }
     }
 }
+void ODFAEGCreator::updateScriptText(Tile* tile, const Texture* text) {
+    std::map<std::string, std::string>::iterator it;
+    it = cppAppliContent.find(minAppliname+".cpp");
+    if (it != cppAppliContent.end()) {
+        std::string& content = it->second;
+        TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
+        std::string relativePath = tm.getPathByResource(text);
+        unsigned int id = tm.getIdByResource(text);
+        if(content.find("text"+conversionUIntString(id)) == std::string::npos) {
+            unsigned int pos = content.find("TextureManager<>& tm = cache.resourceManager<Texture, std::string>(\"TextureManager\");");
+            std::string subs = content.substr(pos);
+            pos += subs.find_first_of('\n') + 1;
+            content.insert(pos, "const Texture* text"+conversionUIntString(id)+" = tm.getResourceByAlias(\"+realtivePath+\");\n");
+        }
+        if (content.find("tile"+conversionUIntString(tile->getId())+"->getFace(0)->getMaterial()") == std::string::npos) {
+            unsigned int pos = content.find("tile"+conversionUIntString(tile->getId()));
+            std::string subs = content.substr(pos);
+            pos += subs.find_first_of('\n') + 1;
+            content.insert(pos,"tile"+conversionUIntString(tile->getId())+"->getFace(0)->getMaterial().clearTextures();\n"+
+                           "tile->getFace(0)->getMaterial().addTexture(text"+conversionUIntString(id)+", sf::IntRect(0, 0,"+
+                           conversionIntString(text->getSize().x)+","+conversionIntString(text->getSize().y)+"));\n");
+        } else {
+            unsigned int pos = content.find("tile"+conversionUIntString(tile->getId())+"->getFace(0).getMaterial().addTexture");
+            std::string subs = content.substr(pos);
+            unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+            content.erase(pos, endpos - pos);
+            content.insert(pos,"tile->getFace(0)->getMaterial().addTexture(text"+conversionUIntString(id)+", sf::IntRect(0, 0,"+
+                           conversionIntString(text->getSize().x)+","+conversionIntString(text->getSize().y)+"));\n");
+        }
+    }
+}
 void ODFAEGCreator::onRender(RenderComponentManager *cm) {
 
 }
@@ -904,6 +935,10 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             LightRenderComponent* lrc = new LightRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 4, 6));
             getRenderComponentManager().addComponent(lrc);
         }
+        if (dpComponentType->getSelectedItem() == "Refraction") {
+            ReflectRefractRenderComponent* rrrc = new ReflectRefractRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 4, 6));
+            getRenderComponentManager().addComponent(rrrc);
+        }
     }
     if(button==bCreateEntitiesUpdater) {
         std::string name = taEntitiesUpdaterName->getText();
@@ -961,6 +996,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
                 displayInfos(tile);
                 if (World::getCurrentEntityManager() != nullptr)
                     World::addEntity(tile);
+                addTile(tile);
             } else {
                 BoundingBox rect = rectSelect.getSelectionRect();
                 for (int x = rect.getPosition().x; x < rect.getPosition().x + rect.getSize().x-gridWidth; x+=gridWidth) {
@@ -1043,9 +1079,34 @@ void ODFAEGCreator::addShape(Shape *shape) {
             std::string subs = content.substr(pos);
             pos += subs.find_first_of('\n') + 1;
         }
-        std::string toInsert = "    std::unique_ptr<sf::RectangleShape> shape"+conversionUIntString(shape->getId())+" = std::make_unique<RectangleShape>(Vec3f(100, 50, 0));\n"
+        std::string toInsert = "    std::unique_ptr<Shape> shape"+conversionUIntString(shape->getId())+" = std::make_unique<RectangleShape>(Vec3f(100, 50, 0));\n"
                                "    drawables.push_back(std::move(shape));\n";
         content.insert(pos, toInsert);
+    }
+}
+void ODFAEGCreator::addTile(Tile* tile) {
+    std::map<std::string, std::string>::iterator it;
+    it = cppAppliContent.find(minAppliname+".cpp");
+    if (it != cppAppliContent.end()) {
+        std::string& content = it->second;
+        unsigned int pos = content.find("tm.getResourceByAlias");
+        if (pos != std::string::npos && pos < content.size()) {
+            std::string subs = content.substr(pos);
+            pos += subs.find_first_of('\n') + 1;
+            while (subs.find("tm.getResourceByAlias") != std::string::npos) {
+                subs = content.substr(pos);
+                pos += subs.find_first_of('\n') + 1;
+            }
+        } else {
+            pos = content.find("TextureManager<>& tm = cache.resourceManager<Texture, std::string>(\"TextureManager\");");
+            std::string subs = content.substr(pos);
+            pos += subs.find_first_of('\n') + 1;
+        }
+        std::string toInsert = "Tile* tile"+conversionUIntString(tile->getId())+" = new Tile (nullptr,Vec3f("+conversionFloatString(cursor.getPosition().x)+","+
+        conversionFloatString(cursor.getPosition().y)+","+conversionFloatString(cursor.getPosition().z)+"),Vec3f(100,50,0),sf::IntRect(0, 0, "+conversionIntString(gridWidth)+","+
+        conversionIntString(gridHeight)+"));\n"+"World::addEntity(tile"+conversionUIntString(tile->getId())+");\n";
+        content.insert(pos, toInsert);
+
     }
 }
 bool ODFAEGCreator::removeShape (unsigned int id) {
@@ -1055,7 +1116,11 @@ bool ODFAEGCreator::removeShape (unsigned int id) {
         std::string content = it->second;
         for (auto it = shapes.begin(); it != shapes.end();it++) {
             if ((*it)->getId() == id) {
-                unsigned int pos = content.find("shape"+conversionUIntString(id));
+                unsigned int pos = content.find("std::unique_ptr<Shape*> shape"+conversionUIntString(id));
+                std::string subs = content.substr(pos);
+                unsigned int endpos = pos + subs.find_first_of('\n') + 1;
+                content.erase(pos, pos - endpos);
+                pos = content.find("drawables.push_back(std::move(shape"+conversionUIntString(id)+"));\n");
                 do {
                     std::string subs = content.substr(pos);
                     unsigned int endpos = pos + subs.find_first_of('\n') + 1;
@@ -1512,13 +1577,29 @@ void ODFAEGCreator::updateScriptPos(Transformable* shape) {
                 std::string subs = content.substr(pos);
                 pos += subs.find_first_of('\n') + 1;
                 content.insert(pos,"    shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
-                +conversionIntString(selectedObject->getPosition().y)+","+conversionIntString(selectedObject->getPosition().z)+");\n");
+                +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+");\n");
             } else {
                 unsigned int pos = content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition");
                 std::string subs = content.substr(pos);
                 unsigned int endpos = subs.find_first_of('\n') + pos + 1;
                 content.erase(pos, endpos - pos);
                 content.insert(pos,"shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
+                +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+"));\n");
+            }
+        }
+        if (dynamic_cast<Tile*>(shape)) {
+            if(content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition") == std::string::npos) {
+                unsigned int pos = content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+" = std::make_unique<RectangleShape>");
+                std::string subs = content.substr(pos);
+                pos += subs.find_first_of('\n') + 1;
+                content.insert(pos,"    tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
+                +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+");\n");
+            } else {
+                unsigned int pos = content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition");
+                std::string subs = content.substr(pos);
+                unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+                content.erase(pos, endpos - pos);
+                content.insert(pos,"tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
                 +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+"));\n");
             }
         }
@@ -1566,6 +1647,45 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
         }
     }
 }
+void ODFAEGCreator::updateScriptColor(Transformable* shape) {
+    std::map<std::string, std::string>::iterator it;
+    it = cppAppliContent.find(minAppliname+".cpp");
+    if (it != cppAppliContent.end()) {
+        std::string& content = it->second;
+        if (dynamic_cast<Shape*>(shape)) {
+            if(content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setFillColor") == std::string::npos) {
+                unsigned int pos = content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+" = std::make_unique<RectangleShape>");
+                std::string subs = content.substr(pos);
+                pos += subs.find_first_of('\n') + 1;
+                content.insert(pos,"    shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setFillColor(sf::Color("+conversionIntString(static_cast<Shape*>(shape)->getFillColor().r)+","
+                +conversionIntString(static_cast<Shape*>(shape)->getFillColor().g)+","+conversionIntString(static_cast<Shape*>(shape)->getFillColor().b)+","+conversionIntString(static_cast<Shape*>(shape)->getFillColor().a)+"));\n");
+            } else {
+                unsigned int pos = content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setFillColor");
+                std::string subs = content.substr(pos);
+                unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+                content.erase(pos, endpos - pos);
+                content.insert(pos,"    shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setFillColor(sf::Color("+conversionIntString(static_cast<Shape*>(shape)->getFillColor().r)+","
+                +conversionIntString(static_cast<Shape*>(shape)->getFillColor().g)+","+conversionIntString(static_cast<Shape*>(shape)->getFillColor().b)+","+conversionIntString(static_cast<Shape*>(shape)->getFillColor().a)+"));\n");
+            }
+        }
+        if (dynamic_cast<Tile*>(shape)) {
+            if(content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setColor") == std::string::npos) {
+                unsigned int pos = content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+" = std::make_unique<RectangleShape>");
+                std::string subs = content.substr(pos);
+                pos += subs.find_first_of('\n') + 1;
+                content.insert(pos,"    tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setColor(sf::Color("+conversionIntString(static_cast<Tile*>(shape)->getColor().r)+","
+                +conversionIntString(static_cast<Tile*>(shape)->getColor().g)+","+conversionIntString(static_cast<Tile*>(shape)->getColor().b)+","+conversionIntString(static_cast<Tile*>(shape)->getColor().a)+"));\n");
+            } else {
+                unsigned int pos = content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition");
+                std::string subs = content.substr(pos);
+                unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+                content.erase(pos, endpos - pos);
+                content.insert(pos,"    tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setColor(sf::Color("+conversionIntString(static_cast<Tile*>(shape)->getColor().r)+","
+                +conversionIntString(static_cast<Tile*>(shape)->getColor().g)+","+conversionIntString(static_cast<Tile*>(shape)->getColor().b)+","+conversionIntString(static_cast<Tile*>(shape)->getColor().a)+"));\n");
+            }
+        }
+    }
+}
 void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
     if (ta == tRColor) {
         if (is_number(tRColor->getText())) {
@@ -1587,6 +1707,7 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             if (dynamic_cast<Tile*>(selectedObject)) {
                 static_cast<Tile*>(selectedObject)->setColor(sf::Color(Math::clamp(color, 0, 255), static_cast<Tile*>(selectedObject)->getColor().g,static_cast<Tile*>(selectedObject)->getColor().b, static_cast<Tile*>(selectedObject)->getColor().a));
             }
+            updateScriptColor(selectedObject);
             for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
                 State* selectState = new State("SCHANGERCOLOR", &se);
                 selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
@@ -1616,6 +1737,7 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             if (dynamic_cast<Tile*>(selectedObject)) {
                 state->addParameter("OLDVALUE", static_cast<Tile*>(selectedObject)->getColor().g);
             }
+            updateScriptColor(selectedObject);
             state->addParameter("NEWVALUE", color);
             sg->addState(state);
             if (dynamic_cast<Shape*>(selectedObject)) {
@@ -1653,6 +1775,7 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             if (dynamic_cast<Tile*>(selectedObject)) {
                 state->addParameter("OLDVALUE", static_cast<Tile*>(selectedObject)->getColor().b);
             }
+            updateScriptColor(selectedObject);
             state->addParameter("NEWVALUE", color);
             sg->addState(state);
             if (dynamic_cast<Shape*>(selectedObject)) {
@@ -1690,6 +1813,7 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             if (dynamic_cast<Tile*>(selectedObject)) {
                 state->addParameter("OLDVALUE", static_cast<Tile*>(selectedObject)->getColor().a);
             }
+            updateScriptColor(selectedObject);
             state->addParameter("NEWVALUE", color);
             sg->addState(state);
             if (dynamic_cast<Shape*>(selectedObject)) {
@@ -1729,11 +1853,13 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
     if (dp->getSelectedItem() == "NONE") {
         if (dynamic_cast<Shape*>(selectedObject)) {
             static_cast<Shape*>(selectedObject)->setTexture(nullptr);
+            updateScriptText(static_cast<Shape*>(selectedObject), nullptr);
         }
         if (dynamic_cast<Tile*>(selectedObject)) {
             Tile* selectedTile = static_cast<Tile*>(selectedObject);
             selectedTile->getFace(0)->getMaterial().clearTextures();
             selectedTile->getFace(0)->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, gridWidth, gridHeight));
+            updateScriptText(static_cast<Tile*>(selectedObject), nullptr);
         }
     } else {
         TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
@@ -1753,6 +1879,7 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().clearTextures();
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().addTexture(text, sf::IntRect(0, 0, text->getSize().x, text->getSize().y));
                     textRect = sf::IntRect(0, 0, text->getSize().x, text->getSize().y);
+                    updateScriptText(static_cast<Tile*>(selectedObject), text);
                 }
                 tTexCoordX->setText(conversionIntString(textRect.left));
                 tTexCoordY->setText(conversionIntString(textRect.top));
@@ -1825,77 +1952,182 @@ void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
         tex = static_cast<Shape*>(selectedObject)->getTexture();
         texRect = static_cast<Shape*>(selectedObject)->getTextureRect();
     }
+    if (dynamic_cast<Tile*>(selectedObject)) {
+        tex = static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().getTexture();
+        texRect = static_cast<Tile*>(selectedObject)->getTexCoords();
+    }
     if (tex != nullptr) {
         if (ta == tTexCoordX) {
             if (is_number(ta->getText())) {
                 int texCoordX = conversionStringInt(ta->getText());
                 StateGroup* sg = new StateGroup("SGCHANGEXTEXCOORD");
-                State* state = new State("SCHANGEXTEYCOORD", &se);
+                State* state = new State("SCHANGEXTEXCOORD", &se);
                 if (dynamic_cast<Shape*>(selectedObject)) {
                     state->addParameter("OLDVALUE", static_cast<Shape*>(selectedObject)->getTextureRect().left);
+                }
+                if (dynamic_cast<Tile*>(selectedObject)) {
+                    state->addParameter("OLDVALUE", static_cast<Tile*>(selectedObject)->getTexCoords().left);
                 }
                 state->addParameter("NEWVALUE", texCoordX);
                 state->addParameter("OBJECT", selectedObject);
                 sg->addState(state);
-                stateStack.addStateGroup(sg);
+
                 if (dynamic_cast<Shape*>(selectedObject)) {
                     static_cast<Shape*>(selectedObject)->setTextureRect(sf::IntRect(Math::abs(texCoordX), texRect.top, texRect.width, texRect.height));
                 }
+                if (dynamic_cast<Tile*>(selectedObject)) {
+                    static_cast<Tile*>(selectedObject)->setTexRect(sf::IntRect(Math::abs(texCoordX), texRect.top, texRect.width, texRect.height));
+                }
+                for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                    State* selectState = new State("SCHANGEXTEXCOORD", &se);
+                    state->addParameter("OBJECT", rectSelect.getItems()[i]);
+                    if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
+                        state->addParameter("OLDVALUE", static_cast<Shape*>(rectSelect.getItems()[i])->getTextureRect().left);
+                    }
+                    if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
+                        state->addParameter("OLDVALUE", static_cast<Tile*>(rectSelect.getItems()[i])->getTexCoords().left);
+                    }
+                    selectState->addParameter("NEWVALUE", texCoordX);
+                    sg->addState(state);
+                    if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
+                        static_cast<Shape*>(rectSelect.getItems()[i])->setTextureRect(sf::IntRect(Math::abs(texCoordX), texRect.top, texRect.width, texRect.height));
+                    }
+                    if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
+                        static_cast<Tile*>(rectSelect.getItems()[i])->setTexRect(sf::IntRect(Math::abs(texCoordX), texRect.top, texRect.width, texRect.height));
+                    }
+                }
+                stateStack.addStateGroup(sg);
             }
         }
         if (ta == tTexCoordY) {
             if (is_number(ta->getText())) {
                 int texCoordY = conversionStringInt(ta->getText());
-                StateGroup* sg = new StateGroup("SGCHANGEYTEXCOORD"+conversionIntString(texCoordY));
-                State* state = new State("SCHANGEXTEYCOORD", &se);
+                StateGroup* sg = new StateGroup("SGCHANGEYTEXCOORD");
+                State* state = new State("SCHANGEYTEXCOORD", &se);
                 if (dynamic_cast<Shape*>(selectedObject)) {
                     state->addParameter("OLDVALUE", static_cast<Shape*>(selectedObject)->getTextureRect().top);
+                }
+                if (dynamic_cast<Tile*>(selectedObject)) {
+                    state->addParameter("OLDVALUE", static_cast<Tile*>(selectedObject)->getTexCoords().top);
                 }
                 state->addParameter("NEWVALUE", texCoordY);
                 state->addParameter("OBJECT", selectedObject);
                 sg->addState(state);
-                stateStack.addStateGroup(sg);
+
                 if (dynamic_cast<Shape*>(selectedObject)) {
                     static_cast<Shape*>(selectedObject)->setTextureRect(sf::IntRect(texRect.left, Math::abs(texCoordY), texRect.width, texRect.height));
                 }
+                if (dynamic_cast<Tile*>(selectedObject)) {
+                    static_cast<Tile*>(selectedObject)->setTexRect(sf::IntRect(texRect.left, Math::abs(texCoordY), texRect.width, texRect.height));
+                }
+                for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                    State* selectState = new State("SCHANGEXTEYCOORD", &se);
+                    state->addParameter("OBJECT", rectSelect.getItems()[i]);
+                    if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
+                        state->addParameter("OLDVALUE", static_cast<Shape*>(rectSelect.getItems()[i])->getTextureRect().top);
+                    }
+                    if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
+                        state->addParameter("OLDVALUE", static_cast<Tile*>(rectSelect.getItems()[i])->getTexCoords().top);
+                    }
+                    selectState->addParameter("NEWVALUE", texCoordY);
+                    sg->addState(state);
+                    if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
+                        static_cast<Shape*>(rectSelect.getItems()[i])->setTextureRect(sf::IntRect(texRect.left, Math::abs(texCoordY), texRect.width, texRect.height));
+                    }
+                    if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
+                        static_cast<Tile*>(rectSelect.getItems()[i])->setTexRect(sf::IntRect(texRect.left, Math::abs(texCoordY), texRect.width, texRect.height));
+                    }
+                }
+                stateStack.addStateGroup(sg);
             }
         }
         if (ta == tTexCoordW) {
             if (is_number(ta->getText())) {
                 int texCoordW = conversionStringInt(ta->getText());
-                StateGroup* sg = new StateGroup("SGCHANGEWTEWCOORD"+conversionIntString(texCoordW));
-                State* state = new State("SCHANGEXTEWCOORD", &se);
+                StateGroup* sg = new StateGroup("SGCHANGEWTEXCOORD"+conversionIntString(texCoordW));
+                State* state = new State("SCHANGEWTEXCOORD", &se);
                 if (dynamic_cast<Shape*>(selectedObject)) {
                     state->addParameter("OLDVALUE", static_cast<Shape*>(selectedObject)->getTextureRect().width);
+                }
+                if (dynamic_cast<Tile*>(selectedObject)) {
+                    state->addParameter("OLDVALUE", static_cast<Tile*>(selectedObject)->getTexCoords().width);
                 }
                 state->addParameter("NEWVALUE", texCoordW);
                 state->addParameter("OBJECT", selectedObject);
                 sg->addState(state);
-                stateStack.addStateGroup(sg);
+
                 if (dynamic_cast<Shape*>(selectedObject)) {
                     static_cast<Shape*>(selectedObject)->setTextureRect(sf::IntRect(texRect.left, texRect.top, Math::abs(texCoordW), texRect.height));
                 }
+                if (dynamic_cast<Tile*>(selectedObject)) {
+                    static_cast<Tile*>(selectedObject)->setTexRect(sf::IntRect(texRect.left, texRect.top, Math::abs(texCoordW), texRect.height));
+                }
+                for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                    State* selectState = new State("SCHANGEWTEXCOORD", &se);
+                    state->addParameter("OBJECT", rectSelect.getItems()[i]);
+                    if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
+                        state->addParameter("OLDVALUE", static_cast<Shape*>(rectSelect.getItems()[i])->getTextureRect().width);
+                    }
+                    if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
+                        state->addParameter("OLDVALUE", static_cast<Tile*>(rectSelect.getItems()[i])->getTexCoords().width);
+                    }
+                    selectState->addParameter("NEWVALUE", texCoordW);
+                    sg->addState(state);
+                    if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
+                        static_cast<Shape*>(rectSelect.getItems()[i])->setTextureRect(sf::IntRect(texRect.left, texRect.top, Math::abs(texCoordW), texRect.height));
+                    }
+                    if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
+                        static_cast<Tile*>(rectSelect.getItems()[i])->setTexRect(sf::IntRect(texRect.left, texRect.top, Math::abs(texCoordW), texRect.height));
+                    }
+                }
+                stateStack.addStateGroup(sg);
             }
         }
         if (ta == tTexCoordH) {
             if (is_number(ta->getText())) {
                 int texCoordH = conversionStringInt(ta->getText());
                 StateGroup* sg = new StateGroup("SGCHANGEHTEXCOORD"+conversionIntString(texCoordH));
-                State* state = new State("SCHANGEXTEHCOORD", &se);
+                State* state = new State("SCHANGEHTEXCOORD", &se);
                 if (dynamic_cast<Shape*>(selectedObject)) {
                     state->addParameter("OLDVALUE", static_cast<Shape*>(selectedObject)->getTextureRect().height);
+                }
+                if (dynamic_cast<Tile*>(selectedObject)) {
+                    state->addParameter("OLDVALUE", static_cast<Tile*>(selectedObject)->getTexCoords().height);
                 }
                 state->addParameter("NEWVALUE", texCoordH);
                 state->addParameter("OBJECT", selectedObject);
                 sg->addState(state);
-                stateStack.addStateGroup(sg);
+
                 if (dynamic_cast<Shape*>(selectedObject)) {
                     static_cast<Shape*>(selectedObject)->setTextureRect(sf::IntRect(texRect.left, texRect.top, texRect.width, Math::abs(texCoordH)));
                 }
+                if (dynamic_cast<Tile*>(selectedObject)) {
+                    static_cast<Tile*>(selectedObject)->setTexRect(sf::IntRect(texRect.left, texRect.top, texRect.width, Math::abs(texCoordH)));
+                }
+                for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                    State* selectState = new State("SCHANGEHTEXCOORD", &se);
+                    state->addParameter("OBJECT", rectSelect.getItems()[i]);
+                    if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
+                        state->addParameter("OLDVALUE", static_cast<Shape*>(rectSelect.getItems()[i])->getTextureRect().height);
+                    }
+                    if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
+                        state->addParameter("OLDVALUE", static_cast<Tile*>(rectSelect.getItems()[i])->getTexCoords().height);
+                    }
+                    selectState->addParameter("NEWVALUE", texCoordH);
+                    sg->addState(state);
+                    if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
+                        static_cast<Shape*>(rectSelect.getItems()[i])->setTextureRect(sf::IntRect(texRect.left, texRect.top, texRect.width, Math::abs(texCoordH)));
+                    }
+                    if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
+                        static_cast<Tile*>(rectSelect.getItems()[i])->setTexRect(sf::IntRect(texRect.left, texRect.top, texRect.width, Math::abs(texCoordH)));
+                    }
+                }
+                stateStack.addStateGroup(sg);
             }
         }
     }
 }
+
 void ODFAEGCreator::onSelectedEmChanged(DropDownList* dp) {
     if (dp->getSelectedItem() == "NONE") {
         if (dynamic_cast<Entity*>(selectedObject)) {

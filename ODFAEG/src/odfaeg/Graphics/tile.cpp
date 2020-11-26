@@ -116,6 +116,17 @@ namespace odfaeg {
         sf::Color Tile::getColor() {
             return getFaces()[0]->getVertexArray()[0].color;
         }
+        sf::IntRect Tile::getTexCoords() {
+            return getFace(0)->getMaterial().getTexRect();
+        }
+        void Tile::setTexRect(sf::IntRect rect) {
+            getFace(0)->getMaterial().setTexRect(rect);
+            VertexArray& va = getFace(0)->getVertexArray();
+            va[0].texCoords = sf::Vector2f(rect.left, rect.top);
+            va[1].texCoords = sf::Vector2f(rect.left + rect.width, rect.top);
+            va[2].texCoords = sf::Vector2f(rect.left + rect.width, rect.top + rect.height);
+            va[3].texCoords = sf::Vector2f(rect.left, rect.top + rect.height);
+        }
     }
 }
 

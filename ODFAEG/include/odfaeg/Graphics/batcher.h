@@ -82,6 +82,7 @@ namespace odfaeg {
                 * \brief serialize the textures information in a texture infos.
                 * \param ar : the archive.
                 */
+                void setTexRect(sf::IntRect rect);
                 template <typename Archive>
                 void serialize(Archive &ar) {
                     ar(rect.left);
@@ -146,6 +147,7 @@ namespace odfaeg {
             * \param texUnit : the texture unit.
             * \return the id of the texture.
             */
+            void setTexRect(sf::IntRect rect, int texUnit = 0);
             std::string getTexId(int texUnit = 0);
             /**
             * \fn void setTexId(std::string texId, int texUnit = 0)

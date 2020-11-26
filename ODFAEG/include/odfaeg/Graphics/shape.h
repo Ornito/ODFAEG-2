@@ -213,7 +213,6 @@ namespace odfaeg {
 
             template <typename Archive>
             void vtserialize(Archive& ar) {
-                Drawable::serialize(ar);
                 Transformable::serialize(ar);
                 ar(m_textureRect.left);
                 ar(m_textureRect.top);
@@ -233,7 +232,7 @@ namespace odfaeg {
                 ar(m_insideBounds);
                 ar(m_bounds);
             }
-
+            const unsigned int& getId();
         protected :
 
             ////////////////////////////////////////////////////////////
@@ -298,6 +297,8 @@ namespace odfaeg {
             VertexArray    m_outlineVertices;  ///< Vertex array containing the outline geometry
             physic::BoundingBox           m_insideBounds;     ///< Bounding rectangle of the inside (fill)
             physic::BoundingBox           m_bounds;           ///< Bounding rectangle of the whole shape (outline + fill)
+            unsigned int id;
+            static unsigned int nbShapes;
         };
     }
 

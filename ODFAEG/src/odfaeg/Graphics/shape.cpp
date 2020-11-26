@@ -55,12 +55,15 @@ namespace
 namespace odfaeg
 {
     namespace graphic {
+        unsigned int Shape::nbShapes = 0;
         ////////////////////////////////////////////////////////////
         Shape::~Shape()
         {
         }
 
-
+        const unsigned int& Shape::getId() {
+            return id;
+        }
         ////////////////////////////////////////////////////////////
         void Shape::setTexture(const Texture* texture, bool resetRect)
         {
@@ -154,6 +157,8 @@ namespace odfaeg
         m_insideBounds    (),
         m_bounds          ()
         {
+            id = nbShapes;
+            nbShapes++;
         }
 
 

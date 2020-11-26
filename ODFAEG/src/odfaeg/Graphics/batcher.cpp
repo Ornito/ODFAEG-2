@@ -40,6 +40,9 @@ namespace odfaeg {
             sf::IntRect Material::TextureInfo::getTexRect() const {
                 return rect;
             }
+            void Material::TextureInfo::setTexRect(sf::IntRect rect) {
+                this->rect = rect;
+            }
             Material::Material() {
                 color = sf::Color::White;
                 specularIntensity = 0;
@@ -129,6 +132,10 @@ namespace odfaeg {
             }
             sf::IntRect Material::getTexRect(int texUnit) const {
                 return (texInfos.size() > 0) ? texInfos[texUnit]->getTexRect() : sf::IntRect(0, 0, 0, 0);
+            }
+            void Material::setTexRect(sf::IntRect rect, int texUnit) {
+                if (texInfos.size() > 0)
+                    texInfos[texUnit]->setTexRect(rect);
             }
             void Material::clearTextures() {
                 texInfos.clear();

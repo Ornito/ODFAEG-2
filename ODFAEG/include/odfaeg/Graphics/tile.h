@@ -141,6 +141,8 @@ namespace odfaeg {
                     Entity::vtserialize(ar);
                 }
                 sf::Color getColor();
+                sf::IntRect getTexCoords();
+                void setTexRect(sf::IntRect rect);
         };
     }
 }
