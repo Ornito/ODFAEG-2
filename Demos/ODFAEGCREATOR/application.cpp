@@ -1589,7 +1589,7 @@ void ODFAEGCreator::updateScriptPos(Transformable* shape) {
         }
         if (dynamic_cast<Tile*>(shape)) {
             if(content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition") == std::string::npos) {
-                unsigned int pos = content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+" = std::make_unique<RectangleShape>");
+                unsigned int pos = content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+" = new Tile");
                 std::string subs = content.substr(pos);
                 pos += subs.find_first_of('\n') + 1;
                 content.insert(pos,"    tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
@@ -1670,7 +1670,7 @@ void ODFAEGCreator::updateScriptColor(Transformable* shape) {
         }
         if (dynamic_cast<Tile*>(shape)) {
             if(content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setColor") == std::string::npos) {
-                unsigned int pos = content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+" = std::make_unique<RectangleShape>");
+                unsigned int pos = content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+" = new Tile");
                 std::string subs = content.substr(pos);
                 pos += subs.find_first_of('\n') + 1;
                 content.insert(pos,"    tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setColor(sf::Color("+conversionIntString(static_cast<Tile*>(shape)->getColor().r)+","
@@ -2127,7 +2127,45 @@ void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
         }
     }
 }
-
+void ODFAEGCreator::updateScriptTextCoords(Transformable* shape) {
+    std::map<std::string, std::string>::iterator it;
+    it = cppAppliContent.find(minAppliname+".cpp");
+    if (it != cppAppliContent.end()) {
+        std::string& content = it->second;
+        if (dynamic_cast<Shape*>(shape)) {
+            if(content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setTextureRect") == std::string::npos) {
+                unsigned int pos = content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+" = std::make_unique<RectangleShape>");
+                std::string subs = content.substr(pos);
+                pos += subs.find_first_of('\n') + 1;
+                content.insert(pos,"    shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setTextureRect(sf::IntRect("+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().left)+","
+                +conversionIntString(static_cast<Shape*>(shape)->getTextureRect().top)+","+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().width)+","+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().height)+"));\n");
+            } else {
+                unsigned int pos = content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setTextureRect");
+                std::string subs = content.substr(pos);
+                unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+                content.erase(pos, endpos - pos);
+                content.insert(pos,"    shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setTextureRect(sf::IntRect("+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().left)+","
+                +conversionIntString(static_cast<Shape*>(shape)->getTextureRect().top)+","+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().width)+","+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().height)+"));\n");
+            }
+        }
+        if (dynamic_cast<Tile*>(shape)) {
+            if(content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setTexRect") == std::string::npos) {
+                unsigned int pos = content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+" = new Tile");
+                std::string subs = content.substr(pos);
+                pos += subs.find_first_of('\n') + 1;
+                content.insert(pos,"    tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setTexRect(sf::IntRect("+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().left)+","
+                +conversionIntString(static_cast<Tile*>(shape)->getTexCoords().top)+","+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().width)+","+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().height)+"));\n");
+            } else {
+                unsigned int pos = content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition");
+                std::string subs = content.substr(pos);
+                unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+                content.erase(pos, endpos - pos);
+                content.insert(pos,"    tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setTexRect(sf::IntRect("+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().left)+","
+                +conversionIntString(static_cast<Tile*>(shape)->getTexCoords().top)+","+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().width)+","+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().height)+"));\n");
+            }
+        }
+    }
+}
 void ODFAEGCreator::onSelectedEmChanged(DropDownList* dp) {
     if (dp->getSelectedItem() == "NONE") {
         if (dynamic_cast<Entity*>(selectedObject)) {
