@@ -198,9 +198,9 @@ namespace odfaeg {
                 shape->setPosition(getPosition() + shape->getPosition());
                 shapes.push_back(shape);
             }
-            bool Panel::isMouseInside() {
+            bool Panel::isPointInside(math::Vec3f point) {
                 physic::BoundingBox bb(getPosition().x, getPosition().y, 0, getSize().x, getSize().y, 0);
-                return bb.isPointInside(mousePos);
+                return bb.isPointInside(point);
             }
             void Panel::onUpdate(RenderWindow* window, window::IEvent& event) {
                 LightComponent::onUpdate(window, event);

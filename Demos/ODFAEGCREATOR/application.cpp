@@ -14,6 +14,7 @@ ODFAEGCreator::ODFAEGCreator(sf::VideoMode vm, std::string title) :
 Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0, 0, 3, 0)), isGuiShown (false), cursor(10), se(this) {
     dpSelectTexture = nullptr;
     dpSelectEm = nullptr;
+    sTextRect = nullptr;
     showGrid = false;
     alignToGrid = false;
     showRectSelect = false;
@@ -342,6 +343,7 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
                     window->draw(cshapes[i]);
             }
         }
+        window->setView(defaultView);
         if (showRectSelect) {
             window->draw(rectSelect);
         }
@@ -361,17 +363,48 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     }
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_PRESSED && event.mouseButton.button == IMouse::Right) {
         sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
-        if (showRectSelect && !pScriptsFiles->isMouseInside()) {
+        if (showRectSelect && !pScriptsFiles->isPointInside(Vec3f(mousePos.x, mousePos.y, 0))) {
             if (alignToGrid) {
-                int x = ((int) mousePos.x / gridWidth * gridWidth)-getRenderWindow().getSize().x * 0.5f;
-                int y = ((int) mousePos.y / gridHeight * gridHeight)-getRenderWindow().getSize().y * 0.5f;
-                mousePosition = Vec3f(x, y, 0);
+                if (World::getCurrentEntityManager() == nullptr) {
+                    int x = ((int) mousePos.x / gridWidth * gridWidth) - getRenderWindow().getSize().x * 0.5f;
+                    int y = ((int) mousePos.y / gridHeight * gridHeight) - getRenderWindow().getSize().y * 0.5f;
+                    mousePosition = Vec3f(x, y, 0);
+                } else {
+                    int x = mousePos.x - getRenderWindow().getSize().x * 0.5f;
+                    int y = mousePos.y - getRenderWindow().getSize().y * 0.5f;
+                    BaseChangementMatrix bcm = World::getBaseChangementMatrix();
+                    Vec3f c = bcm.unchangeOfBase(Vec3f(x, y, 0));
+                    Vec3f v1, p;
+                    p.x = (int) c.x / gridWidth;
+                    p.y = (int) c.y / gridHeight;
+                    if (c.x < 0)
+                        p.x--;
+                    if (c.y < 0)
+                        p.y--;
+                    v1.x = p.x * gridWidth;
+                    v1.y = p.y * gridHeight;
+                    Vec3f ve1(v1.x, v1.y, 0);
+                    Vec3f ve2(v1.x + gridWidth, v1.y, 0);
+                    Vec3f ve3(v1.x + gridWidth, v1.y + gridHeight, 0);
+                    Vec3f ve4(v1.x, v1.y + gridHeight, 0);
+                    Vec3f p1 = bcm.changeOfBase(ve1);
+                    Vec3f p2 = bcm.changeOfBase(ve2);
+                    Vec3f p3 = bcm.changeOfBase(ve3);
+                    Vec3f p4 = bcm.changeOfBase(ve4);
+                    std::vector<Vec3f> points;
+                    points.push_back(p1);
+                    points.push_back(p2);
+                    points.push_back(p3);
+                    points.push_back(p4);
+                    std::array<std::array<float, 2>, 3> extends = Computer::getExtends(points);
+                    mousePosition = Vec3f (extends[0][0], extends[1][0], extends[2][0]);
+                }
             } else {
                 int x = mousePos.x-getRenderWindow().getSize().x * 0.5f;
                 int y = mousePos.y-getRenderWindow().getSize().y * 0.5f;
                 mousePosition = Vec3f(x, y, 0);
             }
-        } else if (pScriptsFiles->isMouseInside()) {
+        } else if (pScriptsFiles->isPointInside(Vec3f(mousePos.x, mousePos.y, 0))) {
             if (alignToGrid) {
                 int x = ((int) mousePos.x / gridWidth * gridWidth);
                 int y = ((int) mousePos.y / gridHeight * gridHeight);
@@ -385,14 +418,49 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     }
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_MOTION_EVENT && IMouse::isButtonPressed(IMouse::Right)) {
         sf::Vector2f mousePos (event.mouseMotion.x, event.mouseMotion.y);
-        if (showRectSelect && !pScriptsFiles->isMouseInside()) {
+        if (showRectSelect && !pScriptsFiles->isPointInside(mousePosition)) {
             if (alignToGrid) {
-                int x = ((int) mousePos.x / gridWidth * gridWidth)-getRenderWindow().getSize().x * 0.5f;
-                int y = ((int) mousePos.y / gridHeight * gridHeight)-getRenderWindow().getSize().y * 0.5f;
-                int width = x - mousePosition.x;
-                int height = y - mousePosition.y;
-                if (width > 0 && height > 0)
-                    rectSelect.setRect(mousePosition.x, mousePosition.y, width, height);
+                if (World::getCurrentEntityManager() == nullptr) {
+                    int x = ((int) mousePos.x / gridWidth * gridWidth) - getRenderWindow().getSize().x * 0.5f;
+                    int y = ((int) mousePos.y / gridHeight * gridHeight) - getRenderWindow().getSize().y * 0.5f;
+                    int width = x - mousePosition.x;
+                    int height = y - mousePosition.y;
+                    if (width > 0 && height > 0)
+                        rectSelect.setRect(mousePosition.x, mousePosition.y, width, height);
+                } else {
+                    int x = mousePos.x - getRenderWindow().getSize().x * 0.5f;
+                    int y = mousePos.y - getRenderWindow().getSize().y * 0.5f;
+                    BaseChangementMatrix bcm = World::getBaseChangementMatrix();
+                    Vec3f c = bcm.unchangeOfBase(Vec3f(x, y, 0));
+                    Vec3f v1, p;
+                    p.x = (int) c.x / gridWidth;
+                    p.y = (int) c.y / gridHeight;
+                    if (c.x < 0)
+                        p.x--;
+                    if (c.y < 0)
+                        p.y--;
+                    v1.x = p.x * gridWidth;
+                    v1.y = p.y * gridHeight;
+                    Vec3f ve1(v1.x, v1.y, 0);
+                    Vec3f ve2(v1.x + gridWidth, v1.y, 0);
+                    Vec3f ve3(v1.x + gridWidth, v1.y + gridHeight, 0);
+                    Vec3f ve4(v1.x, v1.y + gridHeight, 0);
+                    Vec3f p1 = bcm.changeOfBase(ve1);
+                    Vec3f p2 = bcm.changeOfBase(ve2);
+                    Vec3f p3 = bcm.changeOfBase(ve3);
+                    Vec3f p4 = bcm.changeOfBase(ve4);
+                    std::vector<Vec3f> points;
+                    points.push_back(p1);
+                    points.push_back(p2);
+                    points.push_back(p3);
+                    points.push_back(p4);
+                    std::array<std::array<float, 2>, 3> extends = Computer::getExtends(points);
+                    Vec3f pos (extends[0][0], extends[1][0], extends[2][0]);
+                    int width = pos.x - mousePosition.x;
+                    int height = pos.y - mousePosition.y;
+                    if (width > 0 && height > 0)
+                        rectSelect.setRect(mousePosition.x, mousePosition.y, width, height);
+                }
 
             } else {
                 int x = mousePos.x-getRenderWindow().getSize().x * 0.5f;
@@ -402,25 +470,22 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                 if (width > 0 && height > 0)
                     rectSelect.setRect(mousePosition.x, mousePosition.y, width, height);
             }
-        }
-        if (alignToGrid) {
-            int x = ((int) mousePos.x / gridWidth * gridWidth);
-            int y = ((int) mousePos.y / gridHeight * gridHeight);
-            int width = x - mousePosition.x;
-            int height = y - mousePosition.y;
-            if (pScriptsFiles->isMouseInside()) {
-                if (width > 0 && height > 0) {
+        } else if (pScriptsFiles->isPointInside(mousePosition)) {
+            if (alignToGrid) {
+                int x = ((int) mousePos.x / gridWidth * gridWidth);
+                int y = ((int) mousePos.y / gridHeight * gridHeight);
+                int width = x - mousePosition.x;
+                int height = y - mousePosition.y;
+                if (width > 0 && height > 0 && sTextRect != nullptr) {
                     sTextRect->setPosition(Vec3f(mousePosition.x, mousePosition.y, 0));
                     sTextRect->setSize(Vec3f(width, height, 0));
                 }
-            }
-        } else {
-            int x = mousePos.x;
-            int y = mousePos.y;
-            int width = x - mousePosition.x;
-            int height = y - mousePosition.y;
-            if (pScriptsFiles->isMouseInside()) {
-                if (width > 0 && height > 0) {
+            } else {
+                int x = mousePos.x;
+                int y = mousePos.y;
+                int width = x - mousePosition.x;
+                int height = y - mousePosition.y;
+                if (width > 0 && height > 0 && sTextRect != nullptr) {
                     sTextRect->setPosition(Vec3f(mousePosition.x, mousePosition.y, 0));
                     sTextRect->setSize(Vec3f(width, height, 0));
                 }
@@ -428,7 +493,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
         }
     }
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_RELEASED && event.mouseButton.button == IMouse::Right) {
-        if (showRectSelect && !pScriptsFiles->isMouseInside()) {
+        if (showRectSelect && !pScriptsFiles->isPointInside(mousePosition)) {
             rectSelect.getItems().clear();
             if (World::getCurrentEntityManager() != nullptr) {
                 std::vector<Entity*> entities = World::getVisibleEntities("*");
@@ -452,7 +517,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
             if (rectSelect.getItems().size() > 0)
                 selectedObject = rectSelect.getItems()[0];
         }
-        if (pScriptsFiles->isMouseInside()) {
+        if (pScriptsFiles->isPointInside(mousePosition) && sTextRect != nullptr) {
             int x = sTextRect->getPosition().x - pScriptsFiles->getPosition().x;
             int y = sTextRect->getPosition().y - (bChooseText->getPosition().y + bChooseText->getSize().y);
             tTexCoordX->setText(conversionIntString(x));
