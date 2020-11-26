@@ -571,7 +571,7 @@ namespace odfaeg {
             batcher.clear();
             normalBatcher.clear();
             for (unsigned int i = 0; i < vEntities.size(); i++) {
-                if ( vEntities[i]->isLeaf() && vEntities[i]->getDrawOnComponent()) {
+                if ( vEntities[i]->isLeaf()) {
                     for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
                          if (vEntities[i]->getDrawMode() == Entity::INSTANCED) {
                             //std::cout<<"draw instanced"<<std::endl;

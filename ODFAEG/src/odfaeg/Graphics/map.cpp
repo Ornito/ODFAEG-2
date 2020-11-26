@@ -831,7 +831,7 @@ namespace odfaeg {
                         }
                     }
                 }
-                if (c < frcm->getNbComponents()) {
+                if (c < frcm->getNbComponents() && frcm->getRenderComponent(c) != nullptr) {
                     std::vector<Entity*> entities = getVisibleEntities(frcm->getRenderComponent(c)->getExpression());
                     frcm->getRenderComponent(c)->loadEntitiesOnComponent(entities);
                 }

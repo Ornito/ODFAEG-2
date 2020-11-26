@@ -602,7 +602,7 @@ namespace odfaeg {
                 normalBatcher.clear();
                 shadowBatcher.clear();
                 for (unsigned int i = 0; i < vEntities.size(); i++) {
-                    if ( vEntities[i]->isLeaf() && vEntities[i]->getDrawOnComponent()) {
+                    if ( vEntities[i]->isLeaf()) {
                         Entity* entity = vEntities[i]->getRootEntity();
                         math::Vec3f shadowOrigin, shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis, shadowTranslation;
                         float shadowRotationAngle = 0;

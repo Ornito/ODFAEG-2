@@ -298,40 +298,41 @@ void ODFAEGCreator::onInit() {
         }
     }
 }
-void ODFAEGCreator::updateScriptText(Shape* shape, Texture* text) {
-    /*TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
-    std::string relativePath = tm.getPathByResource(text);
-    unsigned int id = tm.getIdByResource(text);
-    if(cppAppliContent.find("text"+conversionUIntString(id)) == std::string::npos) {
-        unsigned int pos = cppAppliContent.find("TextureManager<>& tm = cache.resourceManager<Texture, std::string>(\"TextureManager\");");
-        std::string subs = cppAppliContent.substr(pos);
-        pos += subs.find_first_of('\n') + 1;
-        cppAppliContent.insert(pos, "const Texture* text"+conversionUIntString(id)+" = tm.getResourceByAlias(\"+realtivePath+\");\n");
+void ODFAEGCreator::updateScriptText(Shape* shape, const Texture* text) {
+    std::map<std::string, std::string>::iterator it;
+    it = cppAppliContent.find(minAppliname+".cpp");
+    if (it != cppAppliContent.end()) {
+        std::string& content = it->second;
+        TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
+        std::string relativePath = tm.getPathByResource(text);
+        unsigned int id = tm.getIdByResource(text);
+        if(content.find("text"+conversionUIntString(id)) == std::string::npos) {
+            unsigned int pos = content.find("TextureManager<>& tm = cache.resourceManager<Texture, std::string>(\"TextureManager\");");
+            std::string subs = content.substr(pos);
+            pos += subs.find_first_of('\n') + 1;
+            content.insert(pos, "const Texture* text"+conversionUIntString(id)+" = tm.getResourceByAlias(\"+realtivePath+\");\n");
+        }
+        if (content.find("shape"+conversionUIntString(shape->getId())+"->setTexture") == std::string::npos) {
+            unsigned int pos = content.find("shape"+conversionUIntString(shape->getId()));
+            std::string subs = content.substr(pos);
+            pos += subs.find_first_of('\n') + 1;
+            content.insert(pos,"shape"+conversionUIntString(shape->getId())+"->setTexture(text"+conversionUIntString(id)+");\n");
+        } else {
+            unsigned int pos = content.find("shape"+conversionUIntString(shape->getId())+"->setTexture");
+            std::string subs = content.substr(pos);
+            unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+            content.erase(pos, endpos - pos);
+            content.insert(pos,"shape"+conversionUIntString(shape->getId())+"->setTexture(text"+conversionUIntString(id)+");\n");
+        }
     }
-    if (cppAppliContent.find("shape"+conversionUIntString(shape->getId())+"->setTexture") == std::string::npos) {
-        unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(shape->getId()));
-        std::string subs = cppAppliContent.substr(pos);
-        pos += subs.find_first_of('\n') + 1;
-        cppAppliContent.insert(pos,"shape"+conversionUIntString(shape->getId())+"->setTexture(text"+conversionUIntString(id)+");\n");
-    } else {
-    }*/
 }
 void ODFAEGCreator::onRender(RenderComponentManager *cm) {
 
 }
 void ODFAEGCreator::onDisplay(RenderWindow* window) {
     if (window == &getRenderWindow()) {
-        std::vector<Entity*> visibleEntities = World::getVisibleEntities("*");
-        for (unsigned int i = 0; i < visibleEntities.size(); i++) {
-            if (!visibleEntities[i]->getDrawOnComponent())
-                window->draw(*visibleEntities[i]);
-        }
         for (unsigned int i = 0; i < shapes.size(); i++)
             window->draw(*shapes[i]);
-
-        for (unsigned int i = 0; i < entities.size(); i++) {
-            window->draw(*entities[i]);
-        }
         View currentView = window->getView();
         View defaultView = window->getDefaultView();
         window->setView(defaultView);
@@ -503,11 +504,6 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                     }
                 }
             }
-            for (unsigned int i = 0; i < entities.size(); i++) {
-                if (rectSelect.getSelectionRect().intersects(entities[i]->getGlobalBounds())) {
-                    rectSelect.getItems().push_back(entities[i].get());
-                }
-            }
             for (unsigned int i = 0; i < shapes.size(); i++) {
                 if (rectSelect.getSelectionRect().intersects(shapes[i]->getGlobalBounds())) {
                     std::cout<<"add shape to selection : "<<shapes[i].get()<<std::endl;
@@ -554,16 +550,18 @@ void ODFAEGCreator::onExec() {
         dpSelectTexture->addItem(ImgName,15);
         fdTexturePath->setVisible(false);
         fdTexturePath->setEventContextActivated(false);
-        /*std::string appliDir = fdTexturePath->getAppiDir();
-        std::cout<<"appli dir : "<<appliDir<<std::endl;
-        std::string relativePath = path.substr(appliDir.size()+1);*/
         TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
         tm.fromFileWithAlias(path, ImgName);
         textPaths.push_back(ImgName);
-        /*unsigned int pos = cppAppliContent.find("TextureManager<>& tm");
-        std::string subs = cppAppliContent.substr(pos);
-        pos += subs.find_first_of('\n') + 1;
-        cppAppliContent.insert(pos, "    tm.fromFileWithAlias("+relativePath+","+relativePath+");");*/
+        std::map<std::string, std::string>::iterator it;
+        it = cppAppliContent.find(minAppliname+".cpp");
+        if (it != cppAppliContent.end()) {
+            std::string& content = it->second;
+            unsigned int pos = content.find("TextureManager<>& tm");
+            std::string subs = content.substr(pos);
+            pos += subs.find_first_of('\n') + 1;
+            content.insert(pos, "    tm.fromFileWithAlias("+path+","+ImgName+");");
+        }
     }
     if (dpSelectTexture != nullptr && dpSelectTexture->isDroppedDown()) {
         bChooseText->setEventContextActivated(false);
@@ -894,16 +892,16 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         button->setEventContextActivated(false);
         std::cout<<"Create component"<<std::endl;
         if (dpComponentType->getSelectedItem() == "LinkedList") {
-            PerPixelLinkedListRenderComponent* ppll = new PerPixelLinkedListRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 3, 0));
+            PerPixelLinkedListRenderComponent* ppll = new PerPixelLinkedListRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 4, 6));
             getRenderComponentManager().addComponent(ppll);
         }
         if (dpComponentType->getSelectedItem() == "Shadow") {
-            ShadowRenderComponent* src = new ShadowRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 3, 0));
+            ShadowRenderComponent* src = new ShadowRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 4, 6));
 
             getRenderComponentManager().addComponent(src);
         }
         if (dpComponentType->getSelectedItem() == "Light") {
-            LightRenderComponent* lrc = new LightRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 3, 0));
+            LightRenderComponent* lrc = new LightRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 4, 6));
             getRenderComponentManager().addComponent(lrc);
         }
     }
@@ -958,27 +956,23 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "Tile") {
         if (appliname != "") {
             if (!showRectSelect) {
-                std::unique_ptr<Tile> tile = std::make_unique<Tile>(nullptr, cursor.getPosition(),Vec3f(100, 50, 0), sf::IntRect(0, 0, gridWidth, gridHeight));
-                selectedObject = tile.get();
-                displayInfos(tile.get());
-                if (World::getCurrentEntityManager() == nullptr)
-                    entities.push_back(std::move(tile));
-                else
-                    World::addEntity(tile.release());
+                Tile* tile = new Tile(nullptr, cursor.getPosition(),Vec3f(100, 50, 0), sf::IntRect(0, 0, gridWidth, gridHeight));
+                selectedObject = tile;
+                displayInfos(tile);
+                if (World::getCurrentEntityManager() != nullptr)
+                    World::addEntity(tile);
             } else {
                 BoundingBox rect = rectSelect.getSelectionRect();
                 for (int x = rect.getPosition().x; x < rect.getPosition().x + rect.getSize().x-gridWidth; x+=gridWidth) {
                     for (int y = rect.getPosition().y; y <  rect.getPosition().y + rect.getSize().y-gridHeight; y+=gridHeight) {
-                        std::unique_ptr<Tile> tile = std::make_unique<Tile>(nullptr,Vec3f(x, y, 0),Vec3f(gridWidth, gridHeight, 0),sf::IntRect(0, 0, gridWidth, gridHeight));
-                        rectSelect.addItem(tile.get());
+                        Tile* tile = new Tile(nullptr,Vec3f(x, y, 0),Vec3f(gridWidth, gridHeight, 0),sf::IntRect(0, 0, gridWidth, gridHeight));
+                        rectSelect.addItem(tile);
                         if (rectSelect.getItems().size() == 1) {
-                            selectedObject = tile.get();
-                            displayInfos(tile.get());
+                            selectedObject = tile;
+                            displayInfos(tile);
                         }
-                        if (World::getCurrentEntityManager() == nullptr)
-                            entities.push_back(std::move(tile));
-                        else
-                            World::addEntity(tile.release());
+                        if (World::getCurrentEntityManager() != nullptr)
+                            World::addEntity(tile);
                     }
                 }
             }
@@ -1035,7 +1029,7 @@ void ODFAEGCreator::addShape(Shape *shape) {
     std::map<std::string, std::string>::iterator it;
     it = cppAppliContent.find(minAppliname+".cpp");
     if (it != cppAppliContent.end()) {
-        std::string content = it->second;
+        std::string& content = it->second;
         unsigned int pos = content.find("tm.getResourceByAlias");
         if (pos != std::string::npos && pos < content.size()) {
             std::string subs = content.substr(pos);
@@ -1301,19 +1295,6 @@ void ODFAEGCreator::displayInfos (Tile* tile) {
     Command cmdEmChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectEm), FastDelegate<void>(&ODFAEGCreator::onSelectedEmChanged, this, dpSelectEm));
     dpSelectEm->getListener().connect("EmChanged", cmdEmChanged);
     lEmListNode->addOtherComponent(dpSelectEm, Vec2f(0.75, 0.025));
-    dpSelectEm->setPriority(-2);
-    Label* lSelectRT = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Render target : ", 15);
-    lSelectRT->setParent(pInfos);
-    pInfos->addChild(lSelectRT);
-    Node* selectRT = new Node("SelectRT", lSelectRT, Vec2f(0, 0), Vec2f(0.25, 0.025), rootInfosNode.get());
-    DropDownList* dpSelectRT = new DropDownList(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif),"COMPONENTS", 15);
-    dpSelectRT->setName("DPSELECTRT");
-    dpSelectRT->addItem("WINDOW", 15);
-    dpSelectRT->setParent(pInfos);
-    pInfos->addChild(dpSelectRT);
-    Command cmdRTChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectRT), FastDelegate<void>(&ODFAEGCreator::onSelectedRTChanged, this, dpSelectRT));
-    dpSelectRT->getListener().connect("RTChanged", cmdRTChanged);
-    selectRT->addOtherComponent(dpSelectRT, Vec2f(0.75, 0.025));
     lPosition = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Position : ", 15);
     lPosition->setParent(pTransform);
     Node* lPosNode = new Node("LabPosition",lPosition,Vec2f(0, 0), Vec2f(1, 0.025),rootPropNode.get());
@@ -1524,7 +1505,7 @@ void ODFAEGCreator::updateScriptPos(Transformable* shape) {
     std::map<std::string, std::string>::iterator it;
     it = cppAppliContent.find(minAppliname+".cpp");
     if (it != cppAppliContent.end()) {
-        std::string content = it->second;
+        std::string& content = it->second;
         if (dynamic_cast<Shape*>(shape)) {
             if(content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition") == std::string::npos) {
                 unsigned int pos = content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+" = std::make_unique<RectangleShape>");
@@ -1538,7 +1519,7 @@ void ODFAEGCreator::updateScriptPos(Transformable* shape) {
                 unsigned int endpos = subs.find_first_of('\n') + pos + 1;
                 content.erase(pos, endpos - pos);
                 content.insert(pos,"shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
-                +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+");\n");
+                +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+"));\n");
             }
         }
     }
@@ -1766,6 +1747,7 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                 if (dynamic_cast<Shape*>(selectedObject)) {
                     static_cast<Shape*>(selectedObject)->setTexture(text);
                     textRect = static_cast<Shape*>(selectedObject)->getTextureRect();
+                    updateScriptText(static_cast<Shape*>(selectedObject), text);
                 }
                 if (dynamic_cast<Tile*>(selectedObject)) {
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().clearTextures();
@@ -1918,40 +1900,12 @@ void ODFAEGCreator::onSelectedEmChanged(DropDownList* dp) {
     if (dp->getSelectedItem() == "NONE") {
         if (dynamic_cast<Entity*>(selectedObject)) {
             if (World::getCurrentEntityManager != nullptr)
-                World::removeEntity(dynamic_cast<Entity*>(selectedObject));
-            std::unique_ptr<Entity> entity;
-            entity.reset(dynamic_cast<Entity*>(selectedObject));
-            entities.push_back(std::move(entity));
+                World::removeEntity(static_cast<Entity*>(selectedObject));
         }
     } else {
         if (dynamic_cast<Entity*>(selectedObject)) {
-            std::vector<std::unique_ptr<Entity>>::iterator it;
-            Entity* entity;
-            for (it = entities.begin(); it != entities.end(); it++) {
-                if ((*it).get() == dynamic_cast<Entity*>(selectedObject)) {
-                   entity = it->release();
-                }
-            }
-            const auto itEntityToRemove =
-                std::find_if(entities.begin(), entities.end(),
-                             [&](auto& p) { return p.get() == dynamic_cast<Entity*>(selectedObject); });
-
-            const bool found = (itEntityToRemove != entities.end());
-            if(found)
-                entities.erase(itEntityToRemove);
             World::setCurrentEntityManager(dp->getSelectedItem());
-            World::addEntity(entity);
-        }
-    }
-}
-void ODFAEGCreator::onSelectedRTChanged(DropDownList *dp) {
-    if (dp->getSelectedItem() == "WINDOW") {
-        if (dynamic_cast<Entity*>(selectedObject)) {
-            static_cast<Entity*>(selectedObject)->setDrawOnComponent(false);
-        }
-    } else {
-        if (dynamic_cast<Entity*>(selectedObject)) {
-            static_cast<Entity*>(selectedObject)->setDrawOnComponent(true);
+            World::addEntity(static_cast<Entity*>(selectedObject));
         }
     }
 }

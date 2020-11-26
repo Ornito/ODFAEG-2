@@ -29,7 +29,6 @@ namespace odfaeg {
             shadowRotationAxis = math::Vec3f::zAxis;
             boneIndex = 0;
             drawMode = INSTANCED;
-            drawOnComponent = true;
             reflectable = false;
             refractDir = math::Vec3f(0, 0, 1);
             water = false;
@@ -45,12 +44,6 @@ namespace odfaeg {
         }
         Entity::DrawMode Entity::getDrawMode() {
             return drawMode;
-        }
-        void Entity::setDrawOnComponent(bool drawOnComponent) {
-            this->drawOnComponent = drawOnComponent;
-        }
-        bool Entity::getDrawOnComponent() {
-            return drawOnComponent;
         }
         std::string Entity::getRootType() {
             if (parent != nullptr) {

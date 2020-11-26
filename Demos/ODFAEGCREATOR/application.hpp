@@ -50,11 +50,10 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onSelectedTextureChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onTexCoordsChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedEmChanged(odfaeg::graphic::gui::DropDownList* dp);
-    void onSelectedRTChanged(odfaeg::graphic::gui::DropDownList* dp);
     void addShape(odfaeg::graphic::Shape *shape);
     bool removeShape (unsigned int id);
     void updateScriptPos(odfaeg::graphic::Transformable* shape);
-    void updateScriptText(odfaeg::graphic::Shape* shape, odfaeg::graphic::Texture* text);
+    void updateScriptText(odfaeg::graphic::Shape* shape, const odfaeg::graphic::Texture* text);
     enum Fonts {
         Serif
     };
@@ -92,7 +91,6 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::core::StateStack stateStack;
         ODFAEGCreatorStateExecutor se;
         std::vector<odfaeg::graphic::ConvexShape> cshapes;
-        std::vector<std::unique_ptr<odfaeg::graphic::Entity>> entities;
         odfaeg::graphic::Map* theMap;
         int gridWidth, gridHeight;
         RectangularSelection rectSelect;

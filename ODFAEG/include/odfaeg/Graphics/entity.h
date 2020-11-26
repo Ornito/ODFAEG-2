@@ -380,8 +380,6 @@ namespace odfaeg {
                 virtual unsigned int getBoneIndex();
                 DrawMode getDrawMode();
                 void setDrawMode (DrawMode);
-                void setDrawOnComponent (bool drawOnComponent);
-                bool getDrawOnComponent();
                 void setRefractDir (math::Vec3f refractDir);
                 math::Vec3f getRefractDir();
                 void setReflectable(bool refractable);
@@ -402,7 +400,7 @@ namespace odfaeg {
                 std::unique_ptr<physic::BoundingVolume> collisionVolume; /** the collision volume of the entity*/
                 Entity(const Entity& entity) = delete; /**> an entity if not copiable.*/
                 Entity& operator=(const Entity& entity) = delete; /**> an entity is not affectable*/
-                bool alreadySerialized, drawOnComponent, reflectable, water;
+                bool alreadySerialized, reflectable, water;
                 unsigned int boneIndex;
                 DrawMode drawMode;
         };
