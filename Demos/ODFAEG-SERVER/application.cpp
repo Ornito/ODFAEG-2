@@ -15,13 +15,20 @@ namespace sorrok {
     void MyAppli::onInit () {
         Network::startSrv(10'000, 10'001);
         theMap = new Map(nullptr, "Map test", 100, 50, 0);
-        /*sql::Driver* driver = get_driver_instance();
-        if (driver == nullptr)
-            std::cout<<"failed to get driver"<<std::endl;
-        sql::Connection* con = driver->connect("localhost", "root","Kirokofu457$");
-        if (con == nullptr)
-            std::cout<<"failed to connect to database"<<std::endl;
-        con->setSchema("SORROK");*/
+        try {
+            sql::Driver* driver = get_driver_instance();
+            //std::cout<<driver->getMajorVersion()<<","<<driver->getMinorVersion()<<std::endl<<"name : "<<driver->getName()<<std::endl;
+            if (driver == nullptr)
+                std::cout<<"failed to get driver"<<std::endl;
+            sql::Connection* con = driver->connect("tcp://127.0.0.1:3306", "root","Kirokofu457$");
+            if (con == nullptr)
+                std::cout<<"failed to connect to database"<<std::endl;
+            con->setSchema("sorrok");
+        } catch (sql::SQLException &e) {
+            std::cout << "# ERR: " << e.what();
+            std::cout << " (code erreur MySQL: " << e.getErrorCode();
+            std::cout << ", EtatSQL: " << e.getSQLState() << " )" << std::endl;
+        }
         BaseChangementMatrix bcm;
         bcm.set2DIsoMatrix();
         theMap->setBaseChangementMatrix(bcm);

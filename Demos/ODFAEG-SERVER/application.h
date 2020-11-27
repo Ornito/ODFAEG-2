@@ -10,7 +10,7 @@
 #include "odfaeg/Graphics/rectangleShape.h"
 #include "odfaeg/Graphics/circleShape.h"
 #include "odfaeg/Graphics/tile.h"
-#include "odfaeg/Core/world.h"
+#include "odfaeg/Graphics/world.h"
 #include "odfaeg/Graphics/map.h"
 #include "odfaeg/Graphics//2D/decor.h"
 #include "odfaeg/Graphics/anim.h"
@@ -18,20 +18,18 @@
 #include "odfaeg/Graphics/2D/ponctualLight.h"
 #include "odfaeg/Graphics/2D/wall.h"
 #include "odfaeg/Graphics/tGround.h"
-#include "odfaeg/Core/actionMap.h"
 #include "odfaeg/Graphics/entitiesUpdater.h"
 #include "odfaeg/Graphics/animationUpdater.h"
 #include "odfaeg/Network/network.h"
 #include "hero.h"
 #include "monster.h"
 #include <fstream>
-#include "mysql_connection.h"
-
-#include <cppconn/driver.h>
-#include <cppconn/exception.h>
-#include <cppconn/resultset.h>
-#include <cppconn/statement.h>
-#include <cppconn/prepared_statement.h>
+#include <mysql/jdbc.h>
+/*#include "jdbc/mysql_driver.h"
+#include <jdbc/cppconn/exception.h>
+#include <jdbc/cppconn/resultset.h>
+#include <jdbc/cppconn/statement.h>
+#include <jdbc/cppconn/prepared_statement.h>*/
 #include "pnj.hpp"
 namespace sorrok {
     class MyAppli : public odfaeg::core::Application {
