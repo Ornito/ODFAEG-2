@@ -43,6 +43,7 @@
 #include <unordered_map>
 #include "gameAction.hpp"
 #include "itemAction.hpp"
+#include "skillAction.hpp"
 #include "pnj.hpp"
 #include "skill.hpp"
 namespace sorrok {
@@ -85,11 +86,14 @@ namespace sorrok {
         std::vector<odfaeg::physic::ParticleSystem*> particles2;
         std::map<std::string, sf::Time> doubleClicks;
         odfaeg::physic::UniversalEmitter emitter, emitter2;
-        std::vector<std::pair<odfaeg::core::Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>, std::pair<odfaeg::core::Variant<Item, Skill>, Hero*>>> gameActions;
+        std::vector<std::pair<odfaeg::core::Variant<Item, Skill>, Hero*>> gameActions;
         std::vector<std::pair<std::pair<Caracter*, odfaeg::graphic::Text>, std::pair<sf::Time, sf::Time>>> tmpTexts;
         std::vector<odfaeg::graphic::Entity*> monsters;
         std::array<odfaeg::core::Variant<Item, Skill>*, 9> shorcuts;
         odfaeg::physic::ParticleSystem* ps;
+        std::vector<ItemAction*> itemsActions;
+        std::vector<SkillAction*> skillsActions;
+        std::vector<SkillAction*> skillsActionsShorcutBar;
     public :
         enum Fonts {
             Serif
@@ -123,6 +127,7 @@ namespace sorrok {
         void onIconPressed(odfaeg::graphic::gui::Icon* icon);
         void retractFromInventory(Item& item);
         void onF1Pressed();
+        ~MyAppli();
     };
 }
 #endif // MY_APPLI

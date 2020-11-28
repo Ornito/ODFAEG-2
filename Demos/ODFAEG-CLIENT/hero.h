@@ -7,22 +7,7 @@
 namespace sorrok {
     class Hero : public Caracter {
     public :
-        struct Novice {
-
-        };
-        struct Warrior {
-
-        };
-        struct Magician {
-
-        };
-        struct Thief {
-
-        };
-        enum class Job {
-            Novice, Warrior, Magician, Thief
-        };
-        Hero() : Caracter("E_HERO", "", "", "", 0), job(Job::Novice) {}
+        Hero() : Caracter("E_HERO", "", "", "", 0) {}
         Hero(std::string factionName, std::string name, std::string sex, std::string currentMapName, std::string hairColor,
         std::string eyesColor, std::string skinColor, std::string faceType, std::string classs, int level);
         void setIsMovingFromKeyboard(bool b);
@@ -54,8 +39,6 @@ namespace sorrok {
         void removeQuest (Quest* quest);
         std::vector<Quest*> getDiary();
         std::map<Item::Type, std::vector<Item>>& getInventory();
-        Job getJobType();
-        odfaeg::core::Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief> getJobVariant();
         void addSkill (Skill skill);
         std::vector<Skill> getSkills();
         ~Hero();
@@ -66,7 +49,6 @@ namespace sorrok {
         std::map<Item::Type, std::vector<Item>> inventory;
         std::vector<Skill> skills;
         std::vector<Quest*> diary;
-        Job job;
     };
 }
 #endif // HERO_HPP

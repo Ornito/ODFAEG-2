@@ -10,26 +10,24 @@ namespace sorrok {
         enum Type {
             HP_POTION
         };
-        enum AttribType {
-            POTION_AMOUNT
-        };
         Item () {}
-        Item (std::string name, Type type);
+        Item (std::string name, Type type, std::string requiredClass);
         Type getType();
         std::string getName();
-        float getAttributeVal(AttribType attribType);
         template <typename Archive>
         void serialize(Archive& ar) {
             ar(name);
             ar(type);
-            ar(attributes);
+            ar(requiredClass);
         }
+        std::string getRequiredClass();
+        void setItemBehaviour(odfaeg::core::FastDelegate<void> itemBehaviour);
+        void applyBehaviour();
         void setIcon(odfaeg::graphic::gui::Icon* icon);
         odfaeg::graphic::gui::Icon* getIcon();
     private :
-        std::string name;
+        std::string name, requiredClass;
         Type type;
-        std::map<int, float> attributes;
         odfaeg::graphic::gui::Icon* icon;
         odfaeg::core::FastDelegate<void> itemBehaviour;
     };

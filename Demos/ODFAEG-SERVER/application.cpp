@@ -15,11 +15,14 @@ namespace sorrok {
     void MyAppli::onInit () {
         Network::startSrv(10'000, 10'001);
         theMap = new Map(nullptr, "Map test", 100, 50, 0);
-        /*try {
-            con.Connect(_TSA("sorrok"), _TSA("root"), _TSA("Kirokofu457$"), SA_Oracle_Client);
-        } catch (SAException &x) {
-            con.Rollback();
-            printf("%s\n", x.ErrText().GetMultiByteChars());
+        /*const char *conninfo = "dbname=sorrok";
+        conn = PQconnectdb(conninfo);
+
+        if (PQstatus(conn) != CONNECTION_OK)
+        {
+            fprintf(stderr, "Connection to database failed: %s",
+                    PQerrorMessage(conn));
+            PQfinish(conn);
         }*/
         BaseChangementMatrix bcm;
         bcm.set2DIsoMatrix();
@@ -128,8 +131,7 @@ namespace sorrok {
         Monster* monster = new Monster("Ogro", "Orc","MapTest",1,monsterZone);
         //std::cout<<"monster id : "<<monster->getId()<<std::endl;
         Vec3f pos = monster->respawn();
-        Item item("HP potion", Item::HP_POTION);
-        item.addAttribute(Item::POTION_AMOUNT, 50);
+        Item item("HP potion", Item::HP_POTION,"ALL");
         monster->addLootableItem(item, 1.f);
         tmpPosition = pos;
         monster->setCenter(pos);
@@ -400,8 +402,7 @@ namespace sorrok {
                 caracter->getGlobalBounds().getSize().x, caracter->getGlobalBounds().getSize().y * 0.25f, 0);
                 caracter->setCollisionVolume(bb2);
                 caracter->setCenter(Vec3f(0, 300, 300));
-                Skill skill("LastHeal", 10, "SELF", 10);
-                skill.setStat(Skill::HP);
+                Skill skill("LastHeal", 10, "ALL");
                 static_cast<Hero*>(caracter)->addSkill(skill);
                 SymEncPacket packet;
                 packet<<"IDOK"+conversionIntString(caracter->getId());

@@ -14,7 +14,6 @@ namespace sorrok {
         xp = 0;
         xpReqForNextLevel = 1500;
         moveFromKeyboard = false;
-        job = Hero::Job::Novice;
     }
     void Hero::addItem(Item item) {
         std::map<Item::Type, std::vector<Item>>::iterator it;
@@ -57,18 +56,6 @@ namespace sorrok {
     }
     std::map<Item::Type, std::vector<Item>>& Hero::getInventory() {
         return inventory;
-    }
-    Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief> Hero::getJobVariant() {
-        switch(job) {
-            case Hero::Job::Novice : return Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>(Hero::Novice());
-            case Hero::Job::Warrior : return Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>(Hero::Warrior());
-            case Hero::Job::Magician : return Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>(Hero::Magician());
-            case Hero::Job::Thief : return Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>(Hero::Thief());
-        }
-    }
-    Hero::Job Hero::getJobType() {
-        std::cout<<"job : "<<(int) job<<std::endl;
-        return job;
     }
     bool Hero::containsQuest(Quest* quest) {
         for (unsigned int i = 0; i < diary.size(); i++) {
