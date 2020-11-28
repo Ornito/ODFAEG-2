@@ -1,6 +1,7 @@
 #ifndef SORROK_SKILL_HPP
 #define SORROK_SKILL_HPP
 #include <string>
+#include "odfaeg/Core/fastDelegate.h"
 namespace sorrok {
     class Skill {
         public :
@@ -30,6 +31,7 @@ namespace sorrok {
         std::string name, target;
         unsigned int damage, manaCost;
         Stat stat;
+        odfaeg::core::FastDelegate<void> skillBehaviour;
     };
 }
 #endif

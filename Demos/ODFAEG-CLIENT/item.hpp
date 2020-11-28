@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include "odfaeg/Graphics/GUI/icon.hpp"
+#include "odfaeg/Core/fastDelegate.h"
 namespace sorrok {
     class Item {
     public :
@@ -30,6 +31,7 @@ namespace sorrok {
         Type type;
         std::map<int, float> attributes;
         odfaeg::graphic::gui::Icon* icon;
+        odfaeg::core::FastDelegate<void> itemBehaviour;
     };
 }
 #endif // ITEM_HPP

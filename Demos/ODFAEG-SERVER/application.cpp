@@ -15,20 +15,12 @@ namespace sorrok {
     void MyAppli::onInit () {
         Network::startSrv(10'000, 10'001);
         theMap = new Map(nullptr, "Map test", 100, 50, 0);
-        try {
-            sql::Driver* driver = get_driver_instance();
-            //std::cout<<driver->getMajorVersion()<<","<<driver->getMinorVersion()<<std::endl<<"name : "<<driver->getName()<<std::endl;
-            if (driver == nullptr)
-                std::cout<<"failed to get driver"<<std::endl;
-            sql::Connection* con = driver->connect("tcp://127.0.0.1:3306", "root","Kirokofu457$");
-            if (con == nullptr)
-                std::cout<<"failed to connect to database"<<std::endl;
-            con->setSchema("sorrok");
-        } catch (sql::SQLException &e) {
-            std::cout << "# ERR: " << e.what();
-            std::cout << " (code erreur MySQL: " << e.getErrorCode();
-            std::cout << ", EtatSQL: " << e.getSQLState() << " )" << std::endl;
-        }
+        /*try {
+            con.Connect(_TSA("sorrok"), _TSA("root"), _TSA("Kirokofu457$"), SA_Oracle_Client);
+        } catch (SAException &x) {
+            con.Rollback();
+            printf("%s\n", x.ErrText().GetMultiByteChars());
+        }*/
         BaseChangementMatrix bcm;
         bcm.set2DIsoMatrix();
         theMap->setBaseChangementMatrix(bcm);
@@ -426,7 +418,7 @@ namespace sorrok {
                 }
                 std::string pseudo = infos[1];
                 std::string pswd = infos[2];
-                sql::Statement* stmt = con->createStatement();
+                /*sql::Statement* stmt = con->createStatement();
                 sql::ResultSet* result = stmt->executeQuery("SELECT NAME, PASSWORD FROM HEROES WHERE NAME = "+pseudo+";");
                 while(result->next()) {
                     if (result->getString("PASSWORD") == pswd) {
@@ -444,7 +436,7 @@ namespace sorrok {
                     }
                 }
                 delete stmt;
-                delete result;
+                delete result;*/
             } else if (request == "ADDLIFE")   {
                 int id = conversionStringInt(infos[1]);
                 Caracter* hero = static_cast<Caracter*>(World::getEntity(id));

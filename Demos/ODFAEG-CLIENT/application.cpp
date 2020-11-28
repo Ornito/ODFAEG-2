@@ -110,7 +110,7 @@ namespace sorrok {
             icon->setName(static_cast<Hero*>(hero)->getSkills()[i].getName());
             Action aSkillButtonPressed(Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
             Action aSkillButtonHeldDown(Action::MOUSE_BUTTON_HELD_DOWN, IMouse::Left);
-            Action aSkillMouseMoved(Action::MOUSE_MOVED);
+            Action aSkillMouseMoved(Action::MOUSE_MOVED_);
             Action aSkillCombined = aSkillButtonHeldDown && aSkillMouseMoved;
             Command cmd (aSkillCombined, FastDelegate<void>(&MyAppli::onIconMoved, this, icon));
             icon->getListener().connect("IconMoved", cmd);
@@ -541,10 +541,10 @@ namespace sorrok {
 
         //caracter->setCenter(Vec3f(getView().getPosition().x, getView().getPosition().y, 300));
 
-        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "",ContextSettings(0, 0, 0, 3, 0));
-        ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(),1, "");
-        PerPixelLinkedListRenderComponent* frc3 = new PerPixelLinkedListRenderComponent(getRenderWindow(),2,"", ContextSettings(0, 0, 0, 3, 0));
-        LightRenderComponent* frc4 = new LightRenderComponent(getRenderWindow(),3,"");
+        PerPixelLinkedListRenderComponent *frc1 = new PerPixelLinkedListRenderComponent(getRenderWindow(),0, "",ContextSettings(0, 0, 0, 4, 6));
+        ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(),1, "",ContextSettings(0, 0, 0, 4, 6));
+        PerPixelLinkedListRenderComponent* frc3 = new PerPixelLinkedListRenderComponent(getRenderWindow(),2,"", ContextSettings(0, 0, 0, 4, 6));
+        LightRenderComponent* frc4 = new LightRenderComponent(getRenderWindow(),3,"",ContextSettings(0, 0, 0, 4, 6));
         /*View view = getView();
         frc1->setView(view);*/
         /*frc2->setView(view);
