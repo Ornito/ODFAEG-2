@@ -25,8 +25,8 @@ namespace sorrok {
         (*skillBehaviour)();
     }
     Skill::~Skill() {
-        if (skillBehaviour != nullptr) {
+        /*if (skillBehaviour != nullptr) {
             delete skillBehaviour;
-        }
+        }*/
     }
 }

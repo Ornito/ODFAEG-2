@@ -61,7 +61,7 @@ namespace sorrok {
                     Skill skill = static_cast<Hero*>(hero)->getSkills()[i];
                     SkillAction* skillAction = new SkillAction();
                     skill.setSkillBehaviour(new FastDelegate<void>(&SkillAction::launchLastHeal, skillAction, static_cast<Hero*>(hero), skill));
-                    shorcuts[id] = new Variant<Item, Skill>(static_cast<Hero*>(hero)->getSkills()[i]);
+                    shorcuts[id] = new Variant<Item, Skill>(skill);
                 }
             }
         }
@@ -714,9 +714,7 @@ namespace sorrok {
         emitter2.setParticleTextureIndex(Distributions::uniformui(0, 9));
         emitter2.setParticleScale(Distributions::rect(Vec3f(2.1f, 2.1f, 1.f), Vec3f(2.f, 2.f, 1.f)));
         //emitter.setParticleColor(Distributions::color(Vec3f(0, 0, 0, 255), Vec3f(0, 0, 0, 255)));
-       /* sf::Vector3f acceleration(0, -1, 0);
-        ForceAffector affector(acceleration);
-        billboard->getParticleSystem().addAffector(affector);*/
+
         ps->addEmitter(refEmitter(emitter2));
         psu->addParticleSystem(ps);
         World::addEntity(ps);
@@ -796,8 +794,6 @@ namespace sorrok {
             && hero != nullptr && hero->isMovingFromKeyboard() && window == &getRenderWindow()) {
             previousKey = static_cast<IKeyboard::Key>(event.keyboard.code);
             actualKey = IKeyboard::Key::Unknown;
-            /*hero->setMoving(false);
-            hero->setIsMovingFromKeyboard(false);*/
             sf::Int64 cli_time = Application::getTimeClk().getElapsedTime().asMicroseconds();
             std::string message = "STOPCARMOVE*"+conversionIntString(hero->getId())+"*"+conversionLongString(cli_time);
             SymEncPacket packet;
@@ -819,19 +815,6 @@ namespace sorrok {
             getClock("RequestTime").restart();
         }
         std::string response;
-        /*if (Network::getResponse("MOVEFROMKEYBOARD", response)) {
-            std::cout<<"move from kb"<<std::endl;
-            hero->setIsMovingFromKeyboard(true);
-            hero->setMoving(true);
-            if (hero->isAttacking())
-                hero->setAttacking(false);
-            hero->setFightingMode(false);
-            std::string request = "GETCARPOS";
-            sf::Packet packet;
-            packet<<request;
-            Network::sendUdpPacket(packet);
-            getClock("RequestTime").restart();
-        }*/
         if (Network::getResponse("ADDLIFE", response)) {
             std::vector<std::string> infos = split(response, "*");
             int id = conversionStringInt(infos[0]);
@@ -939,11 +922,6 @@ namespace sorrok {
             if (last_cli_time > caracter->getAttribute("isAlive"+conversionIntString(id)).getValue<sf::Int64>()) {
                 caracter->setAlive(isAlive);
             }
-            /*if (last_cli_time > caracter->getAttribute("life"+conversionIntString(id)).getValue<sf::Int64>()) {
-                if (!caracter->isMonster())
-                    std::cout<<"set live from server : "<<life<<std::endl;
-                caracter->setLife(life);
-            }*/
             if (!caracter->isMoving() && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
                 static_cast<Hero*>(caracter)->setIsMovingFromKeyboard(false);
             }
@@ -1360,15 +1338,12 @@ namespace sorrok {
                 cristals.push_back(std::make_pair(cristal, items));
             }
        }
-      /* if (getClock("LoopTime").getElapsedTime().asMilliseconds() < 100)
-            sf::sleep(sf::milliseconds(100 - getClock("LoopTime").getElapsedTime().asMilliseconds()));*/
+
 
        std::vector<Entity*> caracters = World::getEntities("E_MONSTER+E_HERO");
        for (unsigned int i = 0; i < caracters.size(); i++) {
             Caracter* caracter = static_cast<Caracter*>(caracters[i]);
-            /*if (caracter->getType() == "E_HERO") {
-                std::cout<<"hero life : "<<caracter->getLife()<<std::endl;
-            }*/
+
             if (caracter->isAlive()) {
                 if (caracter->isMoving()) {
                     if (dynamic_cast<Hero*>(caracter) && dynamic_cast<Hero*>(caracter)->isMovingFromKeyboard()) {

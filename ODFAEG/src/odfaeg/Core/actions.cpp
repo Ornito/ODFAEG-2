@@ -34,7 +34,7 @@ namespace odfaeg {
                 case MOUSE_WHEEL_MOVED :
                     startEvent.type = window::IEvent::MOUSE_WHEEL_EVENT;
                     break;
-                case MOUSE_MOVED :
+                case MOUSE_MOVED_ :
                     startEvent.type = window::IEvent::MOUSE_MOTION_EVENT;
                     break;
                 case MOUSE_ENTERED :

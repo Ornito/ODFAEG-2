@@ -27,8 +27,8 @@ namespace sorrok {
         return icon;
     }
     Item::~Item() {
-        if (itemBehaviour != nullptr) {
+        /*if (itemBehaviour != nullptr) {
             delete itemBehaviour;
-        }
+        }*/
     }
 }
