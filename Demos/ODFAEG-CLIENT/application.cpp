@@ -59,9 +59,8 @@ namespace sorrok {
             for (unsigned int i = 0; i < static_cast<Hero*>(hero)->getSkills().size(); i++) {
                 if (icon->getName() == static_cast<Hero*>(hero)->getSkills()[i].getName()) {
                     Skill skill = static_cast<Hero*>(hero)->getSkills()[i];
-                    SkillAction* skillAction = new SkillAction();
+                    SkillAction skillAction;
                     skill.setSkillBehaviour(FastDelegate<void>(&SkillAction::launchLastHeal, skillAction, static_cast<Hero*>(hero), skill));
-                    skillsActionsShorcutBar.push_back(skillAction);
                     shorcuts[id] = new Variant<Item, Skill>(static_cast<Hero*>(hero)->getSkills()[i]);
                 }
             }
@@ -79,9 +78,8 @@ namespace sorrok {
                     skill = static_cast<Hero*>(hero)->getSkills()[i];
                 }
             }
-            SkillAction *skillAction = new SkillAction();
+            SkillAction skillAction;
             skill.setSkillBehaviour(FastDelegate<void>(&SkillAction::launchLastHeal, skillAction, static_cast<Hero*>(hero), skill));
-            skillsActions.push_back(skillAction);
             gameActions.push_back(std::make_pair(skill, static_cast<Hero*>(hero)));
         } else {
             it->second = getClock("TimeClock").getElapsedTime();
@@ -265,9 +263,8 @@ namespace sorrok {
                 }
             }
             if (item.getType() == Item::HP_POTION) {
-                ItemAction* ia = new ItemAction();
-                itemsActions.push_back(ia);
-                item.setItemBehaviour(FastDelegate<void>(&ItemAction::useHpPotion,ia,static_cast<Hero*>(hero),item));
+                ItemAction itemAction;
+                item.setItemBehaviour(FastDelegate<void>(&ItemAction::useHpPotion,itemAction,static_cast<Hero*>(hero),item));
             }
             gameActions.push_back(std::make_pair(item, static_cast<Hero*>(hero)));
         } else {
@@ -1355,13 +1352,6 @@ namespace sorrok {
             std::vector<Item> items;
             ita(items);
             if (items.size() > 0) {
-                for (unsigned int i = 0; i < items.size(); i++) {
-                    if (items[i].getType() == Item::HP_POTION) {
-                        ItemAction* ia = new ItemAction();
-                        itemsActions.push_back(ia);
-                        items[i].setItemBehaviour(FastDelegate<void>(&ItemAction::useHpPotion,ia,static_cast<Hero*>(hero),items[i]));
-                    }
-                }
                 cristals.clear();
                 TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
                 Sprite* cristal = new Sprite(*tm.getResourceByAlias("CRISTAL"),hero->getFocusedCaracter()->getPosition(),Vec3f(50, 100, 0),sf::IntRect(0, 0, 50, 100));
@@ -1610,12 +1600,6 @@ namespace sorrok {
             apply_visitor(ga, gameActions.back().first, gameActions.back().second);
             gameActions.pop_back();
         }
-        for (unsigned int i = 0; i < itemsActions.size(); i++) {
-            delete itemsActions[i];
-        }
-        for (unsigned int i = 0; i < skillsActions.size(); i++) {
-            delete skillsActions[i];
-        }
         std::map<ParticleSystem*, std::pair<sf::Time, sf::Time>>::iterator it;
         for (it = particles.begin(); it != particles.end(); ) {
             sf::Time elapsedTime = Application::getTimeClk().getElapsedTime() - it->second.first;
@@ -1712,11 +1696,6 @@ namespace sorrok {
             SymEncPacket packet;
             packet<<"CONNECT*"+pseudo+"*"+pswd;
             Network::sendTcpPacket(packet);
-        }
-    }
-    MyAppli::~MyAppli() {
-        for (unsigned int i = 0; i < skillsActionsShorcutBar.size(); i++) {
-            delete skillsActionsShorcutBar[i];
         }
     }
 }
