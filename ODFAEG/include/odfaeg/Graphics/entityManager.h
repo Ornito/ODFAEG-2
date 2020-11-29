@@ -110,30 +110,7 @@ namespace odfaeg {
                 }
                 nbSceneVertices -= va.getVertexCount();
             }
-            virtual bool addEntity(Entity *entity) {
-                transformMatrices.push_back(&entity->getTransform());
-                for (unsigned int i = 0; i < entity->getNbFaces(); i++) {
-                    //entity->getFace(i)->getVertexArray().transform(entity->getTransform());
-                    addVertices(entity->getFace(i)->getVertexArray(), nbTransforms);
-                    /*if (entity->getRootType() == "E_BIGTILE") {
-                        for(unsigned int j = 0; j < entity->getNbFaces(); j++) {
-                            for (unsigned int k = 0; k < entity->getFace(j)->getVertexArray().getVertexCount(); k++) {
-                                std::cout<<"index : "<<entity->entity->getFace(j)->getVertexArray().m_index[k]<<std::endl;
-                            }
-                        }
-                    }*/
-                }
-                /*std::cout<<"type : "<<entity->getType()<<std::endl;
-                for (unsigned int i = 0; i < entity->getNbFaces(); i++) {
-                    VertexArray& va =  entity->getFace(i)->getVertexArray();
-                    for (unsigned int j = 0; j < va.getVertexCount(); j++) {
-                        std::cout<<"added index : *"<<va.m_indexes[j]<<std::endl;
-                    }
-                }*/
-
-                entity->getTransform().setTransformId(nbTransforms);
-                nbTransforms++;
-            }
+            virtual bool addEntity(Entity *entity) = 0;
             virtual bool containsVisibleEntity(Entity* ae) = 0;
             /**
             * \fn bool containsAnimatedVisibleEntity(AnimatedEntity *ae)

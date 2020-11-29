@@ -1,6 +1,6 @@
 #ifndef ODFAEG_PERPIXEL_LINKEDLIST_RENDER_COMPONENT_HPP
 #define ODFAEG_PERPIXEL_LINKEDLIST_RENDER_COMPONENT_HPP
-#include "ExtLib/GLEW/glew-2.0.0/include/GL/glew.h"
+#include "GL/glew.h"
 #include <SFML/OpenGL.hpp>
 #include "heavyComponent.h"
 #include "renderTexture.h"

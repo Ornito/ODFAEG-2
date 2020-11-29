@@ -3,7 +3,7 @@
 #include "../contextSettings.hpp"
 #include "../iContext.hpp"
 #include <windows.h>
-#include "../../../../src/odfaeg/Window/Windows/wglExtensions.hpp"
+#include "wglExtensions.hpp"
 namespace odfaeg {
     namespace window {
         ////////////////////////////////////////////////////////////

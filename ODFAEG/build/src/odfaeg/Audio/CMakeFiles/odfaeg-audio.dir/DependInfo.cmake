@@ -1,0 +1,31 @@
+# The set of languages for which implicit dependencies are needed:
+set(CMAKE_DEPENDS_LANGUAGES
+  "CXX"
+  )
+# The set of files for implicit dependencies of each language:
+set(CMAKE_DEPENDS_CHECK_CXX
+  "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Audio/SoundFile.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj"
+  "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Audio/player.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/player.cpp.obj"
+  "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Audio/stream.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.obj"
+  )
+set(CMAKE_CXX_COMPILER_ID "GNU")
+
+# Preprocessor definitions for this target.
+set(CMAKE_TARGET_DEFINITIONS_CXX
+  "GLEW_STATIC"
+  "ODFAEG_STATIC"
+  )
+
+# The include file search paths:
+set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "../include"
+  "../extlibs/headers"
+  )
+
+# Targets to which this target links.
+set(CMAKE_TARGET_LINKED_INFO_FILES
+  "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/DependInfo.cmake"
+  )
+
+# Fortran module output directory.
+set(CMAKE_Fortran_TARGET_MODULE_DIR "")

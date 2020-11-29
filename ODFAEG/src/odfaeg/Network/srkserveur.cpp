@@ -78,6 +78,7 @@ namespace odfaeg {
                 }
                 if (selector.wait(sf::milliseconds(10))) {
                     if (selector.isReady(listener)) {
+                        std::cout<<"new client"<<std::endl;
                         TcpSocket *client = new TcpSocket();
                         if (listener.accept(*client) == Socket::Done) {
                             std::cout<<"client connected!"<<std::endl;

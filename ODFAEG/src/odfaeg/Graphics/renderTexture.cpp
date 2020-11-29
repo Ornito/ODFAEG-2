@@ -25,11 +25,13 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#include "GL/glew.h"
 #include "renderTextureImplFBO.h"
 #include "renderTextureImplDefault.h"
 #include "../../../include/odfaeg/Graphics/renderTexture.h"
 #include <SFML/OpenGL.hpp>
 #include "glCheck.h"
+
 namespace odfaeg
 {
     namespace graphic {

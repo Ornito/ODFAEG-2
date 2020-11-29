@@ -161,6 +161,7 @@ namespace odfaeg {
                 typename std::map<std::string, FastDelegate<B*>>::iterator it = types.find(typeid(*type).name());
                 if (it != types.end())
                     return it->first;
+				return "";
             }
             private :
             static std::map<std::string, FastDelegate<B*>> types; /**> An std::map which store the typeName and a callback's function to an allocator of the registered types*/

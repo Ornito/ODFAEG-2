@@ -1,5 +1,4 @@
 #include "../../../include/odfaeg/Graphics/shadowRenderComponent.hpp"
-#include "ExtLib/GLEW/glew-2.0.0/include/GL/glew.h"
 #include <SFML/OpenGL.hpp>
 #include "glCheck.h"
 #include <memory.h>

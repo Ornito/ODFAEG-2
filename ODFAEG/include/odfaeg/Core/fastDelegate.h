@@ -309,11 +309,11 @@ namespace odfaeg {
                     return (dynamic_cast<C*>(o)->*pfunc)(std::forward<ArgU>(arg)...);
                 throw Erreur(0, "Invalid cast : types are nor polymorphic!", 1);
             }
-            /*template<class O, class... ArgU>
+            template<class O, class... ArgU>
             R operator()(O o, ArgU&&... arg) const
             {
                 return (o.*pfunc)(std::forward<ArgU>(arg)...);
-            }*/
+            }
         private:
             R (C::*pfunc)(ArgT...); /**> a pointer to a member's function.*/
         };

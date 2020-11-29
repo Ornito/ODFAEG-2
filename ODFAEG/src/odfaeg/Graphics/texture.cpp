@@ -25,7 +25,7 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "ExtLib/GLEW/glew-2.0.0/include/GL/glew.h"
+#include "GL/glew.h"
 #include "../../../include/odfaeg/Graphics/texture.h"
 #include "../../../include/odfaeg/Window/window.hpp"
 #include "glCheck.h"

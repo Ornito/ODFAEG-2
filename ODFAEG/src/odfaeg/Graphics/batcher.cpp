@@ -217,8 +217,10 @@ namespace odfaeg {
                 m_material.addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
             }
             Face::Face(VertexArray va, Material mat, TransformMatrix& tm) : transform(&tm) {
+                //std::cout<<"create face"<<std::endl;
                 m_vertices = va;
                 m_material = mat;
+                //std::cout<<"face created"<<std::endl;
             }
             TransformMatrix& Face::getTransformMatrix() const {
                 return *transform;

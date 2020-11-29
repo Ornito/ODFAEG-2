@@ -6,6 +6,7 @@ using namespace odfaeg::physic;
 using namespace odfaeg::network;
 namespace sorrok {
     MyAppli::MyAppli() : Application () {
+        std::cout<<"application"<<std::endl;
         running = false;
         Network::setCertifiateClientMess("SORROKCLIENT");
     }
@@ -13,8 +14,11 @@ namespace sorrok {
 
     }
     void MyAppli::onInit () {
+        std::cout<<"start srv"<<std::endl;
         Network::startSrv(10'000, 10'001);
+        std::cout<<"server started"<<std::endl;
         theMap = new Map(nullptr, "Map test", 100, 50, 0);
+        std::cout<<"map created"<<std::endl;
         /*const char *conninfo = "dbname=sorrok";
         conn = PQconnectdb(conninfo);
 
@@ -27,15 +31,20 @@ namespace sorrok {
         BaseChangementMatrix bcm;
         bcm.set2DIsoMatrix();
         theMap->setBaseChangementMatrix(bcm);
+        //std::cout<<"base changement matrix set"<<std::endl;
         World::addEntityManager(theMap);
+        std::cout<<"entity manager added"<<std::endl;
         World::setCurrentEntityManager("Map test");
+        std::cout<<"current em set"<<std::endl;
         tiles.push_back(new Tile(nullptr, Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
+        std::cout<<"tiles created"<<std::endl;
         walls.push_back(new Tile(nullptr, Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 0, 100, 100)));
         walls.push_back(new Tile(nullptr, Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 100, 100, 100)));
         walls.push_back(new Tile(nullptr, Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 200, 100, 100)));
         walls.push_back(new Tile(nullptr, Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 300, 100, 100)));
         walls.push_back(new Tile(nullptr, Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 400, 100, 100)));
         walls.push_back(new Tile(nullptr, Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 500, 100, 100)));
+
         tiles[0]->getFaces()[0]->getMaterial().setTexId("GRASS");
         walls[0]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[1]->getFaces()[0]->getMaterial().setTexId("WALLS");
@@ -43,6 +52,7 @@ namespace sorrok {
         walls[3]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[4]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[5]->getFaces()[0]->getMaterial().setTexId("WALLS");
+        std::cout<<"tex id set"<<std::endl;
         /*std::ifstream ifs("FichierDeSerialisation");
         if(ifs) {
             ITextArchive ia(ifs);
@@ -74,7 +84,9 @@ namespace sorrok {
             ifs.close();
         } else {*/
             BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
+            std::cout<<"generate map"<<std::endl;
             World::generate_map(tiles, walls, Vec2f(100, 50), mapZone, false);
+            std::cout<<"map generated"<<std::endl;
             w = new g2d::Wall(walls[3],&g2d::AmbientLight::getAmbientLight());
             w->setPosition(Vec3f(0, 130, 130 + w->getSize().y * 0.5f));
             World::addEntity(w);
@@ -119,6 +131,7 @@ namespace sorrok {
         light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 50, 255, sf::Color::Yellow, 16);
         World::addEntity(light1);
         World::addEntity(light2);
+        std::cout<<"decor generated"<<std::endl;
         //getView().move(d.x * 0.5f, d.y * 0.5f, 0);
         //World::computeIntersectionsWithWalls();
         std::array<Vec3f, 4> pts;
@@ -136,6 +149,7 @@ namespace sorrok {
         tmpPosition = pos;
         monster->setCenter(pos);
         World::addEntity(monster);
+        std::cout<<"monter generated"<<std::endl;
         Quest quest("Quête du débutant", "Tuer 10 ogres");
         quest.addMonsterToKill(monster->getName(), 10);
         quest.addReward(5, item);

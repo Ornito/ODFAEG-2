@@ -3,9 +3,7 @@ include(${PROJECT_SOURCE_DIR}/cmake/Macros.cmake)
 set(INCROOT ${PROJECT_SOURCE_DIR}/include/odfaeg/Graphics)
 set(SRCROOT ${PROJECT_SOURCE_DIR}/src/odfaeg/Graphics)
 
-set(SRC_GRAPHICS
-	${INCROOT}/zSortingRenderComponent.hpp
-	${SRCROOT}/zSortingRenderComponent.cpp
+set(SRC_GRAPHICS	
 	${INCROOT}/lightRenderComponent.hpp
 	${SRCROOT}/lightRenderComponent.cpp
 	${INCROOT}/baseChangementMatrix.h
@@ -83,11 +81,11 @@ set(SRC_GRAPHICS
 	${SRCROOT}/GlDebug.cpp
 	${SRCROOT}/animation.cpp	
 	${INCROOT}/tile.h
-	${SRCROOT}/tile.cpp
-	${INCROOT}/oitRenderComponent.h
-	${SRCROOT}/oitRenderComponent.cpp
+	${SRCROOT}/tile.cpp	
 	${INCROOT}/shadowRenderComponent.hpp
 	${SRCROOT}/shadowRenderCompoenent.cpp
+	${INCROOT}/reflectRefractRenderComponent.hpp
+	${SRCROOT}/reflectRefractRenderComponent.cpp
 	${INCROOT}/animatedEntity.h	
 	${INCROOT}/model.h
 	${SRCROOT}/model.cpp
@@ -102,8 +100,6 @@ set(SRC_GRAPHICS
 	${SRCROOT}/tGround.cpp
 	${INCROOT}/billBoard.h
 	${SRCROOT}/billBoard.cpp	
-	${INCROOT}/sdlRenderWindow.hpp
-	${SRCROOT}/sdlRenderWindow.cpp	
 	${INCROOT}/world.h
 	${SRCROOT}/world.cpp
 	${INCROOT}/glExtensions.hpp
@@ -116,9 +112,7 @@ set(SRC_GRAPHICS
 	${SRCROOT}/boneAnimation.cpp
 	${INCROOT}/lightComponent.h
 	${INCROOT}/heavyComponent.h
-	${INCROOT}/entityManager.h
-	${INCROOT}/depthPeelingRenderComponent.hpp
-	${SRCROOT}/depthPeelingRendercomponent.cpp
+	${INCROOT}/entityManager.h	
 	${INCROOT}/perPixelLinkedListRenderComponent.hpp
 	${SRCROOT}/perPixelLinkedListRenderComponent.cpp
 	)

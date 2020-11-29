@@ -40,6 +40,7 @@ namespace odfaeg {
         }
         Tile::Tile (const Texture *image, math::Vec3f position, math::Vec3f size, sf::IntRect subRect, sf::Color color, Entity *parent)
         : Entity (position, size, size * 0.5f, "E_TILE") {
+            //std::cout<<"add vertex array"<<std::endl;
             VertexArray va(sf::Quads, 4, this);
             Vertex v1(sf::Vector3f(0, 0, 0));
             Vertex v2(sf::Vector3f(size.x, 0, 0));
@@ -56,8 +57,11 @@ namespace odfaeg {
             va[3] = v4;
             Material material;
             material.addTexture(image, subRect);
+            //std::cout<<"material added"<<std::endl;
             Face* face = new Face(va, material,getTransform());
+            //std::cout<<"add face"<<std::endl;
             addFace(face);
+            //std::cout<<"face added"<<std::endl;
         }
         void Tile::changeVerticesHeights(float h1, float h2, float h3, float h4) {
             getFaces()[0]->getVertexArray()[0].position.z = h1;

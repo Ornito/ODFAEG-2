@@ -734,7 +734,9 @@ namespace odfaeg {
                 for (unsigned int j = 0; j < faces.size(); j++) {
                     decreaseComptImg(faces[j]->getMaterial().getTexture());
                 }
+                std::cout<<"grid map delete entity"<<std::endl;
                 gridMap->deleteEntity(entity);
+                std::cout<<"entity deleted"<<std::endl;
             }
             /*std::vector<Entity*> tiles;
             getChildren(entity, tiles, "*");
@@ -1416,7 +1418,7 @@ namespace odfaeg {
             return *shadowTile;
         }
         Entity& Map::getLightTile (std::string expression, int n, va_list args) {
-            std::vector<Entity*> lights = getVisibleEntities(expression);
+           /* std::vector<Entity*> lights = getVisibleEntities(expression);
             View view = frcm->getWindow().getView();
             physic::BoundingBox viewArea = view.getViewVolume();
             math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
@@ -1476,11 +1478,11 @@ namespace odfaeg {
                 }
             }
             va_end(args);
-            lightTile->setPosition(position);
+            lightTile->setPosition(position);*/
             return *lightTile;
         }
         Entity& Map::getRefractionTile (std::string expression, int n, va_list args) {
-            std::vector<Entity*> entities = getVisibleEntities(expression);
+            /*std::vector<Entity*> entities = getVisibleEntities(expression);
             View view = frcm->getWindow().getView();
             physic::BoundingBox viewArea = view.getViewVolume();
             math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
@@ -1536,7 +1538,7 @@ namespace odfaeg {
                 }
             }
             refractionMap->display();
-            refractionTile->setPosition(position);
+            refractionTile->setPosition(position);*/
             return *refractionTile;
         }
         BaseChangementMatrix Map::getBaseChangementMatrix() {

@@ -632,16 +632,7 @@ namespace odfaeg {
 
               return output - o;
             }
-            /** \fn ostream& operator<<(std::ostream& out)
-            *   \brief compress the archive's data and put it into an output stream.
-            *   \param std::ostream& out : the output stream where to compress the data.
-            *   \return std::ostream& : the output stream where the datas are compressed.
-            */
-            friend std::ostream& operator<<(std::ostream& out, OTextArchive& oa) {
-                /*oa.compress_stdin();
-                out<<oa.buffer;
-                return out;*/
-            }
+
         private :
             std::ostream& buffer; /**< the output buffer containing the datas.*/
             int utf16_compressor_initialized = 0; /**<A boolean to test if the compressor is initialized*/
@@ -1411,15 +1402,6 @@ namespace odfaeg {
             *   \param std::istream& in : the input stream where to decompress the data.
             *   \return the input stream where the datas are decompressed.
             */
-            friend std::istream& operator>>(std::istream& in, ITextArchive& ia) {
-                /*std::streambuf * pbuf = in.rdbuf();
-                long size = pbuf->pubseekoff(0,in.end);
-                char* contents = new char [size];
-                pbuf->sgetn (contents,size);
-                ia.buffer.rdbuf()->pubsetbuf(contents, size);
-                ia.decompress_stdin();
-                return in;*/
-            }
         private :
             std::istream& buffer; /**< the buffer where to read the data.*/
             std::map<long long int, std::string> adresses; /**< an std::map used to store ids and adresses of readed pointers.*/

@@ -30,8 +30,6 @@ set(VERSION_PATCH 0)
 
 # add the ODFAEG header path
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Core/boost)
-
 # add an option for choosing the build type (shared or static)
 ODFAEG_set_option(BUILD_SHARED_LIBS TRUE BOOL "TRUE to build ODFAEG as shared libraries, FALSE to build it as static libraries")
 

@@ -14,18 +14,25 @@ namespace sorrok {
         getView().setScale(1, -1, 1);
         sf::Clock clock1;
         addClock(clock1, "RequestTime");
+        std::cout<<"add clock"<<std::endl;
         sf::Clock clock2;
         addClock(clock2, "FPS");
+        std::cout<<"add clock 2"<<std::endl;
         fps = 0;
         hero = nullptr;
         selectedPnj = nullptr;
         selectedQuest = nullptr;
         received = false;
+        std::cout<<"set client message"<<std::endl;
         Network::setCertifiateClientMess("SORROKCLIENT");
+        std::cout<<"client message set"<<std::endl;
         isClientAuthentified = false;
+        std::cout<<"create ps"<<std::endl;
         ps = new ParticleSystem(Vec3f(0, 0, 150),Vec3f(100, 100, 0));
+        std::cout<<"ps created"<<std::endl;
         doubleClicks.insert(std::make_pair("useItem", getClock("TimeClock").getElapsedTime()));
         doubleClicks.insert(std::make_pair("useSkill", getClock("TimeClock").getElapsedTime()));
+        std::cout<<"appli created"<<std::endl;
     }
     void MyAppli::onF1Pressed() {
         if (shorcuts[0] != nullptr) {
@@ -59,7 +66,7 @@ namespace sorrok {
             for (unsigned int i = 0; i < static_cast<Hero*>(hero)->getSkills().size(); i++) {
                 if (icon->getName() == static_cast<Hero*>(hero)->getSkills()[i].getName()) {
                     Skill skill = static_cast<Hero*>(hero)->getSkills()[i];
-                    SkillAction* skillAction = new SkillAction();
+                    SkillAction skillAction;
                     skill.setSkillBehaviour(new FastDelegate<void>(&SkillAction::launchLastHeal, skillAction, static_cast<Hero*>(hero), skill));
                     shorcuts[id] = new Variant<Item, Skill>(skill);
                 }
@@ -319,6 +326,7 @@ namespace sorrok {
             }
         }
         std::vector<Item> itemsToDisplay = selectedCristal.second;
+        label->getListener().removeLater("PICKUPITEM");
         pItems->removeAll();
         if (itemsToDisplay.size() > 0) {
             FontManager<Fonts> &fm = cache.resourceManager<Font,Fonts>("FontManager");
@@ -343,12 +351,15 @@ namespace sorrok {
             for (it = cristals.begin(); it != cristals.end();) {
                 if (it->first == selectedCristal.first) {
                     delete it->first;
+                    std::cout<<"erase it"<<std::endl;
                     it = cristals.erase(it);
+                    std::cout<<"it erased"<<std::endl;
                 } else {
                     it++;
                 }
             }
         }
+        std::cout<<"items droped"<<std::endl;
     }
     void MyAppli::pickUpItems (IKeyboard::Key key) {
         if (key != IKeyboard::Key::Unknown && key == IKeyboard::Key::A) {
@@ -492,6 +503,7 @@ namespace sorrok {
         return false;
     }
     void MyAppli::onLoad() {
+        std::cout<<"load"<<std::endl;
         TextureManager<> tm;
         tm.fromFileWithAlias("tilesets/herbe.png", "GRASS");
         tm.fromFileWithAlias("tilesets/murs.png", "WALLS");
@@ -512,12 +524,16 @@ namespace sorrok {
         cache.addResourceManager(tm, "TextureManager");
         cache.addResourceManager(tm2, "TextureManager2");
         cache.addResourceManager(tm3, "TextureManager3");
+        std::cout<<"resources loaded"<<std::endl;
         //shader.loadFromFile("Shaders/SimpleVertexShader.vertexshader", "Shaders/SimpleFragmentShader.fragmentshader");
     }
     void MyAppli::onInit () {
+
         setEventContextActivated(false);
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+        std::cout<<"init"<<std::endl;
         Network::startCli(10'000, 10'001,sf::IpAddress::LocalHost);
+        std::cout<<"client connected"<<std::endl;
         TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
         Vec2f pos (getView().getPosition().x - getView().getSize().x * 0.5f, getView().getPosition().y - getView().getSize().y * 0.5f);
         BoundingBox bx (pos.x, pos.y, 0, getView().getSize().x, getView().getSize().y, 0);
@@ -1592,6 +1608,7 @@ namespace sorrok {
                 psu->removeParticleSystem(it->first);
                 World::deleteEntity(it->first);
                 it = particles.erase(it);
+                std::cout<<"it erased"<<std::endl;
             } else
                 it++;
         }

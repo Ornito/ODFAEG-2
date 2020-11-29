@@ -6,7 +6,6 @@
 
 #include "../Core/entitySystem.h"
 #include "../Core/timer.h"
-#include "../Graphics/oitRenderComponent.h"
 #include "../Graphics/baseChangementMatrix.h"
 #include "../Graphics/entityManager.h"
 #include <cstdarg>

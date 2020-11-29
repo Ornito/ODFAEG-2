@@ -27,7 +27,7 @@ namespace odfaeg {
             math::Vec3f _near, _far;
             if (!intersectsWhere(r, _near, _far, info))
                 return false;
-            math::Vec3f d = far - center;
+            math::Vec3f d = _far - center;
             return (center.computeDistSquared(bs.getCenter()) - bs.getRadius() * bs.getRadius() - d.magnSquared()) <= 0;
         }
         bool BoundingEllipsoid::intersects(BoundingEllipsoid &be, CollisionResultSet::Info& info) {

@@ -25,7 +25,7 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "wglExtensions.hpp"
+#include "../../../../include/odfaeg/Window/Windows/wglExtensions.hpp"
 #include "../../../../include/odfaeg/Window/context.hpp"
 #include <cstdlib>
 #include <cstring>
