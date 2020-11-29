@@ -10,7 +10,7 @@ namespace sorrok {
         };
         Skill();
         Skill(std::string name, unsigned int manaCost, std::string requiredClass);
-        void setSkillBehaviour(odfaeg::core::FastDelegate<void> skillBehaviour);
+        void setSkillBehaviour(odfaeg::core::FastDelegate<void>* skillBehaviour);
         void applySkillBehaviour();
         std::string getName();
         unsigned int getManaCost();
@@ -20,11 +20,12 @@ namespace sorrok {
             ar(manaCost);
             ar(requiredClass);
         }
+        ~Skill();
         std::string getRequiredClass();
         private :
         std::string name, requiredClass;
         unsigned int manaCost;
-        odfaeg::core::FastDelegate<void> skillBehaviour;
+        odfaeg::core::FastDelegate<void>* skillBehaviour;
     };
 }
 #endif

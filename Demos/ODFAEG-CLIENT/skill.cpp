@@ -4,9 +4,10 @@ namespace sorrok {
     Skill::Skill() {
         name = "";
         manaCost = 0;
+        skillBehaviour=nullptr;
     }
     Skill::Skill (std::string name, unsigned int manaCost, std::string requiredClass) : name(name), manaCost(manaCost), requiredClass(requiredClass) {
-
+        skillBehaviour=nullptr;
     }
     unsigned int Skill::getManaCost() {
         return manaCost;
@@ -17,10 +18,15 @@ namespace sorrok {
     std::string Skill::getRequiredClass() {
         return requiredClass;
     }
-    void Skill::setSkillBehaviour(FastDelegate<void> skillBehaviour) {
+    void Skill::setSkillBehaviour(FastDelegate<void>* skillBehaviour) {
         this->skillBehaviour = skillBehaviour;
     }
     void Skill::applySkillBehaviour() {
-        skillBehaviour();
+        (*skillBehaviour)();
+    }
+    Skill::~Skill() {
+        if (skillBehaviour != nullptr) {
+            delete skillBehaviour;
+        }
     }
 }

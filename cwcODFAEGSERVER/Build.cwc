@@ -16,8 +16,6 @@
 -I ../ODFAEG/extlibs/headers/
 -I ../ODFAEG/extlibs/headers/libfreetype/windows/
 -I ../Extlib/Assimp/include/
--I ../Extlib/MySQL/include/
--I ../Extlib/
 
 >
 ;Build ODFAEG
