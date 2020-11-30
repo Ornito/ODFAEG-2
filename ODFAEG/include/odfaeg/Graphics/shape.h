@@ -233,6 +233,8 @@ namespace odfaeg {
                 ar(m_bounds);
             }
             const unsigned int& getId();
+            physic::BoundingBox getLocalBounds() const;
+            physic::BoundingBox& getGlobalBounds();
         protected :
 
             ////////////////////////////////////////////////////////////
@@ -284,7 +286,6 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             void updateOutlineColors();
-
             ////////////////////////////////////////////////////////////
             // Member data
             ////////////////////////////////////////////////////////////
@@ -296,7 +297,7 @@ namespace odfaeg {
             VertexArray    m_vertices;         ///< Vertex array containing the fill geometry
             VertexArray    m_outlineVertices;  ///< Vertex array containing the outline geometry
             physic::BoundingBox           m_insideBounds;     ///< Bounding rectangle of the inside (fill)
-            physic::BoundingBox           m_bounds;           ///< Bounding rectangle of the whole shape (outline + fill)
+            physic::BoundingBox           m_bounds, m_globalBounds;           ///< Bounding rectangle of the whole shape (outline + fill)
             unsigned int id;
             static unsigned int nbShapes;
         };

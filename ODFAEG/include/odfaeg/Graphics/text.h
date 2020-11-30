@@ -252,7 +252,7 @@ namespace odfaeg
             /// \return Local bounding rectangle of the entity
             ///
             ////////////////////////////////////////////////////////////
-            sf::FloatRect getLocalBounds() const;
+            physic::BoundingBox getLocalBounds() const;
 
             ////////////////////////////////////////////////////////////
             /// \brief Get the global bounding rectangle of the entity
@@ -266,7 +266,7 @@ namespace odfaeg
             /// \return Global bounding rectangle of the entity
             ///
             ////////////////////////////////////////////////////////////
-            sf::FloatRect getGlobalBounds();
+            physic::BoundingBox& getGlobalBounds();
 
         private :
 
@@ -297,7 +297,7 @@ namespace odfaeg
             sf::Uint32              m_style;              ///< Text style (see Style enum)
             sf::Color               m_color;              ///< Text color
             mutable VertexArray m_vertices;           ///< Vertex array containing the text's geometry
-            mutable sf::FloatRect   m_bounds;             ///< Bounding rectangle of the text (in local coordinates)
+            mutable physic::BoundingBox   m_bounds, m_globalBounds;             ///< Bounding rectangle of the text (in local coordinates)
             mutable bool        m_geometryNeedUpdate; ///< Does the geometry need to be recomputed?
         };
     }

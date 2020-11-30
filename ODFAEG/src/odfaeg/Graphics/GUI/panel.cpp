@@ -178,12 +178,15 @@ namespace odfaeg {
             }
             void Panel::drawOn(RenderTarget& target, RenderStates states) {
                 if (scrollX || scrollY) {
+                    corner.setFillColor(sf::Color::Red);
                     target.draw(corner, states);
                 }
                 if (scrollX) {
+                    vertScrollBar.setFillColor(sf::Color::Red);
                     target.draw(vertScrollBar, states);
                 }
                 if (scrollY) {
+                    horScrollBar.setFillColor(sf::Color::Red);
                     target.draw(horScrollBar, states);
                 }
                 glCheck(glDisable(GL_SCISSOR_TEST));

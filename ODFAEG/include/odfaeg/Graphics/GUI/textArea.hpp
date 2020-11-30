@@ -30,6 +30,7 @@ namespace odfaeg {
                 bool hasFocus();
                 bool isTextChanged();
                 void onEventPushed(window::IEvent event, RenderWindow& window);
+                math::Vec3f getTextSize();
             private :
                 int currentIndex;
                 std::string tmp_text, id_text;

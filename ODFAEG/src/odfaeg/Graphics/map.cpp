@@ -504,7 +504,7 @@ namespace odfaeg {
             int endY = (rect.getPosition().y + rect.getHeight()) / tileSize.y * tileSize.y;
             BigTile *bt;
             if (!terrain3D)
-                bt = new BigTile(math::Vec3f(startX, startY, startY + endY * 0.5f));
+                bt = new BigTile(math::Vec3f(startX, startY, startY + (endY - startY) * 0.5f));
             else
                 bt = new BigTile(math::Vec3f(startX, startY, rect.getPosition().z),tileSize,rect.getWidth() / tileSize.x);
             bt->setSize(rect.getSize());

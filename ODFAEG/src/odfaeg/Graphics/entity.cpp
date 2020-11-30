@@ -4,6 +4,7 @@ namespace odfaeg {
         int Entity::nbEntities = 0;
         int Entity::nbEntitiesTypes = 0;
         std::map<int, std::string>* Entity::types = Entity::initTypes();
+        float Entity::nbLayers = 1;
         Entity::Entity (math::Vec3f position, math::Vec3f size, math::Vec3f origin, std::string sType, Entity *parent) :
             Transformable (position, size, origin), Drawable(), entityState("Entity State", nullptr) {
             this->parent = parent;
@@ -32,6 +33,18 @@ namespace odfaeg {
             reflectable = false;
             refractDir = math::Vec3f(0, 0, 1);
             water = false;
+            layer = 0;
+        }
+        void Entity::setLayer(float layer) {
+            if (layer > nbLayers)
+                nbLayers = layer;
+            this->layer = layer;
+        }
+        float Entity::getLayer() {
+            return layer;
+        }
+        float Entity::getNbLayers() {
+            return nbLayers;
         }
         void Entity::setWater (bool water) {
             this->water = water;

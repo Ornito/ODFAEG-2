@@ -69,13 +69,15 @@ namespace odfaeg {
             }
             void TextArea::setTextSize(unsigned int size) {
                 text.setCharacterSize(size);
-                setSize(text.getSize());
             }
             void TextArea::setTextColor(sf::Color color) {
                 text.setColor(color);
             }
             std::string TextArea::getText() {
                 return tmp_text;
+            }
+            math::Vec3f TextArea::getTextSize() {
+                return text.getGlobalBounds().getSize();
             }
             void TextArea::onDraw(RenderTarget& target, RenderStates states) {
                 VertexArray va(sf::Lines);
@@ -84,7 +86,7 @@ namespace odfaeg {
                 rect.setPosition(getPosition());
                 text.setPosition(getPosition());
                 rect.setSize(getSize());
-                //text.setSize(getSize());
+
                 target.draw(rect);
                 target.draw(text);
                 target.draw(va);
@@ -128,7 +130,6 @@ namespace odfaeg {
                 tmp_text = text;
                 this->text.setString(tmp_text);
                 textChanged = true;
-                //setSize(this->text.getSize());
             }
             bool TextArea::isTextChanged() {
                 bool b = textChanged;

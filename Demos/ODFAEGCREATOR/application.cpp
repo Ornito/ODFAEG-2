@@ -156,6 +156,7 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(bCreateAppli);
     addWindow(wApplicationNew);
     wApplicationNew->setVisible(false);
+    getRenderComponentManager().setEventContextActivated(false, *wApplicationNew);
     //Create map window.
     wNewMap = new RenderWindow(sf::VideoMode(400, 300), "Create new scene", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
     Label* labMapName = new Label(*wNewMap, Vec3f(0, 0, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Map name : ", 15);
@@ -180,6 +181,7 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(bCreateScene);
     addWindow(wNewMap);
     wNewMap->setVisible(false);
+    getRenderComponentManager().setEventContextActivated(false, *wNewMap);
     //Create component.
     wNewComponent = new RenderWindow(sf::VideoMode(400, 300), "Create new render component", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
     Label* labComponentExpression = new Label(*wNewComponent,Vec3f(0, 0, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "entity's type(s) : ", 15);
@@ -202,6 +204,7 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(bCreateComponent);
     addWindow(wNewComponent);
     wNewComponent->setVisible(false);
+    getRenderComponentManager().setEventContextActivated(false, *wNewComponent);
     //Create entities updater.
     wNewEntitiesUpdater = new RenderWindow(sf::VideoMode(400, 300), "Create new entities updater", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
     Label* lEntitiesUpdaterName = new Label (*wNewEntitiesUpdater,Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "entities updater name : ", 15);
@@ -213,6 +216,7 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(bCreateEntitiesUpdater);
     addWindow(wNewEntitiesUpdater);
     wNewEntitiesUpdater->setVisible(false);
+    getRenderComponentManager().setEventContextActivated(false, *wNewEntitiesUpdater);
     //Create panel for project files.
     pProjects = new Panel(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     rootNode = std::make_unique<Node> ("projects", pProjects, Vec2f(0.f, 0.015f), Vec2f(1.f / 6.f, 1.f));
@@ -593,6 +597,8 @@ void ODFAEGCreator::onExec() {
             pos += subs.find_first_of('\n') + 1;
             content.insert(pos, "    tm.fromFileWithAlias("+path+","+ImgName+");");
         }
+        fdTexturePath->setEventContextActivated(false);
+        tScriptEdit->setEventContextActivated(true);
     }
     if (dpSelectTexture != nullptr && dpSelectTexture->isDroppedDown()) {
         bChooseText->setEventContextActivated(false);
@@ -644,6 +650,7 @@ void ODFAEGCreator::onExec() {
         applis.close();
         fdProjectPath->setVisible(false);
         fdProjectPath->setEventContextActivated(false);
+        tScriptEdit->setEventContextActivated(true);
     }
     World::update();
 }
@@ -740,11 +747,18 @@ void ODFAEGCreator::showSourcesFiles(Label* label) {
     }
 }
 void ODFAEGCreator::showFileContent(Label* lab) {
+    isGuiShown = false;
+    pScriptsEdit->setVisible(true);
     std::map<std::string, std::string>::iterator it;
     it = cppAppliContent.find(lab->getText());
     if (it != cppAppliContent.end()) {
         tScriptEdit->setTextSize(20);
         tScriptEdit->setText(it->second);
+        Vec3f textSize = tScriptEdit->getTextSize();
+        if (textSize.x > tScriptEdit->getSize().x)
+            tScriptEdit->setSize(Vec3f(textSize.x, tScriptEdit->getSize().y, tScriptEdit->getSize().z));
+        if (textSize.y > tScriptEdit->getSize().y)
+            tScriptEdit->setSize(Vec3f(tScriptEdit->getSize().x, textSize.y, tScriptEdit->getSize().z));
         pScriptsEdit->updateScrolls();
     }
 }
@@ -780,7 +794,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         }
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
         wApplicationNew->setVisible(false);
-        bCreateAppli->setEventContextActivated(false);
+        getRenderComponentManager().setEventContextActivated(false, *wApplicationNew);
+        tScriptEdit->setEventContextActivated(true);
         Label* lab = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),appliname, 15);
         Node* node = new Node("test",lab,Vec2f(0, 0),Vec2f(1.f, 0.025f),rootNode.get());
         lab->setParent(pProjects);
@@ -883,10 +898,12 @@ void ODFAEGCreator::actionPerformed(Button* button) {
     if (button->getText() == "New texture") {
         fdTexturePath->setVisible(true);
         fdTexturePath->setEventContextActivated(true);
+        tScriptEdit->setEventContextActivated(false);
     }
     if (button->getText() == "Create scene") {
         wNewMap->setVisible(false);
-        button->setEventContextActivated(false);
+        getRenderComponentManager().setEventContextActivated(false, *wNewMap);
+        tScriptEdit->setEventContextActivated(true);
         BaseChangementMatrix bcm;
         if (dpMapTypeList->getSelectedItem() == "2D iso")
             bcm.set2DIsoMatrix();
@@ -920,7 +937,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
     }
     if (button->getText() == "Create component") {
         wNewComponent->setVisible(false);
-        button->setEventContextActivated(false);
+        getRenderComponentManager().setEventContextActivated(false, *wNewComponent);
+        tScriptEdit->setEventContextActivated(true);
         std::cout<<"Create component"<<std::endl;
         if (dpComponentType->getSelectedItem() == "LinkedList") {
             PerPixelLinkedListRenderComponent* ppll = new PerPixelLinkedListRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 4, 6));
@@ -946,13 +964,16 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         eu->setName(name);
         World::addWorker(eu);
         wNewEntitiesUpdater->setVisible(false);
+        getRenderComponentManager().setEventContextActivated(false, *wNewEntitiesUpdater);
+        tScriptEdit->setEventContextActivated(true);
     }
 }
 void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "New application") {
         std::cout<<"new application"<<std::endl;
         wApplicationNew->setVisible(true);
-        bCreateAppli->setEventContextActivated(true);
+        getRenderComponentManager().setEventContextActivated(true, *wApplicationNew);
+        tScriptEdit->setEventContextActivated(false);
     }
     if (item->getText() == "Build") {
         std::string command = "clang++-3.6 -Wall -std=c++14 -g "+appliname+"/"+"*.cpp -o "+appliname+"/"+minAppliname+".out "
@@ -1046,19 +1067,23 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     }
     if (item->getText() == "New scene") {
         wNewMap->setVisible(true);
-        bCreateScene->setEventContextActivated(true);
+        getRenderComponentManager().setEventContextActivated(true, *wNewMap);
+        tScriptEdit->setEventContextActivated(false);
     }
     if (item->getText() == "New component") {
         wNewComponent->setVisible(true);
-        bCreateComponent->setEventContextActivated(true);
+        getRenderComponentManager().setEventContextActivated(true, *wNewComponent);
+        tScriptEdit->setEventContextActivated(false);
     }
     if (item->getText() == "New entities updater") {
         wNewEntitiesUpdater->setVisible(true);
-        bCreateEntitiesUpdater->setEventContextActivated(true);
+        getRenderComponentManager().setEventContextActivated(true, *wNewEntitiesUpdater);
+        tScriptEdit->setEventContextActivated(false);
     }
     if (item == item15) {
         fdProjectPath->setVisible(true);
         fdProjectPath->setEventContextActivated(true);
+        tScriptEdit->setEventContextActivated(false);
     }
 }
 void ODFAEGCreator::addShape(Shape *shape) {
@@ -1339,12 +1364,36 @@ void ODFAEGCreator::displayInfos (Tile* tile) {
     pInfos->removeAll();
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
     Label* lId = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Id : entity-"+conversionIntString(tile->getId()), 15);
-    Action aLId(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
-    Command cmd(aLId, FastDelegate<bool>(&Label::isMouseInside, lId), FastDelegate<void>(&ODFAEGCreator::displayChildren, this, lId));
-    lId->getListener().connect("SHOWCHILDREN"+lId->getText(), cmd);
     lId->setParent(pInfos);
     Node* lIdNode = new Node("LabId", lId, Vec2f(0, 0), Vec2f(1, 0.025), rootInfosNode.get());
     pInfos->addChild(lId);
+    Label* lName = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Name : ", 15);
+    lName->setParent(pInfos);
+    Node* nameNode = new Node("Name", lName, Vec2f(0, 0), Vec2f(0.25, 0.025), rootInfosNode.get());
+    pInfos->addChild(lName);
+    taName = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",getRenderWindow());
+    taName->setTextSize(15);
+    Action a (Action::EVENT_TYPE::TEXT_ENTERED);
+    Command cmdName (a, FastDelegate<bool>(&TextArea::isTextChanged, taName), FastDelegate<void>(&ODFAEGCreator::onObjectNameChanged, this,taName));
+    taName->getListener().connect("CMDNAMECHANGED", cmdName);
+    taName->setParent(pInfos);
+    nameNode->addOtherComponent(taName, Vec2f(0.75, 0.025));
+    pInfos->addChild(taName);
+    if (tile->getParent() == nullptr) {
+        lParent = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Parent entity : NONE", 15);
+    } else {
+        lParent = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Parent entity : "+tile->getParent()->getName(), 15);
+    }
+    lParent->setParent(pInfos);
+    Node* parentNode = new Node("Parent",lParent,Vec2f(0, 0),Vec2f(0.25, 0.025),rootInfosNode.get());
+    pInfos->addChild(lParent);
+    Label* lChildren = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Children", 15);
+    Action aChildren(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+    Command cmd(aChildren, FastDelegate<bool>(&Label::isMouseInside, lChildren), FastDelegate<void>(&ODFAEGCreator::displayChildren, this, lChildren));
+    lChildren->getListener().connect("SHOWCHILDREN", cmd);
+    lChildren->setParent(pInfos);
+    Node* childrenNode = new Node("Children",lChildren,Vec2f(0, 0),Vec2f(1, 0.025),rootInfosNode.get());
+    pInfos->addChild(lChildren);
     std::vector<EntityManager*> ems = World::getEntityManagers();
     Label* lEmList = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 14, 0), fm.getResourceByAlias(Fonts::Serif), "Scene : ", 15);
     lEmList->setParent(pInfos);
@@ -1391,10 +1440,10 @@ void ODFAEGCreator::displayInfos (Tile* tile) {
     tPosZ->setTextSize(15);
     lPosZNode->addOtherComponent(tPosZ, Vec2f(0.75, 0.025));
     pTransform->addChild(tPosZ);
-    Action a (Action::EVENT_TYPE::TEXT_ENTERED);
-    Command cmdPosX (a, FastDelegate<bool>(&TextArea::isTextChanged, tPosX), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosX));
-    Command cmdPosY (a, FastDelegate<bool>(&TextArea::isTextChanged, tPosY), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosY));
-    Command cmdPosZ (a, FastDelegate<bool>(&TextArea::isTextChanged, tPosZ), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosZ));
+    Action aPos (Action::EVENT_TYPE::TEXT_ENTERED);
+    Command cmdPosX (aPos, FastDelegate<bool>(&TextArea::isTextChanged, tPosX), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosX));
+    Command cmdPosY (aPos, FastDelegate<bool>(&TextArea::isTextChanged, tPosY), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosY));
+    Command cmdPosZ (aPos, FastDelegate<bool>(&TextArea::isTextChanged, tPosZ), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosZ));
     tPosX->getListener().connect("tPosXChanged", cmdPosX);
     tPosY->getListener().connect("tPosYChanged", cmdPosY);
     tPosZ->getListener().connect("tPosZChanged", cmdPosZ);
@@ -1685,6 +1734,9 @@ void ODFAEGCreator::updateScriptColor(Transformable* shape) {
             }
         }
     }
+}
+void ODFAEGCreator::onObjectNameChanged(TextArea* ta) {
+    selectedObject->setName(ta->getText());
 }
 void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
     if (ta == tRColor) {

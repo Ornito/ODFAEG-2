@@ -386,6 +386,9 @@ namespace odfaeg {
                 bool isReflectable();
                 void setWater(bool water);
                 bool isWater();
+                void setLayer(float layer);
+                float getLayer();
+                static float getNbLayers();
             protected :
                 math::Vec3f shadowCenter, shadowScale, shadowRotationAxis, shadowOrigin, refractDir; /**> The center of the shadow of the entity.*/
                 float shadowRotationAngle;
@@ -402,6 +405,8 @@ namespace odfaeg {
                 Entity& operator=(const Entity& entity) = delete; /**> an entity is not affectable*/
                 bool alreadySerialized, reflectable, water;
                 unsigned int boneIndex;
+                float layer;
+                static float nbLayers;
                 DrawMode drawMode;
         };
     }

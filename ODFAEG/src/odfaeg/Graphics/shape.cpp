@@ -105,6 +105,8 @@ namespace odfaeg
         void Shape::setFillColor(const Color& color)
         {
             m_fillColor = color;
+            if (m_fillColor == sf::Color::Red)
+                std::cout<<"update fill color"<<std::endl;
             updateFillColors();
         }
 
@@ -205,7 +207,6 @@ namespace odfaeg
         void Shape::draw(RenderTarget& target, RenderStates states)
         {
             states.transform = getTransform();
-            states.transform.setScale(math::Vec3f(1, 1, 1));
             /*if (getName() == "RPSCRIPTFILES") {
                 std::cout<<"size : "<<getSize()<<"position : "<<getPosition()<<std::endl;
                 for (unsigned int i = 0; i < m_vertices.getVertexCount(); i++)
@@ -296,6 +297,13 @@ namespace odfaeg
         {
             for (unsigned int i = 0; i < m_outlineVertices.getVertexCount(); ++i)
                 m_outlineVertices[i].color = m_outlineColor;
+        }
+        physic::BoundingBox Shape::getLocalBounds() const {
+            return m_bounds;
+        }
+        physic::BoundingBox& Shape::getGlobalBounds() {
+            m_globalBounds = m_bounds.transform(getTransform());
+            return m_globalBounds;
         }
     }
 } // namespace sf

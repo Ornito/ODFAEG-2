@@ -14,6 +14,14 @@ namespace odfaeg {
             ptr.reset(component);
             components.insert(std::make_pair(component->getPriority(), std::move(ptr)));
         }
+        void RenderComponentManager::setEventContextActivated(bool activated, RenderWindow& window) {
+            std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::iterator it;
+            for (it = components.begin();it != components.end(); it++) {
+                if (&it->second->getWindow() == &window) {
+                    it->second->setEventContextActivated(activated);
+                }
+            }
+        }
         bool RenderComponentManager::removeComponent(unsigned int layer) {
             std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::iterator it;
             for (it = components.begin(); it != components.end();) {

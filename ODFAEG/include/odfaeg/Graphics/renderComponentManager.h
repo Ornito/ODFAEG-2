@@ -37,6 +37,7 @@ namespace odfaeg {
             */
             void addComponent(graphic::Component* component);
             void addWindow(RenderWindow& window);
+            void setEventContextActivated(bool activated, RenderWindow& window);
             bool removeComponent(unsigned int layer);
             /**
             * \fn RenderWindow& getWindow()

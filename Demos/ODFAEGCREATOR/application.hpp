@@ -17,7 +17,6 @@
 #include "odfaeg/Graphics/map.h"
 #include "odfaegCreatorStateExecutor.hpp"
 #include "odfaeg/Graphics/perPixelLinkedListRenderComponent.hpp"
-#include "odfaeg/Graphics/zSortingRenderComponent.hpp"
 #include "odfaeg/Graphics/shadowRenderComponent.hpp"
 #include "odfaeg/Graphics/lightRenderComponent.hpp"
 #include "odfaeg/Graphics/reflectRefractRenderComponent.hpp"
@@ -59,6 +58,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void updateScriptTextCoords(odfaeg::graphic::Transformable* shape);
     void updateScriptText(odfaeg::graphic::Shape* shape, const odfaeg::graphic::Texture* text);
     void updateScriptText(odfaeg::graphic::Tile* tile, const odfaeg::graphic::Texture* text);
+    void onObjectNameChanged(odfaeg::graphic::gui::TextArea* ta);
     enum Fonts {
         Serif
     };
@@ -87,9 +87,9 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::vector<std::unique_ptr<odfaeg::graphic::Shape>> shapes;
         odfaeg::graphic::Transformable* selectedObject;
         odfaeg::graphic::gui::TextArea *tPosX, *tPosY, *tPosZ, *tRColor, *tGColor, *tBColor, *tAColor,
-        *tTexCoordX, *tTexCoordY, *tTexCoordW, *tTexCoordH;
+        *tTexCoordX, *tTexCoordY, *tTexCoordW, *tTexCoordH, *taName;
         odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition, *lColor, *lRColor,
-        *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage;
+        *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage, *lParent;
         odfaeg::graphic::gui::TabPane* tabPane;
         odfaeg::graphic::gui::Button* bChooseText, *bCreateComponent, *bCreateScene, *bCreateEntitiesUpdater, *bCreateAppli;
         odfaeg::graphic::Shape* sTextRect;

@@ -210,18 +210,19 @@ namespace odfaeg
             return Vector2f(pos.x, pos.y);
         }
 
-
         ////////////////////////////////////////////////////////////
-        FloatRect Text::getLocalBounds() const
+        physic::BoundingBox Text::getLocalBounds() const
         {
             ensureGeometryUpdate();
 
             return m_bounds;
         }
-        FloatRect Text::getGlobalBounds()
+        physic::BoundingBox& Text::getGlobalBounds()
         {
-            physic::BoundingBox bb;
-            return FloatRect(bb.getPosition().x, bb.getPosition().y, bb.getSize().x, bb.getSize().y);
+            ensureGeometryUpdate();
+
+            m_globalBounds = m_bounds.transform(getTransform());
+            return m_globalBounds;
         }
 
         ////////////////////////////////////////////////////////////
@@ -250,7 +251,7 @@ namespace odfaeg
 
             // Clear the previous geometry
             m_vertices.clear();
-            m_bounds = FloatRect();
+            m_bounds = physic::BoundingBox();
 
             // No font: nothing to draw
             if (!m_font)
@@ -369,10 +370,8 @@ namespace odfaeg
             }
 
             // Update the bounding rectangle
-            m_bounds.left = minX;
-            m_bounds.top = minY;
-            m_bounds.width = maxX - minX;
-            m_bounds.height = maxY - minY;
+            m_bounds.setPosition(minX, minY, 0);
+            m_bounds.setSize(maxX - minX, maxY - minY, 0);
             //const_cast<Text*>(this)->setSize(math::Vec3f(m_bounds.width, m_bounds.height, 0));
         }
     }

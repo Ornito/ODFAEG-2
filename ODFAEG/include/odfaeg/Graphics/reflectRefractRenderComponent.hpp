@@ -77,14 +77,14 @@ namespace odfaeg {
             sf::Color backgroundColor; /**> The background color.*/
             std::vector<Instance> m_instances, m_normals, m_reflInstances, m_reflNormals; /**> Instances to draw. (Instanced rendering.) */
             std::vector<Entity*> visibleEntities;
-            RenderTexture depthBuffer, reflectRefractTex, environmentMap;
-            Shader sBuildDepthBuffer, sBuildDepthBufferNormal, sReflectRefract, sReflectRefractNormal, sLinkedList, sLinkedListNormal, sLinkedList2;
+            RenderTexture depthBuffer, alphaBuffer, reflectRefractTex, environmentMap;
+            Shader sBuildDepthBuffer, sBuildDepthBufferNormal, sBuildAlphaBuffer, sBuildAlphaBufferNormal, sReflectRefract, sReflectRefractNormal, sLinkedList, sLinkedListNormal, sLinkedList2;
             View view;
             std::string expression;
             bool update, cubeMapCreated;
-            unsigned int vboWorldMatrices, atomicBuffer, linkedListBuffer, clearBuf, headPtrTex;
+            unsigned int vboWorldMatrices, atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, headPtrTex, alphaTex, depthTex;
             float squareSize;
-            Sprite depthBufferSprite, reflectRefractTexSprite;
+            Sprite depthBufferSprite, reflectRefractTexSprite, alphaBufferSprite;
             VertexBuffer vb, vb2;
             std::vector<float> matrices;
             math::Vec3f dirs[6];

@@ -152,6 +152,12 @@ namespace sorrok {
         walls[3]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[4]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[5]->getFaces()[0]->getMaterial().setTexId("WALLS");
+        walls[0]->setLayer(1);
+        walls[1]->setLayer(1);
+        walls[2]->setLayer(1);
+        walls[3]->setLayer(1);
+        walls[4]->setLayer(1);
+        walls[5]->setLayer(1);
         /*std::ifstream ifs("FichierDeSerialisation");
         if(ifs) {
             std::cout<<"read serialisation file"<<std::endl;
@@ -203,6 +209,7 @@ namespace sorrok {
             World::generate_map(tiles, walls, Vec2f(100, 50), mapZone, false);
             std::cout<<"map generated"<<std::endl;
             Tile* thouse = new Tile(tm.getResourceByAlias("HOUSE"), Vec3f(0, 0, 0), Vec3f(250, 300, 0), sf::IntRect(0, 0, 250, 300));
+            thouse->setLayer(1);
             thouse->getFaces()[0]->getMaterial().setTexId("HOUSE");
             g2d::Decor* decor = new g2d::Decor(thouse, &g2d::AmbientLight::getAmbientLight());
             decor->setPosition(Vec3f(-100, 250, 400));
@@ -217,16 +224,19 @@ namespace sorrok {
             World::addEntity(decor);
             Anim* fire = new Anim(0.1f, Vec3f(0, 0, 0), Vec3f(100, 100, 0), 0);
             Tile* tf1 = new Tile(tm.getResourceByAlias("FIRE1"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
+            tf1->setLayer(1);
             tf1->getFaces()[0]->getMaterial().setTexId("FIRE1");
             g2d::Decor *fire1 = new g2d::Decor(tf1, &g2d::AmbientLight::getAmbientLight());
             fire1->setShadowCenter(Vec3f(0, 200, 0));
             //decor->changeGravityCenter(Vec3f(50, 50, 0));
             Tile* tf2 = new Tile(tm.getResourceByAlias("FIRE2"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
+            tf2->setLayer(1);
             tf2->getFaces()[0]->getMaterial().setTexId("FIRE2");
             g2d::Decor *fire2 = new g2d::Decor(tf2, &g2d::AmbientLight::getAmbientLight());
             fire2->setShadowCenter(Vec3f(0, 200, 0));
             //decor->changeGravityCenter(Vec3f(50, 50, 0));
             Tile* tf3 = new Tile(tm.getResourceByAlias("FIRE3"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
+            tf3->setLayer(1);
             tf3->getFaces()[0]->getMaterial().setTexId("FIRE3");
             g2d::Decor *fire3 = new g2d::Decor(tf3, &g2d::AmbientLight::getAmbientLight());
             fire3->setShadowCenter(Vec3f(0, 200, 0));
@@ -245,6 +255,7 @@ namespace sorrok {
             au->addAnim(fire);
             w = new g2d::Wall(walls[3],&g2d::AmbientLight::getAmbientLight());
             w->setPosition(Vec3f(0, 130, 130 + w->getSize().y * 0.5f));
+            w->setLayer(1);
             World::addEntity(w);
         //}
         ps->setTexture(*tm.getResourceByAlias("PARTICLE"));
@@ -281,6 +292,11 @@ namespace sorrok {
         std::this_thread::sleep_for(std::chrono::seconds(1));
         op->setVisible(false);
         op->setEventContextActivated(false);*/
+        /*frc1->setVisible(false);
+        frc2->setVisible(false);
+        rrrc->setVisible(false);
+        src->setVisible(false);
+        lrc->setVisible(false);*/
         getRenderComponentManager().addComponent(frc1);
         getRenderComponentManager().addComponent(frc2);
         getRenderComponentManager().addComponent(rrrc);
