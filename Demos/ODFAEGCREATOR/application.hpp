@@ -63,6 +63,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         Serif
     };
     private :
+        const float speed = 5.f;
         odfaeg::graphic::gui::MenuBar* menuBar;
         odfaeg::graphic::gui::Menu *menu1, *menu2, *menu3, *menu4;
         odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item14, *item15, *item21, *item22, *item23, *item31, *item32, *item33,
@@ -70,11 +71,11 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::core::ResourceCache<> cache;
         odfaeg::graphic::gui::FileDialog* fdTexturePath, *fdProjectPath;
         odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent, *wNewEntitiesUpdater;
-        odfaeg::graphic::gui::TextArea* ta, *taComponentExpression, *taComponentLayer, *taEntitiesUpdaterName;
-        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm;
+        odfaeg::graphic::gui::TextArea* ta, *taComponentExpression, *taComponentLayer, *taEntitiesUpdaterName, *taComponentName;
+        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
         odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight;
-        odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial;
+        odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial, *pComponent;
         std::string appliname, minAppliname;
         std::string applitype;
         std::string path;

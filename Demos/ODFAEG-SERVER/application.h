@@ -24,7 +24,7 @@
 #include "hero.h"
 #include "monster.h"
 #include <fstream>
-//#include <libpq-fe.h>
+#include "MySQL/mysql/jdbc.h"
 #include "pnj.hpp"
 namespace sorrok {
     class MyAppli : public odfaeg::core::Application {
@@ -40,7 +40,8 @@ namespace sorrok {
         odfaeg::graphic::g2d::PonctualLight* light2;
         static const unsigned int PATH_ERROR_MARGIN = 5;
         odfaeg::math::Vec3f tmpPosition;
-        //PGconn* conn;
+        sql::Driver *driver;
+        sql::Connection *connection;
     public :
         MyAppli();
         ~MyAppli();

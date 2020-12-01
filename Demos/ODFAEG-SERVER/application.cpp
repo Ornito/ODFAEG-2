@@ -19,14 +19,15 @@ namespace sorrok {
         std::cout<<"server started"<<std::endl;
         theMap = new Map(nullptr, "Map test", 100, 50, 0);
         std::cout<<"map created"<<std::endl;
-        /*const char *conninfo = "dbname=sorrok";
-        conn = PQconnectdb(conninfo);
-
-        if (PQstatus(conn) != CONNECTION_OK)
-        {
-            fprintf(stderr, "Connection to database failed: %s",
-                    PQerrorMessage(conn));
-            PQfinish(conn);
+        /*try {
+            driver = get_driver_instance();
+            connection = driver->connect("localhost:3306", "root", "Kirokofu457$");
+            std::cout<<"We are connected!"<<std::endl;
+        } catch (sql::SQLException &e) {
+            // Gestion des execeptions pour déboggage
+            std::cout << "# ERR: " << e.what();
+            std::cout << " (code erreur MySQL: " << e.getErrorCode();
+            std::cout << ", EtatSQL: " << e.getSQLState() << " )" << std::endl;
         }*/
         BaseChangementMatrix bcm;
         bcm.set2DIsoMatrix();
