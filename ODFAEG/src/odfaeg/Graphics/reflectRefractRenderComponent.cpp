@@ -589,7 +589,15 @@ namespace odfaeg {
                 for (unsigned int n = 0; n < m_reflInstances.size(); n++) {
                     if (m_reflInstances[n].getAllVertices().getVertexCount() > 0) {
                         Entity* entity = m_reflInstances[n].getVertexArrays()[0]->getEntity()->getRootEntity();
-                        reflectView.setCenter(entity->getPosition()+view.getPosition());
+                        math::Vec3f scale(1, 1, 1);
+                        if (entity->getSize().x > squareSize) {
+                            scale.x = entity->getSize().x / squareSize;
+                        }
+                        if (entity->getSize().y > squareSize) {
+                            scale.y = entity->getSize().y / squareSize;
+                        }
+                        reflectView.setScale(scale.x, scale.y, scale.z);
+                        reflectView.setCenter(entity->getPosition()+entity->getSize()*0.5f);
                         for (unsigned int m = 0; m < 6; m++) {
                             math::Vec3f target = reflectView.getPosition() + dirs[m];
                             reflectView.lookAt(target.x, target.y, target.z);
