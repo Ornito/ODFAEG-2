@@ -63,7 +63,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         Serif
     };
     private :
-        const float speed = 5.f;
+        const float speed = 10.f;
         odfaeg::graphic::gui::MenuBar* menuBar;
         odfaeg::graphic::gui::Menu *menu1, *menu2, *menu3, *menu4;
         odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item14, *item15, *item21, *item22, *item23, *item31, *item32, *item33,

@@ -420,6 +420,21 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
         view.move(speed * getClock("LoopTime").getElapsedTime().asSeconds(), 0, 0);
         getRenderWindow().setView(view);
     }
+    if (IKeyboard::isKeyPressed(IKeyboard::Q)) {
+        View view = getRenderWindow().getView();
+        view.move(-speed * getClock("LoopTime").getElapsedTime().asSeconds(), 0, 0);
+        getRenderWindow().setView(view);
+    }
+    if (IKeyboard::isKeyPressed(IKeyboard::Z)) {
+        View view = getRenderWindow().getView();
+        view.move(0, speed * getClock("LoopTime").getElapsedTime().asSeconds(), 0);
+        getRenderWindow().setView(view);
+    }
+    if (IKeyboard::isKeyPressed(IKeyboard::S)) {
+        View view = getRenderWindow().getView();
+        view.move(0, -speed * getClock("LoopTime").getElapsedTime().asSeconds(), 0);
+        getRenderWindow().setView(view);
+    }
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_PRESSED && event.mouseButton.button == IMouse::Right) {
         sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
         if (showRectSelect && !pScriptsFiles->isPointInside(Vec3f(mousePos.x, mousePos.y, 0))) {
