@@ -22,6 +22,7 @@
 #include "odfaeg/Graphics/reflectRefractRenderComponent.hpp"
 #include "odfaeg/Graphics/entitiesUpdater.h"
 #include "rectangularSelection.hpp"
+#include "odfaeg/Graphics/anim.h"
 class ODFAEGCreator : public odfaeg::core::Application,
                       public odfaeg::graphic::gui::MenuItemListener,
                       public odfaeg::graphic::gui::ActionListener {
@@ -59,6 +60,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void updateScriptText(odfaeg::graphic::Shape* shape, const odfaeg::graphic::Texture* text);
     void updateScriptText(odfaeg::graphic::Tile* tile, const odfaeg::graphic::Texture* text);
     void onObjectNameChanged(odfaeg::graphic::gui::TextArea* ta);
+    void onSelectedParentChanged(odfaeg::graphic::gui::DropDownList* dp);
     enum Fonts {
         Serif
     };
@@ -72,7 +74,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::FileDialog* fdTexturePath, *fdProjectPath;
         odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent, *wNewEntitiesUpdater;
         odfaeg::graphic::gui::TextArea* ta, *taComponentExpression, *taComponentLayer, *taEntitiesUpdaterName, *taComponentName;
-        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent;
+        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
         odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight;
         odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial, *pComponent;

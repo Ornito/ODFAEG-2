@@ -1017,6 +1017,9 @@ namespace odfaeg {
         Entity* Map::getEntity(int id) {
             return gridMap->getEntity(id);
         }
+        Entity* Map::getEntity(std::string name) {
+            return gridMap->getEntity(name);
+        }
         vector<CellMap*> Map::getCasesMap() {
             return gridMap->getCasesMap();
         }

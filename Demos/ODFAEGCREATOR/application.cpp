@@ -1404,18 +1404,18 @@ void ODFAEGCreator::displayInfos (Shape* shape) {
 void ODFAEGCreator::displayChildren(Label* label) {
     Node* node = rootInfosNode->findNode(label);
     std::vector<std::string> parts = split(label->getText(), "-");
-    int id = conversionStringInt(parts[1]);
-    Entity* entity = World::getEntity(id);
-    if (node->getNodes().size() == 0) {
+    Entity* entity = World::getEntity(conversionStringInt(parts[1]));
+    if (node->getNodes().size() == 0 && entity != nullptr) {
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
         for (unsigned int i = 0; i < entity->getChildren().size(); i++) {
-            Label* label = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Id : entity-"+conversionIntString(entity->getChild(i)->getId()), 15);
+
+            /*Label* label = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Id : entity-"+conversionIntString(entity->getChild(i)->getId()), 15);
             Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
             Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, label), FastDelegate<void>(&ODFAEGCreator::displayChildren, this, label));
             label->getListener().connect("SHOWCHILDREN"+label->getText(), cmd);
             label->setParent(pInfos);
             Node* lNode = new Node(label->getText() + "-child-" + conversionIntString(i), label, Vec2f(0, 0), Vec2f(1.f, 0.025f), node);
-            pInfos->addChild(label);
+            pInfos->addChild(label);*/
         }
     } else if (node->isNodeVisible()) {
         node->hideAllNodes();
@@ -1423,7 +1423,7 @@ void ODFAEGCreator::displayChildren(Label* label) {
         node->showAllNodes();
     }
 }
-void ODFAEGCreator::displayInfos (Tile* tile) {
+void ODFAEGCreator::displayInfos (Entity* tile) {
     rootPropNode->deleteAllNodes();
     rootMaterialNode->deleteAllNodes();
     rootInfosNode->deleteAllNodes();
@@ -1453,9 +1453,9 @@ void ODFAEGCreator::displayInfos (Tile* tile) {
         lParent = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Parent entity : "+tile->getParent()->getName(), 15);
     }
     lParent->setParent(pInfos);
-    Node* parentNode = new Node("Parent",lParent,Vec2f(0, 0),Vec2f(0.25, 0.025),rootInfosNode.get());
+    Node* parentNode = new Node("Parent",lParent,Vec2f(0, 0),Vec2f(1, 0.025),rootInfosNode.get());
     pInfos->addChild(lParent);
-    Label* lChildren = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Children", 15);
+    Label* lChildren = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Children-"+conversionIntString(tile->getId()), 15);
     Action aChildren(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
     Command cmd(aChildren, FastDelegate<bool>(&Label::isMouseInside, lChildren), FastDelegate<void>(&ODFAEGCreator::displayChildren, this, lChildren));
     lChildren->getListener().connect("SHOWCHILDREN", cmd);
@@ -1477,6 +1477,22 @@ void ODFAEGCreator::displayInfos (Tile* tile) {
     Command cmdEmChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectEm), FastDelegate<void>(&ODFAEGCreator::onSelectedEmChanged, this, dpSelectEm));
     dpSelectEm->getListener().connect("EmChanged", cmdEmChanged);
     lEmListNode->addOtherComponent(dpSelectEm, Vec2f(0.75, 0.025));
+    Label* lSelectParent = new Label(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Parent : ",15);
+    lSelectParent->setParent(pInfos);
+    pInfos->addChild(lSelectParent);
+    Node* selectParentNode = new Node("SelectParent",lSelectParent,Vec2f(0, 0),Vec2f(0.25, 0.025),rootInfosNode.get());
+    dpSelectParent = new DropDownList(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"NONE", 15);
+    std::vector<Entity*> parents = World::getEntities("*");
+    for (unsigned int i = 0; i < parents.size(); i++) {
+        if (!parents[i]->isLeaf()) {
+            dpSelectParent->addItem(parents[i]->getName(), 15);
+        }
+    }
+    dpSelectParent->setParent(pInfos);
+    pInfos->addChild(dpSelectParent);
+    Command cmdParentChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectParent), FastDelegate<void>(&ODFAEGCreator::onSelectedParentChanged, this, dpSelectParent));
+    dpSelectParent->getListener().connect("ParentChanged",cmdParentChanged);
+    selectParentNode->addOtherComponent(dpSelectParent,Vec2f(0.75, 0.025));
     lPosition = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Position : ", 15);
     lPosition->setParent(pTransform);
     Node* lPosNode = new Node("LabPosition",lPosition,Vec2f(0, 0), Vec2f(1, 0.025),rootPropNode.get());
@@ -1973,6 +1989,18 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
                 sg->addState(selectState);
             }
             stateStack.addStateGroup(sg);
+        }
+    }
+}
+void ODFAEGCreator::onSelectedParentChanged(DropDownList* dp) {
+    Entity* entity = World::getEntity(dp->getSelectedItem());
+    if (entity != nullptr && dynamic_cast<Entity*>(entity)) {
+        if (!entity->isAnimated()) {
+            static_cast<Entity*>(selectedObject)->setParent(entity);
+        } else {
+            if (dynamic_cast<Anim*>(entity)) {
+                static_cast<Anim*>(entity)->addFrame(static_cast<Entity*>(selectedObject));
+            }
         }
     }
 }

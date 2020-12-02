@@ -394,6 +394,12 @@ namespace odfaeg {
                     }
                     return nullptr;
                 }
+                static Entity* getEntity(std::string name) {
+                    if (currentEntityManager != nullptr) {
+                        return currentEntityManager->getEntity(name);
+                    }
+                    return nullptr;
+                }
                 static math::Vec3f getCoordinatesAt(math::Vec3f point) {
                     if (currentEntityManager != nullptr) {
                         return currentEntityManager->getCoordinatesAt(point);

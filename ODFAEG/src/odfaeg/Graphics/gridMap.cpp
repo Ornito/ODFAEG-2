@@ -106,6 +106,27 @@ namespace odfaeg {
             }
             return nullptr;
         }
+        Entity* GridMap::getEntity (std::string name) {
+            for (unsigned int i = 0; i < casesMap.size(); i++) {
+                CellMap *cm = casesMap[i];
+                if (cm != nullptr) {
+                    for (unsigned int j = 0; j < cm->getEntitiesInside().size(); j++) {
+                        Entity *entity = cm->getEntityInside(j);
+                        if (entity->getName() == name) {
+                            return entity;
+                        }
+                        Entity* parent = entity->getParent();
+                        while (parent != nullptr) {
+                            if (parent->getName() == name) {
+                                return parent;
+                            }
+                            parent = parent->getParent();
+                        }
+                    }
+                }
+            }
+            return nullptr;
+        }
 
         void GridMap::createCellMap (math::Vec2f &point) {
             math::Vec2f coordsCaseP = getCoordinatesAt(point);

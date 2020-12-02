@@ -105,8 +105,6 @@ namespace odfaeg
         void Shape::setFillColor(const Color& color)
         {
             m_fillColor = color;
-            if (m_fillColor == sf::Color::Red)
-                std::cout<<"update fill color"<<std::endl;
             updateFillColors();
         }
 

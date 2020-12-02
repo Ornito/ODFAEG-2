@@ -166,6 +166,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         * \return entity : the entity.
         */
         Entity* getEntity(int id);
+        Entity* getEntity(std::string name);
         /**
         * \fn  std::vector<CellMap<Entity>*> getCasesMap();
         * \brief get every cells of the grid.

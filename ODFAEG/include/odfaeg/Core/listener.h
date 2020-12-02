@@ -30,7 +30,7 @@ namespace odfaeg {
             * \fn Listener()
             * \brief constructor.
             */
-             Listener() {
+             Listener()  {
 
              }
              /**

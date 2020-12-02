@@ -1365,6 +1365,10 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/singleton.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Network/network.h
 ../../../include/odfaeg/Window/iEvent.hpp
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iEvent.hpp
+thread
+-
+mutex
+-
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
 vector

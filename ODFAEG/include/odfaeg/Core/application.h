@@ -9,6 +9,8 @@
 #include "singleton.h"
 #include "../Network/network.h"
 #include "../../../include/odfaeg/Window/iEvent.hpp"
+#include <thread>
+#include <mutex>
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -74,11 +76,12 @@ namespace odfaeg {
                 load();
                 init();
                 running = true;
-                //window->setActive(false);
-                //rendering_thread = std::thread(&Application::render, this);
                 while (running) {
-                    //std::lock_guard<std::recursive_mutex> lock(rec_mutex);
+                    for (unsigned int i = 0; i < windows.size(); i++) {
+                        windows[i].first->setActive(false);
+                    }
                     if (windows.size() != 0 && windows[0].first->isOpen()) {
+                        //rendering_thread = std::thread(Application::render, this);
                         render();
                         update();
                     }
@@ -120,8 +123,10 @@ namespace odfaeg {
             */
             void render() {
                 if (windows.size() != 0 && windows[0].first->isOpen()) {
-                    for (unsigned int i = 0; i < windows.size(); i++)
+                    for (unsigned int i = 0; i < windows.size(); i++) {
+                        windows[i].first->setActive(true);
                         windows[i].first->clear(clearColor);
+                    }
                     onRender(componentManager.get());
                     componentManager->clearComponents();
                     if (eventContextActivated) {
@@ -293,6 +298,8 @@ namespace odfaeg {
             std::unique_ptr<Listener> listener;
             bool eventContextActivated;
             static sf::Clock timeClk;
+            std::thread rendering_thread;
+            std::recursive_mutex rec_mutex;
         };
     }
 }

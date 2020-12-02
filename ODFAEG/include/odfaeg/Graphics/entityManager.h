@@ -180,6 +180,7 @@ namespace odfaeg {
             virtual bool removeEntity(Entity* entity) = 0;
             virtual bool deleteEntity(Entity* entity) = 0;
             virtual Entity* getEntity(int id) = 0;
+            virtual Entity* getEntity(std::string name) = 0;
             virtual void updateParticles() = 0;
             std::string getName() {
                 return name;

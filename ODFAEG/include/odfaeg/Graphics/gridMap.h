@@ -71,6 +71,7 @@ namespace odfaeg {
             * \return the entity.
             */
             Entity* getEntity (int id);
+            Entity* getEntity (std::string name);
             /**
             * \fn void replaceEntity (Entity* entity)
             * \brief replace an entity in the grid.
