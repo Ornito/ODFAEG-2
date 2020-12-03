@@ -71,6 +71,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         Serif
     };
     private :
+        odfaeg::math::Vec3f getGridCellPos(odfaeg::math::Vec3f pos);
         const float speed = 10.f;
         odfaeg::graphic::gui::MenuBar* menuBar;
         odfaeg::graphic::gui::Menu *menu1, *menu2, *menu3, *menu4;

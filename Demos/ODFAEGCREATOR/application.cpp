@@ -418,6 +418,34 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
 
     }
 }
+Vec3f ODFAEGCreator::getGridCellPos(Vec3f pos) {
+    BaseChangementMatrix bcm = World::getBaseChangementMatrix();
+    Vec3f c = bcm.unchangeOfBase(pos);
+    Vec3f v1, p;
+    p.x = (int) c.x / gridWidth;
+    p.y = (int) c.y / gridHeight;
+    if (c.x < 0)
+        p.x--;
+    if (c.y < 0)
+        p.y--;
+    v1.x = p.x * gridWidth;
+    v1.y = p.y * gridHeight;
+    Vec3f ve1(v1.x, v1.y, 0);
+    Vec3f ve2(v1.x + gridWidth, v1.y, 0);
+    Vec3f ve3(v1.x + gridWidth, v1.y + gridHeight, 0);
+    Vec3f ve4(v1.x, v1.y + gridHeight, 0);
+    Vec3f p1 = bcm.changeOfBase(ve1);
+    Vec3f p2 = bcm.changeOfBase(ve2);
+    Vec3f p3 = bcm.changeOfBase(ve3);
+    Vec3f p4 = bcm.changeOfBase(ve4);
+    std::vector<Vec3f> points;
+    points.push_back(p1);
+    points.push_back(p2);
+    points.push_back(p3);
+    points.push_back(p4);
+    std::array<std::array<float, 2>, 3> extends = Computer::getExtends(points);
+    return Vec3f (extends[0][0], extends[1][0], extends[2][0]);
+}
 void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     if (&getRenderWindow() == window && event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED)
         getListener().setCommandSlotParams("MoveAction", this, static_cast<IKeyboard::Key>(event.keyboard.code));
@@ -457,35 +485,9 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                     int y = ((int) mousePos.y / gridHeight * gridHeight) - getRenderWindow().getSize().y * 0.5f;
                     mousePosition = Vec3f(x, y, 0);
                 } else {
-                    Vec3f mousePos = getRenderWindow().mapPixelToCoords(Vec3f(mousePos.x, mousePos.y, 0));
                     int x = mousePos.x - getRenderWindow().getSize().x * 0.5f;
                     int y = mousePos.y - getRenderWindow().getSize().y * 0.5f;
-                    BaseChangementMatrix bcm = World::getBaseChangementMatrix();
-                    Vec3f c = bcm.unchangeOfBase(Vec3f(x, y, 0));
-                    Vec3f v1, p;
-                    p.x = (int) c.x / gridWidth;
-                    p.y = (int) c.y / gridHeight;
-                    if (c.x < 0)
-                        p.x--;
-                    if (c.y < 0)
-                        p.y--;
-                    v1.x = p.x * gridWidth;
-                    v1.y = p.y * gridHeight;
-                    Vec3f ve1(v1.x, v1.y, 0);
-                    Vec3f ve2(v1.x + gridWidth, v1.y, 0);
-                    Vec3f ve3(v1.x + gridWidth, v1.y + gridHeight, 0);
-                    Vec3f ve4(v1.x, v1.y + gridHeight, 0);
-                    Vec3f p1 = bcm.changeOfBase(ve1);
-                    Vec3f p2 = bcm.changeOfBase(ve2);
-                    Vec3f p3 = bcm.changeOfBase(ve3);
-                    Vec3f p4 = bcm.changeOfBase(ve4);
-                    std::vector<Vec3f> points;
-                    points.push_back(p1);
-                    points.push_back(p2);
-                    points.push_back(p3);
-                    points.push_back(p4);
-                    std::array<std::array<float, 2>, 3> extends = Computer::getExtends(points);
-                    mousePosition = Vec3f (extends[0][0], extends[1][0], extends[2][0]);
+                    mousePosition = getGridCellPos(Vec3f(x, y, 0));
                 }
             } else {
                 int x = mousePos.x-getRenderWindow().getSize().x * 0.5f;
@@ -518,32 +520,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                 } else {
                     int x = mousePos.x - getRenderWindow().getSize().x * 0.5f;
                     int y = mousePos.y - getRenderWindow().getSize().y * 0.5f;
-                    BaseChangementMatrix bcm = World::getBaseChangementMatrix();
-                    Vec3f c = bcm.unchangeOfBase(Vec3f(x, y, 0));
-                    Vec3f v1, p;
-                    p.x = (int) c.x / gridWidth;
-                    p.y = (int) c.y / gridHeight;
-                    if (c.x < 0)
-                        p.x--;
-                    if (c.y < 0)
-                        p.y--;
-                    v1.x = p.x * gridWidth;
-                    v1.y = p.y * gridHeight;
-                    Vec3f ve1(v1.x, v1.y, 0);
-                    Vec3f ve2(v1.x + gridWidth, v1.y, 0);
-                    Vec3f ve3(v1.x + gridWidth, v1.y + gridHeight, 0);
-                    Vec3f ve4(v1.x, v1.y + gridHeight, 0);
-                    Vec3f p1 = bcm.changeOfBase(ve1);
-                    Vec3f p2 = bcm.changeOfBase(ve2);
-                    Vec3f p3 = bcm.changeOfBase(ve3);
-                    Vec3f p4 = bcm.changeOfBase(ve4);
-                    std::vector<Vec3f> points;
-                    points.push_back(p1);
-                    points.push_back(p2);
-                    points.push_back(p3);
-                    points.push_back(p4);
-                    std::array<std::array<float, 2>, 3> extends = Computer::getExtends(points);
-                    Vec3f pos (extends[0][0], extends[1][0], extends[2][0]);
+                    Vec3f pos = getGridCellPos(Vec3f(x, y, 0));
                     int width = pos.x - mousePosition.x;
                     int height = pos.y - mousePosition.y;
                     if (width > 0 && height > 0)
@@ -1090,9 +1067,10 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         }
     }
     if (item->getText() == "Tile") {
-        if (appliname != "") {
+        if (appliname != "" && World::getCurrentEntityManager() != nullptr) {
             if (!showRectSelect) {
-                Tile* tile = new Tile(nullptr, cursor.getPosition(),Vec3f(100, 50, 0), sf::IntRect(0, 0, gridWidth, gridHeight));
+                Vec3f position = getRenderWindow().mapPixelToCoords(Vec3f(cursor.getPosition().x, getRenderWindow().getSize().y - cursor.getPosition().y, 0))+getRenderWindow().getView().getSize()*0.5f;
+                Tile* tile = new Tile(nullptr, position,Vec3f(100, 50, 0), sf::IntRect(0, 0, gridWidth, gridHeight));
                 selectedObject = tile;
                 displayInfos(tile);
                 if (World::getCurrentEntityManager() != nullptr)
@@ -1104,16 +1082,46 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
                 Vec3f pos = rectSelect.getSelectionRect().getPosition();
                 pos = getRenderWindow().mapPixelToCoords(Vec3f(pos.x, getRenderWindow().getSize().y - pos.y, 0))+getRenderWindow().getView().getSize()*0.5f;
                 rectSelect.setRect(pos.x, pos.y, rectSelect.getSelectionRect().getSize().x,rectSelect.getSelectionRect().getSize().y);
-                for (int x = rect.getPosition().x; x < rect.getPosition().x + rect.getSize().x-gridWidth; x+=gridWidth) {
-                    for (int y = rect.getPosition().y; y <  rect.getPosition().y + rect.getSize().y-gridHeight; y+=gridHeight) {
-                        Tile* tile = new Tile(nullptr,Vec3f(x, y, 0),Vec3f(gridWidth, gridHeight, 0),sf::IntRect(0, 0, gridWidth, gridHeight));
-                        rectSelect.addItem(tile, tile->getColor());
-                        if (rectSelect.getItems().size() == 1) {
-                            selectedObject = tile;
-                            displayInfos(tile);
-                        }
-                        if (World::getCurrentEntityManager() != nullptr)
+                //In 2D iso the tiles are in a staggered arrangement so we need to shift the x position every two times in the loop.
+                if (World::getBaseChangementMatrix().isIso2DMatrix()) {
+                    int i = 0;
+                    int x = rect.getPosition().x;
+                    int y = rect.getPosition().y;
+                    int endX = rect.getPosition().x + rect.getSize().x;
+                    int endY = rect.getPosition().y + rect.getSize().y;
+                    while (y <= endY) {
+                        int offsetX;
+                        if (i%2==0)
+                            offsetX = 0;
+                        else
+                            offsetX = gridWidth*0.5f;
+                        x = rect.getPosition().x+offsetX;
+                        while (x <= endX) {
+                            Vec3f position = getGridCellPos(Vec3f(x, y, 0));
+                            Tile* tile = new Tile(nullptr,position,Vec3f(gridWidth, gridHeight, 0),sf::IntRect(0, 0, gridWidth, gridHeight));
+                            rectSelect.addItem(tile, tile->getColor());
+                            if (rectSelect.getItems().size() == 1) {
+                                selectedObject = tile;
+                                displayInfos(tile);
+                            }
                             World::addEntity(tile);
+                            x += gridWidth;
+                        }
+                        y += gridHeight*0.5f;
+                        i++;
+                    }
+                } else {
+                    for (int x = rect.getPosition().x; x < rect.getPosition().x + rect.getSize().x; x+=gridWidth) {
+                        for (int y = rect.getPosition().y; y <  rect.getPosition().y + rect.getSize().y; y+=gridHeight) {
+                            Vec3f position = getGridCellPos(Vec3f(x, y, 0));
+                            Tile* tile = new Tile(nullptr,position,Vec3f(gridWidth, gridHeight, 0),sf::IntRect(0, 0, gridWidth, gridHeight));
+                            rectSelect.addItem(tile, tile->getColor());
+                            if (rectSelect.getItems().size() == 1) {
+                                selectedObject = tile;
+                                displayInfos(tile);
+                            }
+                            World::addEntity(tile);
+                        }
                     }
                 }
                 rectSelect.setRect(savedPos.x, savedPos.y, rectSelect.getSelectionRect().getSize().x,rectSelect.getSelectionRect().getSize().y);
@@ -1768,34 +1776,9 @@ void ODFAEGCreator::moveCursor(sf::Vector2f mousePos) {
                 int y = ((int) mousePos.y/gridHeight*gridHeight)-getRenderWindow().getView().getSize().y * 0.5f;
                 cursor.setPosition(Vec3f(x, y, 0));
             } else {
-                BaseChangementMatrix bcm = World::getBaseChangementMatrix();
                 int x = mousePos.x-getRenderWindow().getView().getSize().x * 0.5f;
                 int y = mousePos.y-getRenderWindow().getView().getSize().y * 0.5f;
-                Vec3f c = bcm.unchangeOfBase(Vec3f(x, y, 0));
-                Vec3f v1, p;
-                p.x = (int) c.x / gridWidth;
-                p.y = (int) c.y / gridHeight;
-                if (c.x < 0)
-                    p.x--;
-                if (c.y < 0)
-                    p.y--;
-                v1.x = p.x * gridWidth;
-                v1.y = p.y * gridHeight;
-                Vec3f ve1(v1.x, v1.y, 0);
-                Vec3f ve2(v1.x + gridWidth, v1.y, 0);
-                Vec3f ve3(v1.x + gridWidth, v1.y + gridHeight, 0);
-                Vec3f ve4(v1.x, v1.y + gridHeight, 0);
-                Vec3f p1 = bcm.changeOfBase(ve1);
-                Vec3f p2 = bcm.changeOfBase(ve2);
-                Vec3f p3 = bcm.changeOfBase(ve3);
-                Vec3f p4 = bcm.changeOfBase(ve4);
-                std::vector<Vec3f> points;
-                points.push_back(p1);
-                points.push_back(p2);
-                points.push_back(p3);
-                points.push_back(p4);
-                std::array<std::array<float, 2>, 3> extends = Computer::getExtends(points);
-                Vec3f newPos (extends[0][0], extends[1][0], extends[2][0]);
+                Vec3f newPos = getGridCellPos(Vec3f(x, y, 0));
                 cursor.setPosition(newPos);
             }
         }
@@ -2144,13 +2127,13 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                 if (dynamic_cast<Shape*>(selectedObject)) {
                     static_cast<Shape*>(selectedObject)->setTexture(text);
                     textRect = static_cast<Shape*>(selectedObject)->getTextureRect();
-                    updateScriptText(static_cast<Shape*>(selectedObject), text);
+                    //updateScriptText(static_cast<Shape*>(selectedObject), text);
                 }
                 if (dynamic_cast<Tile*>(selectedObject)) {
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().clearTextures();
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().addTexture(text, sf::IntRect(0, 0, text->getSize().x, text->getSize().y));
                     textRect = sf::IntRect(0, 0, text->getSize().x, text->getSize().y);
-                    updateScriptText(static_cast<Tile*>(selectedObject), text);
+                    //updateScriptText(static_cast<Tile*>(selectedObject), text);
                 }
                 tTexCoordX->setText(conversionIntString(textRect.left));
                 tTexCoordY->setText(conversionIntString(textRect.top));
