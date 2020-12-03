@@ -14,6 +14,8 @@
 #include "odfaeg/Graphics/circleShape.h"
 #include "odfaeg/Graphics/rectangleShape.h"
 #include "odfaeg/Graphics/sprite.h"
+#include "odfaeg/Graphics/2D/decor.h"
+#include "odfaeg/Graphics/2D/wall.h"
 #include "odfaeg/Graphics/map.h"
 #include "odfaegCreatorStateExecutor.hpp"
 #include "odfaeg/Graphics/perPixelLinkedListRenderComponent.hpp"
@@ -44,7 +46,10 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void showGUI(odfaeg::graphic::gui::Label* label);
     void showFileContent(odfaeg::graphic::gui::Label* lab);
     void displayInfos(odfaeg::graphic::Shape* shape);
+    void displayCommonInfos(odfaeg::graphic::Entity* entity);
     void displayInfos(odfaeg::graphic::Tile* tile);
+    void displayInfos(odfaeg::graphic::g2d::Decor* decor);
+    void displayInfos(odfaeg::graphic::g2d::Wall* wall);
     void displayChildren(odfaeg::graphic::gui::Label* label);
     void onObjectPosChanged(odfaeg::graphic::gui::TextArea* ta);
     void onObjectColorChanged(odfaeg::graphic::gui::TextArea* ta);
@@ -61,6 +66,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void updateScriptText(odfaeg::graphic::Tile* tile, const odfaeg::graphic::Texture* text);
     void onObjectNameChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedParentChanged(odfaeg::graphic::gui::DropDownList* dp);
+    void onWallTypeChanged(odfaeg::graphic::gui::TextArea* taWallType);
     enum Fonts {
         Serif
     };
@@ -69,14 +75,14 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::MenuBar* menuBar;
         odfaeg::graphic::gui::Menu *menu1, *menu2, *menu3, *menu4;
         odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item14, *item15, *item21, *item22, *item23, *item31, *item32, *item33,
-        *item34, *item41, *item42, *item43, *item44, *item45;
+        *item34, *item35, *item36, *item37, *item41, *item42, *item43, *item44, *item45;
         odfaeg::core::ResourceCache<> cache;
         odfaeg::graphic::gui::FileDialog* fdTexturePath, *fdProjectPath;
         odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent, *wNewEntitiesUpdater;
         odfaeg::graphic::gui::TextArea* ta, *taComponentExpression, *taComponentLayer, *taEntitiesUpdaterName, *taComponentName;
         odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
-        odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight;
+        odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight, *taWallType;
         odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial, *pComponent;
         std::string appliname, minAppliname;
         std::string applitype;
