@@ -47,18 +47,21 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void showGUI(odfaeg::graphic::gui::Label* label);
     void showFileContent(odfaeg::graphic::gui::Label* lab);
     void displayInfos(odfaeg::graphic::Shape* shape);
-    void displayCommonInfos(odfaeg::graphic::Entity* entity);
+    void displayEntityInfos(odfaeg::graphic::Entity* entity);
+    void displayTransformInfos(odfaeg::graphic::Transformable* transf);
     void displayInfos(odfaeg::graphic::Tile* tile);
     void displayInfos(odfaeg::graphic::g2d::Decor* decor);
     void displayInfos(odfaeg::graphic::g2d::Wall* wall);
     void displayInfos(odfaeg::graphic::Anim* anim);
     void displayChildren(odfaeg::graphic::gui::Label* label);
     void onObjectPosChanged(odfaeg::graphic::gui::TextArea* ta);
+    void onObjectSizeChanged(odfaeg::graphic::gui::TextArea* ta);
     void onObjectColorChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedTextureChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onTexCoordsChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedEmChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onAnimUpdaterChanged(odfaeg::graphic::gui::DropDownList* dp);
+    void onObjectMoveChanged(odfaeg::graphic::gui::TextArea* ta);
     void addShape(odfaeg::graphic::Shape *shape);
     void addTile(odfaeg::graphic::Tile *tile);
     bool removeShape (unsigned int id);
@@ -101,8 +104,8 @@ class ODFAEGCreator : public odfaeg::core::Application,
         bool isGuiShown, showGrid, alignToGrid, showRectSelect;
         std::vector<std::unique_ptr<odfaeg::graphic::Shape>> shapes;
         odfaeg::graphic::Transformable* selectedObject;
-        odfaeg::graphic::gui::TextArea *tPosX, *tPosY, *tPosZ, *tRColor, *tGColor, *tBColor, *tAColor,
-        *tTexCoordX, *tTexCoordY, *tTexCoordW, *tTexCoordH, *taName;
+        odfaeg::graphic::gui::TextArea *tPosX, *tPosY, *tPosZ, *tRColor, *tGColor, *tBColor, *tAColor, *tSizeW, *tSizeH, *tSizeD,
+        *tMoveX, *tMoveY, *tMoveZ, *tScaleX, *tScaleY, *tScaleZ, *tRotAngle, *tTexCoordX, *tTexCoordY, *tTexCoordW, *tTexCoordH, *taName;
         odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition, *lColor, *lRColor,
         *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage, *lParent;
         odfaeg::graphic::gui::TabPane* tabPane;

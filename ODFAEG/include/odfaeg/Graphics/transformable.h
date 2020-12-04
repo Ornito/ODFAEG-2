@@ -193,8 +193,6 @@ namespace odfaeg {
             * \param size : the size of the transformable object.
             */
             virtual void setSize (math::Vec3f size) {
-                if (name == "RXPBAR")
-                        std::cout<<"old size : "<<m_size.x<<" new size : "<<size.x<<std::endl;
                 math::Vec3f scale;
                 if (m_size.x == 0 && size.x == 0) {
                     scale.x = 0;
@@ -243,10 +241,6 @@ namespace odfaeg {
             */
             void setLocalBounds(physic::BoundingBox localBounds) {
                 this->localBounds = localBounds;
-                /*m_size.x = getGlobalBounds().getWidth();
-                m_size.y = getGlobalBounds().getHeight();
-                m_size.z = getGlobalBounds().getDepth();*/
-                //m_position = getGlobalBounds().getPosition();
             }
             /**
             * \fn const Matrix4f getMatrix ()

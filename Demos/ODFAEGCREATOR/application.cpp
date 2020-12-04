@@ -1378,55 +1378,12 @@ bool ODFAEGCreator::removeShape (unsigned int id) {
     return false;
 }
 void ODFAEGCreator::displayInfos (Shape* shape) {
-    rootPropNode->deleteAllNodes();
-    rootMaterialNode->deleteAllNodes();
-    rootInfosNode->deleteAllNodes();
-    pTransform->removeAll();
-    pMaterial->removeAll();
-    pInfos->removeAll();
+    displayTransformInfos(shape);
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
     Label* lId = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Id : shape-"+conversionIntString(shape->getId()), 15);
     lId->setParent(pInfos);
     Node* lIdNode = new Node("LabId", lId, Vec2f(0, 0), Vec2f(1, 0.025), rootInfosNode.get());
     pInfos->addChild(lId);
-    lPosition = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Position : ", 15);
-    lPosition->setParent(pTransform);
-    Node* lPosNode = new Node("LabPosition",lPosition,Vec2f(0, 0), Vec2f(1, 0.025),rootPropNode.get());
-    pTransform->addChild(lPosition);
-    lPosX = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"x : ",15);
-    lPosX->setParent(pTransform);
-    Node* lPosXNode = new Node("LabX",lPosX,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
-    pTransform->addChild(lPosX);
-    tPosX = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(shape->getPosition().x),getRenderWindow());
-    tPosX->setParent(pTransform);
-    tPosX->setTextSize(15);
-    lPosXNode->addOtherComponent(tPosX, Vec2f(0.75, 0.025));
-    pTransform->addChild(tPosX);
-    lPosY = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"y : ",15);
-    lPosY->setParent(pTransform);
-    Node* lPosYNode = new Node("LabY",lPosY,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
-    pTransform->addChild(lPosY);
-    tPosY = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(shape->getPosition().y),getRenderWindow());
-    tPosY->setParent(pTransform);
-    tPosY->setTextSize(15);
-    lPosYNode->addOtherComponent(tPosY, Vec2f(0.75, 0.025));
-    pTransform->addChild(tPosY);
-    lPosZ = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"z : ",15);
-    lPosZ->setParent(pTransform);
-    Node* lPosZNode = new Node("LabZ",lPosZ,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
-    pTransform->addChild(lPosZ);
-    tPosZ = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(shape->getPosition().z),getRenderWindow());
-    tPosZ->setParent(pTransform);
-    tPosZ->setTextSize(15);
-    lPosZNode->addOtherComponent(tPosZ, Vec2f(0.75, 0.025));
-    pTransform->addChild(tPosZ);
-    Action a (Action::EVENT_TYPE::TEXT_ENTERED);
-    Command cmdPosX (a, FastDelegate<bool>(&TextArea::isTextChanged, tPosX), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosX));
-    Command cmdPosY (a, FastDelegate<bool>(&TextArea::isTextChanged, tPosY), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosY));
-    Command cmdPosZ (a, FastDelegate<bool>(&TextArea::isTextChanged, tPosZ), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosZ));
-    tPosX->getListener().connect("tPosXChanged", cmdPosX);
-    tPosY->getListener().connect("tPosYChanged", cmdPosY);
-    tPosZ->getListener().connect("tPosZChanged", cmdPosZ);
     lColor = new Label(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Color : ", 15);
     lColor->setParent(pMaterial);
     Node* lColorNode = new Node("LabColor",lColor,Vec2f(0, 0), Vec2f(1.f, 0.025f), rootMaterialNode.get());
@@ -1467,13 +1424,13 @@ void ODFAEGCreator::displayInfos (Shape* shape) {
     tAColor->setParent(pMaterial);
     lAColorNode->addOtherComponent(tAColor,Vec2f(0.75f, 0.025f));
     pMaterial->addChild(tAColor);
-    Command cmdRColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tRColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tRColor));
+    Command cmdRColChanged(FastDelegate<bool>(&TextArea::isTextChanged, tRColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tRColor));
     tRColor->getListener().connect("TRColorChanged", cmdRColChanged);
-    Command cmdGColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tGColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tGColor));
+    Command cmdGColChanged(FastDelegate<bool>(&TextArea::isTextChanged, tGColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tGColor));
     tGColor->getListener().connect("TGColorChanged", cmdGColChanged);
-    Command cmdBColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tBColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tBColor));
+    Command cmdBColChanged(FastDelegate<bool>(&TextArea::isTextChanged, tBColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tBColor));
     tBColor->getListener().connect("TBColorChanged", cmdBColChanged);
-    Command cmdAColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tAColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tAColor));
+    Command cmdAColChanged(FastDelegate<bool>(&TextArea::isTextChanged, tAColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tAColor));
     tAColor->getListener().connect("TAColorChanged", cmdAColChanged);
     lTexture = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0), fm.getResourceByAlias(Fonts::Serif),"Texture : ", 15);
     lTexture->setParent(pMaterial);
@@ -1515,13 +1472,13 @@ void ODFAEGCreator::displayInfos (Shape* shape) {
     tTexCoordH->setParent(pMaterial);
     lTexCoordHNode->addOtherComponent(tTexCoordH,Vec2f(0.75f, 0.025f));
     pMaterial->addChild(tTexCoordH);
-    Command cmdTexCoordXChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordX), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordX));
+    Command cmdTexCoordXChanged (FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordX), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordX));
     tTexCoordX->getListener().connect("TTexCoordXChanged", cmdTexCoordXChanged);
-    Command cmdTexCoordYChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordY), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordY));
+    Command cmdTexCoordYChanged (FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordY), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordY));
     tTexCoordY->getListener().connect("TTexCoordYChanged", cmdTexCoordYChanged);
-    Command cmdTexCoordWChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordW), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordW));
+    Command cmdTexCoordWChanged (FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordW), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordW));
     tTexCoordW->getListener().connect("TTexCoordWChanged", cmdTexCoordWChanged);
-    Command cmdTexCoordHChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordH), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordH));
+    Command cmdTexCoordHChanged (FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordH), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordH));
     tTexCoordH->getListener().connect("TTexCoordXChanged", cmdTexCoordHChanged);
     lTexImage = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Tex Image : ", 15);
     lTexImage->setParent(pMaterial);
@@ -1573,13 +1530,139 @@ void ODFAEGCreator::displayChildren(Label* label) {
         node->showAllNodes();
     }
 }
-void ODFAEGCreator::displayCommonInfos(Entity* tile) {
+void ODFAEGCreator::displayTransformInfos(Transformable* tile) {
     rootPropNode->deleteAllNodes();
     rootMaterialNode->deleteAllNodes();
     rootInfosNode->deleteAllNodes();
     pTransform->removeAll();
     pMaterial->removeAll();
     pInfos->removeAll();
+    FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+    //Position.
+    lPosition = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Position : ", 15);
+    lPosition->setParent(pTransform);
+    Node* lPosNode = new Node("LabPosition",lPosition,Vec2f(0, 0), Vec2f(1, 0.025),rootPropNode.get());
+    pTransform->addChild(lPosition);
+    //X
+    lPosX = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"x : ",15);
+    lPosX->setParent(pTransform);
+    Node* lPosXNode = new Node("LabX",lPosX,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lPosX);
+    tPosX = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getPosition().x),getRenderWindow());
+    tPosX->setParent(pTransform);
+    tPosX->setTextSize(15);
+    lPosXNode->addOtherComponent(tPosX, Vec2f(0.75, 0.025));
+    pTransform->addChild(tPosX);
+    //Y
+    lPosY = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"y : ",15);
+    lPosY->setParent(pTransform);
+    Node* lPosYNode = new Node("LabY",lPosY,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lPosY);
+    tPosY = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getPosition().y),getRenderWindow());
+    tPosY->setParent(pTransform);
+    tPosY->setTextSize(15);
+    lPosYNode->addOtherComponent(tPosY, Vec2f(0.75, 0.025));
+    pTransform->addChild(tPosY);
+    //Z
+    lPosZ = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"z : ",15);
+    lPosZ->setParent(pTransform);
+    Node* lPosZNode = new Node("LabZ",lPosZ,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lPosZ);
+    tPosZ = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getPosition().z),getRenderWindow());
+    tPosZ->setParent(pTransform);
+    tPosZ->setTextSize(15);
+    lPosZNode->addOtherComponent(tPosZ, Vec2f(0.75, 0.025));
+    pTransform->addChild(tPosZ);
+    Command cmdPosX (FastDelegate<bool>(&TextArea::isTextChanged, tPosX), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosX));
+    Command cmdPosY (FastDelegate<bool>(&TextArea::isTextChanged, tPosY), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosY));
+    Command cmdPosZ (FastDelegate<bool>(&TextArea::isTextChanged, tPosZ), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosZ));
+    tPosX->getListener().connect("tPosXChanged", cmdPosX);
+    tPosY->getListener().connect("tPosYChanged", cmdPosY);
+    tPosZ->getListener().connect("tPosZChanged", cmdPosZ);
+    //Size.
+    Label* lSize = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Size : ", 15);
+    lSize->setParent(pTransform);
+    Node* lSizeNode = new Node("LabSize",lSize,Vec2f(0, 0), Vec2f(1, 0.025),rootPropNode.get());
+    pTransform->addChild(lSize);
+    //Width
+    Label* lSizeW = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"w : ",15);
+    lSizeW->setParent(pTransform);
+    Node* lSizeWNode = new Node("LabW",lSizeW,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lSizeW);
+    tSizeW = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getSize().x),getRenderWindow());
+    tSizeW->setParent(pTransform);
+    tSizeW->setTextSize(15);
+    lSizeWNode->addOtherComponent(tSizeW, Vec2f(0.75, 0.025));
+    pTransform->addChild(tSizeW);
+    //Height
+    Label* lSizeH = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"h : ",15);
+    lSizeH->setParent(pTransform);
+    Node* lSizeHNode = new Node("LabH",lSizeH,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lSizeH);
+    tSizeH = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getSize().y),getRenderWindow());
+    tSizeH->setParent(pTransform);
+    tSizeH->setTextSize(15);
+    lSizeHNode->addOtherComponent(tSizeH, Vec2f(0.75, 0.025));
+    pTransform->addChild(tSizeH);
+    //Depth
+    Label* lSizeD = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"d : ",15);
+    lSizeD->setParent(pTransform);
+    Node* lSizeDNode = new Node("LabD",lSizeD,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lSizeD);
+    tSizeD = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getSize().z),getRenderWindow());
+    tSizeD->setParent(pTransform);
+    tSizeD->setTextSize(15);
+    lSizeDNode->addOtherComponent(tSizeD, Vec2f(0.75, 0.025));
+    pTransform->addChild(tSizeD);
+    Command cmdSizeW (FastDelegate<bool>(&TextArea::isTextChanged, tSizeW), FastDelegate<void>(&ODFAEGCreator::onObjectSizeChanged, this,tSizeW));
+    Command cmdSizeH (FastDelegate<bool>(&TextArea::isTextChanged, tSizeH), FastDelegate<void>(&ODFAEGCreator::onObjectSizeChanged, this,tSizeH));
+    Command cmdSizeD (FastDelegate<bool>(&TextArea::isTextChanged, tSizeD), FastDelegate<void>(&ODFAEGCreator::onObjectSizeChanged, this,tSizeD));
+    tSizeW->getListener().connect("tSizeWChanged", cmdSizeW);
+    tSizeH->getListener().connect("tSizeHChanged", cmdSizeH);
+    tSizeD->getListener().connect("tSizeDChanged", cmdSizeD);
+    //Move
+    Label* lMove = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Translation : ", 15);
+    lMove->setParent(pTransform);
+    Node* lMoveNode = new Node("LabPosition",lMove,Vec2f(0, 0), Vec2f(1, 0.025),rootPropNode.get());
+    pTransform->addChild(lMove);
+    //X
+    Label *lMoveX = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"x : ",15);
+    lMoveX->setParent(pTransform);
+    Node* lMoveXNode = new Node("MOVEX",lMoveX,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lMoveX);
+    tMoveX = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getTranslation().x),getRenderWindow());
+    tMoveX->setParent(pTransform);
+    tMoveX->setTextSize(15);
+    lMoveXNode->addOtherComponent(tMoveX, Vec2f(0.75, 0.025));
+    pTransform->addChild(tMoveX);
+    //Y
+    Label* lMoveY = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"y : ",15);
+    lMoveY->setParent(pTransform);
+    Node* lMoveYNode = new Node("MOVEY",lMoveY,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lMoveY);
+    tMoveY = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getTranslation().y),getRenderWindow());
+    tMoveY->setParent(pTransform);
+    tMoveY->setTextSize(15);
+    lMoveYNode->addOtherComponent(tMoveY, Vec2f(0.75, 0.025));
+    pTransform->addChild(tMoveY);
+    //Z
+    Label* lMoveZ = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"z : ",15);
+    lMoveZ->setParent(pTransform);
+    Node* lMoveZNode = new Node("MOVEZ",lMoveZ,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lMoveZ);
+    tMoveZ = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getTranslation().z),getRenderWindow());
+    tMoveZ->setParent(pTransform);
+    tMoveZ->setTextSize(15);
+    lMoveZNode->addOtherComponent(tMoveZ, Vec2f(0.75, 0.025));
+    pTransform->addChild(tMoveZ);
+    Command cmdMoveX (FastDelegate<bool>(&TextArea::isTextChanged, tMoveX), FastDelegate<void>(&ODFAEGCreator::onObjectMoveChanged, this,tMoveX));
+    Command cmdMoveY (FastDelegate<bool>(&TextArea::isTextChanged, tMoveY), FastDelegate<void>(&ODFAEGCreator::onObjectMoveChanged, this,tMoveY));
+    Command cmdMoveZ (FastDelegate<bool>(&TextArea::isTextChanged, tMoveZ), FastDelegate<void>(&ODFAEGCreator::onObjectMoveChanged, this,tMoveZ));
+    tMoveX->getListener().connect("tMoveXChanged", cmdMoveX);
+    tMoveY->getListener().connect("tMoveYChanged", cmdMoveY);
+    tMoveZ->getListener().connect("tMoveZChanged", cmdMoveZ);
+}
+void ODFAEGCreator::displayEntityInfos(Entity* tile) {
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
     Label* lId = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Id : entity-"+conversionIntString(tile->getId()), 15);
     lId->setParent(pInfos);
@@ -1646,49 +1729,15 @@ void ODFAEGCreator::displayCommonInfos(Entity* tile) {
     Command cmdParentChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectParent), FastDelegate<void>(&ODFAEGCreator::onSelectedParentChanged, this, dpSelectParent));
     dpSelectParent->getListener().connect("ParentChanged",cmdParentChanged);
     selectParentNode->addOtherComponent(dpSelectParent,Vec2f(0.75, 0.025));
-    lPosition = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Position : ", 15);
-    lPosition->setParent(pTransform);
-    Node* lPosNode = new Node("LabPosition",lPosition,Vec2f(0, 0), Vec2f(1, 0.025),rootPropNode.get());
-    pTransform->addChild(lPosition);
-    lPosX = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"x : ",15);
-    lPosX->setParent(pTransform);
-    Node* lPosXNode = new Node("LabX",lPosX,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
-    pTransform->addChild(lPosX);
-    tPosX = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getPosition().x),getRenderWindow());
-    tPosX->setParent(pTransform);
-    tPosX->setTextSize(15);
-    lPosXNode->addOtherComponent(tPosX, Vec2f(0.75, 0.025));
-    pTransform->addChild(tPosX);
-    lPosY = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"y : ",15);
-    lPosY->setParent(pTransform);
-    Node* lPosYNode = new Node("LabY",lPosY,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
-    pTransform->addChild(lPosY);
-    tPosY = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getPosition().y),getRenderWindow());
-    tPosY->setParent(pTransform);
-    tPosY->setTextSize(15);
-    lPosYNode->addOtherComponent(tPosY, Vec2f(0.75, 0.025));
-    pTransform->addChild(tPosY);
-    lPosZ = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"z : ",15);
-    lPosZ->setParent(pTransform);
-    Node* lPosZNode = new Node("LabZ",lPosZ,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
-    pTransform->addChild(lPosZ);
-    tPosZ = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getPosition().z),getRenderWindow());
-    tPosZ->setParent(pTransform);
-    tPosZ->setTextSize(15);
-    lPosZNode->addOtherComponent(tPosZ, Vec2f(0.75, 0.025));
-    pTransform->addChild(tPosZ);
-    Command cmdPosX (FastDelegate<bool>(&TextArea::isTextChanged, tPosX), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosX));
-    Command cmdPosY (FastDelegate<bool>(&TextArea::isTextChanged, tPosY), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosY));
-    Command cmdPosZ (FastDelegate<bool>(&TextArea::isTextChanged, tPosZ), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosZ));
-    tPosX->getListener().connect("tPosXChanged", cmdPosX);
-    tPosY->getListener().connect("tPosYChanged", cmdPosY);
-    tPosZ->getListener().connect("tPosZChanged", cmdPosZ);
+
 }
 void ODFAEGCreator::displayInfos(Decor* decor) {
-    displayCommonInfos(decor);
+    displayTransformInfos(decor);
+    displayEntityInfos(decor);
 }
 void ODFAEGCreator::displayInfos(Anim* anim) {
-    displayCommonInfos(anim);
+    displayTransformInfos(anim);
+    displayEntityInfos(anim);
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
     Label* lFrameRate = new Label(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"frame rate : ", 15);
     Node* frNode = new Node("FRAMERATE",lFrameRate,Vec2f(0, 0),Vec2f(0.25, 0.025),rootInfosNode.get());
@@ -1716,7 +1765,8 @@ void ODFAEGCreator::displayInfos(Anim* anim) {
     dpSelectAU->getListener().connect("ANIMUPDATERCHANGED", cmdAUChanged);
 }
 void ODFAEGCreator::displayInfos(Wall* wall) {
-    displayCommonInfos(wall);
+    displayTransformInfos(wall);
+    displayEntityInfos(wall);
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
     Label* lType = new Label(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"type : ",15);
     lType->setParent(lType);
@@ -1730,7 +1780,8 @@ void ODFAEGCreator::displayInfos(Wall* wall) {
     node->addOtherComponent(taWallType, Vec2f(0.75, 0.025));
 }
 void ODFAEGCreator::displayInfos (Tile* tile) {
-    displayCommonInfos(tile);
+    displayTransformInfos(tile);
+    displayEntityInfos(tile);
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
     lColor = new Label(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Color : ", 15);
     lColor->setParent(pMaterial);
@@ -1927,6 +1978,14 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
             stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(newXPos, selectedObject->getPosition().y, selectedObject->getPosition().z));
             updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGEXPOS", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", rectSelect.getItems()[i]->getPosition().x);
+                selectState->addParameter("NEWVALUE", newXPos);
+                rectSelect.getItems()[i]->setPosition(Vec3f(newXPos, rectSelect.getItems()[i]->getPosition().y, rectSelect.getItems()[i]->getPosition().z));
+                sg->addState(selectState);
+            }
         }
     } else if (ta == tPosY) {
         if(is_number(ta->getText())) {
@@ -1940,6 +1999,14 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
             stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(selectedObject->getPosition().x, newYPos, selectedObject->getPosition().z));
             updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGEYPOS", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", rectSelect.getItems()[i]->getPosition().y);
+                selectState->addParameter("NEWVALUE", newYPos);
+                rectSelect.getItems()[i]->setPosition(Vec3f(rectSelect.getItems()[i]->getPosition().x, newYPos, rectSelect.getItems()[i]->getPosition().z));
+                sg->addState(selectState);
+            }
         }
     } else if (ta == tPosZ) {
         if(is_number(ta->getText())) {
@@ -1953,6 +2020,146 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
             stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(selectedObject->getPosition().x, selectedObject->getPosition().y, newZPos));
             updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGEZPOS", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", rectSelect.getItems()[i]->getPosition().z);
+                selectState->addParameter("NEWVALUE", newZPos);
+                rectSelect.getItems()[i]->setPosition(Vec3f(rectSelect.getItems()[i]->getPosition().x, rectSelect.getItems()[i]->getPosition().y, newZPos));
+                sg->addState(selectState);
+            }
+        }
+    }
+}
+void ODFAEGCreator::onObjectSizeChanged(TextArea* ta) {
+    if (ta == tSizeW) {
+        if (is_number(ta->getText())) {
+            float newSizeW = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGESIZEW"+conversionFloatString(newSizeW));
+            State* state = new State("SCHANGESIZEW", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getSize().x);
+            state->addParameter("NEWVALUE", newSizeW);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            selectedObject->setSize(Vec3f(newSizeW, selectedObject->getSize().y, selectedObject->getSize().z));
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGESIZEW", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", rectSelect.getItems()[i]->getSize().x);
+                selectState->addParameter("NEWVALUE", newSizeW);
+                rectSelect.getItems()[i]->setSize(Vec3f(newSizeW, rectSelect.getItems()[i]->getSize().y, rectSelect.getItems()[i]->getSize().z));
+                sg->addState(selectState);
+            }
+        }
+    } else if (ta == tSizeH) {
+        if(is_number(ta->getText())) {
+            float newSizeH = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGESIZEW"+conversionFloatString(newSizeH));
+            State* state = new State("SCHANGESIZEW", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getSize().y);
+            state->addParameter("NEWVALUE", newSizeH);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            selectedObject->setSize(Vec3f(selectedObject->getSize().x, newSizeH, selectedObject->getSize().z));
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGESIZEH", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", rectSelect.getItems()[i]->getSize().y);
+                selectState->addParameter("NEWVALUE", newSizeH);
+                rectSelect.getItems()[i]->setSize(Vec3f(rectSelect.getItems()[i]->getSize().x, newSizeH, rectSelect.getItems()[i]->getSize().z));
+                sg->addState(selectState);
+            }
+        }
+    } else if (ta == tSizeD) {
+        if(is_number(ta->getText())) {
+            float newSizeD = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGESIZEZ"+conversionFloatString(newSizeD));
+            State* state = new State("SCHANGESIZEZ", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getSize().z);
+            state->addParameter("NEWVALUE", newSizeD);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            selectedObject->setSize(Vec3f(selectedObject->getSize().x, selectedObject->getSize().y, newSizeD));
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGESIZEZ", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", rectSelect.getItems()[i]->getSize().z);
+                selectState->addParameter("NEWVALUE", newSizeD);
+                rectSelect.getItems()[i]->setSize(Vec3f(rectSelect.getItems()[i]->getSize().x, rectSelect.getItems()[i]->getSize().y, newSizeD));
+                sg->addState(selectState);
+            }
+        }
+    }
+}
+void ODFAEGCreator::onObjectMoveChanged(TextArea* ta) {
+    if (ta == tMoveX) {
+        if (is_number(ta->getText())) {
+            float newMoveX = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEXTRANS"+conversionFloatString(newMoveX));
+            State* state = new State("SCHANGEXTRANS", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getTranslation().x);
+            state->addParameter("NEWVALUE", newMoveX);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            selectedObject->move(Vec3f(newMoveX-selectedObject->getTranslation().x, selectedObject->getTranslation().y, selectedObject->getTranslation().z));
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGEXTRANS", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", rectSelect.getItems()[i]->getTranslation().x);
+                selectState->addParameter("NEWVALUE", newMoveX);
+                rectSelect.getItems()[i]->setPosition(Vec3f(newMoveX-rectSelect.getItems()[i]->getTranslation().x, rectSelect.getItems()[i]->getTranslation().y, rectSelect.getItems()[i]->getTranslation().z));
+                sg->addState(selectState);
+            }
+        }
+    } else if (ta == tMoveY) {
+        if(is_number(ta->getText())) {
+            float newMoveY = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEYTRANS"+conversionFloatString(newMoveY));
+            State* state = new State("SCHANGEYTRANS", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getTranslation().y);
+            state->addParameter("NEWVALUE", newMoveY);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            selectedObject->move(Vec3f(selectedObject->getTranslation().x, newMoveY-selectedObject->getTranslation().y, selectedObject->getTranslation().z));
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGEYTRANS", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", rectSelect.getItems()[i]->getTranslation().y);
+                selectState->addParameter("NEWVALUE", newMoveY);
+                rectSelect.getItems()[i]->move(Vec3f(rectSelect.getItems()[i]->getTranslation().x, newMoveY-rectSelect.getItems()[i]->getTranslation().y, rectSelect.getItems()[i]->getTranslation().z));
+                sg->addState(selectState);
+            }
+        }
+    } else if (ta == tMoveZ) {
+        if(is_number(ta->getText())) {
+            float newMoveZ = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEZTRANS"+conversionFloatString(newMoveZ));
+            State* state = new State("SCHANGEZTRANS", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getTranslation().z);
+            state->addParameter("NEWVALUE", newMoveZ);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            selectedObject->move(Vec3f(selectedObject->getTranslation().x, selectedObject->getTranslation().y, newMoveZ-selectedObject->getTranslation().z));
+            updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGEMOVEZ", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", rectSelect.getItems()[i]->getTranslation().z);
+                selectState->addParameter("NEWVALUE", newMoveZ);
+                rectSelect.getItems()[i]->setPosition(Vec3f(rectSelect.getItems()[i]->getTranslation().x, rectSelect.getItems()[i]->getTranslation().y, newMoveZ-rectSelect.getItems()[i]->getTranslation().z));
+                sg->addState(selectState);
+            }
         }
     }
 }
@@ -2191,7 +2398,7 @@ void ODFAEGCreator::onParentClicked(Label* label) {
 void ODFAEGCreator::onSelectedParentChanged(DropDownList* dp) {
     if (dp->getSelectedItem() == "NONE") {
         static_cast<Entity*>(selectedObject)->setParent(nullptr);
-    } else {
+    } else if (dp->getSelectedItem() != "") {
         Entity* entity = World::getEntity(dp->getSelectedItem());
         if (entity != nullptr && dynamic_cast<Entity*>(selectedObject)) {
 
@@ -2203,7 +2410,6 @@ void ODFAEGCreator::onSelectedParentChanged(DropDownList* dp) {
                     World::removeEntity(entity);
                     static_cast<Anim*>(entity)->addFrame(static_cast<Entity*>(selectedObject));
                     static_cast<Anim*>(entity)->play(true);
-                    std::cout<<"add anim"<<std::endl;
                     World::addEntity(entity);
                 }
             }
