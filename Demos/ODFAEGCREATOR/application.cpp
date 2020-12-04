@@ -61,11 +61,15 @@ void ODFAEGCreator::onInit() {
     item15 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Open application");
     item15->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item15);
+    item16 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"New anim updater");
+    item16->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item16);
     menu1->addMenuItem(item11);
     menu1->addMenuItem(item12);
     menu1->addMenuItem(item13);
     menu1->addMenuItem(item14);
     menu1->addMenuItem(item15);
+    menu1->addMenuItem(item16);
     item21 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Build");
     item21->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item21);
@@ -234,6 +238,18 @@ void ODFAEGCreator::onInit() {
     addWindow(wNewEntitiesUpdater);
     wNewEntitiesUpdater->setVisible(false);
     getRenderComponentManager().setEventContextActivated(false, *wNewEntitiesUpdater);
+    //Create animation updater.
+    wNewAnimUpdater = new RenderWindow(sf::VideoMode(400, 300), "Create new anim updater", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
+    Label* lAnimUpdaterName = new Label (*wNewAnimUpdater,Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "animation updater name : ", 15);
+    getRenderComponentManager().addComponent(lAnimUpdaterName);
+    taAnimUpdaterName = new TextArea(Vec3f(200, 0, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewAnimUpdater);
+    getRenderComponentManager().addComponent(taAnimUpdaterName);
+    bCreateAnimUpdater = new Button(Vec3f(200, 50, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Create anim updater",15,*wNewAnimUpdater);
+    bCreateAnimUpdater->addActionListener(this);
+    getRenderComponentManager().addComponent(bCreateAnimUpdater);
+    addWindow(wNewAnimUpdater);
+    wNewAnimUpdater->setVisible(false);
+    getRenderComponentManager().setEventContextActivated(false, *wNewAnimUpdater);
     //Create panel for project files.
     pProjects = new Panel(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     rootNode = std::make_unique<Node> ("projects", pProjects, Vec2f(0.f, 0.015f), Vec2f(1.f / 6.f, 1.f));
@@ -371,24 +387,30 @@ void ODFAEGCreator::updateScriptText(Tile* tile, const Texture* text) {
         unsigned int id = tm.getIdByResource(text);
         if(content.find("text"+conversionUIntString(id)) == std::string::npos) {
             unsigned int pos = content.find("TextureManager<>& tm = cache.resourceManager<Texture, std::string>(\"TextureManager\");");
-            std::string subs = content.substr(pos);
-            pos += subs.find_first_of('\n') + 1;
-            content.insert(pos, "const Texture* text"+conversionUIntString(id)+" = tm.getResourceByAlias(\"+realtivePath+\");\n");
+            if (pos != std::string::npos) {
+                std::string subs = content.substr(pos);
+                pos += subs.find_first_of('\n') + 1;
+                content.insert(pos, "const Texture* text"+conversionUIntString(id)+" = tm.getResourceByAlias(\"+realtivePath+\");\n");
+            }
         }
         if (content.find("tile"+conversionUIntString(tile->getId())+"->getFace(0)->getMaterial()") == std::string::npos) {
             unsigned int pos = content.find("tile"+conversionUIntString(tile->getId()));
-            std::string subs = content.substr(pos);
-            pos += subs.find_first_of('\n') + 1;
-            content.insert(pos,"tile"+conversionUIntString(tile->getId())+"->getFace(0)->getMaterial().clearTextures();\n"+
-                           "tile->getFace(0)->getMaterial().addTexture(text"+conversionUIntString(id)+", sf::IntRect(0, 0,"+
-                           conversionIntString(text->getSize().x)+","+conversionIntString(text->getSize().y)+"));\n");
+            if (pos != std::string::npos) {
+                std::string subs = content.substr(pos);
+                pos += subs.find_first_of('\n') + 1;
+                content.insert(pos,"tile"+conversionUIntString(tile->getId())+"->getFace(0)->getMaterial().clearTextures();\n"+
+                               "tile->getFace(0)->getMaterial().addTexture(text"+conversionUIntString(id)+", sf::IntRect(0, 0,"+
+                               conversionIntString(text->getSize().x)+","+conversionIntString(text->getSize().y)+"));\n");
+            }
         } else {
             unsigned int pos = content.find("tile"+conversionUIntString(tile->getId())+"->getFace(0).getMaterial().addTexture");
-            std::string subs = content.substr(pos);
-            unsigned int endpos = subs.find_first_of('\n') + pos + 1;
-            content.erase(pos, endpos - pos);
-            content.insert(pos,"tile->getFace(0)->getMaterial().addTexture(text"+conversionUIntString(id)+", sf::IntRect(0, 0,"+
-                           conversionIntString(text->getSize().x)+","+conversionIntString(text->getSize().y)+"));\n");
+            if (pos != std::string::npos) {
+                std::string subs = content.substr(pos);
+                unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+                content.erase(pos, endpos - pos);
+                content.insert(pos,"tile->getFace(0)->getMaterial().addTexture(text"+conversionUIntString(id)+", sf::IntRect(0, 0,"+
+                               conversionIntString(text->getSize().x)+","+conversionIntString(text->getSize().y)+"));\n");
+            }
         }
     }
 }
@@ -1023,6 +1045,18 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         getRenderComponentManager().setEventContextActivated(false, *wNewEntitiesUpdater);
         tScriptEdit->setEventContextActivated(true);
     }
+    if(button==bCreateAnimUpdater) {
+        std::string name = taAnimUpdaterName->getText();
+        AnimUpdater* au = new AnimUpdater();
+        au->setName(name);
+        World::addTimer(au);
+        wNewAnimUpdater->setVisible(false);
+        getRenderComponentManager().setEventContextActivated(false, *wNewAnimUpdater);
+        tScriptEdit->setEventContextActivated(true);
+        if (dpSelectAU != nullptr) {
+            dpSelectAU->addItem(name, 15);
+        }
+    }
 }
 void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "New application") {
@@ -1073,8 +1107,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
                 Tile* tile = new Tile(nullptr, position,Vec3f(100, 50, 0), sf::IntRect(0, 0, gridWidth, gridHeight));
                 selectedObject = tile;
                 displayInfos(tile);
-                if (World::getCurrentEntityManager() != nullptr)
-                    World::addEntity(tile);
+                World::addEntity(tile);
                 addTile(tile);
             } else {
                 BoundingBox rect = rectSelect.getSelectionRect();
@@ -1129,13 +1162,12 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         }
     }
     if(item->getText() == "Decor") {
-        if (appliname != "") {
+        if (appliname != "" && World::getCurrentEntityManager() != nullptr) {
             if (!showRectSelect) {
                 Decor* decor = new Decor();
                 selectedObject = decor;
                 displayInfos(decor);
-                if (World::getCurrentEntityManager() != nullptr)
-                    World::addEntity(decor);
+                World::addEntity(decor);
                 //addDecor(decor);
             } else {
                 BoundingBox rect = rectSelect.getSelectionRect();
@@ -1151,8 +1183,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
                             selectedObject = decor;
                             displayInfos(decor);
                         }
-                        if (World::getCurrentEntityManager() != nullptr)
-                            World::addEntity(decor);
+                        World::addEntity(decor);
                     }
                 }
                 rectSelect.setRect(savedPos.x, savedPos.y, rectSelect.getSelectionRect().getSize().x,rectSelect.getSelectionRect().getSize().y);
@@ -1160,13 +1191,12 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         }
     }
     if (item->getText() == "Wall") {
-         if (appliname != "") {
+         if (appliname != "" && World::getCurrentEntityManager() != nullptr) {
             if (!showRectSelect) {
                 Wall* wall = new Wall();
                 selectedObject = wall;
                 displayInfos(wall);
-                if (World::getCurrentEntityManager() != nullptr)
-                    World::addEntity(wall);
+                World::addEntity(wall);
                 //addDecor(decor);
             } else {
                 BoundingBox rect = rectSelect.getSelectionRect();
@@ -1182,8 +1212,36 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
                             selectedObject = wall;
                             displayInfos(wall);
                         }
-                        if (World::getCurrentEntityManager() != nullptr)
-                            World::addEntity(wall);
+                        World::addEntity(wall);
+                    }
+                }
+                rectSelect.setRect(savedPos.x, savedPos.y, rectSelect.getSelectionRect().getSize().x,rectSelect.getSelectionRect().getSize().y);
+            }
+        }
+    }
+    if (item->getText() == "Animation") {
+        if (appliname != "" && World::getCurrentEntityManager() != nullptr) {
+            if (!showRectSelect) {
+                Anim* anim = new Anim();
+                selectedObject = anim;
+                displayInfos(anim);
+                World::addEntity(anim);
+                //addDecor(decor);
+            } else {
+                BoundingBox rect = rectSelect.getSelectionRect();
+                Vec3f savedPos = rectSelect.getSelectionRect().getPosition();
+                Vec3f pos = rectSelect.getSelectionRect().getPosition();
+                pos = getRenderWindow().mapPixelToCoords(Vec3f(pos.x, getRenderWindow().getSize().y - pos.y, 0))+getRenderWindow().getView().getSize()*0.5f;
+                rectSelect.setRect(pos.x, pos.y, rectSelect.getSelectionRect().getSize().x,rectSelect.getSelectionRect().getSize().y);
+                for (int x = rect.getPosition().x; x < rect.getPosition().x + rect.getSize().x-gridWidth; x+=gridWidth) {
+                    for (int y = rect.getPosition().y; y <  rect.getPosition().y + rect.getSize().y-gridHeight; y+=gridHeight) {
+                        Anim* anim = new Anim();
+                        rectSelect.addItem(anim, sf::Color::White);
+                        if (rectSelect.getItems().size() == 1) {
+                            selectedObject = anim;
+                            displayInfos(anim);
+                        }
+                        World::addEntity(anim);
                     }
                 }
                 rectSelect.setRect(savedPos.x, savedPos.y, rectSelect.getSelectionRect().getSize().x,rectSelect.getSelectionRect().getSize().y);
@@ -1238,6 +1296,11 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item == item15) {
         fdProjectPath->setVisible(true);
         fdProjectPath->setEventContextActivated(true);
+        tScriptEdit->setEventContextActivated(false);
+    }
+    if (item == item16) {
+        wNewAnimUpdater->setVisible(true);
+        getRenderComponentManager().setEventContextActivated(true, *wNewAnimUpdater);
         tScriptEdit->setEventContextActivated(false);
     }
 }
@@ -1528,18 +1591,20 @@ void ODFAEGCreator::displayCommonInfos(Entity* tile) {
     pInfos->addChild(lName);
     taName = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",getRenderWindow());
     taName->setTextSize(15);
-    Action a (Action::EVENT_TYPE::TEXT_ENTERED);
-    Command cmdName (a, FastDelegate<bool>(&TextArea::isTextChanged, taName), FastDelegate<void>(&ODFAEGCreator::onObjectNameChanged, this,taName));
-    taName->getListener().connect("CMDNAMECHANGED", cmdName);
     taName->setParent(pInfos);
     nameNode->addOtherComponent(taName, Vec2f(0.75, 0.025));
     pInfos->addChild(taName);
+    Command cmdName (FastDelegate<bool>(&TextArea::isTextChanged, taName), FastDelegate<void>(&ODFAEGCreator::onObjectNameChanged, this,taName));
+    taName->getListener().connect("CMDNAMECHANGED", cmdName);
     if (tile->getParent() == nullptr) {
         lParent = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Parent entity : NONE", 15);
     } else {
         lParent = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Parent entity : "+tile->getParent()->getName(), 15);
     }
     lParent->setParent(pInfos);
+    Action a(Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+    Command cmdParentClicked(a, FastDelegate<bool>(&Label::isMouseInside, lParent), FastDelegate<void>(&ODFAEGCreator::onParentClicked, this, lParent));
+    lParent->getListener().connect("CMDPARENTCLICKED", cmdParentClicked);
     Node* parentNode = new Node("Parent",lParent,Vec2f(0, 0),Vec2f(1, 0.025),rootInfosNode.get());
     pInfos->addChild(lParent);
     Label* lChildren = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Children-"+conversionIntString(tile->getId()), 15);
@@ -1563,6 +1628,7 @@ void ODFAEGCreator::displayCommonInfos(Entity* tile) {
     pInfos->addChild(dpSelectEm);
     Command cmdEmChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectEm), FastDelegate<void>(&ODFAEGCreator::onSelectedEmChanged, this, dpSelectEm));
     dpSelectEm->getListener().connect("EmChanged", cmdEmChanged);
+    dpSelectEm->setPriority(-2);
     lEmListNode->addOtherComponent(dpSelectEm, Vec2f(0.75, 0.025));
     Label* lSelectParent = new Label(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Parent : ",15);
     lSelectParent->setParent(pInfos);
@@ -1611,16 +1677,43 @@ void ODFAEGCreator::displayCommonInfos(Entity* tile) {
     tPosZ->setTextSize(15);
     lPosZNode->addOtherComponent(tPosZ, Vec2f(0.75, 0.025));
     pTransform->addChild(tPosZ);
-    Action aPos (Action::EVENT_TYPE::TEXT_ENTERED);
-    Command cmdPosX (aPos, FastDelegate<bool>(&TextArea::isTextChanged, tPosX), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosX));
-    Command cmdPosY (aPos, FastDelegate<bool>(&TextArea::isTextChanged, tPosY), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosY));
-    Command cmdPosZ (aPos, FastDelegate<bool>(&TextArea::isTextChanged, tPosZ), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosZ));
+    Command cmdPosX (FastDelegate<bool>(&TextArea::isTextChanged, tPosX), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosX));
+    Command cmdPosY (FastDelegate<bool>(&TextArea::isTextChanged, tPosY), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosY));
+    Command cmdPosZ (FastDelegate<bool>(&TextArea::isTextChanged, tPosZ), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosZ));
     tPosX->getListener().connect("tPosXChanged", cmdPosX);
     tPosY->getListener().connect("tPosYChanged", cmdPosY);
     tPosZ->getListener().connect("tPosZChanged", cmdPosZ);
 }
 void ODFAEGCreator::displayInfos(Decor* decor) {
     displayCommonInfos(decor);
+}
+void ODFAEGCreator::displayInfos(Anim* anim) {
+    displayCommonInfos(anim);
+    FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+    Label* lFrameRate = new Label(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"frame rate : ", 15);
+    Node* frNode = new Node("FRAMERATE",lFrameRate,Vec2f(0, 0),Vec2f(0.25, 0.025),rootInfosNode.get());
+    lFrameRate->setParent(pInfos);
+    pInfos->addChild(lFrameRate);
+    TextArea* taFrameRate = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif),"",getRenderWindow());
+    taFrameRate->setParent(pInfos);
+    pInfos->addChild(taFrameRate);
+    frNode->addOtherComponent(taFrameRate, Vec2f(0.75, 0.025));
+    Command cmdFRChanged(FastDelegate<bool>(&TextArea::isTextChanged, taFrameRate), FastDelegate<void>(&ODFAEGCreator::onFrameRateChanged, this, taFrameRate));
+    taFrameRate->getListener().connect("FRCHANGED", cmdFRChanged);
+    Label* lSelectAU = new Label(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Anim updater : ", 15);
+    Node* animUpdaterNode = new Node("ANIMUPDATER",lSelectAU,Vec2f(0, 0),Vec2f(0.25, 0.025),rootInfosNode.get());
+    lSelectAU->setParent(pInfos);
+    pInfos->addChild(lSelectAU);
+    dpSelectAU = new DropDownList(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"NONE",15);
+    std::vector<Timer*> timers = World::getTimers();
+    for (unsigned int i = 0; i < timers.size(); i++) {
+        dpSelectAU->addItem(timers[i]->getName(), 15);
+    }
+    dpSelectAU->setParent(pInfos);
+    pInfos->addChild(dpSelectAU);
+    animUpdaterNode->addOtherComponent(dpSelectAU, Vec2f(0.75, 0.025));
+    Command cmdAUChanged(FastDelegate<bool>(&DropDownList::isValueChanged,dpSelectAU), FastDelegate<void>(&ODFAEGCreator::onAnimUpdaterChanged, this, dpSelectAU));
+    dpSelectAU->getListener().connect("ANIMUPDATERCHANGED", cmdAUChanged);
 }
 void ODFAEGCreator::displayInfos(Wall* wall) {
     displayCommonInfos(wall);
@@ -1630,8 +1723,7 @@ void ODFAEGCreator::displayInfos(Wall* wall) {
     pInfos->addChild(lType);
     Node* node = new Node("WALLTYPE",lType,Vec2f(0, 0),Vec2f(0.25, 0.025),rootInfosNode.get());
     taWallType = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",getRenderWindow());
-    Action a(Action::EVENT_TYPE::TEXT_ENTERED);
-    Command cmdWallType(a,FastDelegate<bool>(&TextArea::isTextChanged, taWallType), FastDelegate<void>(&ODFAEGCreator::onWallTypeChanged,this,taWallType));
+    Command cmdWallType(FastDelegate<bool>(&TextArea::isTextChanged, taWallType), FastDelegate<void>(&ODFAEGCreator::onWallTypeChanged,this,taWallType));
     taWallType->getListener().connect("WallTypeChanged", cmdWallType);
     taWallType->setParent(pInfos);
     pInfos->addChild(taWallType);
@@ -1680,14 +1772,13 @@ void ODFAEGCreator::displayInfos (Tile* tile) {
     tAColor->setParent(pMaterial);
     lAColorNode->addOtherComponent(tAColor,Vec2f(0.75f, 0.025f));
     pMaterial->addChild(tAColor);
-    Action a (Action::EVENT_TYPE::TEXT_ENTERED);
-    Command cmdRColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tRColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tRColor));
+    Command cmdRColChanged(FastDelegate<bool>(&TextArea::isTextChanged, tRColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tRColor));
     tRColor->getListener().connect("TRColorChanged", cmdRColChanged);
-    Command cmdGColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tGColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tGColor));
+    Command cmdGColChanged(FastDelegate<bool>(&TextArea::isTextChanged, tGColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tGColor));
     tGColor->getListener().connect("TGColorChanged", cmdGColChanged);
-    Command cmdBColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tBColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tBColor));
+    Command cmdBColChanged(FastDelegate<bool>(&TextArea::isTextChanged, tBColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tBColor));
     tBColor->getListener().connect("TBColorChanged", cmdBColChanged);
-    Command cmdAColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tAColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tAColor));
+    Command cmdAColChanged(FastDelegate<bool>(&TextArea::isTextChanged, tAColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tAColor));
     tAColor->getListener().connect("TAColorChanged", cmdAColChanged);
     lTexture = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0), fm.getResourceByAlias(Fonts::Serif),"Texture : ", 15);
     lTexture->setParent(pMaterial);
@@ -1729,13 +1820,13 @@ void ODFAEGCreator::displayInfos (Tile* tile) {
     tTexCoordH->setParent(pMaterial);
     lTexCoordHNode->addOtherComponent(tTexCoordH,Vec2f(0.75f, 0.025f));
     pMaterial->addChild(tTexCoordH);
-    Command cmdTexCoordXChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordX), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordX));
+    Command cmdTexCoordXChanged (FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordX), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordX));
     tTexCoordX->getListener().connect("TTexCoordXChanged", cmdTexCoordXChanged);
-    Command cmdTexCoordYChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordY), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordY));
+    Command cmdTexCoordYChanged (FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordY), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordY));
     tTexCoordY->getListener().connect("TTexCoordYChanged", cmdTexCoordYChanged);
-    Command cmdTexCoordWChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordW), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordW));
+    Command cmdTexCoordWChanged (FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordW), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordW));
     tTexCoordW->getListener().connect("TTexCoordWChanged", cmdTexCoordWChanged);
-    Command cmdTexCoordHChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordH), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordH));
+    Command cmdTexCoordHChanged (FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordH), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordH));
     tTexCoordH->getListener().connect("TTexCoordXChanged", cmdTexCoordHChanged);
     lTexImage = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Tex Image : ", 15);
     lTexImage->setParent(pMaterial);
@@ -1912,6 +2003,11 @@ void ODFAEGCreator::onWallTypeChanged(TextArea* ta) {
         static_cast<Wall*>(selectedObject)->setType(ta->getText());
     }
 }
+void ODFAEGCreator::onFrameRateChanged(TextArea* ta) {
+    if (dynamic_cast<Anim*>(selectedObject) && is_number(ta->getText())) {
+        static_cast<Anim*>(selectedObject)->setFrameRate(conversionStringFloat(ta->getText()));
+    }
+}
 void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
     if (ta == tRColor) {
         if (is_number(tRColor->getText())) {
@@ -2082,16 +2178,43 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
         }
     }
 }
-void ODFAEGCreator::onSelectedParentChanged(DropDownList* dp) {
-    Entity* entity = World::getEntity(dp->getSelectedItem());
-    if (entity != nullptr && dynamic_cast<Entity*>(entity)) {
-        if (!entity->isAnimated()) {
-            static_cast<Entity*>(selectedObject)->setParent(entity);
-        } else {
-            if (dynamic_cast<Anim*>(entity)) {
-                static_cast<Anim*>(entity)->addFrame(static_cast<Entity*>(selectedObject));
-            }
+void ODFAEGCreator::onParentClicked(Label* label) {
+    std::vector<std::string> parts = split(label->getText(), ":");
+    std::string pName = parts[1].substr(1, parts[1].size()-1);
+    if (pName != "NONE") {
+        if (dynamic_cast<Entity*>(selectedObject) && dynamic_cast<Anim*>(static_cast<Entity*>(selectedObject)->getParent())) {
+            displayInfos(static_cast<Anim*>(static_cast<Entity*>(selectedObject)->getParent()));
+            selectedObject = static_cast<Entity*>(selectedObject)->getParent();
         }
+    }
+}
+void ODFAEGCreator::onSelectedParentChanged(DropDownList* dp) {
+    if (dp->getSelectedItem() == "NONE") {
+        static_cast<Entity*>(selectedObject)->setParent(nullptr);
+    } else {
+        Entity* entity = World::getEntity(dp->getSelectedItem());
+        if (entity != nullptr && dynamic_cast<Entity*>(selectedObject)) {
+
+            if (!entity->isAnimated()) {
+                static_cast<Entity*>(selectedObject)->setParent(entity);
+            } else {
+                if (dynamic_cast<Anim*>(entity)) {
+                    World::removeEntity(static_cast<Entity*>(selectedObject));
+                    World::removeEntity(entity);
+                    static_cast<Anim*>(entity)->addFrame(static_cast<Entity*>(selectedObject));
+                    static_cast<Anim*>(entity)->play(true);
+                    std::cout<<"add anim"<<std::endl;
+                    World::addEntity(entity);
+                }
+            }
+            lParent->setText("Parent entity : "+entity->getName());
+        }
+    }
+}
+void ODFAEGCreator::onAnimUpdaterChanged(DropDownList* dp) {
+    Timer* timer = World::getTimer(dp->getSelectedItem());
+    if (dynamic_cast<AnimUpdater*>(timer) && dynamic_cast<Anim*>(selectedObject)) {
+        static_cast<AnimUpdater*>(timer)->addAnim(static_cast<Anim*>(selectedObject));
     }
 }
 void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
@@ -2127,13 +2250,13 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                 if (dynamic_cast<Shape*>(selectedObject)) {
                     static_cast<Shape*>(selectedObject)->setTexture(text);
                     textRect = static_cast<Shape*>(selectedObject)->getTextureRect();
-                    //updateScriptText(static_cast<Shape*>(selectedObject), text);
+                    updateScriptText(static_cast<Shape*>(selectedObject), text);
                 }
                 if (dynamic_cast<Tile*>(selectedObject)) {
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().clearTextures();
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().addTexture(text, sf::IntRect(0, 0, text->getSize().x, text->getSize().y));
                     textRect = sf::IntRect(0, 0, text->getSize().x, text->getSize().y);
-                    //updateScriptText(static_cast<Tile*>(selectedObject), text);
+                    updateScriptText(static_cast<Tile*>(selectedObject), text);
                 }
                 tTexCoordX->setText(conversionIntString(textRect.left));
                 tTexCoordY->setText(conversionIntString(textRect.top));

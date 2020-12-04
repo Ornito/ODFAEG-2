@@ -344,9 +344,32 @@ namespace odfaeg {
                     ptr.reset(au);
                     cache.aus.push_back(std::move(ptr));
                 }
-                static void update() {
-                    for (unsigned int i = 0; i < cache.eus.size(); i++) {
-                        cache.eus[i]->update();
+                static core::Timer* getTimer(std::string name) {
+                    for (unsigned int i = 0; i < cache.aus.size(); i++) {
+                        if (cache.aus[i]->getName() == name) {
+                            return cache.aus[i].get();
+                        }
+                    }
+                    return nullptr;
+                }
+                static std::vector<core::Timer*> getTimers() {
+                    std::vector<core::Timer*> timers;
+                    for (unsigned int i = 0; i < cache.aus.size(); i++) {
+                        timers.push_back(cache.aus[i].get());
+                    }
+                    return timers;
+                }
+                static void update(std::string name="*") {
+                    if (name == "*") {
+                        for (unsigned int i = 0; i < cache.eus.size(); i++) {
+                            cache.eus[i]->update();
+                        }
+                    } else {
+                        for (unsigned int i = 0; i < cache.eus.size(); i++) {
+                            if (cache.eus[i]->getName() == name) {
+                                cache.eus[i]->update();
+                            }
+                        }
                     }
                 }
                 static void addEntityManager(graphic::EntityManager* holder) {

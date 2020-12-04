@@ -25,6 +25,7 @@
 #include "odfaeg/Graphics/entitiesUpdater.h"
 #include "rectangularSelection.hpp"
 #include "odfaeg/Graphics/anim.h"
+#include "odfaeg/Graphics/animationUpdater.h"
 class ODFAEGCreator : public odfaeg::core::Application,
                       public odfaeg::graphic::gui::MenuItemListener,
                       public odfaeg::graphic::gui::ActionListener {
@@ -50,12 +51,14 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void displayInfos(odfaeg::graphic::Tile* tile);
     void displayInfos(odfaeg::graphic::g2d::Decor* decor);
     void displayInfos(odfaeg::graphic::g2d::Wall* wall);
+    void displayInfos(odfaeg::graphic::Anim* anim);
     void displayChildren(odfaeg::graphic::gui::Label* label);
     void onObjectPosChanged(odfaeg::graphic::gui::TextArea* ta);
     void onObjectColorChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedTextureChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onTexCoordsChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedEmChanged(odfaeg::graphic::gui::DropDownList* dp);
+    void onAnimUpdaterChanged(odfaeg::graphic::gui::DropDownList* dp);
     void addShape(odfaeg::graphic::Shape *shape);
     void addTile(odfaeg::graphic::Tile *tile);
     bool removeShape (unsigned int id);
@@ -67,6 +70,8 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onObjectNameChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedParentChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onWallTypeChanged(odfaeg::graphic::gui::TextArea* taWallType);
+    void onFrameRateChanged(odfaeg::graphic::gui::TextArea* taFRChanged);
+    void onParentClicked(odfaeg::graphic::gui::Label* label);
     enum Fonts {
         Serif
     };
@@ -75,13 +80,13 @@ class ODFAEGCreator : public odfaeg::core::Application,
         const float speed = 10.f;
         odfaeg::graphic::gui::MenuBar* menuBar;
         odfaeg::graphic::gui::Menu *menu1, *menu2, *menu3, *menu4;
-        odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item14, *item15, *item21, *item22, *item23, *item31, *item32, *item33,
+        odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item14, *item15, *item16, *item21, *item22, *item23, *item31, *item32, *item33,
         *item34, *item35, *item36, *item37, *item41, *item42, *item43, *item44, *item45;
         odfaeg::core::ResourceCache<> cache;
         odfaeg::graphic::gui::FileDialog* fdTexturePath, *fdProjectPath;
-        odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent, *wNewEntitiesUpdater;
-        odfaeg::graphic::gui::TextArea* ta, *taComponentExpression, *taComponentLayer, *taEntitiesUpdaterName, *taComponentName;
-        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent;
+        odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent, *wNewEntitiesUpdater, *wNewAnimUpdater;
+        odfaeg::graphic::gui::TextArea* ta, *taComponentExpression, *taComponentLayer, *taEntitiesUpdaterName, *taComponentName, *taAnimUpdaterName;
+        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent, *dpSelectAU;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
         odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight, *taWallType;
         odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial, *pComponent;
@@ -101,7 +106,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition, *lColor, *lRColor,
         *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage, *lParent;
         odfaeg::graphic::gui::TabPane* tabPane;
-        odfaeg::graphic::gui::Button* bChooseText, *bCreateComponent, *bCreateScene, *bCreateEntitiesUpdater, *bCreateAppli;
+        odfaeg::graphic::gui::Button* bChooseText, *bCreateComponent, *bCreateScene, *bCreateEntitiesUpdater, *bCreateAppli, *bCreateAnimUpdater;
         odfaeg::graphic::Shape* sTextRect;
         odfaeg::core::StateStack stateStack;
         ODFAEGCreatorStateExecutor se;

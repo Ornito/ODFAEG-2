@@ -14,6 +14,7 @@ namespace odfaeg {
             interpLevels = 1;
             interpPerc = 0;
             interpolatedFrame = std::make_unique<Mesh>(math::Vec3f(0, 0, 0), math::Vec3f(0, 0, 0), "E_MESH");
+            interpolatedFrame->setParent(this);
         }
         Anim::Anim (float fr, math::Vec3f position, math::Vec3f size, Entity *parent) : AnimatedEntity (position, size, size * 0.5f, "E_ANIMATION", parent) {
             this->fr = fr;
@@ -27,6 +28,7 @@ namespace odfaeg {
             interpLevels = 1;
             interpPerc = 0;
             interpolatedFrame = std::make_unique<Mesh>(position, size, "E_MESH");
+            interpolatedFrame->setParent(this);
         }
         bool Anim::isCurrentFrameChanged() {
             return currentFrameChanged;
