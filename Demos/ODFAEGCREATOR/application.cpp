@@ -1661,6 +1661,63 @@ void ODFAEGCreator::displayTransformInfos(Transformable* tile) {
     tMoveX->getListener().connect("tMoveXChanged", cmdMoveX);
     tMoveY->getListener().connect("tMoveYChanged", cmdMoveY);
     tMoveZ->getListener().connect("tMoveZChanged", cmdMoveZ);
+    //Scale.
+    Label* lScale = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Scale : ", 15);
+    lScale->setParent(pTransform);
+    Node* lScaleNode = new Node("LabScale",lScale,Vec2f(0, 0), Vec2f(1, 0.025),rootPropNode.get());
+    pTransform->addChild(lScale);
+    //X
+    Label *lScaleX = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"x : ",15);
+    lScaleX->setParent(pTransform);
+    Node* lScaleXNode = new Node("SCALEX",lScaleX,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lScaleX);
+    tScaleX = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getScale().x),getRenderWindow());
+    tScaleX->setParent(pTransform);
+    tScaleX->setTextSize(15);
+    lScaleXNode->addOtherComponent(tScaleX, Vec2f(0.75, 0.025));
+    pTransform->addChild(tScaleX);
+    //Y
+    Label* lScaleY = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"y : ",15);
+    lScaleY->setParent(pTransform);
+    Node* lScaleYNode = new Node("SCALEY",lScaleY,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lScaleY);
+    tScaleY = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getScale().y),getRenderWindow());
+    tScaleY->setParent(pTransform);
+    tScaleY->setTextSize(15);
+    lScaleYNode->addOtherComponent(tScaleY, Vec2f(0.75, 0.025));
+    pTransform->addChild(tScaleY);
+    //Z
+    Label* lScaleZ = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"z : ",15);
+    lScaleZ->setParent(pTransform);
+    Node* lScaleZNode = new Node("SCALEZ",lScaleZ,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lScaleZ);
+    tScaleZ = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getScale().z),getRenderWindow());
+    tScaleZ->setParent(pTransform);
+    tScaleZ->setTextSize(15);
+    lScaleZNode->addOtherComponent(tScaleZ, Vec2f(0.75, 0.025));
+    pTransform->addChild(tScaleZ);
+    Command cmdScaleX (FastDelegate<bool>(&TextArea::isTextChanged, tScaleX), FastDelegate<void>(&ODFAEGCreator::onObjectScaleChanged, this,tScaleX));
+    Command cmdScaleY (FastDelegate<bool>(&TextArea::isTextChanged, tScaleY), FastDelegate<void>(&ODFAEGCreator::onObjectScaleChanged, this,tScaleY));
+    Command cmdScaleZ (FastDelegate<bool>(&TextArea::isTextChanged, tScaleZ), FastDelegate<void>(&ODFAEGCreator::onObjectScaleChanged, this,tScaleZ));
+    tScaleX->getListener().connect("tScaleXChanged", cmdScaleX);
+    tScaleY->getListener().connect("tScaleYChanged", cmdScaleY);
+    tScaleZ->getListener().connect("tScaleZChanged", cmdScaleZ);
+    //Rotation.
+    Label* lRotation = new Label(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"rotation : ", 15);
+    lRotation->setParent(pTransform);
+    Node* lRotationNode = new Node("ROTATION",lRotation,Vec2f(0, 0), Vec2f(1, 0.025),rootPropNode.get());
+    pTransform->addChild(lRotation);
+    Label* lAngle = new Label(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"angle : ", 15);
+    lAngle->setParent(pTransform);
+    Node* lRotAngleNode = new Node("ANGLE",lAngle,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lAngle);
+    tRotAngle = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getRotation()),getRenderWindow());
+    tRotAngle->setParent(pTransform);
+    tRotAngle->setTextSize(15);
+    lRotAngleNode->addOtherComponent(tRotAngle, Vec2f(0.75, 0.025));
+    pTransform->addChild(tRotAngle);
+    Command cmdRotAngle (FastDelegate<bool>(&TextArea::isTextChanged, tRotAngle), FastDelegate<void>(&ODFAEGCreator::onObjectRotationChanged, this, tRotAngle));
+    tRotAngle->getListener().connect("ROTANGLECHANGED", cmdRotAngle);
 }
 void ODFAEGCreator::displayEntityInfos(Entity* tile) {
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
@@ -2031,6 +2088,30 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
         }
     }
 }
+void ODFAEGCreator::onObjectRotationChanged(TextArea* ta) {
+    if (ta == tRotAngle) {
+        if (is_number(ta->getText())) {
+            float newAngle = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEROTANGLE"+conversionFloatString(newAngle));
+            State* state = new State("SCHANGEROTANGLE", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getRotation());
+            state->addParameter("NEWVALUE", newAngle);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            selectedObject->setRotation(newAngle);
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGEROTANGLE", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", rectSelect.getItems()[i]->getRotation());
+                selectState->addParameter("NEWVALUE", newAngle);
+                rectSelect.getItems()[i]->setRotation(newAngle);
+                sg->addState(selectState);
+            }
+        }
+    }
+}
 void ODFAEGCreator::onObjectSizeChanged(TextArea* ta) {
     if (ta == tSizeW) {
         if (is_number(ta->getText())) {
@@ -2092,6 +2173,72 @@ void ODFAEGCreator::onObjectSizeChanged(TextArea* ta) {
                 selectState->addParameter("OLDVALUE", rectSelect.getItems()[i]->getSize().z);
                 selectState->addParameter("NEWVALUE", newSizeD);
                 rectSelect.getItems()[i]->setSize(Vec3f(rectSelect.getItems()[i]->getSize().x, rectSelect.getItems()[i]->getSize().y, newSizeD));
+                sg->addState(selectState);
+            }
+        }
+    }
+}
+void ODFAEGCreator::onObjectScaleChanged(TextArea* ta) {
+    if (ta == tScaleX) {
+        if (is_number(ta->getText())) {
+            float newScaleX = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGESCALEX"+conversionFloatString(newScaleX));
+            State* state = new State("SCHANGESCALEX", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getScale().x);
+            state->addParameter("NEWVALUE", newScaleX);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            selectedObject->scale(Vec3f(newScaleX / selectedObject->getScale().x, selectedObject->getScale().y, selectedObject->getScale().z));
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGESCALEX", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", rectSelect.getItems()[i]->getScale().x);
+                selectState->addParameter("NEWVALUE", newScaleX);
+                rectSelect.getItems()[i]->scale(Vec3f(newScaleX / rectSelect.getItems()[i]->getScale().x, rectSelect.getItems()[i]->getScale().y, rectSelect.getItems()[i]->getScale().z));
+                sg->addState(selectState);
+            }
+        }
+    } else if (ta == tScaleY) {
+        if(is_number(ta->getText())) {
+            float newScaleY = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGESCALEY"+conversionFloatString(newScaleY));
+            State* state = new State("SCHANGESCALEY", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getScale().y);
+            state->addParameter("NEWVALUE", newScaleY);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            selectedObject->scale(Vec3f(selectedObject->getScale().x, newScaleY/selectedObject->getScale().y, selectedObject->getScale().z));
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGESCALEY", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", rectSelect.getItems()[i]->getScale().y);
+                selectState->addParameter("NEWVALUE", newScaleY);
+                rectSelect.getItems()[i]->scale(Vec3f(rectSelect.getItems()[i]->getScale().x, newScaleY/rectSelect.getItems()[i]->getScale().y, rectSelect.getItems()[i]->getScale().z));
+                sg->addState(selectState);
+            }
+        }
+    } else if (ta == tScaleZ) {
+        if(is_number(ta->getText())) {
+            float newScaleZ = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGESCALEZ"+conversionFloatString(newScaleZ));
+            State* state = new State("SCHANGESCALEZ", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getScale().z);
+            state->addParameter("NEWVALUE", newScaleZ);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            selectedObject->scale(Vec3f(selectedObject->getScale().x, selectedObject->getScale().y, newScaleZ/selectedObject->getScale().z));
+            updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGESCALEZ", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", rectSelect.getItems()[i]->getScale().z);
+                selectState->addParameter("NEWVALUE", newScaleZ);
+                rectSelect.getItems()[i]->setPosition(Vec3f(rectSelect.getItems()[i]->getScale().x, rectSelect.getItems()[i]->getScale().y, newScaleZ/rectSelect.getItems()[i]->getScale().z));
                 sg->addState(selectState);
             }
         }

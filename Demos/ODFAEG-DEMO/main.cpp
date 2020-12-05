@@ -1,5 +1,4 @@
 #include "application.h"
-#include "ExtLib/GLEW/glew-2.0.0/include/GL/glew.h"
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <stdio.h>

@@ -84,6 +84,7 @@ namespace odfaeg {
             * \param angle : the rotation angle.
             */
             void setRotation (float angle, math::Vec3f axis = math::Vec3f(0, 0, 1)) {
+                tm.setEntityId(1);
                 m_rotation = angle;
                 tm.setRotation(axis, angle);
                 recomputeBounds();

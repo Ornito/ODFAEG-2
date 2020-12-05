@@ -62,6 +62,8 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onSelectedEmChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onAnimUpdaterChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onObjectMoveChanged(odfaeg::graphic::gui::TextArea* ta);
+    void onObjectScaleChanged(odfaeg::graphic::gui::TextArea* ta);
+    void onObjectRotationChanged(odfaeg::graphic::gui::TextArea* ta);
     void addShape(odfaeg::graphic::Shape *shape);
     void addTile(odfaeg::graphic::Tile *tile);
     bool removeShape (unsigned int id);

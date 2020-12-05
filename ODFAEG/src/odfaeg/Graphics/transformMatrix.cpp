@@ -10,6 +10,7 @@ namespace odfaeg {
             r3dAxis = math::Vec3f(0, 0, 0);
             s3d = math::Vec3f (1, 1, 1);
             o3d = math::Vec3f (0, 0, 0);
+            entityId=0;
             needToUpdate3D = false;
             inverseNeedToUpdate3D = false;
         }
@@ -27,6 +28,8 @@ namespace odfaeg {
         }
         void TransformMatrix::setOrigin(math::Vec3f vec3) {
             o3d = vec3;
+            needToUpdate3D = true;
+            inverseNeedToUpdate3D = true;
         }
         void TransformMatrix::setTranslation (const math::Vec3f trans) {
             t3d = trans;
@@ -67,15 +70,15 @@ namespace odfaeg {
                 matrix4f.m11 = (r3dAxis.x * r3dAxis.x * (1 - math::Math::cosinus(angle)) + math::Math::cosinus(angle)) * s3d.x;
                 matrix4f.m12 = (r3dAxis.x * r3dAxis.y * (1 - math::Math::cosinus(angle)) - r3dAxis.z * math::Math::sinus(angle)) * s3d.y;
                 matrix4f.m13 = (r3dAxis.x * r3dAxis.z * (1 - math::Math::cosinus(angle)) + r3dAxis.y * math::Math::sinus(angle)) * s3d.z;
-                matrix4f.m14 = -o3d.x * matrix4f.m11 /*- o3d.y * matrix4f.m12 - o3d.z * matrix4f.m13*/ + t3d.x;
+                matrix4f.m14 = -o3d.x * matrix4f.m11 - o3d.y * matrix4f.m12 - o3d.z * matrix4f.m13 + t3d.x;
                 matrix4f.m21 = (r3dAxis.y * r3dAxis.x * (1 - math::Math::cosinus(angle)) + r3dAxis.z * math::Math::sinus(angle)) * s3d.x;
                 matrix4f.m22 = (r3dAxis.y * r3dAxis.y * (1 - math::Math::cosinus(angle)) + math::Math::cosinus(angle)) * s3d.y;
                 matrix4f.m23 = (r3dAxis.y * r3dAxis.z * (1 - math::Math::cosinus(angle)) - r3dAxis.x * math::Math::sinus(angle)) * s3d.z;
-                matrix4f.m24 = /*-o3d.x * matrix4f.m21*/ - o3d.y * matrix4f.m22 /*- o3d.z * matrix4f.m23*/ + t3d.y;
+                matrix4f.m24 = -o3d.x * matrix4f.m21 - o3d.y * matrix4f.m22 - o3d.z * matrix4f.m23 + t3d.y;
                 matrix4f.m31 = (r3dAxis.z * r3dAxis.x * (1 - math::Math::cosinus(angle)) - r3dAxis.y * math::Math::sinus(angle)) * s3d.x;
                 matrix4f.m32 = (r3dAxis.z * r3dAxis.y * (1 - math::Math::cosinus(angle)) + r3dAxis.x * math::Math::cosinus(angle)) * s3d.y;
                 matrix4f.m33 = (r3dAxis.z * r3dAxis.z * (1 - math::Math::cosinus(angle)) + math::Math::cosinus(angle)) * s3d.z;
-                matrix4f.m34 = /*-o3d.x * matrix4f.m31 - o3d.y * matrix4f.m32*/ - o3d.z * matrix4f.m33 + t3d.z;
+                matrix4f.m34 = -o3d.x * matrix4f.m31 - o3d.y * matrix4f.m32 - o3d.z * matrix4f.m33 + t3d.z;
                 matrix4f.m41 = 0;
                 matrix4f.m42 = 0;
                 matrix4f.m43 = 0;
@@ -93,15 +96,15 @@ namespace odfaeg {
                 matrix4f.m11 = (r3dAxis.x * r3dAxis.x * (1 - math::Math::cosinus(angle)) + math::Math::cosinus(angle)) * s3d.x;
                 matrix4f.m12 = (r3dAxis.x * r3dAxis.y * (1 - math::Math::cosinus(angle)) - r3dAxis.z * math::Math::sinus(angle)) * s3d.y;
                 matrix4f.m13 = (r3dAxis.x * r3dAxis.z * (1 - math::Math::cosinus(angle)) + r3dAxis.y * math::Math::sinus(angle)) * s3d.z;
-                matrix4f.m14 = -o3d.x * matrix4f.m11 /*- o3d.y * matrix4f.m12 - o3d.z * matrix4f.m13*/ + t3d.x;
+                matrix4f.m14 = -o3d.x * matrix4f.m11 - o3d.y * matrix4f.m12 - o3d.z * matrix4f.m13 + t3d.x;
                 matrix4f.m21 = (r3dAxis.y * r3dAxis.x * (1 - math::Math::cosinus(angle)) + r3dAxis.z * math::Math::sinus(angle)) * s3d.x;
                 matrix4f.m22 = (r3dAxis.y * r3dAxis.y * (1 - math::Math::cosinus(angle)) + math::Math::cosinus(angle)) * s3d.y;
                 matrix4f.m23 = (r3dAxis.y * r3dAxis.z * (1 - math::Math::cosinus(angle)) - r3dAxis.x * math::Math::sinus(angle)) * s3d.z;
-                matrix4f.m24 = /*-o3d.x * matrix4f.m21*/ - o3d.y * matrix4f.m22 /*- o3d.z * matrix4f.m23*/ + t3d.y;
+                matrix4f.m24 = -o3d.x * matrix4f.m21 - o3d.y * matrix4f.m22 - o3d.z * matrix4f.m23 + t3d.y;
                 matrix4f.m31 = (r3dAxis.z * r3dAxis.x * (1 - math::Math::cosinus(angle)) - r3dAxis.y * math::Math::sinus(angle)) * s3d.x;
                 matrix4f.m32 = (r3dAxis.z * r3dAxis.y * (1 - math::Math::cosinus(angle)) + r3dAxis.x * math::Math::cosinus(angle)) * s3d.y;
                 matrix4f.m33 = (r3dAxis.z * r3dAxis.z * (1 - math::Math::cosinus(angle)) + math::Math::cosinus(angle)) * s3d.z;
-                matrix4f.m34 = /*-o3d.x * matrix4f.m31 - o3d.y * matrix4f.m32*/ - o3d.z * matrix4f.m33 + t3d.z;
+                matrix4f.m34 = -o3d.x * matrix4f.m31 - o3d.y * matrix4f.m32 - o3d.z * matrix4f.m33 + t3d.z;
                 matrix4f.m41 = 0;
                 matrix4f.m42 = 0;
                 matrix4f.m43 = 0;
@@ -159,15 +162,15 @@ namespace odfaeg {
                 matrix4f.m11 = (r3dAxis.x * r3dAxis.x * (1 - math::Math::cosinus(angle)) + math::Math::cosinus(angle)) * s3d.x;
                 matrix4f.m12 = (r3dAxis.x * r3dAxis.y * (1 - math::Math::cosinus(angle)) - r3dAxis.z * math::Math::sinus(angle)) * s3d.y;
                 matrix4f.m13 = (r3dAxis.x * r3dAxis.z * (1 - math::Math::cosinus(angle)) + r3dAxis.y * math::Math::sinus(angle)) * s3d.z;
-                matrix4f.m14 = -o3d.x * matrix4f.m11 /*- o3d.y * matrix4f.m12 - o3d.z * matrix4f.m13*/ + t3d.x;
+                matrix4f.m14 = -o3d.x * matrix4f.m11 - o3d.y * matrix4f.m12 - o3d.z * matrix4f.m13 + t3d.x;
                 matrix4f.m21 = (r3dAxis.y * r3dAxis.x * (1 - math::Math::cosinus(angle)) + r3dAxis.z * math::Math::sinus(angle)) * s3d.x;
                 matrix4f.m22 = (r3dAxis.y * r3dAxis.y * (1 - math::Math::cosinus(angle)) + math::Math::cosinus(angle)) * s3d.y;
                 matrix4f.m23 = (r3dAxis.y * r3dAxis.z * (1 - math::Math::cosinus(angle)) - r3dAxis.x * math::Math::sinus(angle)) * s3d.z;
-                matrix4f.m24 = /*-o3d.x * matrix4f.m21*/ - o3d.y * matrix4f.m22 /*- o3d.z * matrix4f.m23*/ + t3d.y;
+                matrix4f.m24 = -o3d.x * matrix4f.m21 - o3d.y * matrix4f.m22 - o3d.z * matrix4f.m23 + t3d.y;
                 matrix4f.m31 = (r3dAxis.z * r3dAxis.x * (1 - math::Math::cosinus(angle)) - r3dAxis.y * math::Math::sinus(angle)) * s3d.x;
                 matrix4f.m32 = (r3dAxis.z * r3dAxis.y * (1 - math::Math::cosinus(angle)) + r3dAxis.x * math::Math::cosinus(angle)) * s3d.y;
                 matrix4f.m33 = (r3dAxis.z * r3dAxis.z * (1 - math::Math::cosinus(angle)) + math::Math::cosinus(angle)) * s3d.z;
-                matrix4f.m34 = /*-o3d.x * matrix4f.m31 - o3d.y * matrix4f.m32*/ - o3d.z * matrix4f.m33 + t3d.z;
+                matrix4f.m34 = -o3d.x * matrix4f.m31 - o3d.y * matrix4f.m32 - o3d.z * matrix4f.m33 + t3d.z;
                 matrix4f.m41 = 0;
                 matrix4f.m42 = 0;
                 matrix4f.m43 = 0;
