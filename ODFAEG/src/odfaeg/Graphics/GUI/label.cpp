@@ -2,7 +2,7 @@
 namespace odfaeg {
     namespace graphic {
         namespace gui {
-            Label::Label (RenderWindow& window, math::Vec3f position, math::Vec3f size, const Font* font, std::string t, unsigned int charSize) :
+            Label::Label (RenderWindow& window, math::Vec3f position, math::Vec3f size, const Font* font, sf::String t, unsigned int charSize) :
             LightComponent (window, position, size, size * 0.5f) {
                 text.setFont(*font);
                 text.setString(t);
@@ -39,10 +39,10 @@ namespace odfaeg {
                 target.draw(rect);
                 target.draw(text);
             }
-            void Label::setText(std::string t) {
+            void Label::setText(sf::String t) {
                 text.setString(t);
             }
-            std::string Label::getText() {
+            sf::String Label::getText() {
                 return text.getString();
             }
             bool Label::isMouseInside() {

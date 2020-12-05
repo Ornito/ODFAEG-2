@@ -4685,8 +4685,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/font.cpp.obj: ../extlibs/head
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/font.cpp.obj: ../extlibs/headers/SFML/Window/Export.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/font.cpp.obj: ../extlibs/headers/SFML/Window/GlResource.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/font.cpp.obj: ../extlibs/headers/SFML/Window/WindowHandle.hpp
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/font.cpp.obj: ../extlibs/headers/libfreetype/windows/freetype/config/ftheader.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/font.cpp.obj: ../extlibs/headers/libfreetype/windows/ft2build.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/font.cpp.obj: ../extlibs/headers/freetype2/config/ftheader.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/font.cpp.obj: ../extlibs/headers/freetype2/ft2build.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/font.cpp.obj: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/font.cpp.obj: ../include/odfaeg/Core/erreur.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/font.cpp.obj: ../include/odfaeg/Core/factory.h

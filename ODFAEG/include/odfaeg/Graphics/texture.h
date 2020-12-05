@@ -506,8 +506,12 @@ namespace odfaeg
             unsigned int getNativeHandle() const;
             bool isCubemap();
             void setName(std::string name);
-        private :
+            void update(const Texture& texture);
+            void update(const Texture& texture, unsigned int x, unsigned int y);
+            void swap(Texture& texture);
 
+        private :
+            friend class Text;
             friend class RenderTexture;
             friend class RenderTarget;
 

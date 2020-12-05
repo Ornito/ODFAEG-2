@@ -519,7 +519,7 @@ namespace sorrok {
         TextureManager<Skill::Type> tm3;
         tm3.fromFileWithAlias("tilesets/lastheal-icon.png", Skill::LAST_HEAL);
         FontManager<Fonts> fm;
-        fm.fromFileWithAlias("fonts/FreeSerif.ttf", Serif);
+        fm.fromFileWithAlias("fonts/Arial.ttf", Serif);
         cache.addResourceManager(fm, "FontManager");
         cache.addResourceManager(tm, "TextureManager");
         cache.addResourceManager(tm2, "TextureManager2");

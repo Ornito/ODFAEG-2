@@ -1,1 +1,1 @@
--IC:/Users/Laurent/Windows/ODFAEG/include -IC:/Users/Laurent/Windows/ODFAEG/extlibs/headers -IC:/Users/Laurent/Windows/ODFAEG/extlibs/headers/libfreetype/windows -IC:/Strawberry/c/include/freetype2 
+-IC:/Users/Laurent/Windows/ODFAEG/include -IC:/Users/Laurent/Windows/ODFAEG/extlibs/headers -IC:/Users/Laurent/Windows/ODFAEG/extlibs/headers/freetype2 -IC:/Strawberry/c/include/freetype2 

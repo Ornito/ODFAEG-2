@@ -767,5 +767,35 @@ namespace odfaeg {
         void Texture::setName (std::string name) {
             m_name = name;
         }
+        ////////////////////////////////////////////////////////////
+        void Texture::update(const Texture& texture)
+        {
+            // Update the whole texture
+            update(texture, 0, 0);
+        }
+
+
+        ////////////////////////////////////////////////////////////
+        void Texture::update(const Texture& texture, unsigned int x, unsigned int y)
+        {
+            assert(x + texture.m_size.x <= m_size.x);
+            assert(y + texture.m_size.y <= m_size.y);
+
+            if (!m_texture || !texture.m_texture)
+                return;
+            update(texture.copyToImage(), x, y);
+        }
+        ////////////////////////////////////////////////////////////
+        void Texture::swap(Texture& right)
+        {
+            std::swap(m_size,          right.m_size);
+            std::swap(m_actualSize,    right.m_actualSize);
+            std::swap(m_texture,       right.m_texture);
+            std::swap(m_isSmooth,      right.m_isSmooth);
+            std::swap(m_isRepeated,    right.m_isRepeated);
+            std::swap(m_pixelsFlipped, right.m_pixelsFlipped);
+            m_cacheId = getUniqueId();
+            right.m_cacheId = getUniqueId();
+        }
     }
 } // namespace sf

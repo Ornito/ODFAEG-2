@@ -25,7 +25,7 @@ Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0
 }
 void ODFAEGCreator::onLoad() {
     FontManager<Fonts> fm;
-    fm.fromFileWithAlias("fonts/FreeSerif.ttf", Serif);
+    fm.fromFileWithAlias("fonts/Arial.ttf", Serif);
     TextureManager<> tm;
     cache.addResourceManager(fm, "FontManager");
     cache.addResourceManager(tm, "TextureManager");

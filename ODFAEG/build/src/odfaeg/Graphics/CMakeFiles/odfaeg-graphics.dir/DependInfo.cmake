@@ -91,7 +91,7 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../include"
   "../extlibs/headers"
-  "../extlibs/headers/libfreetype/windows"
+  "../extlibs/headers/freetype2"
   "C:/Strawberry/c/include/freetype2"
   )
 
