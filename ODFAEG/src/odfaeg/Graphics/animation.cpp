@@ -77,10 +77,12 @@ namespace odfaeg {
             if (getChildren().size() > 1 && !running) {
                 running = true;
                 this->loop = loop;
+                currentFrameIndex = 0;
             }
         }
-        void Anim::stop (){
+        void Anim::stop () {
             if (running) {
+                currentFrameIndex = 0;
                 running = false;
             }
         }
@@ -105,6 +107,7 @@ namespace odfaeg {
                     if (currentFrameIndex >= getChildren().size()) {
                         currentFrameIndex = 0;
                         if (!loop) {
+                            currentFrameIndex = getChildren().size() - 1;
                             running = false;
                         }
                     }

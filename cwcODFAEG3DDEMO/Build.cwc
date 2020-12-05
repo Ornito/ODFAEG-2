@@ -14,7 +14,7 @@
 -I ../ODFAEG/extlibs/headers/OPENSSL/
 -I ../ODFAEG/include/
 -I ../ODFAEG/extlibs/headers/
--I ../ODFAEG/extlibs/headers/libfreetype/windows/
+-I ../ODFAEG/extlibs/headers/freetype2/
 -I ../Extlib/Assimp/include/
 
 >
