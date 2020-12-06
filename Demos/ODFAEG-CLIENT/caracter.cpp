@@ -67,6 +67,7 @@ namespace sorrok {
         if (getCollisionVolume() != nullptr) {
             getCollisionVolume()->move(Vec3f(t.x, t.y, 0));
         }
+        changeAttribute("position"+conversionIntString(getId()), Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
     }
     float Caracter::getRegenHpSpeed () {
         return regenHpSpeed;
@@ -151,9 +152,6 @@ namespace sorrok {
     }
     void Caracter::setAlive(bool b) {
         if (alive == true && b == false) {
-            if(getType() == "E_HERO") {
-                std::cout<<"hero death"<<std::endl;
-            }
             changeAttribute("isAlive"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
             anims[baseAnimIndex + currentAnimIndex]->stop();
             //anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
@@ -166,16 +164,10 @@ namespace sorrok {
             restartRespawn();
             //World::update();
         } else if (alive == false && b == true) {
-            if(getType() == "E_HERO") {
-                std::cout<<"hero alive"<<std::endl;
-            }
             changeAttribute("isAlive"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
             baseAnimIndex = WALKING;
             BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
             setLife(getMaxLife());
-            if(getType() == "E_HERO") {
-                std::cout<<"hero live"<<getLife()<<std::endl;
-            }
             //World::update();
         }
         alive = b;
@@ -287,8 +279,7 @@ namespace sorrok {
                 }
             }
             this->moving = b;
-            if (!moving ) {
-                std::cout<<"move!"<<std::endl;
+            if (moving ) {
                 changeAttribute("isMoving"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 //anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
@@ -299,7 +290,7 @@ namespace sorrok {
             } else {
                 changeAttribute("isMoving"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
-                //anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
+                anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
             }
         }
     }

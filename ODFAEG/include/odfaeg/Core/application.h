@@ -89,7 +89,6 @@ namespace odfaeg {
                         network::Network::getCliInstance().checkMessages();
                     }
                     if (network::Network::getSrvInstance().isRunning()) {
-
                         network::Network::getSrvInstance().checkMessages();
                     }
                     onExec();

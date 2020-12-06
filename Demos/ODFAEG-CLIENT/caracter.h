@@ -129,6 +129,7 @@ namespace sorrok {
             addAttribute("isAttacking"+odfaeg::core::conversionIntString(getId()), i);
             addAttribute("life"+odfaeg::core::conversionIntString(getId()), i);
             addAttribute("mana"+odfaeg::core::conversionIntString(getId()), i);
+            addAttribute("position"+odfaeg::core::conversionIntString(getId()), i);
         }
         std::pair<odfaeg::math::Vec2f, odfaeg::math::Vec2f> interpolation;
         void setRegen(std::vector<int> regen);

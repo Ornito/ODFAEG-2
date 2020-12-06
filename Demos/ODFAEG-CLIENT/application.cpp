@@ -823,7 +823,7 @@ namespace sorrok {
         }
     }
     void MyAppli::onExec () {
-        if (getClock("RequestTime").getElapsedTime().asSeconds() >= timeBtwnTwoReq.asSeconds()) {
+        if (getClock("RequestTime").getElapsedTime().asSeconds() >= timeBtwnTwoReq.asSeconds() && isClientAuthentified) {
             std::string request = "GETCARPOS";
             sf::Packet packet;
             packet<<request;
@@ -862,12 +862,15 @@ namespace sorrok {
             wDisplayQuests->setVisible(true);
             setEventContextActivated(false);
         }
-        if (Network::getResponse("NEWPATH", response)) {
+        if (Network::getResponse("NEWPATH", response) && isClientAuthentified) {
             std::vector<std::string> infos = split(response, "*");
             std::vector<Vec2f> path;
             int size = conversionStringInt(infos[0]);
             int id = conversionStringInt(infos[1]);
             Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            /*if (caracter->getType() == "E_HERO") {
+                std::cout<<"move from path"<<std::endl;
+            }*/
             if (static_cast<Hero*>(caracter) && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
                 caracter->setIsMovingFromKeyboard(false);
             }
@@ -883,21 +886,23 @@ namespace sorrok {
             for (int i = 0; i < size; i++) {
                 path.push_back(Vec2f(conversionStringFloat(infos[i*2+6]), conversionStringFloat(infos[i*2+7])));
             }
-            Vec2f d = newPos - actualPos;
-            if (id == hero->getId()) {
-                for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
-                    if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
-                        View view = getRenderComponentManager().getRenderComponent(i)->getView();
-                        view.move(d.x, d.y, d.y);
-                        getRenderComponentManager().getRenderComponent(i)->setView(view);
+            if (elapsedTime > 0) {
+                Vec2f d = newPos - actualPos;
+                if (id == hero->getId()) {
+                    for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
+                        if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
+                            View view = getRenderComponentManager().getRenderComponent(i)->getView();
+                            view.move(d.x, d.y, d.y);
+                            getRenderComponentManager().getRenderComponent(i)->setView(view);
+                        }
                     }
+                    getView().move (d.x, d.y, d.y);
                 }
-                getView().move (d.x, d.y, d.y);
+                Vec2f dir = d.normalize();
+                if (dir != caracter->getDir())
+                    caracter->setDir(dir);
+                World::moveEntity(caracter, d.x, d.y, d.y);
             }
-            Vec2f dir = d.normalize();
-            if (dir != caracter->getDir())
-                caracter->setDir(dir);
-            World::moveEntity(caracter, d.x, d.y, d.y);
             caracter->setPath(path);
             caracter->setMoving(true);
             caracter->interpolation.first = caracter->getCenter();
@@ -910,12 +915,10 @@ namespace sorrok {
             getClock("RequestTime").restart();
         }
         if (Network::getResponse("NEWPOS", response)) {
-
             std::vector<std::string> infos = split(response, "*");
             int id = conversionStringInt(infos[0]);
             ping = conversionStringLong(infos[1]);
             Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
-
             Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
             Vec3f newPos (conversionStringFloat(infos[2]), conversionStringFloat(infos[3]), conversionStringFloat(infos[4]));
 
@@ -946,21 +949,23 @@ namespace sorrok {
             } else if (caracter->isMoving()) {
                 newPos = Computer::getPosOnPathFromTime(newPos, caracter->getPath(),elapsedTime, caracter->getSpeed());
             }
-            Vec3f d = newPos - actualPos;
+            if (last_cli_time > caracter->getAttribute("position"+conversionIntString(id)).getValue<sf::Int64>()) {
+                Vec3f d = newPos - actualPos;
 
-            if (id == hero->getId()) {
-                for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
-                    if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
-                        View view = getRenderComponentManager().getRenderComponent(i)->getView();
-                        view.move(d.x, d.y, d.y);
-                        getRenderComponentManager().getRenderComponent(i)->setView(view);
+                if (id == hero->getId()) {
+                    for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
+                        if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
+                            View view = getRenderComponentManager().getRenderComponent(i)->getView();
+                            view.move(d.x, d.y, d.y);
+                            getRenderComponentManager().getRenderComponent(i)->setView(view);
+                        }
                     }
+                    getView().move (d.x, d.y, d.y);
                 }
-                getView().move (d.x, d.y, d.y);
+                World::moveEntity(caracter, d.x, d.y, d.y);
+                //World::update();
             }
-            World::moveEntity(caracter, d.x, d.y, d.y);
-            //World::update();
-            caracter->interpolation.first = Vec3f(caracter->getCenter().x, caracter->getCenter().y, caracter->getCenter().z);
+            caracter->interpolation.first = caracter->getCenter();
             if (caracter->isMoving()) {
                 if (caracter->isMovingFromKeyboard()) {
                     caracter->interpolation.second = caracter->interpolation.first + Vec3f(caracter->getDir().x,caracter->getDir().y,0)  * caracter->getSpeed() * (ping + timeBtwnTwoReq.asMicroseconds());
@@ -1385,18 +1390,21 @@ namespace sorrok {
                     } else {
                         Vec2f actualPos = Vec2f(caracter->getCenter().x, caracter->getCenter().y);
                         sf::Int64 elapsedTime = caracter->getClkTransfertTime().getElapsedTime().asMicroseconds();
+
                         Vec2f newPos = Computer::getPosOnPathFromTime(caracter->interpolation.first, caracter->getPath(),elapsedTime,caracter->getSpeed());
+                        /*if (caracter->getType() == "E_HERO")
+                            std::cout<<"move : "<<actualPos<<caracter->getPath()[0]<<std::endl;*/
                         Vec3f d = newPos - actualPos;
                         Vec2f dir = d.normalize();
                         if (caracter->getFocusedCaracter() != nullptr && caracter->isInFightingMode() &&
                             Vec2f(caracter->getCenter().x, caracter->getCenter().y).computeDist(Vec2f(caracter->getFocusedCaracter()->getCenter().x, caracter->getFocusedCaracter()->getCenter().y)) <= caracter->getRange()) {
-                            int delta = caracter->getRange() - Vec2f(caracter->getCenter().x, caracter->getCenter().y).computeDist(Vec2f(caracter->getFocusedCaracter()->getCenter().x, caracter->getFocusedCaracter()->getCenter().y));
+                            /*int delta = caracter->getRange() - Vec2f(caracter->getCenter().x, caracter->getCenter().y).computeDist(Vec2f(caracter->getFocusedCaracter()->getCenter().x, caracter->getFocusedCaracter()->getCenter().y));
                             newPos -= dir * delta;
-                            d = newPos - actualPos;
+                            d = newPos - actualPos;*/
                             caracter->setMoving(false);
                         }
                         if (caracter->isMoving() &&
-                            caracter->getPath().size() > 1 &&
+                            caracter->getPath().size() > 0 &&
                             newPos.computeDist(caracter->getPath()[caracter->getPath().size() - 1]) <= PATH_ERROR_MARGIN) {
                             caracter->setMoving(false);
                             newPos = caracter->getPath()[caracter->getPath().size() - 1];
@@ -1418,6 +1426,8 @@ namespace sorrok {
                         World::moveEntity(caracter, d.x, d.y, d.y);
                         World::update();
                     }
+                    /*if (caracter->getType() == "E_HERO")
+                        std::cout<<"caracter position : "<<caracter->getCenter()<<std::endl;*/
                 }
                 if (caracter->isInFightingMode()
                 && caracter->getFocusedCaracter() != nullptr
@@ -1566,8 +1576,6 @@ namespace sorrok {
                         if (caracter->getMana() + rgn >= caracter->getManaMax()) {
                             caracter->setMana(caracter->getManaMax());
                         } else {
-                            if (caracter->getType() == "E_HERO")
-                                std::cout<<"set mana"<<std::endl;
                             caracter->setMana(caracter->getMana() + rgn);
                         }
                     }
@@ -1622,7 +1630,7 @@ namespace sorrok {
         World::update();
         fps++;
         if (getClock("FPS").getElapsedTime().asSeconds() >= 1.f) {
-            std::cout<<"fps : "<<fps<<std::endl;
+            //std::cout<<"fps : "<<fps<<std::endl;
             getClock("FPS").restart();
             fps = 0;
         }

@@ -47,6 +47,7 @@ namespace odfaeg {
             return running;
         }
         void SrkServer::checkMessages() {
+            //std::cout<<"check messages"<<std::endl;
             if (running) {
                 vector<TcpSocket*>::iterator it;
                 if (Network::getTimeBtw2PingsClk().getElapsedTime().asMicroseconds() >= Network::getTimeBtw2Pings()) {
@@ -77,8 +78,8 @@ namespace odfaeg {
                     Network::getTimeBtw2SyncClk().restart();
                 }
                 if (selector.wait(sf::milliseconds(10))) {
+                    std::cout<<"selector"<<std::endl;
                     if (selector.isReady(listener)) {
-                        std::cout<<"new client"<<std::endl;
                         TcpSocket *client = new TcpSocket();
                         if (listener.accept(*client) == Socket::Done) {
                             std::cout<<"client connected!"<<std::endl;
@@ -90,18 +91,22 @@ namespace odfaeg {
                         }
                     }
                     for (it = clients.begin(); it != clients.end();it++) {
+
                         TcpSocket& client = **it;
                         if (selector.isReady(client)) {
+                            //std::cout<<"ready"<<std::endl;
                             User* user = Network::getUser(client);
                             bool pbKeyRsaSend = user->hPbKeyRsa();
                             bool pbKeySend = user->hPbKey();
                             bool pbIvSend = user->hPbIv();
                             bool authentic = user->isCertifiate();
                             bool cliPbKeyReceived = user->isCliPbKeyReceived();
+                            //std::cout<<"user get"<<std::endl;
                             if (!authentic && !cliPbKeyReceived && !pbKeyRsaSend && !pbKeySend && !pbIvSend && user != nullptr &&
                                 (!user->getRemotePortUDP() || !user->isUsingSecuredConnexion())) {
                                 Packet packet;
                                 if (client.receive(packet) == Socket::Done) {
+                                    //std::cout<<"packet received"<<std::endl;
                                     std::string request;
                                     packet>>request;
                                     if (request.find("SETCLIPBKEY") != std::string::npos) {
@@ -116,6 +121,7 @@ namespace odfaeg {
                                     } else {
                                         Network::addRequest (user, request);
                                     }
+                                    //std::cout<<"packet send"<<std::endl;
                                 } else {
                                     Network::removeUser(client);
                                     selector.remove(client);
@@ -127,6 +133,7 @@ namespace odfaeg {
                             if (!authentic && cliPbKeyReceived && !pbKeyRsaSend && !pbKeySend && !pbIvSend && user != nullptr && user->getRemotePortUDP() && user->isUsingSecuredConnexion()) {
                                 CliEncryptedPacket packet;
                                 if (client.receive(packet) == Socket::Done) {
+                                    //std::cout<<"packet received send client certifiate message"<<std::endl;
                                     std::string request;
                                     packet>>request;
                                     if (request == Network::getCertifiateClientMess()) {
@@ -139,11 +146,13 @@ namespace odfaeg {
                                         delete *it;
                                         it--;
                                     }
+                                    //std::cout<<"packet send client certifiate message send"<<std::endl;
                                 }
                             }
                             if (authentic && cliPbKeyReceived && !pbKeyRsaSend && !pbKeySend && !pbIvSend &&  user != nullptr && user->getRemotePortUDP() && user->isUsingSecuredConnexion()) {
                                 CliEncryptedPacket cliEncryptedPacket;
                                 if (client.receive(cliEncryptedPacket) == Socket::Done) {
+                                    //std::cout<<"packet received send pb key rsa"<<std::endl;
                                     std::string request;
                                     cliEncryptedPacket>>request;
                                     if (request == "GetPbKeyRsa") {
@@ -155,6 +164,7 @@ namespace odfaeg {
                                     } else {
                                         Network::addRequest (user, request);
                                     }
+                                    //std::cout<<"packet send pb key rsa"<<std::endl;
                                 } else {
                                     Network::removeUser(client);
                                     selector.remove(client);
@@ -166,6 +176,7 @@ namespace odfaeg {
                             if (authentic && cliPbKeyReceived && pbKeyRsaSend && !pbKeySend && !pbIvSend && user != nullptr && user->getRemotePortUDP() && user->isUsingSecuredConnexion()) {
                                 EncryptedPacket packet;
                                 if (client.receive(packet) == Socket::Done) {
+                                    //std::cout<<"packet received set pb key"<<std::endl;
                                     std::string request;
                                     packet>>request;
                                     if (request == "GetPbKey") {
@@ -178,11 +189,13 @@ namespace odfaeg {
                                         delete *it;
                                         it--;
                                     }
+                                    //std::cout<<"packet send set pb key"<<std::endl;
                                 }
                             }
                             if (authentic && cliPbKeyReceived && pbKeySend && pbKeyRsaSend && !pbIvSend && user != nullptr && user->getRemotePortUDP() && user->isUsingSecuredConnexion()) {
                                 EncryptedPacket packet;
                                 if (client.receive(packet) == Socket::Done) {
+                                    //std::cout<<"packet received set iv"<<std::endl;
                                     std::string request;
                                     packet>>request;
                                     if (request == "GetPbIv") {
@@ -195,14 +208,19 @@ namespace odfaeg {
                                         delete *it;
                                         it--;
                                     }
+                                    //std::cout<<"packet send set pb key iv"<<std::endl;
                                 }
+                                //std::cout<<"end pb key iv"<<std::endl;
                             }
-                            if (authentic && cliPbKeyReceived && pbKeySend && pbKeyRsaSend && user != nullptr && user->getRemotePortUDP() && user->isUsingSecuredConnexion()) {
+                            if (authentic && cliPbKeyReceived && pbKeySend && pbIvSend && pbKeyRsaSend && user != nullptr && user->getRemotePortUDP() && user->isUsingSecuredConnexion()) {
+                                //std::cout<<"sym enc packet"<<std::endl;
                                 SymEncPacket packet;
                                 if (client.receive(packet) == Socket::Done) {
+                                    //std::cout<<"packet received sym enc packet"<<std::endl;
                                     std::string request;
                                     packet>>request;
                                     Network::addRequest (user, request);
+                                    //std::cout<<"packet send sym enc packet"<<std::endl;
                                 } else {
                                     Network::removeUser(client);
                                     selector.remove(client);
@@ -210,9 +228,12 @@ namespace odfaeg {
                                     delete *it;
                                     it--;
                                 }
+                                //std::cout<<"end sym enc packet"<<std::endl;
                             }
                         }
+
                     }
+                    //std::cout<<"end tcp"<<std::endl;
                     if (selector.isReady(udpSocket)) {
                         Packet packet;
                         string request;
@@ -238,6 +259,7 @@ namespace odfaeg {
                     }
                 }
             }
+            //std::cout<<"end check messages"<<std::endl;
         }
         void SrkServer::removeClient(TcpSocket* client) {
             vector<TcpSocket*>::iterator it;

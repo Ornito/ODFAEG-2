@@ -271,9 +271,9 @@ namespace sorrok {
                 user->sendTcpPacket(packet);
             //Update the caracter states for a mouse move and update it's position from the transfer time.
             } else if (request == "MOVEFROMPATH") {
-                std::cout<<"move from path"<<std::endl;
                 int id = conversionStringInt(infos[1]);
                 Hero* hero = static_cast<Hero*> (World::getEntity(id));
+                //std::cout<<"hero pos : "<<hero->getCenter()<<std::endl;
                 Vec3f fPos (conversionStringInt(infos[2]), conversionStringInt(infos[3]), 0);
                 std::vector<Vec2f> path = World::getPath(hero, fPos);
                 hero->setPath(path);
@@ -285,6 +285,7 @@ namespace sorrok {
                 std::string response="";
                 int size = path.size();
                 sf::Int64 cli_time = user->getClientTime();
+                //std::cout<<"cli time : "<<cli_time<<std::endl;
                 response += "NEWPATH"+conversionIntString(size)+"*"+conversionIntString(hero->getId())+"*"+conversionFloatString(hero->getCenter().x)+"*"+conversionFloatString(hero->getCenter().y)+"*"+conversionLongString(cli_time)+"*"+conversionIntString(hero->isInFightingMode())+"*";
                 for (int i = 0; i < size; i++) {
                     response += conversionFloatString(path[i].x)+"*"+conversionFloatString(path[i].y);
@@ -411,7 +412,7 @@ namespace sorrok {
                 packet<<"ALIVE"+conversionIntString(hero->getId())+"*"+conversionFloatString(hero->getCenter().x)+"*"+conversionFloatString(hero->getCenter().y);
                 user->sendTcpPacket(packet);
             } else if (request == "INV") {
-                //std::cout<<"connect"<<std::endl;
+                std::cout<<"connect"<<std::endl;
                 caracter = new Hero(user, "Sorrok", "Nagi", "M", "Map test", "Brain", "Green", "White","Normal","Novice", 1);
                 BoundingVolume* bb2 = new BoundingBox(caracter->getGlobalBounds().getPosition().x, caracter->getGlobalBounds().getPosition().y + caracter->getGlobalBounds().getSize().y * 0.4f, 0,
                 caracter->getGlobalBounds().getSize().x, caracter->getGlobalBounds().getSize().y * 0.25f, 0);
@@ -499,13 +500,13 @@ namespace sorrok {
                         Vec2f dir = d.normalize();
                         if (caracter->isInFightingMode() &&
                             Vec2f(caracter->getCenter().x, caracter->getCenter().y).computeDist(Vec2f(caracter->getFocusedCaracter()->getCenter().x, caracter->getFocusedCaracter()->getCenter().y)) <= caracter->getRange()) {
-                            int delta = caracter->getRange() - Vec2f(caracter->getCenter().x, caracter->getCenter().y).computeDist(Vec2f(caracter->getFocusedCaracter()->getCenter().x, caracter->getFocusedCaracter()->getCenter().y));
+                            /*int delta = caracter->getRange() - Vec2f(caracter->getCenter().x, caracter->getCenter().y).computeDist(Vec2f(caracter->getFocusedCaracter()->getCenter().x, caracter->getFocusedCaracter()->getCenter().y));
                             newPos -= dir * delta;
-                            d = newPos - actualPos;
+                            d = newPos - actualPos;*/
                             caracter->setMoving(false);
                         }
                         if (caracter->isMoving()
-                            && caracter->getPath().size() > 1
+                            && caracter->getPath().size() > 0
                             && newPos.computeDist(caracter->getPath()[caracter->getPath().size() - 1]) <= PATH_ERROR_MARGIN) {
                             caracter->setMoving(false);
                             newPos = caracter->getPath()[caracter->getPath().size() - 1];
@@ -515,6 +516,8 @@ namespace sorrok {
                             caracter->setDir(dir);
                         World::moveEntity(caracter, d.x, d.y, d.y);
                     }
+                    /*if (caracter->getType() == "E_HERO")
+                        std::cout<<"caracter position : "<<caracter->getCenter()<<std::endl;*/
                 }
                 if (caracter->isInFightingMode() && !caracter->isMoving()) {
                     if (Vec2f(caracter->getCenter().x, caracter->getCenter().y).computeDist(Vec2f(caracter->getFocusedCaracter()->getCenter().x, caracter->getFocusedCaracter()->getCenter().y)) > caracter->getRange()) {
@@ -526,6 +529,8 @@ namespace sorrok {
                         caracter->setIsMovingFromKeyboard(false);
                         caracter->setAttacking(false);
                         std::vector<User*> users = Network::getUsers();
+                        if (caracter->getType() == "E_HERO")
+                            std::cout<<"move from path"<<std::endl;
                         for (unsigned int i = 0; i < users.size(); i++) {
                             sf::Int64 cli_time = users[i]->getClientTime();
                             response = "NEWPATH"+conversionIntString(size)+"*"+conversionIntString(caracter->getId())+"*"+conversionFloatString(caracter->getCenter().x)+"*"+conversionFloatString(caracter->getCenter().y)+"*"+conversionLongString(cli_time)+"*"+conversionIntString(caracter->isInFightingMode())+"*";
