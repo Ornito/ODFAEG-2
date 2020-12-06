@@ -44,7 +44,7 @@ namespace odfaeg {
                         anims[i]->getElapsedTime().asSeconds() > anims[i]->getFrameRate()) {
                         anims[i]->computeNextFrame(scene);
                         if (anims[i]->isCurrentFrameChanged() /*&& graphic::World::containsVisibleParentEntity(anims[i]->getRootEntity())*/) {
-                            graphic::World::changeVisibleEntity(anims[i]->getPreviousFrame(), anims[i]->getCurrentFrame());
+                            //graphic::World::changeVisibleEntity(anims[i]->getPreviousFrame(), anims[i]->getCurrentFrame());
                         }
                         anims[i]->setCurrentFrameChanged(false);
                         anims[i]->resetClock();

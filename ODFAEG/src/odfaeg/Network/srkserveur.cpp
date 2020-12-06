@@ -78,7 +78,6 @@ namespace odfaeg {
                     Network::getTimeBtw2SyncClk().restart();
                 }
                 if (selector.wait(sf::milliseconds(10))) {
-                    std::cout<<"selector"<<std::endl;
                     if (selector.isReady(listener)) {
                         TcpSocket *client = new TcpSocket();
                         if (listener.accept(*client) == Socket::Done) {

@@ -544,11 +544,13 @@ namespace sorrok {
         World::addEntityManager(theMap);
         World::setCurrentEntityManager("Map test");
         eu = new EntitiesUpdater();
+        eu->setName("Entity system updater");
         World::addWorker(eu);
         au = new AnimUpdater();
         au->setInterval(sf::seconds(0.01f));
         World::addTimer(au);
         psu = new ParticleSystemUpdater();
+        psu->setName("Particle system updater");
         World::addWorker(psu);
         tiles.push_back(new Tile(tm.getResourceByAlias("GRASS"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 0, 100, 100)));
@@ -1424,7 +1426,6 @@ namespace sorrok {
                             getView().move(d.x, d.y, d.y);
                         }
                         World::moveEntity(caracter, d.x, d.y, d.y);
-                        World::update();
                     }
                     /*if (caracter->getType() == "E_HERO")
                         std::cout<<"caracter position : "<<caracter->getCenter()<<std::endl;*/
@@ -1441,6 +1442,7 @@ namespace sorrok {
                     dir = dir.normalize();
                     if (caracter->getDir() != dir)
                         caracter->setDir(dir);
+                    caracter->setAttacking(true);
                     if (caracter->getDamages().empty()) {
                         //std::cout<<"wait for receiving damages"<<std::endl;
                         std::vector<int> damages;
@@ -1620,17 +1622,17 @@ namespace sorrok {
             } else
                 it++;
         }
-        ps->update(getClock("LoopTime").getElapsedTime());
+        /*ps->update(getClock("LoopTime").getElapsedTime());
         for (it = particles.begin(); it != particles.end(); it++) {
             it->first->update(getClock("LoopTime").getElapsedTime());
         }
         for (unsigned int i=0; i < particles2.size(); i++) {
             particles2[i]->update(getClock("LoopTime").getElapsedTime());
-        }
+        }*/
         World::update();
         fps++;
         if (getClock("FPS").getElapsedTime().asSeconds() >= 1.f) {
-            //std::cout<<"fps : "<<fps<<std::endl;
+            std::cout<<"fps : "<<fps<<std::endl;
             getClock("FPS").restart();
             fps = 0;
         }

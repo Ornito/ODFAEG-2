@@ -159,7 +159,7 @@ namespace odfaeg {
             if (running) {
                 short unsigned int port;
                 IpAddress address;
-                if (selector.wait(milliseconds(10))) {
+                if (selector.wait(microseconds(1))) {
                      if (selector.isReady(clientTCP)) {
                         if (useSecuredConnexion) {
                             SymEncPacket packet;

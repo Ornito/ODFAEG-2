@@ -126,14 +126,7 @@ namespace odfaeg {
                     if (it->second.isTriggered()) {
                         (it->second)();
                     }
-                    /*Action* action = it->second.getAction();
-                    if (action != nullptr) {
-                        std::vector<window::IEvent> events;
-                        action->getEvents(events);
-                        for (unsigned int i = 0; i < events.size(); i++) {
-                            Command::removeEvent(events[i]);
-                        }
-                    }*/
+
                  }
                  //Command::clearEventsStack();
              }

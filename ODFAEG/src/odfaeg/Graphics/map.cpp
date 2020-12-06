@@ -981,11 +981,11 @@ namespace odfaeg {
                     frcm->getRenderComponent(i)->changeVisibleEntities(toRemove, toAdd, this);
                 }
             }*/
-            for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
+            /*for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
                 if (frcm->getRenderComponent(i) != nullptr) {
                     frcm->getRenderComponent(i)->loadEntitiesOnComponent(frcm->getRenderComponent(i)->getEntities());
                 }
-            }
+            }*/
         }
         void Map::removeAnimatedVisibleEntity(Entity *toRemove, std::vector<Entity*>& entities, View& view, bool& removed) {
             if (toRemove->isAnimated()) {
