@@ -108,6 +108,14 @@ namespace odfaeg {
                i++;
            }
         }
+        std::vector<Component*> RenderComponentManager::getComponents() {
+            std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::iterator it;
+            std::vector<Component*> cpnts;
+            for (it = components.begin(); it != components.end(); it++) {
+                cpnts.push_back(it->second.get());
+            }
+            return cpnts;
+        }
         void RenderComponentManager::clearComponents() {
             std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::iterator it;
             for (it = components.begin(); it != components.end(); it++) {

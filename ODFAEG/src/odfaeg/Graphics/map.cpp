@@ -10,7 +10,7 @@ namespace odfaeg {
     namespace graphic {
     using namespace std;
 
-        Map::Map (RenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight, int cellDepth) : EntityManager(name), frcm(frcm) {
+        Map::Map (RenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight, int cellDepth) : EntityManager(name), frcm(frcm), cellWidth(cellWidth), cellHeight(cellHeight) {
             gridMap = new GridMap(cellWidth, cellHeight);
             updateComponents = false;
             id = 0;
@@ -355,6 +355,12 @@ namespace odfaeg {
                     throw core::Erreur(55, "Shader not supported!", 0);
                 }
             }*/
+        }
+        int Map::getCellWidth() {
+            return cellWidth;
+        }
+        int Map::getCellHeight() {
+            return cellHeight;
         }
          void Map::generate_labyrinthe (std::vector<Tile*> tGround, std::vector<Tile*> walls, math::Vec2f tileSize, physic::BoundingBox &rect, bool laby3D) {
             int startX = rect.getPosition().x / tileSize.x * tileSize.x;

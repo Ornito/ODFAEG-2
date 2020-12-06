@@ -359,6 +359,13 @@ namespace odfaeg {
                     }
                     return timers;
                 }
+                static std::vector<core::EntitySystem*> getWorkers() {
+                    std::vector<core::EntitySystem*> workers;
+                    for (unsigned int i = 0; i < cache.eus.size(); i++) {
+                        workers.push_back(cache.eus[i].get());
+                    }
+                    return workers;
+                }
                 static void update(std::string name="*") {
                     if (name == "*") {
                         for (unsigned int i = 0; i < cache.eus.size(); i++) {

@@ -304,6 +304,8 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         std::vector<math::Vec2f> getPath(Entity* entity, math::Vec2f finalPos);
         void setBaseChangementMatrix(BaseChangementMatrix bm);
         void updateParticles();
+        int getCellWidth();
+        int getCellHeight();
     private :
         /**
         * \fn void insertAnimatedVisibleEntity(Entity* ae, std::vector<Entity*>& visibleEntities);
@@ -357,6 +359,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         buildNormalMapShader, depthBufferGenShader, buildRefractionMapShader; /**> The shaders used to generate the lightmap and the final normal map.*/
         bool updateComponents;
         float diagSize;
+        int cellWidth, cellHeight;
 };
 }
 }

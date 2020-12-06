@@ -51,6 +51,9 @@ namespace odfaeg {
                     }
                 }
             }
+            std::vector<Anim*> getAnims() {
+                return anims;
+            }
         private :
             /** < the animations of the updater. */
             std::vector<Anim*> anims;

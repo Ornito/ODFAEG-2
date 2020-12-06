@@ -85,7 +85,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         const float speed = 10.f;
         odfaeg::graphic::gui::MenuBar* menuBar;
         odfaeg::graphic::gui::Menu *menu1, *menu2, *menu3, *menu4;
-        odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item14, *item15, *item16, *item21, *item22, *item23, *item31, *item32, *item33,
+        odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item14, *item15, *item16, *item17, *item21, *item22, *item23, *item31, *item32, *item33,
         *item34, *item35, *item36, *item37, *item41, *item42, *item43, *item44, *item45;
         odfaeg::core::ResourceCache<> cache;
         odfaeg::graphic::gui::FileDialog* fdTexturePath, *fdProjectPath;

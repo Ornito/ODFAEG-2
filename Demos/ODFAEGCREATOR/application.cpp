@@ -64,12 +64,16 @@ void ODFAEGCreator::onInit() {
     item16 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"New anim updater");
     item16->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item16);
+    item17 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "Save project");
+    item17->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item17);
     menu1->addMenuItem(item11);
     menu1->addMenuItem(item12);
     menu1->addMenuItem(item13);
     menu1->addMenuItem(item14);
     menu1->addMenuItem(item15);
     menu1->addMenuItem(item16);
+    menu1->addMenuItem(item17);
     item21 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Build");
     item21->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item21);
@@ -723,6 +727,121 @@ void ODFAEGCreator::onExec() {
             }
         }
         applis.close();
+        //Load textures.
+        std::ifstream ifs(appliname+"\\"+"textures.oc");
+        ITextArchive ia(ifs);
+        std::vector<std::string> paths;
+        ia(paths);
+        TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
+        for (unsigned int i = 0; i < paths.size(); i++) {
+            unsigned int lastSlash;
+            #if defined(ODFAEG_SYSTEM_LINUX)
+            lastSlash = paths[i].find_last_of("/");
+            #else if defined (ODFAEG_SYSTEM_WINDOWS)
+            lastSlash = paths[i].find_last_of("\\");
+            #endif // if
+            std::string ImgName = paths[i].substr(lastSlash+1);
+            tm.fromFileWithAlias(paths[i], ImgName);
+        }
+        ifs.close();
+        std::ifstream ifs3(appliname+"\\"+"entities.oc");
+        ITextArchive ia3(ifs3);
+        std::vector<Entity*> entities;
+        ia3(entities);
+        for (unsigned int i = 0; i < entities.size(); i++) {
+            for (unsigned int f = 0; f < entities[i]->getNbFaces(); f++) {
+                Face* face = entities[i]->getFace(f);
+                if (face->getMaterial().getTexId() != "") {
+                    face->getMaterial().clearTextures();
+                    face->getMaterial().addTexture(tm.getResourceByAlias(face->getMaterial().getTexId()), face->getMaterial().getTexRect());
+                }
+            }
+        }
+        ifs3.close();
+        std::ifstream ifs2(appliname+"\\"+"scenes.oc");
+        ITextArchive ia2(ifs2);
+        unsigned int size;
+        ia2(size);
+        for (unsigned int i = 0; i < size; i++) {
+            std::string name;
+            ia2(name);
+            std::string type;
+            ia2(type);
+            int cellWidth;
+            int cellHeight;
+            bool is2DIsoMatrix;
+            if (type == "Map") {
+                ia2(cellWidth);
+                ia2(cellHeight);
+                Map* scene = new Map(&getRenderComponentManager(),name,cellWidth,cellHeight,0);
+                ia(is2DIsoMatrix);
+                BaseChangementMatrix bcm;
+                if (is2DIsoMatrix) {
+                    bcm.set2DIsoMatrix();
+                }
+                scene->setBaseChangementMatrix(bcm);
+                World::addEntityManager(scene);
+                World::setCurrentEntityManager(name);
+                for (unsigned int e = 0; e < entities.size(); e++) {
+                    World::addEntity(entities[e]);
+                }
+            }
+        }
+        ifs2.close();
+        std::ifstream ifs4(appliname+"\\"+"timers.oc");
+        ITextArchive ia4(ifs4);
+        ia4(size);
+        for (unsigned int i  = 0; i < size; i++) {
+            std::string name;
+            std::string type;
+            ia4(name);
+            ia4(type);
+            if (type == "AnimationUpdater") {
+                AnimUpdater* au = new AnimUpdater();
+                au->setName(name);
+                std::vector<int> animsIds;
+                ia(animsIds);
+                for (unsigned int a = 0; a < animsIds.size(); a++) {
+                    Entity* entity = World::getEntity(animsIds[a]);
+                    if (entity != nullptr && dynamic_cast<Anim*>(entity)) {
+                        au->addAnim(static_cast<Anim*>(entity));
+                    }
+                }
+                World::addTimer(au);
+            }
+        }
+        ifs4.close();
+        std::ifstream ifs5(appliname+"\\"+"components.oc");
+        ITextArchive ia5(ifs5);
+        ia5(size);
+        for (unsigned int i = 0; i < size; i++) {
+            std::string type;
+            ia5(type);
+            if (type == "PerPixelLinkedList") {
+                int layer;
+                ia5(layer);
+                std::string expression;
+                ia5(expression);
+                PerPixelLinkedListRenderComponent* ppll = new PerPixelLinkedListRenderComponent(getRenderWindow(),layer,expression,ContextSettings(0, 0, 4, 4, 6));
+                getRenderComponentManager().addComponent(ppll);
+            }
+        }
+        ifs5.close();
+        std::ifstream ifs6(appliname+"\\"+"workers.oc");
+        ITextArchive ia6(ifs6);
+        ia6(size);
+        for (unsigned int i = 0; i < size; i++) {
+            std::string name;
+            std::string type;
+            ia6(name);
+            ia6(type);
+            if (type == "EntityUpdater") {
+                EntitiesUpdater* eu = new EntitiesUpdater();
+                eu->setName(name);
+                World::addWorker(eu);
+            }
+        }
+        ifs6.close();
         fdProjectPath->setVisible(false);
         fdProjectPath->setEventContextActivated(false);
         tScriptEdit->setEventContextActivated(true);
@@ -1303,6 +1422,103 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         getRenderComponentManager().setEventContextActivated(true, *wNewAnimUpdater);
         tScriptEdit->setEventContextActivated(false);
     }
+    if (item == item17) {
+        //Save textures.
+        TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
+        std::vector<std::string> paths = tm.getPaths();
+        std::ofstream file(appliname+"\\"+"textures.oc");
+        OTextArchive oa(file);
+        oa(paths);
+        file.close();
+        //Save entities.
+        std::vector<Entity*> entities = World::getEntities("*");
+        std::ofstream file2(appliname+"\\"+"entities.oc");
+        OTextArchive oa2(file2);
+        oa2(entities);
+        file.close();
+        //Save components.
+        std::ofstream file3(appliname+"\\"+"components.oc");
+        OTextArchive oa3(file3);
+        std::vector<Component*> components = getRenderComponentManager().getComponents();
+        unsigned int size = components.size();
+        oa3(size);
+        for (unsigned int i = 0; i < components.size(); i++) {
+            std::string componentType;
+            if (dynamic_cast<PerPixelLinkedListRenderComponent*>(components[i])) {
+                componentType = "PerPixelLinkedList";
+            }
+            int layer = static_cast<PerPixelLinkedListRenderComponent*>(components[i])->getLayer();
+            std::string expression = static_cast<PerPixelLinkedListRenderComponent*>(components[i])->getExpression();
+            oa3(componentType);
+            oa3(layer);
+            oa3(expression);
+        }
+        file3.close();
+        //Save entities updater.
+        std::ofstream file4(appliname+"\\"+"timers.oc");
+        OTextArchive oa4(file4);
+        std::vector<Timer*> timers = World::getTimers();
+        size = timers.size();
+        oa4(size);
+        for (unsigned int i = 0; i < timers.size(); i++) {
+            std::string name = timers[i]->getName();
+            std::string timerType;
+            std::vector<int> animIds;
+            if (dynamic_cast<AnimUpdater*>(timers[i])) {
+                timerType = "AnimationUpdater";
+                std::vector<Anim*> animations = static_cast<AnimUpdater*>(timers[i])->getAnims();
+                for (unsigned int j = 0; j < animations.size(); j++) {
+                    animIds.push_back(animations[i]->getId());
+                }
+            }
+            oa4(name);
+            oa4(timerType);
+            oa4(animIds);
+        }
+        file4.close();
+        std::ofstream file5(appliname+"\\"+"workers.oc");
+        OTextArchive oa5(file5);
+        std::vector<EntitySystem*> workers = World::getWorkers();
+        size = workers.size();
+        oa5(size);
+        for (unsigned int i = 0; i < workers.size(); i++) {
+            std::string name = workers[i]->getName();
+            std::string workerType;
+            if (dynamic_cast<EntitiesUpdater*>(workers[i])) {
+                workerType = "EntityUpdater";
+            }
+            oa5(name);
+            oa5(workerType);
+        }
+        file5.close();
+        std::ofstream file6(appliname+"\\"+"scenes.oc");
+        OTextArchive oa6(file6);
+        std::vector<EntityManager*> scenes = World::getEntityManagers();
+        size = scenes.size();
+        oa6(size);
+        for (unsigned int i = 0; i < scenes.size(); i++) {
+            std::string name;
+            std::string type;
+            int cellWidth;
+            int cellHeight;
+            bool is2DisoMatrix;
+            if (dynamic_cast<Map*>(scenes[i])) {
+                Map* scene = static_cast<Map*>(scenes[i]);
+                name = scene->getName();
+                cellWidth = scene->getCellWidth();
+                cellHeight = scene->getCellHeight();
+                type = "Map";
+                BaseChangementMatrix bcm = scene->getBaseChangementMatrix();
+                is2DisoMatrix = bcm.isIso2DMatrix();
+            }
+            oa6(name);
+            oa6(type);
+            oa6(cellWidth);
+            oa6(cellHeight);
+            oa6(is2DisoMatrix);
+        }
+        file6.close();
+     }
 }
 void ODFAEGCreator::addShape(Shape *shape) {
     std::map<std::string, std::string>::iterator it;
@@ -2589,6 +2805,7 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
             Tile* selectedTile = static_cast<Tile*>(selectedObject);
             selectedTile->getFace(0)->getMaterial().clearTextures();
             selectedTile->getFace(0)->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, gridWidth, gridHeight));
+            static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().setTexId("");
             updateScriptText(static_cast<Tile*>(selectedObject), nullptr);
         }
     } else {
@@ -2597,6 +2814,7 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
             std::cout<<"searching tex path : "<<dp->getSelectedItem()<<std::endl;
             if (textPaths[i].find(dp->getSelectedItem())) {*/
                 const Texture* text = tm.getResourceByAlias(dp->getSelectedItem());
+                std::vector<std::string> alias = tm.getAliasByResource(const_cast<Texture*>(text));
                 Sprite sprite (*text, Vec3f(0, bChooseText->getPosition().y + bChooseText->getSize().y, 0),Vec3f(text->getSize().x, text->getSize().y, 0),sf::IntRect(0, 0, text->getSize().x,text->getSize().y));
                 pMaterial->addSprite(sprite);
                 sf::IntRect textRect;
@@ -2608,6 +2826,7 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                 if (dynamic_cast<Tile*>(selectedObject)) {
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().clearTextures();
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().addTexture(text, sf::IntRect(0, 0, text->getSize().x, text->getSize().y));
+                    static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().setTexId(alias[0]);
                     textRect = sf::IntRect(0, 0, text->getSize().x, text->getSize().y);
                     updateScriptText(static_cast<Tile*>(selectedObject), text);
                 }
