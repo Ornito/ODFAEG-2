@@ -17,7 +17,7 @@ namespace odfaeg {
         void RenderComponentManager::setEventContextActivated(bool activated, RenderWindow& window) {
             std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::iterator it;
             for (it = components.begin();it != components.end(); it++) {
-                if (&it->second->getWindow() == &window) {
+                if (&it->second->getWindow() == &window && dynamic_cast<LightComponent*>(it->second.get())) {
                     it->second->setEventContextActivated(activated);
                 }
             }

@@ -30,8 +30,7 @@ namespace odfaeg {
             * \fn Listener()
             * \brief constructor.
             */
-             Listener()  {
-
+             Listener() : removeListener(false) {
              }
              /**
              * \fn void connect (std::string key, Command command)
@@ -125,8 +124,18 @@ namespace odfaeg {
                  for (it = commands.begin(); it != commands.end(); it++) {
                     if (it->second.isTriggered()) {
                         (it->second)();
+                        if (removeListener) {
+                            break;
+                        }
                     }
-
+                    /*Action* action = it->second.getAction();
+                    if (action != nullptr) {
+                        std::vector<window::IEvent> events;
+                        action->getEvents(events);
+                        for (unsigned int i = 0; i < events.size(); i++) {
+                            Command::removeEvent(events[i]);
+                        }
+                    }*/
                  }
                  //Command::clearEventsStack();
              }
@@ -140,6 +149,9 @@ namespace odfaeg {
                     commands.erase(it);
                 }
              }
+             void setRemoveListener(bool removeListener) {
+                 this->removeListener = removeListener;
+             }
              private :
              /** \fn void stopListen()
              *   \brief stop the thread which triggers and execute commands.
@@ -147,6 +159,7 @@ namespace odfaeg {
              std::map<std::string, Command> commands; /**> stores and execute commands.*/
              std::vector<std::string> toRemove;
              std::map<std::string, Command> toAdd;
+             bool removeListener;
         };
     }
 }

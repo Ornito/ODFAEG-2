@@ -981,6 +981,7 @@ namespace odfaeg {
                     frcm->getRenderComponent(i)->changeVisibleEntities(toRemove, toAdd, this);
                 }
             }*/
+            //std::cout<<"reload entities"<<std::endl;
             /*for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
                 if (frcm->getRenderComponent(i) != nullptr) {
                     frcm->getRenderComponent(i)->loadEntitiesOnComponent(frcm->getRenderComponent(i)->getEntities());

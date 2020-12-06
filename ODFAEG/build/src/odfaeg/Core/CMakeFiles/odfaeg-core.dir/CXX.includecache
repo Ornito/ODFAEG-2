@@ -7,6 +7,14 @@
 #IncludeRegexTransform: 
 
 ../extlibs/headers/GL/glew.h
+cstddef
+-
+cstdint
+-
+stddef.h
+-
+stdint.h
+-
 stddef.h
 -
 inttypes.h

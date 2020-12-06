@@ -11,6 +11,49 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/__/__/__/include/odfaeg/Core/factory.
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/variant.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/actions.cpp.obj
+ ../extlibs/headers/SFML/Config.hpp
+ ../extlibs/headers/SFML/System.hpp
+ ../extlibs/headers/SFML/System/Clock.hpp
+ ../extlibs/headers/SFML/System/Err.hpp
+ ../extlibs/headers/SFML/System/Export.hpp
+ ../extlibs/headers/SFML/System/FileInputStream.hpp
+ ../extlibs/headers/SFML/System/InputStream.hpp
+ ../extlibs/headers/SFML/System/Lock.hpp
+ ../extlibs/headers/SFML/System/MemoryInputStream.hpp
+ ../extlibs/headers/SFML/System/Mutex.hpp
+ ../extlibs/headers/SFML/System/NonCopyable.hpp
+ ../extlibs/headers/SFML/System/Sleep.hpp
+ ../extlibs/headers/SFML/System/String.hpp
+ ../extlibs/headers/SFML/System/String.inl
+ ../extlibs/headers/SFML/System/Thread.hpp
+ ../extlibs/headers/SFML/System/Thread.inl
+ ../extlibs/headers/SFML/System/ThreadLocal.hpp
+ ../extlibs/headers/SFML/System/ThreadLocalPtr.hpp
+ ../extlibs/headers/SFML/System/ThreadLocalPtr.inl
+ ../extlibs/headers/SFML/System/Time.hpp
+ ../extlibs/headers/SFML/System/Utf.hpp
+ ../extlibs/headers/SFML/System/Utf.inl
+ ../extlibs/headers/SFML/System/Vector2.hpp
+ ../extlibs/headers/SFML/System/Vector2.inl
+ ../extlibs/headers/SFML/System/Vector3.hpp
+ ../extlibs/headers/SFML/System/Vector3.inl
+ ../extlibs/headers/SFML/Window.hpp
+ ../extlibs/headers/SFML/Window/Clipboard.hpp
+ ../extlibs/headers/SFML/Window/Context.hpp
+ ../extlibs/headers/SFML/Window/ContextSettings.hpp
+ ../extlibs/headers/SFML/Window/Cursor.hpp
+ ../extlibs/headers/SFML/Window/Event.hpp
+ ../extlibs/headers/SFML/Window/Export.hpp
+ ../extlibs/headers/SFML/Window/GlResource.hpp
+ ../extlibs/headers/SFML/Window/Joystick.hpp
+ ../extlibs/headers/SFML/Window/Keyboard.hpp
+ ../extlibs/headers/SFML/Window/Mouse.hpp
+ ../extlibs/headers/SFML/Window/Sensor.hpp
+ ../extlibs/headers/SFML/Window/Touch.hpp
+ ../extlibs/headers/SFML/Window/VideoMode.hpp
+ ../extlibs/headers/SFML/Window/Window.hpp
+ ../extlibs/headers/SFML/Window/WindowHandle.hpp
+ ../extlibs/headers/SFML/Window/WindowStyle.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/action.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/command.h

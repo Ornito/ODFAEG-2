@@ -1194,6 +1194,10 @@ type_traits
 ../Graphics/transformMatrix.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/transformMatrix.h
 
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/export.hpp
+../config.hpp
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
+
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/maths.h
 math.h
 -
@@ -1591,6 +1595,18 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/orientedBoundingBox.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/boundingPolyhedron.h
 ../../../include/odfaeg/Graphics/transformMatrix.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/transformMatrix.h
+
+C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Physics/collisionResultSet.cpp
+../../../include/odfaeg/Physics/collisionResultSet.hpp
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/collisionResultSet.hpp
+
+C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Physics/emitter.cpp
+../../../include/odfaeg/Physics/emissionInterface.h
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/emissionInterface.h
+../../../include/odfaeg/Physics/emmiters.h
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/emmiters.h
+../../../include/odfaeg/Physics/particule.h
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/particule.h
 
 C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Physics/orientedBoundingBox.cpp
 ../../../include/odfaeg/Physics/boundingBox.h

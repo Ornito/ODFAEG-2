@@ -141,9 +141,12 @@ namespace sorrok {
             lSkill->getListener().connect("SkillSelected", cmdSkillSelected);
             pSkills->addChild(lSkill);
             lSkill->setParent(pSkills);
+
         }
         wSkills->setVisible(true);
+        getRenderComponentManager().setEventContextActivated(true, *wSkills);
         setEventContextActivated(false);
+        getRenderComponentManager().setEventContextActivated(false, getRenderWindow());
     }
     void MyAppli::onLabDiaryQuestName(Label* label)  {
         Quest* quest;
@@ -183,7 +186,9 @@ namespace sorrok {
             label->getListener().connect("LabDiaryQuestName", cmdLabDiaryQuestName);
         }
         wDiary->setVisible(true);
+        getRenderComponentManager().setEventContextActivated(true, *wDiary);
         setEventContextActivated(false);
+        getRenderComponentManager().setEventContextActivated(false, getRenderWindow());
     }
     void MyAppli::onLabQuestClicked(Label* label) {
         label->setEventContextActivated(false);
@@ -282,6 +287,9 @@ namespace sorrok {
     }
     void MyAppli::showInventory() {
         wInventory->setVisible(true);
+        getRenderComponentManager().setEventContextActivated(true, *wInventory);
+        setEventContextActivated(false);
+        getRenderComponentManager().setEventContextActivated(false, getRenderWindow());
         std::map<Item::Type, std::vector<Item>>& items = static_cast<Hero*>(hero)->getInventory();
         TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
         FontManager<Fonts> &fm = cache.resourceManager<Font, Fonts>("FontManager");
@@ -326,7 +334,6 @@ namespace sorrok {
             }
         }
         std::vector<Item> itemsToDisplay = selectedCristal.second;
-        label->getListener().removeLater("PICKUPITEM");
         pItems->removeAll();
         if (itemsToDisplay.size() > 0) {
             FontManager<Fonts> &fm = cache.resourceManager<Font,Fonts>("FontManager");
@@ -337,6 +344,7 @@ namespace sorrok {
                 Action a (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
                 Command cmd (a, FastDelegate<bool>(&Label::isMouseInside, itemName), FastDelegate<void>(&MyAppli::dropItems, this, itemName));
                 itemName->getListener().connect("PICKUPITEM", cmd);
+                itemName->getListener().setRemoveListener(true);
                 itemName->setParent(pItems);
                 table.addElement(itemName,i, 1);
                 Sprite sprite (*tm2.getResourceByAlias(Item::HP_POTION),pItems->getPosition(),Vec3f(50, 50, 0), sf::IntRect(0, 0, 50, 50));
@@ -403,6 +411,9 @@ namespace sorrok {
                     pItems->addChild(icon);
                 }
                 wPickupItems->setVisible(true);
+                getRenderComponentManager().setEventContextActivated(true, *wPickupItems);
+                setEventContextActivated(false);
+                getRenderComponentManager().setEventContextActivated(false, getRenderWindow());
             }
         }
     }
@@ -503,7 +514,7 @@ namespace sorrok {
         return false;
     }
     void MyAppli::onLoad() {
-        std::cout<<"load"<<std::endl;
+        //std::cout<<"load"<<std::endl;
         TextureManager<> tm;
         tm.fromFileWithAlias("tilesets/herbe.png", "GRASS");
         tm.fromFileWithAlias("tilesets/murs.png", "WALLS");
@@ -634,13 +645,14 @@ namespace sorrok {
         getRenderComponentManager().addComponent(label);
         button = new gui::Button(Vec3f(0, 200, 0), Vec3f(400, 100, 0), fm.getResourceByAlias(Fonts::Serif),"Respawn", 15, *wResuHero);
         getRenderComponentManager().addComponent(button);
-        button->setEventContextActivated(false);
         button->addActionListener(this);
         wResuHero->setVisible(false);
         wResuHero->setPosition(sf::Vector2i(500, 400));
+        getRenderComponentManager().setEventContextActivated(false, *wResuHero);
         wPickupItems = new RenderWindow(sf::VideoMode(100, 200), "PickupItems", sf::Style::Close, ContextSettings(0, 0, 4, 3, 0));
         addWindow(wPickupItems);
         wPickupItems->setVisible(false);
+        getRenderComponentManager().setEventContextActivated(false, *wPickupItems);
         World::update();
         addWindow(wResuHero);
         pItems = new Panel(*wPickupItems,Vec3f(0, 0, 0),Vec3f(100, 200, 0));
@@ -648,6 +660,7 @@ namespace sorrok {
         wInventory = new RenderWindow(sf::VideoMode(500, 300), "Inventory", sf::Style::Close, ContextSettings(0, 0, 4, 3, 0));
         addWindow(wInventory);
         wInventory->setVisible(false);
+        getRenderComponentManager().setEventContextActivated(false, *wInventory);
         pInventory = new Panel(*wInventory, Vec3f(0, 0, 0), Vec3f(500, 300, 0));
         getRenderComponentManager().addComponent(pInventory);
         //sf::sleep(sf::seconds(1.f));
@@ -675,6 +688,7 @@ namespace sorrok {
         pQuestList = new Panel(*wDisplayQuests,Vec3f(0, 0, 0),Vec3f(400, 300, 0));
         getRenderComponentManager().addComponent(pQuestList);
         wDisplayQuests->setVisible(false);
+        getRenderComponentManager().setEventContextActivated(false, *wDisplayQuests);
 
         wDisplayQuest = new RenderWindow(sf::VideoMode(400, 600), "Quest details", sf::Style::Default, ContextSettings(0, 0, 4, 3, 0));
         addWindow(wDisplayQuest);
@@ -685,15 +699,14 @@ namespace sorrok {
         bAccept = new Button(Vec3f(0, 500, 0), Vec3f(200, 100, 0),fm.getResourceByAlias(Fonts::Serif), "Accept", 15, *wDisplayQuest);
         getRenderComponentManager().addComponent(bAccept);
         bAccept->addActionListener(this);
-        bAccept->setEventContextActivated(false);
         bDeny = new Button(Vec3f(200, 500, 0), Vec3f(200, 100, 0),fm.getResourceByAlias(Fonts::Serif), "Give up", 15, *wDisplayQuest);
         getRenderComponentManager().addComponent(bDeny);
         pRewards = new Panel(*wDisplayQuest, Vec3f(0, 400, 0), Vec3f(400, 100, 0));
         getRenderComponentManager().addComponent(pRewards);
         bDeny->addActionListener(this);
         bDeny->setName("DENY");
-        bDeny->setEventContextActivated(false);
         wDisplayQuest->setVisible(false);
+        getRenderComponentManager().setEventContextActivated(false, *wDisplayQuest);
 
         wDiary = new RenderWindow(sf::VideoMode(600, 600), "Diary", sf::Style::Default, ContextSettings(0, 0, 4, 3, 0));
         addWindow(wDiary);
@@ -703,15 +716,16 @@ namespace sorrok {
         getRenderComponentManager().addComponent(pQuestProgress);
         bGiveUp = new Button(Vec3f(0, 500, 0), Vec3f(600, 100, 0),fm.getResourceByAlias(Fonts::Serif),"Give up",15,*wDiary);
         bGiveUp->addActionListener(this);
-        bGiveUp->setEventContextActivated(false);
         getRenderComponentManager().addComponent(bGiveUp);
         wDiary->setVisible(false);
+        getRenderComponentManager().setEventContextActivated(false, *wDiary);
 
         wSkills = new RenderWindow(sf::VideoMode(400, 600), "Skills", sf::Style::Default, ContextSettings(0, 0, 4, 3, 0));
         addWindow(wSkills);
         pSkills = new Panel (*wSkills, Vec3f(0, 0, 0), Vec3f(400, 600, 0));
         getRenderComponentManager().addComponent(pSkills);
         wSkills->setVisible(false);
+        getRenderComponentManager().setEventContextActivated(false, *wSkills);
         TextureManager<Skill::Type>& tm3 = cache.resourceManager<Texture,Skill::Type>("TextureManager3");
         Sprite sprite (*tm3.getResourceByAlias(Skill::LAST_HEAL),Vec3f(0, 0, 0),Vec3f(50, 50, 0), sf::IntRect(0, 0, 50, 50));
         floatingIcon = new Icon(getRenderWindow(), Vec3f(0, 0, -1), Vec3f(50, 50, 0), sprite);
@@ -737,6 +751,7 @@ namespace sorrok {
         psu->addParticleSystem(ps);
         World::addEntity(ps);
         setEventContextActivated(false);
+        getRenderComponentManager().setEventContextActivated(false, getRenderWindow());
     }
     void MyAppli::onRender(RenderComponentManager *cm) {
         // draw everything here...
@@ -783,24 +798,36 @@ namespace sorrok {
         if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED && window == wPickupItems) {
             pItems->removeAll();
             wPickupItems->setVisible(false);
+            getRenderComponentManager().setEventContextActivated(false, *wPickupItems);
+            setEventContextActivated(true);
+            getRenderComponentManager().setEventContextActivated(true, getRenderWindow());
         }
         if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED && window == wInventory) {
             pInventory->removeAll();
             wInventory->setVisible(false);
+            getRenderComponentManager().setEventContextActivated(false, *wInventory);
+            setEventContextActivated(true);
+            getRenderComponentManager().setEventContextActivated(true, getRenderWindow());
         }
         if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED && window == wDisplayQuests) {
             wDisplayQuests->setVisible(false);
+            getRenderComponentManager().setEventContextActivated(false, *wDisplayQuests);
             setEventContextActivated(true);
+            getRenderComponentManager().setEventContextActivated(true, getRenderWindow());
         }
         if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED && window == wDiary) {
             wDiary->setVisible(false);
+            getRenderComponentManager().setEventContextActivated(false, *wDiary);
             setEventContextActivated(true);
+            getRenderComponentManager().setEventContextActivated(true, getRenderWindow());
         }
         if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED && window == wSkills) {
             wSkills->setVisible(false);
-            for (unsigned int i = 0; i < pSkills->getChildren().size(); i++)
-                pSkills->getChildren()[i]->setEventContextActivated(false);
+            /*for (unsigned int i = 0; i < pSkills->getChildren().size(); i++)
+                pSkills->getChildren()[i]->setEventContextActivated(false);*/
+            getRenderComponentManager().setEventContextActivated(false, *wSkills);
             setEventContextActivated(true);
+            getRenderComponentManager().setEventContextActivated(true, getRenderWindow());
         }
         if (event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED && window == &getRenderWindow()) {
             previousKey = actualKey;
@@ -862,7 +889,9 @@ namespace sorrok {
                 label->getListener().connect("ALABCLICKED", cmdLabClicked);
             }
             wDisplayQuests->setVisible(true);
+            getRenderComponentManager().setEventContextActivated(true, *wDisplayQuests);
             setEventContextActivated(false);
+            getRenderComponentManager().setEventContextActivated(false, getRenderWindow());
         }
         if (Network::getResponse("NEWPATH", response) && isClientAuthentified) {
             std::vector<std::string> infos = split(response, "*");
@@ -946,6 +975,9 @@ namespace sorrok {
             if (!caracter->isMoving() && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
                 static_cast<Hero*>(caracter)->setIsMovingFromKeyboard(false);
             }
+            if (last_cli_time > caracter->getAttribute("life"+conversionIntString(id)).getValue<sf::Int64>()) {
+                caracter->setLife(life);
+            }
             if (static_cast<Hero*> (caracter) && static_cast<Hero*>(caracter)->isMovingFromKeyboard() && caracter->isMoving()) {
                 newPos = newPos + Vec3f(caracter->getDir().x, caracter->getDir().y, 0) * caracter->getSpeed() * elapsedTime;
             } else if (caracter->isMoving()) {
@@ -982,6 +1014,7 @@ namespace sorrok {
        if (Network::getResponse("DEATH", response)) {
            int id = conversionStringInt(response);
            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+           std::cout<<caracter->getType()<<" is death"<<std::endl;
            caracter->setAttacking(false);
            caracter->setFightingMode(false);
            caracter->setAlive(false);
@@ -1039,9 +1072,10 @@ namespace sorrok {
         }
         if (Network::getResponse("IDOK", response)) {
             isClientAuthentified = true;
+            setEventContextActivated(true);
+            getRenderComponentManager().setEventContextActivated(true, getRenderWindow());
             wIdentification->setVisible(false);
-            idButton->setEventContextActivated(false);
-            invButton->setEventContextActivated(false);
+            getRenderComponentManager().setEventContextActivated(false, *wIdentification);
             int heroId = conversionStringInt(response);
             SymEncPacket packet;
             packet<<"GETMAPINFOS";
@@ -1426,6 +1460,7 @@ namespace sorrok {
                             getView().move(d.x, d.y, d.y);
                         }
                         World::moveEntity(caracter, d.x, d.y, d.y);
+                        //World::update("Entity system updater");
                     }
                     /*if (caracter->getType() == "E_HERO")
                         std::cout<<"caracter position : "<<caracter->getCenter()<<std::endl;*/
@@ -1629,10 +1664,10 @@ namespace sorrok {
         for (unsigned int i=0; i < particles2.size(); i++) {
             particles2[i]->update(getClock("LoopTime").getElapsedTime());
         }*/
-        World::update();
+        World::update("*");
         fps++;
         if (getClock("FPS").getElapsedTime().asSeconds() >= 1.f) {
-            std::cout<<"fps : "<<fps<<std::endl;
+            //std::cout<<"fps : "<<fps<<std::endl;
             getClock("FPS").restart();
             fps = 0;
         }
@@ -1645,13 +1680,13 @@ namespace sorrok {
                 static_cast<Hero*>(hero)->addQuest(selectedQuest);
             }
             wDisplayQuest->setVisible(false);
-            setEventContextActivated(true);
             std::string request = "ACCEPT*"+conversionIntString(selectedPnj->getId())+"*"+selectedQuest->getName()+"*"+conversionIntString(hero->getId());
             SymEncPacket packet;
             packet<<request;
             Network::sendTcpPacket(packet);
-            bAccept->setEventContextActivated(false);
-            bDeny->setEventContextActivated(false);
+            getRenderComponentManager().setEventContextActivated(false, *wDisplayQuest);
+            setEventContextActivated(true);
+            getRenderComponentManager().setEventContextActivated(true, getRenderWindow());
         }
         if (item->getText() == "Give up") {
             if (static_cast<Hero*>(hero)->containsQuest(selectedQuest)) {
@@ -1659,14 +1694,16 @@ namespace sorrok {
                 selectedQuest->setStatus(Quest::NEW);
                 selectedQuest->reset();
             }
-            bAccept->setEventContextActivated(false);
-            bDeny->setEventContextActivated(false);
             wDisplayQuest->setVisible(false);
+            getRenderComponentManager().setEventContextActivated(false, *wDisplayQuest);
             setEventContextActivated(true);
+            getRenderComponentManager().setEventContextActivated(true, getRenderWindow());
         }
         if (item->getText() == "Continue") {
             wDisplayQuest->setVisible(false);
+            getRenderComponentManager().setEventContextActivated(false, *wDisplayQuest);
             setEventContextActivated(true);
+            getRenderComponentManager().setEventContextActivated(true, getRenderWindow());
         }
         if (item->getText() == "Get rewards") {
             static_cast<Hero*>(hero)->up(selectedQuest->getXp());
@@ -1680,13 +1717,18 @@ namespace sorrok {
             selectedQuest->setStatus(Quest::NEW);
             selectedQuest->reset();
             wDisplayQuest->setVisible(false);
+            getRenderComponentManager().setEventContextActivated(false, *wDisplayQuest);
             setEventContextActivated(true);
+            getRenderComponentManager().setEventContextActivated(true, getRenderWindow());
         }
         if (item->getText() == "Respawn") {
             SymEncPacket packet;
             std::string message = "ALIVE*"+conversionIntString(hero->getId());
             packet<<message;
             Network::sendTcpPacket(packet);
+            getRenderComponentManager().setEventContextActivated(false, *wResuHero);
+            setEventContextActivated(true);
+            getRenderComponentManager().setEventContextActivated(true, getRenderWindow());
         }
         if (item->getText() == "Invite") {
             std::cout<<"client authentified"<<std::endl;

@@ -14,11 +14,11 @@ namespace sorrok {
 
     }
     void MyAppli::onInit () {
-        std::cout<<"start srv"<<std::endl;
+        //std::cout<<"start srv"<<std::endl;
         Network::startSrv(10'000, 10'001);
-        std::cout<<"server started"<<std::endl;
+        //std::cout<<"server started"<<std::endl;
         theMap = new Map(nullptr, "Map test", 100, 50, 0);
-        std::cout<<"map created"<<std::endl;
+        //std::cout<<"map created"<<std::endl;
         /*try {
             driver = get_driver_instance();
             connection = driver->connect("localhost:3306", "root", "Kirokofu457$");
@@ -34,11 +34,11 @@ namespace sorrok {
         theMap->setBaseChangementMatrix(bcm);
         //std::cout<<"base changement matrix set"<<std::endl;
         World::addEntityManager(theMap);
-        std::cout<<"entity manager added"<<std::endl;
+        //std::cout<<"entity manager added"<<std::endl;
         World::setCurrentEntityManager("Map test");
-        std::cout<<"current em set"<<std::endl;
+        //std::cout<<"current em set"<<std::endl;
         tiles.push_back(new Tile(nullptr, Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
-        std::cout<<"tiles created"<<std::endl;
+        //std::cout<<"tiles created"<<std::endl;
         walls.push_back(new Tile(nullptr, Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 0, 100, 100)));
         walls.push_back(new Tile(nullptr, Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 100, 100, 100)));
         walls.push_back(new Tile(nullptr, Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 200, 100, 100)));
@@ -53,7 +53,7 @@ namespace sorrok {
         walls[3]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[4]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[5]->getFaces()[0]->getMaterial().setTexId("WALLS");
-        std::cout<<"tex id set"<<std::endl;
+        //std::cout<<"tex id set"<<std::endl;
         /*std::ifstream ifs("FichierDeSerialisation");
         if(ifs) {
             ITextArchive ia(ifs);
@@ -85,9 +85,9 @@ namespace sorrok {
             ifs.close();
         } else {*/
             BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
-            std::cout<<"generate map"<<std::endl;
+            //std::cout<<"generate map"<<std::endl;
             World::generate_map(tiles, walls, Vec2f(100, 50), mapZone, false);
-            std::cout<<"map generated"<<std::endl;
+            //std::cout<<"map generated"<<std::endl;
             w = new g2d::Wall(walls[3],&g2d::AmbientLight::getAmbientLight());
             w->setPosition(Vec3f(0, 130, 130 + w->getSize().y * 0.5f));
             World::addEntity(w);
@@ -132,7 +132,7 @@ namespace sorrok {
         light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 50, 255, sf::Color::Yellow, 16);
         World::addEntity(light1);
         World::addEntity(light2);
-        std::cout<<"decor generated"<<std::endl;
+        //std::cout<<"decor generated"<<std::endl;
         //getView().move(d.x * 0.5f, d.y * 0.5f, 0);
         //World::computeIntersectionsWithWalls();
         std::array<Vec3f, 4> pts;
@@ -150,7 +150,7 @@ namespace sorrok {
         tmpPosition = pos;
         monster->setCenter(pos);
         World::addEntity(monster);
-        std::cout<<"monter generated"<<std::endl;
+        //std::cout<<"monter generated"<<std::endl;
         Quest quest("Quête du débutant", "Tuer 10 ogres");
         quest.addMonsterToKill(monster->getName(), 10);
         quest.addReward(5, item);
@@ -159,7 +159,7 @@ namespace sorrok {
         pnj->setCenter(Vec3f (300, 300, 300));
         quest.setPnjToVisit("Questy");
         World::addEntity(pnj);
-        std::cout<<"server is ready!"<<std::endl;
+        //std::cout<<"server is ready!"<<std::endl;
     }
     void MyAppli::onExec () {
         if (Network::hasRequest()) {
@@ -605,6 +605,7 @@ namespace sorrok {
                             if (!caracter->getFocusedCaracter()->isAlive()) {
                                 SymEncPacket packet;
                                 packet<<"DEATH"+conversionIntString(caracter->getFocusedCaracter()->getId());
+                                std::cout<<"caracter : "<<caracter->getType()<<" is death"<<std::endl;
                                 Network::sendTcpPacket(packet);
                                 if (caracter->getFocusedCaracter()->getType() == "E_MONSTER") {
                                     std::vector<Item> items = static_cast<Monster*>(caracter->getFocusedCaracter())->getLootedItems();
