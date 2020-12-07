@@ -29,6 +29,7 @@ namespace odfaeg {
                 void addChild(LightComponent* child);
                 void onUpdate(RenderWindow* window, window::IEvent& event);
                 bool isPointInside(math::Vec3f point);
+                void clearDrawables();
             private :
                 math::Vec3f mousePos;
                 bool scrollX, scrollY;

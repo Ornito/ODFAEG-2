@@ -106,6 +106,7 @@ C:/Program Files (x86)/ODFAEG/./include/odfaeg/Graphics/graphics.hpp~
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Graphics/gridMap.h
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Graphics/GUI/actionListener.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Graphics/GUI/button.hpp
+C:/Program Files (x86)/ODFAEG/./include/odfaeg/Graphics/GUI/checkBox.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Graphics/GUI/dropDownList.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Graphics/GUI/filedialog.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Graphics/GUI/focusListener.hpp

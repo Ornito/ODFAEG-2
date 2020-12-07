@@ -215,6 +215,10 @@ namespace odfaeg {
                         mousePos = math::Vec3f(event.mouseMotion.x, event.mouseMotion.y, 0);
                 }
             }
+            void Panel::clearDrawables() {
+                sprites.clear();
+                shapes.clear();
+            }
         }
     }
 }

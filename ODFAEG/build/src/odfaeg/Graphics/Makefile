@@ -386,6 +386,33 @@ GUI/button.cpp.s:
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.s
 .PHONY : GUI/button.cpp.s
 
+GUI/checkBox.obj: GUI/checkBox.cpp.obj
+
+.PHONY : GUI/checkBox.obj
+
+# target to build an object file
+GUI/checkBox.cpp.obj:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.obj
+.PHONY : GUI/checkBox.cpp.obj
+
+GUI/checkBox.i: GUI/checkBox.cpp.i
+
+.PHONY : GUI/checkBox.i
+
+# target to preprocess a source file
+GUI/checkBox.cpp.i:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.i
+.PHONY : GUI/checkBox.cpp.i
+
+GUI/checkBox.s: GUI/checkBox.cpp.s
+
+.PHONY : GUI/checkBox.s
+
+# target to generate assembly for a file
+GUI/checkBox.cpp.s:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.s
+.PHONY : GUI/checkBox.cpp.s
+
 GUI/dropDownList.obj: GUI/dropDownList.cpp.obj
 
 .PHONY : GUI/dropDownList.obj
@@ -2205,6 +2232,9 @@ help:
 	@echo ... GUI/button.obj
 	@echo ... GUI/button.i
 	@echo ... GUI/button.s
+	@echo ... GUI/checkBox.obj
+	@echo ... GUI/checkBox.i
+	@echo ... GUI/checkBox.s
 	@echo ... GUI/dropDownList.obj
 	@echo ... GUI/dropDownList.i
 	@echo ... GUI/dropDownList.s

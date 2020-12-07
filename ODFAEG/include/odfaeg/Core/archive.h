@@ -658,6 +658,9 @@ namespace odfaeg {
             ITextArchive (std::istream& buffer) : buffer(buffer) {
                 nbDeserialized = 0;
             }
+            bool isAtEndOfInputStream() {
+                return buffer.eof();
+            }
             bool isInputArchive() {
                 return true;
             }

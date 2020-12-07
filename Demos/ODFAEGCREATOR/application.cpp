@@ -105,6 +105,15 @@ void ODFAEGCreator::onInit() {
     item37 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "Animation");
     getRenderComponentManager().addComponent(item37);
     item37->addMenuItemListener(this);
+    item38 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "Particle System");
+    item38->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item38);
+    item39 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "Emitter");
+    item39->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item39);
+    item310 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "Affector");
+    item310->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item310);
     menu3->addMenuItem(item31);
     menu3->addMenuItem(item32);
     menu3->addMenuItem(item33);
@@ -112,6 +121,9 @@ void ODFAEGCreator::onInit() {
     menu3->addMenuItem(item35);
     menu3->addMenuItem(item36);
     menu3->addMenuItem(item37);
+    menu3->addMenuItem(item38);
+    menu3->addMenuItem(item39);
+    menu3->addMenuItem(item310);
     item41 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Undo");
     item41->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item41);
@@ -254,6 +266,128 @@ void ODFAEGCreator::onInit() {
     addWindow(wNewAnimUpdater);
     wNewAnimUpdater->setVisible(false);
     getRenderComponentManager().setEventContextActivated(false, *wNewAnimUpdater);
+    //Create emitter for particle systems.
+    wNewEmitter = new RenderWindow(sf::VideoMode(800, 800), "Create new emitter", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
+    //Particle system name.
+    Label* lParticleSystemName = new Label(*wNewEmitter,Vec3f(0, 0, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "particle system name : ", 15);
+    getRenderComponentManager().addComponent(lParticleSystemName);
+    taPSName = new TextArea(Vec3f(200, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taPSName);
+    //emission rate.
+    Label* lEmmisionRate = new Label(*wNewEmitter,Vec3f(400, 0, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "emission rate : ", 15);
+    getRenderComponentManager().addComponent(lEmmisionRate);
+    taEmissionRate = new TextArea(Vec3f(600, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taEmissionRate);
+    //Life time.
+    Label* lMinLifeTime = new Label(*wNewEmitter,Vec3f(0, 50, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "min life time : ", 15);
+    getRenderComponentManager().addComponent(lMinLifeTime);
+    taMinLifeTime = new TextArea(Vec3f(200, 50, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taMinLifeTime);
+    Label* lMaxLifeTime = new Label(*wNewEmitter,Vec3f(400, 50, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "max life time : ", 15);
+    getRenderComponentManager().addComponent(lMaxLifeTime);
+    taMaxLifeTime = new TextArea(Vec3f(600, 50, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taMaxLifeTime);
+    //Particle position type.
+    Label* ppType = new Label(*wNewEmitter, Vec3f(0, 100, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"particle pos type : ",15);
+    getRenderComponentManager().addComponent(ppType);
+    dpSelectPPType = new DropDownList(*wNewEmitter, Vec3f(200, 100, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Rect", 15);
+    dpSelectPPType->addItem("Circle", 15);
+    getRenderComponentManager().addComponent(dpSelectPPType);
+    //Particle position rect x.
+    Label* lrectPosX = new Label(*wNewEmitter,Vec3f(400, 100, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "x pos : ", 15);
+    getRenderComponentManager().addComponent(lrectPosX);
+    taRCPosX = new TextArea(Vec3f(600, 100, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taRCPosX);
+    Label* lrectPosY = new Label(*wNewEmitter,Vec3f(0, 150, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "y pos : ", 15);
+    getRenderComponentManager().addComponent(lrectPosY);
+    taRCPosY = new TextArea(Vec3f(200, 150, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taRCPosY);
+    Label* lrectPosZ = new Label(*wNewEmitter,Vec3f(400, 150, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "z pos : ", 15);
+    getRenderComponentManager().addComponent(lrectPosZ);
+    taRCPosZ = new TextArea(Vec3f(600, 150, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taRCPosZ);
+    //Particle position rect half size.
+    Label* lrectHSX = new Label(*wNewEmitter,Vec3f(0, 200, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "half size x : ", 15);
+    getRenderComponentManager().addComponent(lrectHSX);
+    taRCSizeX = new TextArea(Vec3f(200, 200, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taRCSizeX);
+    Label* lrectHSY = new Label(*wNewEmitter,Vec3f(400, 200, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "half size y : ", 15);
+    getRenderComponentManager().addComponent(lrectHSY);
+    taRCSizeY = new TextArea(Vec3f(600, 200, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taRCSizeY);
+    Label* lrectHSZ = new Label(*wNewEmitter,Vec3f(0, 250, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "half size z : ", 15);
+    getRenderComponentManager().addComponent(lrectHSZ);
+    taRCSizeZ = new TextArea(Vec3f(200, 250, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taRCSizeZ);
+    //Deflect direction.
+    Label* ldeflDirX = new Label(*wNewEmitter,Vec3f(400, 250, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "defl dir x : ", 15);
+    getRenderComponentManager().addComponent(ldeflDirX);
+    taDeflX = new TextArea(Vec3f(600, 250, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taDeflX);
+    Label* ldeflDirY = new Label(*wNewEmitter,Vec3f(0, 300, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "defl dir y : ", 15);
+    getRenderComponentManager().addComponent(ldeflDirY);
+    taDeflY = new TextArea(Vec3f(200, 300, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taDeflY);
+    Label* ldeflDirZ = new Label(*wNewEmitter,Vec3f(400, 300, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "defl dir z : ", 15);
+    getRenderComponentManager().addComponent(ldeflDirZ);
+    taDeflZ = new TextArea(Vec3f(600, 300, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taDeflZ);
+    //Deflect angle.
+    Label* ldeflAngle = new Label(*wNewEmitter,Vec3f(0, 350, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "defl angle : ", 15);
+    getRenderComponentManager().addComponent(ldeflAngle);
+    taDeflAngle = new TextArea(Vec3f(200, 350, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taDeflAngle);
+    //Rotation.
+    Label* lRotMin = new Label(*wNewEmitter,Vec3f(400, 350, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "min rotation angle : ", 15);
+    getRenderComponentManager().addComponent(lRotMin);
+    taRotMin = new TextArea(Vec3f(600, 350, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taRotMin);
+    Label* lRotMax = new Label(*wNewEmitter,Vec3f(0, 400, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "max rotation angle : ", 15);
+    getRenderComponentManager().addComponent(lRotMax);
+    taRotMax = new TextArea(Vec3f(200, 400, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taRotMax);
+    //Texture index.
+    Label* lTexMin = new Label(*wNewEmitter,Vec3f(400, 400, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "min texture index : ", 15);
+    getRenderComponentManager().addComponent(lTexMin);
+    taTexIndexMin = new TextArea(Vec3f(600, 400, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taTexIndexMin);
+    Label* lTexMax = new Label(*wNewEmitter,Vec3f(0, 450, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "max texture index : ", 15);
+    getRenderComponentManager().addComponent(lTexMax);
+    taTexIndexMax = new TextArea(Vec3f(200, 450, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taTexIndexMax);
+    //Min scale.
+    Label* lminScaleX = new Label(*wNewEmitter,Vec3f(400, 450, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "min scale x : ", 15);
+    getRenderComponentManager().addComponent(lminScaleX);
+    taScaleMinX = new TextArea(Vec3f(600, 450, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taScaleMinX);
+    Label* lminScaleY = new Label(*wNewEmitter,Vec3f(0, 500, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "min scale y : ", 15);
+    getRenderComponentManager().addComponent(lminScaleY);
+    taScaleMinY = new TextArea(Vec3f(200, 500, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taScaleMinY);
+    Label* lminScaleZ = new Label(*wNewEmitter,Vec3f(400, 500, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "min scale z : ", 15);
+    getRenderComponentManager().addComponent(lminScaleZ);
+    taScaleMinZ = new TextArea(Vec3f(600, 500, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taScaleMinZ);
+    //Max scale.
+    Label* lmaxScaleX = new Label(*wNewEmitter,Vec3f(0, 550, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "max scale x : ", 15);
+    getRenderComponentManager().addComponent(lmaxScaleX);
+    taScaleMaxX = new TextArea(Vec3f(200, 550, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taScaleMaxX);
+    Label* lmaxScaleY = new Label(*wNewEmitter,Vec3f(400, 550, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "max scale y : ", 15);
+    getRenderComponentManager().addComponent(lmaxScaleY);
+    taScaleMaxY = new TextArea(Vec3f(600, 550, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taScaleMinY);
+    Label* lmaxScaleZ = new Label(*wNewEmitter,Vec3f(0, 600, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "max scale z : ", 15);
+    getRenderComponentManager().addComponent(lmaxScaleZ);
+    taScaleMaxZ = new TextArea(Vec3f(200, 600, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taScaleMaxZ);
+    //Button.
+    bCreateEmitter = new Button(Vec3f(400, 600, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Create emitter",15,*wNewEmitter);
+    bCreateEmitter->addActionListener(this);
+    getRenderComponentManager().addComponent(bCreateEmitter);
+    wNewEmitter->setVisible(false);
+    addWindow(wNewEmitter);
+    getRenderComponentManager().setEventContextActivated(false, *wNewEmitter);
     //Create panel for project files.
     pProjects = new Panel(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     rootNode = std::make_unique<Node> ("projects", pProjects, Vec2f(0.f, 0.015f), Vec2f(1.f / 6.f, 1.f));
@@ -1106,6 +1240,20 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         fdTexturePath->setEventContextActivated(true);
         tScriptEdit->setEventContextActivated(false);
     }
+    if (button == bAddTexRect) {
+        sf::IntRect texRect;
+        if (is_number(tTexCoordX->getText()))
+            texRect.left = conversionStringInt(tTexCoordX->getText());
+        if (is_number(tTexCoordY->getText()))
+            texRect.top = conversionStringInt(tTexCoordY->getText());
+        if (is_number(tTexCoordW->getText()))
+            texRect.width = conversionStringInt(tTexCoordW->getText());
+        if (is_number(tTexCoordH->getText()))
+            texRect.height = conversionStringInt(tTexCoordH->getText());
+        if (dynamic_cast<ParticleSystem*>(selectedObject)) {
+            static_cast<ParticleSystem*>(selectedObject)->addTextureRect(texRect);
+        }
+    }
     if (button->getText() == "Create scene") {
         wNewMap->setVisible(false);
         getRenderComponentManager().setEventContextActivated(false, *wNewMap);
@@ -1378,6 +1526,28 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
                 rectSelect.setRect(savedPos.x, savedPos.y, rectSelect.getSelectionRect().getSize().x,rectSelect.getSelectionRect().getSize().y);
             }
         }
+    }
+    if (item->getText() == "Particle System") {
+        if (appliname != "" && World::getCurrentEntityManager() != nullptr) {
+            if (!showRectSelect) {
+                ParticleSystem* ps = new ParticleSystem(Vec3f(0, 0, 0),Vec3f(100, 100, 0));
+                selectedObject = ps;
+                displayInfos(ps);
+                World::addEntity(ps);
+                //addDecor(decor);
+            }
+        }
+    }
+    if (item->getText() == "Emitter") {
+        wNewEmitter->setVisible(true);
+        getRenderComponentManager().setEventContextActivated(true, *wNewEmitter);
+        tScriptEdit->setEventContextActivated(false);
+        /*emitterParams.insert(std::make_pair("ParticleSystem", taParticleSystemName->getText()));
+        emitterParams.insert(std::make_pair("EmissionRate", taEmmissionRate->getText()));
+        emitterParams.insert(std::make_pair("ParticleLifeTimeMin", taParticleLifeTimeMin->getText()));*/
+    }
+    if (item->getText() == "Affector") {
+        //wNewAffector->setVisbile(true);
     }
     if (item->getText() == "Undo") {
         stateStack.undo();
@@ -2048,6 +2218,81 @@ void ODFAEGCreator::displayInfos(Anim* anim) {
     animUpdaterNode->addOtherComponent(dpSelectAU, Vec2f(0.75, 0.025));
     Command cmdAUChanged(FastDelegate<bool>(&DropDownList::isValueChanged,dpSelectAU), FastDelegate<void>(&ODFAEGCreator::onAnimUpdaterChanged, this, dpSelectAU));
     dpSelectAU->getListener().connect("ANIMUPDATERCHANGED", cmdAUChanged);
+}
+void ODFAEGCreator::displayInfos(ParticleSystem* ps) {
+    displayTransformInfos(ps);
+    displayEntityInfos(ps);
+    FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+    lTexture = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0), fm.getResourceByAlias(Fonts::Serif),"Texture : ", 15);
+    lTexture->setParent(pMaterial);
+    Node* lTextureNode = new Node("LabTexture",lTexture,Vec2f(0, 0), Vec2f(1.f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexture);
+    lTexCoordX = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Tex x : ", 15);
+    lTexCoordX->setParent(pMaterial);
+    Node* lTexCoordXNode = new Node("LTexCoordX", lTexCoordX,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexCoordX);
+    tTexCoordX = new TextArea (Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"0",getRenderWindow());
+    tTexCoordX->setTextSize(15);
+    tTexCoordX->setParent(pMaterial);
+    lTexCoordXNode->addOtherComponent(tTexCoordX,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tTexCoordX);
+    lTexCoordY = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Tex y : ", 15);
+    lTexCoordY->setParent(pMaterial);
+    Node* lTexCoordYNode = new Node("LTexCoordY", lTexCoordY,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexCoordY);
+    tTexCoordY = new TextArea (Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"0",getRenderWindow());
+    tTexCoordY->setTextSize(15);
+    tTexCoordY->setParent(pMaterial);
+    lTexCoordYNode->addOtherComponent(tTexCoordY,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tTexCoordY);
+    lTexCoordW = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Tex w : ", 15);
+    lTexCoordW->setParent(pMaterial);
+    Node* lTexCoordWNode = new Node("lTexCoordW", lTexCoordW,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexCoordW);
+    tTexCoordW = new TextArea (Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"0",getRenderWindow());
+    tTexCoordW->setTextSize(15);
+    tTexCoordW->setParent(pMaterial);
+    lTexCoordWNode->addOtherComponent(tTexCoordW,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tTexCoordW);
+    lTexCoordH = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Tex h : ", 15);
+    lTexCoordH->setParent(pMaterial);
+    Node* lTexCoordHNode = new Node("LTexCoordH", lTexCoordH,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexCoordH);
+    tTexCoordH = new TextArea (Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"0",getRenderWindow());
+    tTexCoordH->setTextSize(15);
+    tTexCoordH->setParent(pMaterial);
+    lTexCoordHNode->addOtherComponent(tTexCoordH,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tTexCoordH);
+    Command cmdTexCoordXChanged (FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordX), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordX));
+    tTexCoordX->getListener().connect("TTexCoordXChanged", cmdTexCoordXChanged);
+    Command cmdTexCoordYChanged (FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordY), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordY));
+    tTexCoordY->getListener().connect("TTexCoordYChanged", cmdTexCoordYChanged);
+    Command cmdTexCoordWChanged (FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordW), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordW));
+    tTexCoordW->getListener().connect("TTexCoordWChanged", cmdTexCoordWChanged);
+    Command cmdTexCoordHChanged (FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordH), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordH));
+    tTexCoordH->getListener().connect("TTexCoordXChanged", cmdTexCoordHChanged);
+    lTexImage = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Tex Image : ", 15);
+    lTexImage->setParent(pMaterial);
+    Node* selectTextNode = new Node("SelectTexture",lTexImage,Vec2f(0, 0),Vec2f(0.25f, 0.025f), rootMaterialNode.get());
+    pMaterial->addChild(lTexImage);
+    dpSelectTexture = new DropDownList(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif),"NONE", 15);
+    dpSelectTexture->setName("SELECTTEXT");
+    dpSelectTexture->setParent(pMaterial);
+    Command cmdTxtChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectTexture), FastDelegate<void>(&ODFAEGCreator::onSelectedTextureChanged, this, dpSelectTexture));
+    dpSelectTexture->getListener().connect("TextureChanged", cmdTxtChanged);
+    selectTextNode->addOtherComponent(dpSelectTexture,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(dpSelectTexture);
+    bChooseText = new Button(Vec3f(0, 0, 0), Vec3f(100, 100, 0), fm.getResourceByAlias(Fonts::Serif),"New texture", 15, getRenderWindow());
+    bChooseText->setParent(pMaterial);
+    Node* chooseTextNode = new Node("ChooseText", bChooseText,Vec2f(0, 0), Vec2f(0.5f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(bChooseText);
+    bChooseText->setName("CHOOSETEXT");
+    bChooseText->addActionListener(this);
+    bAddTexRect = new Button(Vec3f(0, 0, 0), Vec3f(100, 100, 0), fm.getResourceByAlias(Fonts::Serif),"Add tex rect", 15, getRenderWindow());
+    bAddTexRect->setParent(pMaterial);
+    pMaterial->addChild(bAddTexRect);
+    chooseTextNode->addOtherComponent(bAddTexRect,Vec2f(0.5f, 0.025f));
+    bAddTexRect->addActionListener(this);
 }
 void ODFAEGCreator::displayInfos(Wall* wall) {
     displayTransformInfos(wall);
@@ -2827,6 +3072,7 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
             if (textPaths[i].find(dp->getSelectedItem())) {*/
                 const Texture* text = tm.getResourceByAlias(dp->getSelectedItem());
                 std::vector<std::string> alias = tm.getAliasByResource(const_cast<Texture*>(text));
+                pMaterial->clearDrawables();
                 Sprite sprite (*text, Vec3f(0, bChooseText->getPosition().y + bChooseText->getSize().y, 0),Vec3f(text->getSize().x, text->getSize().y, 0),sf::IntRect(0, 0, text->getSize().x,text->getSize().y));
                 pMaterial->addSprite(sprite);
                 sf::IntRect textRect;
@@ -2841,6 +3087,10 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().setTexId(alias[0]);
                     textRect = sf::IntRect(0, 0, text->getSize().x, text->getSize().y);
                     updateScriptText(static_cast<Tile*>(selectedObject), text);
+                }
+                if (dynamic_cast<ParticleSystem*>(selectedObject)) {
+                    static_cast<ParticleSystem*>(selectedObject)->setTexture(*text);
+                    textRect = sf::IntRect(0, 0, text->getSize().x, text->getSize().y);
                 }
                 tTexCoordX->setText(conversionIntString(textRect.left));
                 tTexCoordY->setText(conversionIntString(textRect.top));

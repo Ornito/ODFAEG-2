@@ -219,6 +219,31 @@ namespace odfaeg
         bool isLeaf() const {
             return true;
         }
+        template<typename Archive>
+        void vtserialize(Archive& ar) {
+            Entity::vtserialize(ar);
+            if (!ar.isInputArchive()) {
+                unsigned int size = mTextureRects.size();
+                ar(size);
+                for (unsigned int i = 0; i < size; i++) {
+                    ar(mTextureRects[i].left);
+                    ar(mTextureRects[i].top);
+                    ar(mTextureRects[i].width);
+                    ar(mTextureRects[i].height);
+                }
+            } else {
+                unsigned int size;
+                ar(size);
+                for (unsigned int i = 0; i < size; i++) {
+                    sf::IntRect rect;
+                    ar(rect.left);
+                    ar(rect.top);
+                    ar(rect.width);
+                    ar(rect.height);
+                    addTextureRect(rect);
+                }
+            }
+        }
         // ---------------------------------------------------------------------------------------------------------------------------
         // Private variables
         private:

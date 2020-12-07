@@ -9,6 +9,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.obj"
   "CMakeFiles/odfaeg-graphics.dir/3D/model.cpp.obj"
   "CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.obj"
+  "CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.obj"
   "CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.obj"
   "CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.obj"
   "CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.obj"

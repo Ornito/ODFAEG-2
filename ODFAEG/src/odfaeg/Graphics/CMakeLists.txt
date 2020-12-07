@@ -172,7 +172,9 @@ set(SRC_GUI
 	${INCROOT}/GUI/passwordField.hpp
 	${SRCROOT}/GUI/passwordField.cpp
 	${INCROOT}/GUI/progressBar.hpp
-	${SRCROOT}/GUI/progressBar.cpp)
+	${SRCROOT}/GUI/progressBar.cpp
+	${INCROOT}/GUI/checkBox.hpp
+	${SRCROOT}/GUI/checkBox.cpp)
 source_group ("gui" FILES ${SRC_GUI})
 find_package (SFML 2 REQUIRED)
 find_package(Freetype REQUIRED)

@@ -1092,6 +1092,20 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.s: cmake_
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.s"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Graphics\GUI\progressBar.cpp -o CMakeFiles\odfaeg-graphics.dir\GUI\progressBar.cpp.s
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.obj: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.obj: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/includes_CXX.rsp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.obj: ../src/odfaeg/Graphics/GUI/checkBox.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_75) "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.obj"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-graphics.dir\GUI\checkBox.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Graphics\GUI\checkBox.cpp
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.i"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Graphics\GUI\checkBox.cpp > CMakeFiles\odfaeg-graphics.dir\GUI\checkBox.cpp.i
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.s"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Graphics\GUI\checkBox.cpp -o CMakeFiles\odfaeg-graphics.dir\GUI\checkBox.cpp.s
+
 # Object files for target odfaeg-graphics
 odfaeg__graphics_OBJECTS = \
 "CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.obj" \
@@ -1167,7 +1181,8 @@ odfaeg__graphics_OBJECTS = \
 "CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.obj" \
 "CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.obj" \
 "CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.obj" \
-"CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.obj"
+"CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.obj" \
+"CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.obj"
 
 # External object files for target odfaeg-graphics
 odfaeg__graphics_EXTERNAL_OBJECTS =
@@ -1246,9 +1261,10 @@ lib/libodfaeg-graphics-s.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/G
 lib/libodfaeg-graphics-s.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.obj
 lib/libodfaeg-graphics-s.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.obj
 lib/libodfaeg-graphics-s.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.obj
+lib/libodfaeg-graphics-s.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.obj
 lib/libodfaeg-graphics-s.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make
 lib/libodfaeg-graphics-s.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_75) "Linking CXX static library ..\..\..\lib\libodfaeg-graphics-s.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_76) "Linking CXX static library ..\..\..\lib\libodfaeg-graphics-s.a"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && $(CMAKE_COMMAND) -P CMakeFiles\odfaeg-graphics.dir\cmake_clean_target.cmake
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\odfaeg-graphics.dir\link.txt --verbose=$(VERBOSE)
 

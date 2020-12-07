@@ -54,6 +54,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void displayInfos(odfaeg::graphic::g2d::Decor* decor);
     void displayInfos(odfaeg::graphic::g2d::Wall* wall);
     void displayInfos(odfaeg::graphic::Anim* anim);
+    void displayInfos(odfaeg::physic::ParticleSystem* ps);
     void displayChildren(odfaeg::graphic::gui::Label* label);
     void onObjectPosChanged(odfaeg::graphic::gui::TextArea* ta);
     void onObjectSizeChanged(odfaeg::graphic::gui::TextArea* ta);
@@ -86,13 +87,15 @@ class ODFAEGCreator : public odfaeg::core::Application,
         const float speed = 10.f;
         odfaeg::graphic::gui::MenuBar* menuBar;
         odfaeg::graphic::gui::Menu *menu1, *menu2, *menu3, *menu4;
-        odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item14, *item15, *item16, *item17, *item21, *item22, *item23, *item31, *item32, *item33,
-        *item34, *item35, *item36, *item37, *item41, *item42, *item43, *item44, *item45;
+        odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item14, *item15, *item16, *item17, *item18, *item21, *item22, *item23, *item31, *item32, *item33,
+        *item34, *item35, *item36, *item37, *item38, *item39, *item310, *item41, *item42, *item43, *item44, *item45;
         odfaeg::core::ResourceCache<> cache;
         odfaeg::graphic::gui::FileDialog* fdTexturePath, *fdProjectPath;
-        odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent, *wNewEntitiesUpdater, *wNewAnimUpdater;
-        odfaeg::graphic::gui::TextArea* ta, *taComponentExpression, *taComponentLayer, *taEntitiesUpdaterName, *taComponentName, *taAnimUpdaterName;
-        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent, *dpSelectAU;
+        odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent, *wNewEntitiesUpdater, *wNewAnimUpdater, *wNewEmitter;
+        odfaeg::graphic::gui::TextArea* ta, *taComponentExpression, *taComponentLayer, *taEntitiesUpdaterName, *taComponentName, *taAnimUpdaterName, *taPSName, *taEmissionRate,
+        *taMinLifeTime, *taMaxLifeTime, *taRCPosX, *taRCPosY, *taRCPosZ, *taRCSizeX, *taRCSizeY, *taRCSizeZ, *taDeflX, *taDeflY, *taDeflZ, *taDeflAngle,
+        *taRotMin, *taRotMax, *taTexIndexMin, *taTexIndexMax, *taScaleMinX, *taScaleMinY, *taScaleMinZ, *taScaleMaxX, *taScaleMaxY, *taScaleMaxZ;
+        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent, *dpSelectAU, *dpSelectPPType;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
         odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight, *taWallType;
         odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial, *pComponent;
@@ -112,7 +115,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition, *lColor, *lRColor,
         *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage, *lParent;
         odfaeg::graphic::gui::TabPane* tabPane;
-        odfaeg::graphic::gui::Button* bChooseText, *bCreateComponent, *bCreateScene, *bCreateEntitiesUpdater, *bCreateAppli, *bCreateAnimUpdater;
+        odfaeg::graphic::gui::Button* bChooseText, *bAddTexRect, *bCreateComponent, *bCreateScene, *bCreateEntitiesUpdater, *bCreateAppli, *bCreateAnimUpdater, *bCreateEmitter;
         odfaeg::graphic::Shape* sTextRect;
         odfaeg::core::StateStack stateStack;
         ODFAEGCreatorStateExecutor se;
@@ -120,5 +123,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::Map* theMap;
         int gridWidth, gridHeight;
         RectangularSelection rectSelect;
+        std::map<std::string, odfaeg::core::any> emitterParams;
+        std::map<std::string, odfaeg::core::any> affectorParams;
 };
 #endif

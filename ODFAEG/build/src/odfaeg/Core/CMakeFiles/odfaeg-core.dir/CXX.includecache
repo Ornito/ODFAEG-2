@@ -2396,7 +2396,23 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
 
+C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/actions.cpp
+../../../include/odfaeg/Core/action.h
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/action.h
+../../../include/odfaeg/Core/command.h
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/command.h
+SFML/Window.hpp
+-
+chrono
+-
+thread
+-
+
 C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/application.cpp
 ../../../include/odfaeg/Core/application.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/application.h
+
+C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/command.cpp
+../../../include/odfaeg/Core/command.h
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/command.h
 

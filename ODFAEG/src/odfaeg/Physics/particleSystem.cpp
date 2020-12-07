@@ -204,21 +204,9 @@ namespace odfaeg
                 computeVertices();
                 mNeedsVertexUpdate = false;
             }
-            BoundingBox view = target.getView().getViewVolume();
-            int x = view.getPosition().x;
-            int y = view.getPosition().y;
-            int z = view.getCenter().z;
-            int endX = view.getWidth();
-            int endY = view.getHeight();
-            int endZ = view.getDepth();
-            BoundingBox bx (x, y, z, endX, endY, endZ);
-            BoundingBox bx2 = mVertices.getBounds();
-            CollisionResultSet::Info info;
-            if (bx.intersects(bx2, info)) {
-                // Draw the vertex array with our texture
-                states.texture = mTexture;
-                target.draw(mVertices, states);
-            }
+            // Draw the vertex array with our texture
+            states.texture = mTexture;
+            target.draw(mVertices, states);
         }
 
         void ParticleSystem::emitParticle(const Particle& particle)
