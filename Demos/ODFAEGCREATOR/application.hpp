@@ -26,6 +26,7 @@
 #include "rectangularSelection.hpp"
 #include "odfaeg/Graphics/anim.h"
 #include "odfaeg/Graphics/animationUpdater.h"
+#include "odfaeg/Graphics/tGround.h"
 class ODFAEGCreator : public odfaeg::core::Application,
                       public odfaeg::graphic::gui::MenuItemListener,
                       public odfaeg::graphic::gui::ActionListener {
