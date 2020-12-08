@@ -163,7 +163,6 @@ namespace odfaeg {
                 sprites.clear();
             }
             void Panel::addSprite(Sprite sprite) {
-                sprite.setPosition(getPosition() + sprite.getPosition());
                 sprites.push_back(sprite);
             }
             void Panel::onDraw(RenderTarget& target, RenderStates states) {
@@ -201,7 +200,6 @@ namespace odfaeg {
                 rect.setOutlineColor(color);
             }
             void Panel::addShape(Shape* shape) {
-                shape->setPosition(getPosition() + shape->getPosition());
                 shapes.push_back(shape);
             }
             bool Panel::isPointInside(math::Vec3f point) {

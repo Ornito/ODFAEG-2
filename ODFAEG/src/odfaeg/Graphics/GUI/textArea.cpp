@@ -114,7 +114,7 @@ namespace odfaeg {
                 }
             }
             void TextArea::onTextEntered(char caracter) {
-                if (tmp_text.length() > 0 && caracter == 8) {
+                if (tmp_text.length() > 0 && currentIndex-1 >= 0 && caracter == 8) {
                     currentIndex--;
                     tmp_text.erase(currentIndex, 1);
                 }

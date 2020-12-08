@@ -67,6 +67,9 @@ void ODFAEGCreator::onInit() {
     item17 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "Save project");
     item17->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item17);
+    item18 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "New particle system updater");
+    item18->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item18);
     menu1->addMenuItem(item11);
     menu1->addMenuItem(item12);
     menu1->addMenuItem(item13);
@@ -74,6 +77,7 @@ void ODFAEGCreator::onInit() {
     menu1->addMenuItem(item15);
     menu1->addMenuItem(item16);
     menu1->addMenuItem(item17);
+    menu1->addMenuItem(item18);
     item21 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Build");
     item21->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item21);
@@ -213,10 +217,10 @@ void ODFAEGCreator::onInit() {
     wNewMap->setVisible(false);
     getRenderComponentManager().setEventContextActivated(false, *wNewMap);
     //Create component.
-    wNewComponent = new RenderWindow(sf::VideoMode(400, 300), "Create new render component", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
+    wNewComponent = new RenderWindow(sf::VideoMode(1000, 300), "Create new render component", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
     Label* labComponentExpression = new Label(*wNewComponent,Vec3f(0, 0, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "entity's type(s) : ", 15);
     getRenderComponentManager().addComponent(labComponentExpression);
-    taComponentExpression = new TextArea(Vec3f(200, 0, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewComponent);
+    taComponentExpression = new TextArea(Vec3f(200, 0, 0),Vec3f(800, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewComponent);
     getRenderComponentManager().addComponent(taComponentExpression);
     Label* lComponentLayer = new Label(*wNewComponent,Vec3f(0, 50, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "Layer number : ", 15);
     getRenderComponentManager().addComponent(lComponentLayer);
@@ -263,6 +267,18 @@ void ODFAEGCreator::onInit() {
     addWindow(wNewAnimUpdater);
     wNewAnimUpdater->setVisible(false);
     getRenderComponentManager().setEventContextActivated(false, *wNewAnimUpdater);
+    //Create particle system updater.
+    wNewParticleSystemUpdater = new RenderWindow(sf::VideoMode(400, 300), "Create new particle system updater", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
+    Label* lPartSysUpdName = new Label(*wNewParticleSystemUpdater,Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "particle system updater name : ", 15);
+    getRenderComponentManager().addComponent(lPartSysUpdName);
+    taParticleSystemUpdaterName = new TextArea(Vec3f(200, 0, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewParticleSystemUpdater);
+    getRenderComponentManager().addComponent(taParticleSystemUpdaterName);
+    bCreateParticleSystemUpdater = new Button(Vec3f(200, 50, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Create ps updater",15,*wNewParticleSystemUpdater);
+    bCreateAnimUpdater->addActionListener(this);
+    getRenderComponentManager().addComponent(bCreateParticleSystemUpdater);
+    addWindow(wNewParticleSystemUpdater);
+    wNewParticleSystemUpdater->setVisible(false);
+    getRenderComponentManager().setEventContextActivated(false, *wNewParticleSystemUpdater);
     //Create emitter for particle systems.
     wNewEmitter = new RenderWindow(sf::VideoMode(800, 800), "Create new emitter", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
     //Particle system name.
@@ -1401,6 +1417,18 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             static_cast<ParticleSystem*>(ps)->addEmitter(emitter);
         }
     }
+    if (button == bCreateParticleSystemUpdater) {
+        std::string name = taParticleSystemUpdaterName->getText();
+        ParticleSystemUpdater* psu = new ParticleSystemUpdater();
+        psu->setName(name);
+        World::addWorker(psu);
+        wNewParticleSystemUpdater->setVisible(false);
+        getRenderComponentManager().setEventContextActivated(false, *wNewParticleSystemUpdater);
+        tScriptEdit->setEventContextActivated(true);
+        if (dpSelectPSU != nullptr) {
+            dpSelectPSU->addItem(name, 15);
+        }
+    }
 }
 void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "New application") {
@@ -1762,6 +1790,11 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
             oa6(is2DisoMatrix);
         }
         file6.close();
+     }
+     if (item == item18) {
+        wNewParticleSystemUpdater->setVisible(true);
+        getRenderComponentManager().setEventContextActivated(true, *wNewParticleSystemUpdater);
+        tScriptEdit->setEventContextActivated(false);
      }
 }
 void ODFAEGCreator::addShape(Shape *shape) {
@@ -2285,6 +2318,21 @@ void ODFAEGCreator::displayInfos(ParticleSystem* ps) {
     displayTransformInfos(ps);
     displayEntityInfos(ps);
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+    Label* lselectPSU = new Label(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Particle system updater : ", 15);
+    Node* psUpdaterNode = new Node("PSUPDATER",lselectPSU,Vec2f(0, 0),Vec2f(0.25, 0.025),rootInfosNode.get());
+    lselectPSU->setParent(pInfos);
+    pInfos->addChild(lselectPSU);
+    dpSelectPSU = new DropDownList(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"NONE",15);
+    std::vector<EntitySystem*> workers = World::getWorkers();
+    for (unsigned int i = 0; i < workers.size(); i++) {
+        if (dynamic_cast<ParticleSystemUpdater*>(workers[i]))
+            dpSelectPSU->addItem(workers[i]->getName(), 15);
+    }
+    dpSelectPSU->setParent(pInfos);
+    pInfos->addChild(dpSelectPSU);
+    psUpdaterNode->addOtherComponent(dpSelectPSU, Vec2f(0.75, 0.025));
+    Command cmdPSUChanged(FastDelegate<bool>(&DropDownList::isValueChanged,dpSelectPSU), FastDelegate<void>(&ODFAEGCreator::onParticleSystemUpdaterChanged, this, dpSelectPSU));
+    dpSelectPSU->getListener().connect("PSUUPDATERCHANGED", cmdPSUChanged);
     lTexture = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0), fm.getResourceByAlias(Fonts::Serif),"Texture : ", 15);
     lTexture->setParent(pMaterial);
     Node* lTextureNode = new Node("LabTexture",lTexture,Vec2f(0, 0), Vec2f(1.f, 0.025f),rootMaterialNode.get());
@@ -3105,6 +3153,12 @@ void ODFAEGCreator::onAnimUpdaterChanged(DropDownList* dp) {
         static_cast<AnimUpdater*>(timer)->addAnim(static_cast<Anim*>(selectedObject));
     }
 }
+void ODFAEGCreator::onParticleSystemUpdaterChanged(DropDownList* dp) {
+    EntitySystem* worker = World::getWorker(dp->getSelectedItem());
+    if (dynamic_cast<ParticleSystemUpdater*>(worker) && dynamic_cast<ParticleSystem*>(selectedObject)) {
+        static_cast<ParticleSystemUpdater*>(worker)->addParticleSystem(static_cast<ParticleSystem*>(selectedObject));
+    }
+}
 void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
     pMaterial->removeSprites();
 
@@ -3135,7 +3189,7 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                 const Texture* text = tm.getResourceByAlias(dp->getSelectedItem());
                 std::vector<std::string> alias = tm.getAliasByResource(const_cast<Texture*>(text));
                 pMaterial->clearDrawables();
-                Sprite sprite (*text, Vec3f(0, bChooseText->getPosition().y + bChooseText->getSize().y, 0),Vec3f(text->getSize().x, text->getSize().y, 0),sf::IntRect(0, 0, text->getSize().x,text->getSize().y));
+                Sprite sprite (*text, Vec3f(pScriptsFiles->getPosition().x, bChooseText->getPosition().y + bChooseText->getSize().y+10, 0),Vec3f(text->getSize().x, text->getSize().y, 0),sf::IntRect(0, 0, text->getSize().x,text->getSize().y));
                 pMaterial->addSprite(sprite);
                 sf::IntRect textRect;
                 if (dynamic_cast<Shape*>(selectedObject)) {
@@ -3159,10 +3213,11 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                 tTexCoordW->setText(conversionIntString(textRect.width));
                 tTexCoordH->setText(conversionIntString(textRect.height));
                 sTextRect = new RectangleShape(Vec3f(textRect.width, textRect.height, 0));
-                sTextRect->setPosition(Vec3f(textRect.left, textRect.top + bChooseText->getPosition().y + bChooseText->getSize().y, 0));
+                sTextRect->setPosition(Vec3f(textRect.left+pScriptsFiles->getPosition().x, textRect.top + bChooseText->getPosition().y + bChooseText->getSize().y+10, 0));
                 sTextRect->setFillColor(sf::Color::Transparent);
                 sTextRect->setOutlineColor(sf::Color::Red);
                 sTextRect->setOutlineThickness(1);
+                sTextRect->setName("TexRect");
                 pMaterial->addShape(sTextRect);
             /*}
         }*/
@@ -3398,6 +3453,12 @@ void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
                 stateStack.addStateGroup(sg);
             }
         }
+        if ((ta == tTexCoordX || ta == tTexCoordY || ta == tTexCoordW || ta == tTexCoordH)
+            && is_number(tTexCoordX->getText()) && is_number(tTexCoordY->getText()) && is_number(tTexCoordW->getText()) && is_number(tTexCoordH->getText())) {
+
+            sTextRect->setPosition(Vec3f(conversionStringInt(tTexCoordX->getText())+pScriptsFiles->getPosition().x, conversionStringInt(tTexCoordY->getText()) + bChooseText->getPosition().y + bChooseText->getSize().y+10, 0));
+            sTextRect->setSize(Vec3f(conversionStringInt(tTexCoordW->getText()), conversionStringInt(tTexCoordH->getText()), 0));
+        }
     }
 }
 void ODFAEGCreator::updateScriptTextCoords(Transformable* shape) {
@@ -3408,33 +3469,41 @@ void ODFAEGCreator::updateScriptTextCoords(Transformable* shape) {
         if (dynamic_cast<Shape*>(shape)) {
             if(content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setTextureRect") == std::string::npos) {
                 unsigned int pos = content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+" = std::make_unique<RectangleShape>");
-                std::string subs = content.substr(pos);
-                pos += subs.find_first_of('\n') + 1;
-                content.insert(pos,"    shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setTextureRect(sf::IntRect("+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().left)+","
-                +conversionIntString(static_cast<Shape*>(shape)->getTextureRect().top)+","+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().width)+","+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().height)+"));\n");
+                if (pos != std::string::npos) {
+                    std::string subs = content.substr(pos);
+                    pos += subs.find_first_of('\n') + 1;
+                    content.insert(pos,"    shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setTextureRect(sf::IntRect("+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().left)+","
+                    +conversionIntString(static_cast<Shape*>(shape)->getTextureRect().top)+","+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().width)+","+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().height)+"));\n");
+                }
             } else {
                 unsigned int pos = content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setTextureRect");
-                std::string subs = content.substr(pos);
-                unsigned int endpos = subs.find_first_of('\n') + pos + 1;
-                content.erase(pos, endpos - pos);
-                content.insert(pos,"    shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setTextureRect(sf::IntRect("+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().left)+","
-                +conversionIntString(static_cast<Shape*>(shape)->getTextureRect().top)+","+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().width)+","+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().height)+"));\n");
+                if (pos != std::string::npos) {
+                    std::string subs = content.substr(pos);
+                    unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+                    content.erase(pos, endpos - pos);
+                    content.insert(pos,"    shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setTextureRect(sf::IntRect("+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().left)+","
+                    +conversionIntString(static_cast<Shape*>(shape)->getTextureRect().top)+","+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().width)+","+conversionIntString(static_cast<Shape*>(shape)->getTextureRect().height)+"));\n");
+                }
             }
         }
         if (dynamic_cast<Tile*>(shape)) {
             if(content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setTexRect") == std::string::npos) {
                 unsigned int pos = content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+" = new Tile");
-                std::string subs = content.substr(pos);
-                pos += subs.find_first_of('\n') + 1;
-                content.insert(pos,"    tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setTexRect(sf::IntRect("+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().left)+","
-                +conversionIntString(static_cast<Tile*>(shape)->getTexCoords().top)+","+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().width)+","+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().height)+"));\n");
+                if (pos != std::string::npos) {
+                    std::string subs = content.substr(pos);
+                    pos += subs.find_first_of('\n') + 1;
+                    content.insert(pos,"    tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setTexRect(sf::IntRect("+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().left)+","
+                    +conversionIntString(static_cast<Tile*>(shape)->getTexCoords().top)+","+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().width)+","+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().height)+"));\n");
+                }
             } else {
                 unsigned int pos = content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition");
-                std::string subs = content.substr(pos);
-                unsigned int endpos = subs.find_first_of('\n') + pos + 1;
-                content.erase(pos, endpos - pos);
-                content.insert(pos,"    tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setTexRect(sf::IntRect("+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().left)+","
-                +conversionIntString(static_cast<Tile*>(shape)->getTexCoords().top)+","+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().width)+","+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().height)+"));\n");
+                if (pos != std::string::npos) {
+                    std::string subs = content.substr(pos);
+                    unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+                    content.erase(pos, endpos - pos);
+                    content.insert(pos,"    tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setTexRect(sf::IntRect("+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().left)+","
+                    +conversionIntString(static_cast<Tile*>(shape)->getTexCoords().top)+","+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().width)+","+conversionIntString(static_cast<Tile*>(shape)->getTexCoords().height)+"));\n");
+                }
             }
         }
     }
