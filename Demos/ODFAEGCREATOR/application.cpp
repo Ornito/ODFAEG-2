@@ -162,10 +162,7 @@ void ODFAEGCreator::onInit() {
     addWindow(&fdProjectPath->getWindow(), false);
     getRenderComponentManager().addComponent(fdProjectPath);
     wApplicationNew = new RenderWindow(sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
-    //wApplicationNew->setName("WAPPLICATIONNEW");
-    /*View waView = wApplicationNew->getDefaultView();
-    waView.setCenter(Vec3f(wApplicationNew->getSize().x * 0.5f, wApplicationNew->getSize().y * 0.5f, 0));
-    wApplicationNew->setView(waView);*/
+    //New application.
     Label* label = new Label(*wApplicationNew, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Application name : ", 15);
     getRenderComponentManager().addComponent(label);
     ta = new TextArea(Vec3f(200, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "", *wApplicationNew);
@@ -376,13 +373,22 @@ void ODFAEGCreator::onInit() {
     Label* lmaxScaleY = new Label(*wNewEmitter,Vec3f(400, 550, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "max scale y : ", 15);
     getRenderComponentManager().addComponent(lmaxScaleY);
     taScaleMaxY = new TextArea(Vec3f(600, 550, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
-    getRenderComponentManager().addComponent(taScaleMinY);
+    getRenderComponentManager().addComponent(taScaleMaxY);
     Label* lmaxScaleZ = new Label(*wNewEmitter,Vec3f(0, 600, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "max scale z : ", 15);
     getRenderComponentManager().addComponent(lmaxScaleZ);
     taScaleMaxZ = new TextArea(Vec3f(200, 600, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
     getRenderComponentManager().addComponent(taScaleMaxZ);
+    //Color
+    Label* lcolor1 = new Label(*wNewEmitter,Vec3f(400, 600, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "color 1 (r;g;b;a) ", 15);
+    getRenderComponentManager().addComponent(lcolor1);
+    taColor1 = new TextArea(Vec3f(600, 600, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taColor1);
+    Label* lcolor2 = new Label(*wNewEmitter,Vec3f(0, 650, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "color 2 (r;g;b;a) : ", 15);
+    getRenderComponentManager().addComponent(lcolor2);
+    taColor2 = new TextArea(Vec3f(200, 650, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewEmitter);
+    getRenderComponentManager().addComponent(taColor2);
     //Button.
-    bCreateEmitter = new Button(Vec3f(400, 600, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Create emitter",15,*wNewEmitter);
+    bCreateEmitter = new Button(Vec3f(400, 650, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Create emitter",15,*wNewEmitter);
     bCreateEmitter->addActionListener(this);
     getRenderComponentManager().addComponent(bCreateEmitter);
     wNewEmitter->setVisible(false);
@@ -1336,6 +1342,65 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             dpSelectAU->addItem(name, 15);
         }
     }
+    if (button==bCreateEmitter) {
+        std::string psName = taPSName->getText();
+        emitterParams.push_back(taPSName->getText());
+        UniversalEmitter emitter;
+        emitter.setEmissionRate(conversionStringFloat(taEmissionRate->getText()));
+        emitterParams.push_back(taEmissionRate->getText());
+        emitter.setParticleLifetime(Distributions::uniform(sf::seconds(conversionStringFloat(taMinLifeTime->getText())), sf::seconds(conversionStringFloat(taMaxLifeTime->getText()))));
+        emitterParams.push_back(taMinLifeTime->getText());
+        emitterParams.push_back(taMaxLifeTime->getText());
+        if (dpSelectPPType->getSelectedItem() == "Rect") {
+            emitter.setParticlePosition(Distributions::rect(Vec3f(conversionStringFloat(taRCPosX->getText()), conversionStringFloat(taRCPosY->getText()), conversionStringFloat(taRCPosZ->getText())),
+                                                           Vec3f(conversionStringFloat(taRCSizeX->getText()), conversionStringFloat(taRCSizeY->getText()), conversionStringFloat(taRCSizeZ->getText()))));
+            emitterParams.push_back("Rect");
+            emitterParams.push_back(taRCPosX->getText());
+            emitterParams.push_back(taRCPosY->getText());
+            emitterParams.push_back(taRCPosZ->getText());
+            emitterParams.push_back(taRCSizeX->getText());
+            emitterParams.push_back(taRCSizeY->getText());
+            emitterParams.push_back(taRCSizeZ->getText());
+        } else {
+            emitter.setParticlePosition(Distributions::circle(Vec3f(conversionStringFloat(taRCPosX->getText()), conversionStringFloat(taRCPosY->getText()), conversionStringFloat(taRCPosZ->getText())),
+                                                             conversionStringFloat(taRCSizeX->getText())));
+            emitterParams.push_back("Circle");
+            emitterParams.push_back(taRCPosX->getText());
+            emitterParams.push_back(taRCPosY->getText());
+            emitterParams.push_back(taRCPosZ->getText());
+            emitterParams.push_back(taRCSizeX->getText());
+        }
+        emitter.setParticleVelocity(Distributions::deflect(Vec3f(conversionStringFloat(taDeflX->getText()), conversionStringFloat(taDeflY->getText()), conversionStringFloat(taDeflZ->getText())), conversionStringFloat(taDeflAngle->getText())));
+        emitterParams.push_back(taDeflX->getText());
+        emitterParams.push_back(taDeflY->getText());
+        emitterParams.push_back(taDeflZ->getText());
+        emitterParams.push_back(taDeflAngle->getText());
+        emitter.setParticleRotation(Distributions::uniform(conversionStringFloat(taRotMin->getText()), conversionStringFloat(taRotMax->getText())));
+        emitterParams.push_back(taRotMin->getText());
+        emitterParams.push_back(taRotMax->getText());
+        emitter.setParticleTextureIndex(Distributions::uniformui(conversionStringInt(taTexIndexMin->getText()),conversionStringInt(taTexIndexMax->getText())));
+        emitterParams.push_back(taTexIndexMin->getText());
+        emitterParams.push_back(taTexIndexMax->getText());
+        emitter.setParticleScale(Distributions::rect(Vec3f(conversionStringFloat(taScaleMinX->getText()), conversionStringFloat(taScaleMinY->getText()), conversionStringFloat(taScaleMinZ->getText())),
+                                                           Vec3f(conversionStringFloat(taScaleMaxX->getText()), conversionStringFloat(taScaleMaxY->getText()), conversionStringFloat(taScaleMaxZ->getText()))));
+        emitterParams.push_back(taScaleMinX->getText());
+        emitterParams.push_back(taScaleMinY->getText());
+        emitterParams.push_back(taScaleMinZ->getText());
+        emitterParams.push_back(taScaleMaxX->getText());
+        emitterParams.push_back(taScaleMaxY->getText());
+        emitterParams.push_back(taScaleMaxZ->getText());
+        std::vector<std::string> color1 = split(taColor1->getText(), ";");
+        std::vector<std::string> color2 = split(taColor2->getText(), ";");
+        Vec3f c1(conversionStringInt(color1[0]), conversionStringInt(color1[1]), conversionStringInt(color1[2]), conversionStringInt(color1[3]));
+        Vec3f c2(conversionStringInt(color2[0]), conversionStringInt(color2[1]), conversionStringInt(color2[2]), conversionStringInt(color2[3]));
+        emitter.setParticleColor(Distributions::color(c1, c2));
+        emitterParams.push_back(taColor1->getText());
+        emitterParams.push_back(taColor2->getText());
+        Entity* ps = World::getEntity(psName);
+        if (dynamic_cast<ParticleSystem*>(ps)) {
+            static_cast<ParticleSystem*>(ps)->addEmitter(emitter);
+        }
+    }
 }
 void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "New application") {
@@ -1542,9 +1607,6 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         wNewEmitter->setVisible(true);
         getRenderComponentManager().setEventContextActivated(true, *wNewEmitter);
         tScriptEdit->setEventContextActivated(false);
-        /*emitterParams.insert(std::make_pair("ParticleSystem", taParticleSystemName->getText()));
-        emitterParams.insert(std::make_pair("EmissionRate", taEmmissionRate->getText()));
-        emitterParams.insert(std::make_pair("ParticleLifeTimeMin", taParticleLifeTimeMin->getText()));*/
     }
     if (item->getText() == "Affector") {
         //wNewAffector->setVisbile(true);
