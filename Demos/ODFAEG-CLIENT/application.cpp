@@ -787,7 +787,10 @@ namespace sorrok {
                 if (it2->second.second <= sf::seconds(0)) {
                     it2 = tmpTexts.erase(it2);
                 } else {
-                    it2->first.second.setPosition(Vec3f(it2->first.first->getPosition().x, it2->first.first->getPosition().y-10, 0));
+                    if (it2->first.second.getColor() == sf::Color::Red || it2->first.second.getColor() == sf::Color::Green)
+                        it2->first.second.setPosition(Vec3f(it2->first.first->getPosition().x, it2->first.first->getPosition().y-10, 0));
+                    else
+                        it2->first.second.setPosition(Vec3f(it2->first.first->getPosition().x, it2->first.first->getPosition().y-20, 0));
                     window->draw(it2->first.second);
                     it2++;
                 }
@@ -978,30 +981,27 @@ namespace sorrok {
             bool isAttacking = conversionStringInt(infos[8]);
             bool isAlive = conversionStringInt(infos[9]);
             int life = conversionStringInt(infos[10]);
-            if (last_cli_time > caracter->getAttribute("isMoving"+conversionIntString(id)).getValue<sf::Int64>()) {
+            if (elapsedTime > 0 && last_cli_time > caracter->getAttribute("isMoving"+conversionIntString(id)).getValue<sf::Int64>()) {
                 caracter->setMoving(isMoving);
             }
-            if (last_cli_time > caracter->getAttribute("isInFightingMode"+conversionIntString(id)).getValue<sf::Int64>()) {
+            if (elapsedTime > 0 && last_cli_time > caracter->getAttribute("isInFightingMode"+conversionIntString(id)).getValue<sf::Int64>()) {
                 caracter->setFightingMode(isInFightingMode);
             }
-            if(last_cli_time > caracter->getAttribute("isAttacking"+conversionIntString(id)).getValue<sf::Int64>()) {
+            if (elapsedTime > 0 && last_cli_time > caracter->getAttribute("isAttacking"+conversionIntString(id)).getValue<sf::Int64>()) {
                 caracter->setAttacking(isAttacking);
             }
-            if (last_cli_time > caracter->getAttribute("isAlive"+conversionIntString(id)).getValue<sf::Int64>()) {
+            if (elapsedTime > 0 && last_cli_time > caracter->getAttribute("isAlive"+conversionIntString(id)).getValue<sf::Int64>()) {
                 caracter->setAlive(isAlive);
             }
             if (!caracter->isMoving() && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
                 static_cast<Hero*>(caracter)->setIsMovingFromKeyboard(false);
-            }
-            if (last_cli_time > caracter->getAttribute("life"+conversionIntString(id)).getValue<sf::Int64>()) {
-                caracter->setLife(life);
             }
             if (static_cast<Hero*> (caracter) && static_cast<Hero*>(caracter)->isMovingFromKeyboard() && caracter->isMoving()) {
                 newPos = newPos + Vec3f(caracter->getDir().x, caracter->getDir().y, 0) * caracter->getSpeed() * elapsedTime;
             } else if (caracter->isMoving()) {
                 newPos = Computer::getPosOnPathFromTime(newPos, caracter->getPath(),elapsedTime, caracter->getSpeed());
             }
-            if (last_cli_time > caracter->getAttribute("position"+conversionIntString(id)).getValue<sf::Int64>()) {
+            if (elapsedTime > 0 && last_cli_time > caracter->getAttribute("position"+conversionIntString(id)).getValue<sf::Int64>()) {
                 Vec3f d = newPos - actualPos;
 
                 if (id == hero->getId()) {
@@ -1057,11 +1057,22 @@ namespace sorrok {
                 static_cast<Caracter*> (entity)->setFightingMode(false);
        }
        if (Network::getResponse("SETATTACKING", response)) {
-            int id = conversionStringInt(response);
+            //std::cout<<"response : "<<response<<std::endl;
+            std::vector<std::string> parts = split(response, "*");
+            //std::cout<<"size : "<<parts.size()<<std::endl;
+            int id = conversionStringInt(parts[0]);
             Entity* entity = World::getEntity(id);
+            int idFocused = conversionStringInt(parts[1]);
+            std::cout<<"ids : "<<parts[0]<<std::endl<<parts[1]<<std::endl;
+            Entity* focused = World::getEntity(idFocused);
             if (static_cast<Caracter*> (entity)) {
                 static_cast<Caracter*> (entity)->setAttacking(true);
+                static_cast<Caracter*> (entity)->setFocusedCaracter(static_cast<Caracter*>(focused));
                 static_cast<Caracter*> (entity)->restartAttackSpeed();
+                Vec2f dir = Vec2f(static_cast<Caracter*> (entity)->getFocusedCaracter()->getCenter().x, static_cast<Caracter*> (entity)->getFocusedCaracter()->getCenter().y) - Vec2f(static_cast<Caracter*> (entity)->getCenter().x, static_cast<Caracter*> (entity)->getCenter().y);
+                dir = dir.normalize();
+                if (static_cast<Caracter*> (entity)->getDir() != dir)
+                    static_cast<Caracter*> (entity)->setDir(dir);
             }
        }
        if (Network::getResponse("ALIVE", response)) {
@@ -1413,8 +1424,62 @@ namespace sorrok {
                 cristals.push_back(std::make_pair(cristal, items));
             }
        }
-
-
+       if (Network::getResponse("TAKE_DMG", response)) {
+            std::vector<std::string> parts = split(response, "*");
+            int id = conversionStringInt(parts[0]);
+            int dmg = conversionStringInt(parts[1]);
+            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            caracter->getFocusedCaracter()->attackFocusedCaracter(dmg);
+            FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+            Text text;
+            text.setFont(*fm.getResourceByAlias(Fonts::Serif));
+            text.setString("-"+conversionIntString(dmg));
+            text.setColor(sf::Color::Red);
+            text.setCharacterSize(10);
+            text.setPosition(Vec3f(caracter->getPosition().x,caracter->getPosition().y-10, 0));
+            text.setSize(Vec3f(10, 10, 0));
+            tmpTexts.push_back(std::make_pair(std::make_pair(caracter, text), std::make_pair(Application::getTimeClk().getElapsedTime(), sf::seconds(0.5))));
+       }
+       if (Network::getResponse("RGN_LIFE", response) && isClientAuthentified) {
+            std::vector<std::string> parts = split(response, "*");
+            int id = conversionStringInt(parts[0]);
+            int rgn = conversionStringInt(parts[1]);
+            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            if (caracter->getLife() + rgn >= caracter->getMaxLife()) {
+                caracter->setLife(caracter->getMaxLife());
+            } else {
+                caracter->setLife(caracter->getLife() + rgn);
+            }
+            FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+            Text text;
+            text.setFont(*fm.getResourceByAlias(Fonts::Serif));
+            text.setString("+"+conversionIntString(rgn));
+            text.setColor(sf::Color::Green);
+            text.setCharacterSize(10);
+            text.setPosition(Vec3f(caracter->getPosition().x,caracter->getPosition().y-10, 0));
+            text.setSize(Vec3f(10, 10, 0));
+            tmpTexts.push_back(std::make_pair(std::make_pair(caracter, text), std::make_pair(Application::getTimeClk().getElapsedTime(), sf::seconds(0.5))));
+       }
+       if (Network::getResponse("RGN_MANA", response) && isClientAuthentified) {
+            std::vector<std::string> parts = split(response, "*");
+            int id = conversionStringInt(parts[0]);
+            int rgn = conversionStringInt(parts[1]);
+            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            if (caracter->getMana() + rgn >= caracter->getManaMax()) {
+                caracter->setMana(caracter->getManaMax());
+            } else {
+                caracter->setMana(caracter->getMana() + rgn);
+            }
+            FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+            Text text;
+            text.setFont(*fm.getResourceByAlias(Fonts::Serif));
+            text.setString("+"+conversionIntString(rgn));
+            text.setColor(sf::Color::Blue);
+            text.setCharacterSize(10);
+            text.setPosition(Vec3f(caracter->getPosition().x,caracter->getPosition().y-20, 0));
+            text.setSize(Vec3f(10, 10, 0));
+            tmpTexts.push_back(std::make_pair(std::make_pair(caracter, text), std::make_pair(Application::getTimeClk().getElapsedTime(), sf::seconds(0.5))));
+       }
        std::vector<Entity*> caracters = World::getEntities("E_MONSTER+E_HERO");
        for (unsigned int i = 0; i < caracters.size(); i++) {
             Caracter* caracter = static_cast<Caracter*>(caracters[i]);
@@ -1483,7 +1548,7 @@ namespace sorrok {
                     /*if (caracter->getType() == "E_HERO")
                         std::cout<<"caracter position : "<<caracter->getCenter()<<std::endl;*/
                 }
-                if (caracter->isInFightingMode()
+                /*if (caracter->isInFightingMode()
                 && caracter->getFocusedCaracter() != nullptr
                 && Vec2f(caracter->getCenter().x, caracter->getCenter().y).computeDist(Vec2f(caracter->getFocusedCaracter()->getCenter().x,caracter->getFocusedCaracter()->getCenter().y)) <= caracter->getRange()) {
                     if (dynamic_cast<Monster*>(caracter->getFocusedCaracter())
@@ -1643,7 +1708,7 @@ namespace sorrok {
                             caracter->setMana(caracter->getMana() + rgn);
                         }
                     }
-                }
+                }*/
             } else {
                 if (caracter == hero) {
                     setEventContextActivated(false);
@@ -1680,7 +1745,7 @@ namespace sorrok {
                 psu->removeParticleSystem(it->first);
                 World::deleteEntity(it->first);
                 it = particles.erase(it);
-                std::cout<<"it erased"<<std::endl;
+                //std::cout<<"it erased"<<std::endl;
             } else
                 it++;
         }

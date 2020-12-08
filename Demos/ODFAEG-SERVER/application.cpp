@@ -559,10 +559,12 @@ namespace sorrok {
                             caracter->setAttacking(true);
                             caracter->restartAttackSpeed();
                             SymEncPacket packet;
-                            packet<<"SETATTACKING"<<conversionIntString(caracter->getId());
+                            std::string response = "SETATTACKING"+conversionIntString(caracter->getId())+"*"+conversionIntString(caracter->getFocusedCaracter()->getId());
+                            std::cout<<"response : "<<response<<std::endl;
+                            packet<<response;
                             Network::sendTcpPacket(packet);
                         }
-                        if (caracter->getDamages().empty()) {
+                        /*if (caracter->getDamages().empty()) {
                             std::vector<int> damages;
                             int nb = 10.f / caracter->getAttackSpeed();
                             for (unsigned int i = 0; i < nb; i++) {
@@ -596,10 +598,10 @@ namespace sorrok {
                                 packet<<userResponse;
                                 Network::getUsers()[i]->sendTcpPacket(packet);
                             }
-                        }
+                        }*/
                         if (caracter->getTimeOfLastAttack().asSeconds() >= caracter->getAttackSpeed()) {
                             caracter->restartAttackSpeed();
-                            int dmg = caracter->getDamages().back();
+                            /*int dmg = caracter->getDamages().back();
                             caracter->getDamages().pop_back();
                             caracter->attackFocusedCaracter(dmg);
                             if (!caracter->getFocusedCaracter()->isAlive()) {
@@ -619,12 +621,51 @@ namespace sorrok {
                                     static_cast<Hero*>(caracter)->up(static_cast<Monster*>(caracter->getFocusedCaracter())->getXp());
 
                                 }
+                            }*/
+                            int damage = 0;
+                            int flee = Math::random(0, 100);
+                            if (flee > caracter->getFocusedCaracter()->getFleeRate()) {
+                                int critical = Math::random(0, 100);
+                                int atk = 0;
+                                if (critical <= caracter->getCriticalChanceRate()) {
+                                    atk = Math::random(caracter->getAttackMin(), caracter->getAttackMax());
+                                    atk += atk / 100 * caracter->getCriticalAddDamagesRate();
+                                } else {
+                                    atk = Math::random(caracter->getAttackMin(), caracter->getAttackMax());
+                                }
+                                int def = Math::random(caracter->getFocusedCaracter()->getDefMin(), caracter->getFocusedCaracter()->getDefMax());
+                                damage = atk - def;
+                            }
+                            damage = (damage < 0) ? 0 : damage;
+                            //std::cout<<"damage : "<<damage<<std::endl;
+                            caracter->attackFocusedCaracter(damage);
+                            if (!caracter->getFocusedCaracter()->isAlive()) {
+                                SymEncPacket packet;
+                                packet<<"DEATH"+conversionIntString(caracter->getFocusedCaracter()->getId());
+                                //std::cout<<"caracter : "<<caracter->getFocusedCaracter()->getType()<<" is death"<<std::endl;
+                                Network::sendTcpPacket(packet);
+                                if (caracter->getFocusedCaracter()->getType() == "E_MONSTER") {
+                                    std::vector<Item> items = static_cast<Monster*>(caracter->getFocusedCaracter())->getLootedItems();
+                                    std::ostringstream oss;
+                                    OTextArchive ota(oss);
+                                    ota(items);
+                                    SymEncPacket packet;
+                                    std::string response = "ITEMS"+oss.str();
+                                    packet<<response;
+                                    Network::sendTcpPacket(packet);
+                                    static_cast<Hero*>(caracter)->up(static_cast<Monster*>(caracter->getFocusedCaracter())->getXp());
+
+                                }
+                            } else {
+                                SymEncPacket packet;
+                                packet<<"TAKE_DMG"+conversionIntString(caracter->getFocusedCaracter()->getId())+"*"+conversionIntString(damage);
+                                Network::sendTcpPacket(packet);
                             }
                         }
                     }
                 }
                 if (!caracter->isInFightingMode() && !caracter->isMoving() && !caracter->isAttacked()) {
-                    if (caracter->getRegen().empty()) {
+                    /*if (caracter->getRegen().empty()) {
                         std::vector<int> regen;
                         int nb = 10.f / caracter->getRegenHpSpeed();
                         std::string response = "RGN"+conversionIntString(caracter->getId())+conversionIntString(nb)+"*";
@@ -641,18 +682,27 @@ namespace sorrok {
                             packet<<userResponse;
                             Network::getUsers()[i]->sendTcpPacket(packet);
                         }
-                    }
+                    }*/
                     if (caracter->getTimeOfLastHpRegen().asSeconds() >= caracter->getRegenHpSpeed()) {
                         caracter->restartRegenHP();
-                        int rgn = caracter->getRegen().back();
+                        /*int rgn = caracter->getRegen().back();
                         caracter->getRegen().pop_back();
                         if (caracter->getLife() + rgn >= caracter->getMaxLife()) {
                             caracter->setLife(caracter->getMaxLife());
                         } else {
                             caracter->setLife(caracter->getLife() + rgn);
+                        }*/
+                        int rgn = Math::random(caracter->getRegenHpAmountMin(), caracter->getRegenHpAmountMax());
+                        if (caracter->getLife() + rgn >= caracter->getMaxLife()) {
+                            caracter->setLife(caracter->getMaxLife());
+                        } else {
+                            caracter->setLife(caracter->getLife() + rgn);
                         }
+                        SymEncPacket packet;
+                        packet<<"RGN_LIFE"+conversionIntString(caracter->getId())+"*"+conversionIntString(rgn);
+                        Network::sendTcpPacket(packet);
                     }
-                    if (caracter->getRegenMana().empty()) {
+                    /*if (caracter->getRegenMana().empty()) {
                         std::vector<int> regen;
                         int nb = 10.f / caracter->getRegenManaSpeed();
                         std::string response = "RGNMANA"+conversionIntString(caracter->getId())+conversionIntString(nb)+"*";
@@ -669,16 +719,25 @@ namespace sorrok {
                             packet<<userResponse;
                             Network::getUsers()[i]->sendTcpPacket(packet);
                         }
-                    }
+                    }*/
                     if (caracter->getTimeOfLastManaRegen().asSeconds() >= caracter->getRegenManaSpeed()) {
                         caracter->restartRegenMana();
-                        int rgn = caracter->getRegenMana().back();
+                        /*int rgn = caracter->getRegenMana().back();
                         caracter->getRegenMana().pop_back();
                         if (caracter->getMana() + rgn >= caracter->getManaMax()) {
                             caracter->setMana(caracter->getManaMax());
                         } else {
                             caracter->setMana(caracter->getMana() + rgn);
+                        }*/
+                        int rgn = Math::random(caracter->getRegenManaAmountMin(), caracter->getRegenManaAmountMax());
+                        if (caracter->getMana() + rgn >= caracter->getManaMax()) {
+                            caracter->setMana(caracter->getManaMax());
+                        } else {
+                            caracter->setMana(caracter->getMana() + rgn);
                         }
+                        SymEncPacket packet;
+                        packet<<"RGN_MANA"+conversionIntString(caracter->getId())+"*"+conversionIntString(rgn);
+                        Network::sendTcpPacket(packet);
                     }
                 }
             }

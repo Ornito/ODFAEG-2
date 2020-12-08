@@ -225,7 +225,7 @@ namespace sorrok {
         return clockAtkSpeed.getElapsedTime();
     }
     void Caracter::setDir (Vec2f dir) {
-        unsigned int previousAnimIndex = currentAnimIndex;
+        unsigned int previousAnimIndex = baseAnimIndex + currentAnimIndex;
         float angleRadians = dir.getAngleBetween(Vec2f::yAxis);
         int angle = Math::toDegrees(angleRadians);
         //Sud
@@ -253,15 +253,14 @@ namespace sorrok {
         else
             currentAnimIndex = 1;
         this->dir = dir;
-        if (previousAnimIndex != currentAnimIndex) {
+        if (previousAnimIndex != baseAnimIndex + currentAnimIndex) {
             anims[baseAnimIndex + currentAnimIndex]->stop();
             if (moving)
                 anims[baseAnimIndex + currentAnimIndex]->play(true);
             else
                 anims[baseAnimIndex + currentAnimIndex]->play(false);
+            BoneAnimation::setBoneIndex(baseAnimIndex+currentAnimIndex);
         }
-        baseAnimIndex + currentAnimIndex;
-        BoneAnimation::setBoneIndex(baseAnimIndex+currentAnimIndex);
         //World::update();
     }
     Vec2f Caracter::getDir () {
