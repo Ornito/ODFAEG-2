@@ -359,15 +359,15 @@ namespace sorrok {
             for (it = cristals.begin(); it != cristals.end();) {
                 if (it->first == selectedCristal.first) {
                     delete it->first;
-                    std::cout<<"erase it"<<std::endl;
+                    //std::cout<<"erase it"<<std::endl;
                     it = cristals.erase(it);
-                    std::cout<<"it erased"<<std::endl;
+                    //std::cout<<"it erased"<<std::endl;
                 } else {
                     it++;
                 }
             }
         }
-        std::cout<<"items droped"<<std::endl;
+        //std::cout<<"items droped"<<std::endl;
     }
     void MyAppli::pickUpItems (IKeyboard::Key key) {
         if (key != IKeyboard::Key::Unknown && key == IKeyboard::Key::A) {
@@ -1490,13 +1490,16 @@ namespace sorrok {
                             }
                             caracter->setDamages(damages);
                             sf::Int64 time = Application::getTimeClk().getElapsedTime().asMicroseconds() - conversionStringLong(infos[nb+1]);
+                            if (time < 0) {
+                                time = 0;
+                            }
                             caracter->setDmgTransferTime(time);
                             if (conversionStringLong(infos[nb+1]) > caracter->getAttribute("life"+conversionIntString(caracter->getId())).getValue<sf::Int64>())
                                 caracter->setLife(conversionStringInt(infos[nb+2]));
                         }
                     }
                     sf::Int64 time = caracter->getDmgTransferTime();
-                    if (!caracter->getDamages().empty() && caracter->getTimeOfLastAttack().asSeconds() >= caracter->getAttackSpeed() - time / 1e+6) {
+                    if (!caracter->getDamages().empty() && caracter->getTimeOfLastAttack().asSeconds() >= caracter->getAttackSpeed() - time / 1e+6f) {
                         if (time  > 0) {
                             time -= caracter->getAttackSpeed() * 1e+6;
                             if (time < 0)
@@ -1540,13 +1543,16 @@ namespace sorrok {
                             }
                             caracter->setRegen(regen);
                             sf::Int64 time = Application::getTimeClk().getElapsedTime().asMicroseconds() - conversionStringLong(infos[nb+1]);
+                            if (time < 0) {
+                                time = 0;
+                            }
                             caracter->setRgnTransferTime(time);
                             if (conversionStringLong(infos[nb+1]) > caracter->getAttribute("life"+conversionIntString(caracter->getId())).getValue<sf::Int64>())
                                 caracter->setLife(conversionStringInt(infos[nb+2]));
                         }
                     }
                     sf::Int64 time = caracter->getRgnTransferTime();
-                    if (!caracter->getRegen().empty() && caracter->getTimeOfLastHpRegen().asSeconds() >= caracter->getRegenHpSpeed() - time / 1e+6) {
+                    if (!caracter->getRegen().empty() && caracter->getTimeOfLastHpRegen().asSeconds() >= caracter->getRegenHpSpeed() - time / 1e+6f) {
                         if (time > 0) {
                             time -= caracter->getRegenHpSpeed() * 1e+6;
                             if (time < 0)
@@ -1584,13 +1590,16 @@ namespace sorrok {
                             }
                             caracter->setManaRegen(regen);
                             sf::Int64 time = Application::getTimeClk().getElapsedTime().asMicroseconds() - conversionStringLong(infos[nb+1]);
+                            if (time < 0) {
+                                time = 0;
+                            }
                             caracter->setRgnManaTransferTime(time);
                             if (conversionStringLong(infos[nb+1]) > caracter->getAttribute("mana"+conversionIntString(caracter->getId())).getValue<sf::Int64>())
                                 caracter->setMana(conversionStringInt(infos[nb+2]));
                         }
                     }
                     sf::Int64 time2 = caracter->getRgnManaTransferTime();
-                    if (!caracter->getManaRegen().empty() && caracter->getTimeOfLastManaRegen().asSeconds() >= caracter->getRegenManaSpeed() - time2 / 1e+6) {
+                    if (!caracter->getManaRegen().empty() && caracter->getTimeOfLastManaRegen().asSeconds() >= caracter->getRegenManaSpeed() - time2 / 1e+6f) {
                         if (time2 > 0) {
                             time2 -= caracter->getRegenManaSpeed() * 1e+6;
                             if (time2 < 0)
