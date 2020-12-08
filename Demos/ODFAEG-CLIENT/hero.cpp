@@ -57,27 +57,35 @@ namespace sorrok {
     std::map<Item::Type, std::vector<Item>>& Hero::getInventory() {
         return inventory;
     }
-    bool Hero::containsQuest(Quest* quest) {
+    bool Hero::containsQuest(std::string name) {
         for (unsigned int i = 0; i < diary.size(); i++) {
-            if (diary[i]->getName() == quest->getName())
+            if (diary[i].getName() == name)
                 return true;
         }
         return false;
     }
-    void Hero::addQuest(Quest* quest) {
+    Quest* Hero::getQuest(std::string name) {
+        for (unsigned int i = 0; i < diary.size(); i++) {
+            if (diary[i].getName() == name) {
+                return &diary[i];
+            }
+        }
+        return nullptr;
+    }
+    void Hero::addQuest(Quest quest) {
         diary.push_back(quest);
     }
-    void Hero::removeQuest(Quest* quest) {
-        std::vector<Quest*>::iterator it;
+    void Hero::removeQuest(Quest quest) {
+        std::vector<Quest>::iterator it;
         for (it = diary.begin(); it != diary.end(); ){
-            if ((*it)->getName() == quest->getName()) {
+            if (it->getName() == quest.getName()) {
                 it = diary.erase(it);
             } else {
                 it++;
             }
         }
     }
-    std::vector<Quest*> Hero::getDiary() {
+    std::vector<Quest> Hero::getDiary() {
         return diary;
     }
     void Hero::addSkill(Skill skill) {

@@ -155,7 +155,6 @@ namespace odfaeg {
             sf::PrimitiveType getPrimitiveType() const;
             physic::BoundingBox getBounds();
             bool operator== (const VertexArray &other) const;
-            void updateVBOBuffer();
             void transform(TransformMatrix tm);
             template <typename Archive>
             void serialize (Archive & ar) {
@@ -169,7 +168,6 @@ namespace odfaeg {
             }
             void onLoad() {
                 computeNormals();
-                updateVBOBuffer();
             }
             bool isLoop();
             ~VertexArray();

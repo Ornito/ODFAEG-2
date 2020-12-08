@@ -151,8 +151,8 @@ namespace sorrok {
     void MyAppli::onLabDiaryQuestName(Label* label)  {
         Quest* quest;
         for (unsigned int i = 0; i < static_cast<Hero*>(hero)->getDiary().size(); i++) {
-            if (label->getText() == static_cast<Hero*>(hero)->getDiary()[i]->getName()) {
-                quest = static_cast<Hero*>(hero)->getDiary()[i];
+            if (label->getText() == static_cast<Hero*>(hero)->getDiary()[i].getName()) {
+                quest = &static_cast<Hero*>(hero)->getDiary()[i];
             }
         }
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
@@ -178,7 +178,7 @@ namespace sorrok {
         pQuestNames->removeAll();
         pQuestProgress->removeAll();
         for(unsigned int i = 0; i < static_cast<Hero*>(hero)->getDiary().size(); i++) {
-            Label* label = new Label(*wDiary, Vec3f(0, 100*i, 0), Vec3f(300, 100, 0),fm.getResourceByAlias(Fonts::Serif),static_cast<Hero*>(hero)->getDiary()[i]->getName(), 15);
+            Label* label = new Label(*wDiary, Vec3f(0, 100*i, 0), Vec3f(300, 100, 0),fm.getResourceByAlias(Fonts::Serif),static_cast<Hero*>(hero)->getDiary()[i].getName(), 15);
             pQuestNames->addChild(label);
             label->setParent(pQuestNames);
             Action aLabDiaryQuestName (Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
@@ -193,9 +193,13 @@ namespace sorrok {
     void MyAppli::onLabQuestClicked(Label* label) {
         label->setEventContextActivated(false);
         wDisplayQuests->setVisible(false);
-        for (unsigned int i = 0; i < selectedPnj->getQuests().size(); i++) {
-            if (selectedPnj->getQuests()[i].getName() == label->getText()) {
-                selectedQuest = &selectedPnj->getQuests()[i];
+        if (static_cast<Hero*>(hero)->containsQuest(label->getText().toAnsiString())) {
+            selectedQuest = static_cast<Hero*>(hero)->getQuest(label->getText());
+        } else {
+            for (unsigned int i = 0; i < selectedPnj->getQuests().size(); i++) {
+                if (selectedPnj->getQuests()[i].getName() == label->getText()) {
+                    selectedQuest = &selectedPnj->getQuests()[i];
+                }
             }
         }
         lQuestName->setText(selectedQuest->getName());
@@ -223,9 +227,10 @@ namespace sorrok {
         if (selectedQuest->getStatus() == Quest::NEW) {
             std::cout<<"new"<<std::endl;
             bAccept->setText("Accept");
-        } else if (selectedQuest->getStatus() == Quest::IN_PROGRESS || selectedQuest->getStatus() == Quest::COMPLETE && selectedQuest->getPnjToVisit() != selectedPnj->getName())  {
+        } else if (selectedQuest->getStatus() == Quest::IN_PROGRESS)  {
+            std::cout<<"in progress"<<std::endl;
             bAccept->setText("Continue");
-        } else if (selectedQuest->getStatus() == Quest::COMPLETE && selectedQuest->getPnjToVisit() == selectedPnj->getName()) {
+        } else if (selectedQuest->getStatus() == Quest::COMPLETE) {
             std::cout<<"finished"<<std::endl;
             bAccept->setText("Get rewards");
         }
@@ -878,15 +883,28 @@ namespace sorrok {
             Pnj* pnj = static_cast<Pnj*>(World::getEntity(conversionStringInt(response)));
             selectedPnj = pnj;
             std::vector<Quest> quests = pnj->getQuests();
+            std::vector<Quest> diary = static_cast<Hero*>(hero)->getDiary();
             pQuestList->removeAll();
             FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
             for (unsigned int i = 0; i < quests.size(); i++) {
-                Label* label = new Label(*wDisplayQuests,Vec3f(0, i * 100, 0),Vec3f(400, 100, 0),fm.getResourceByAlias(Fonts::Serif), quests[i].getName(), 15);
-                pQuestList->addChild(label);
-                label->setParent(pQuestList);
-                Action aLabClicked(Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
-                Command cmdLabClicked(aLabClicked, FastDelegate<bool>(&Label::isMouseInside, label), FastDelegate<void>(&MyAppli::onLabQuestClicked, this, label));
-                label->getListener().connect("ALABCLICKED", cmdLabClicked);
+                if (static_cast<Hero*>(hero)->containsQuest(quests[i].getName())) {
+                    Quest* quest = static_cast<Hero*>(hero)->getQuest(quests[i].getName());
+                    if (quest != nullptr && quest->getStatus() != Quest::FINISHED) {
+                        Label* label = new Label(*wDisplayQuests,Vec3f(0, i * 100, 0),Vec3f(400, 100, 0),fm.getResourceByAlias(Fonts::Serif), quests[i].getName(), 15);
+                        pQuestList->addChild(label);
+                        label->setParent(pQuestList);
+                        Action aLabClicked(Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+                        Command cmdLabClicked(aLabClicked, FastDelegate<bool>(&Label::isMouseInside, label), FastDelegate<void>(&MyAppli::onLabQuestClicked, this, label));
+                        label->getListener().connect("ALABCLICKED", cmdLabClicked);
+                    }
+                } else {
+                    Label* label = new Label(*wDisplayQuests,Vec3f(0, i * 100, 0),Vec3f(400, 100, 0),fm.getResourceByAlias(Fonts::Serif), quests[i].getName(), 15);
+                    pQuestList->addChild(label);
+                    label->setParent(pQuestList);
+                    Action aLabClicked(Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+                    Command cmdLabClicked(aLabClicked, FastDelegate<bool>(&Label::isMouseInside, label), FastDelegate<void>(&MyAppli::onLabQuestClicked, this, label));
+                    label->getListener().connect("ALABCLICKED", cmdLabClicked);
+                }
             }
             wDisplayQuests->setVisible(true);
             getRenderComponentManager().setEventContextActivated(true, *wDisplayQuests);
@@ -1022,7 +1040,7 @@ namespace sorrok {
                 static_cast<Hero*>(caracter->getFocusedCaracter())->up(static_cast<Monster*>(caracter)->getXp());
                 Hero* hero = static_cast<Hero*>(caracter->getFocusedCaracter());
                 for (unsigned int i = 0; i < hero->getDiary().size(); i++) {
-                    hero->getDiary()[i]->addMonsterToKillProgress(caracter->getName());
+                    hero->getDiary()[i].addMonsterToKillProgress(caracter->getName());
                 }
            }
        }
@@ -1685,8 +1703,8 @@ namespace sorrok {
         //std::cout<<"text : "<<item->getText()<<std::endl;
         if (item->getText() == "Accept") {
             selectedQuest->setStatus(Quest::IN_PROGRESS);
-            if (!static_cast<Hero*>(hero)->containsQuest(selectedQuest)) {
-                static_cast<Hero*>(hero)->addQuest(selectedQuest);
+            if (!static_cast<Hero*>(hero)->containsQuest(selectedQuest->getName())) {
+                static_cast<Hero*>(hero)->addQuest(*selectedQuest);
             }
             wDisplayQuest->setVisible(false);
             std::string request = "ACCEPT*"+conversionIntString(selectedPnj->getId())+"*"+selectedQuest->getName()+"*"+conversionIntString(hero->getId());
@@ -1698,10 +1716,8 @@ namespace sorrok {
             getRenderComponentManager().setEventContextActivated(true, getRenderWindow());
         }
         if (item->getText() == "Give up") {
-            if (static_cast<Hero*>(hero)->containsQuest(selectedQuest)) {
-                static_cast<Hero*>(hero)->removeQuest(selectedQuest);
-                selectedQuest->setStatus(Quest::NEW);
-                selectedQuest->reset();
+            if (static_cast<Hero*>(hero)->containsQuest(selectedQuest->getName())) {
+                static_cast<Hero*>(hero)->removeQuest(*selectedQuest);
             }
             wDisplayQuest->setVisible(false);
             getRenderComponentManager().setEventContextActivated(false, *wDisplayQuest);
@@ -1723,8 +1739,13 @@ namespace sorrok {
                     static_cast<Hero*>(hero)->addItem(it->second);
                 }
             }
-            selectedQuest->setStatus(Quest::NEW);
-            selectedQuest->reset();
+            if (selectedQuest->isRepeat()) {
+                if (static_cast<Hero*>(hero)->containsQuest(selectedQuest->getName())) {
+                    static_cast<Hero*>(hero)->removeQuest(*selectedQuest);
+                }
+            } else {
+                selectedQuest->setStatus(Quest::FINISHED);
+            }
             wDisplayQuest->setVisible(false);
             getRenderComponentManager().setEventContextActivated(false, *wDisplayQuest);
             setEventContextActivated(true);

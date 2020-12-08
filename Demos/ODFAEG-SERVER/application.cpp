@@ -151,7 +151,7 @@ namespace sorrok {
         monster->setCenter(pos);
         World::addEntity(monster);
         //std::cout<<"monter generated"<<std::endl;
-        Quest quest("Quête du débutant", "Tuer 10 ogres");
+        Quest quest("Quête du débutant", "Tuer 10 ogres", true);
         quest.addMonsterToKill(monster->getName(), 10);
         quest.addReward(5, item);
         Pnj* pnj = new Pnj();

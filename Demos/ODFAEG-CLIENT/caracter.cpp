@@ -141,6 +141,7 @@ namespace sorrok {
                 //anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
                 baseAnimIndex = ATTACKING;
                 BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
+                anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
             } else {
                 changeAttribute("isAttacking"+conversionIntString(getId()), Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();

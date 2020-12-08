@@ -34,10 +34,11 @@ namespace sorrok {
             ar(skills);
         }
         void addItem (Item item);
-        bool containsQuest(Quest* quest);
-        void addQuest(Quest* quest);
-        void removeQuest (Quest* quest);
-        std::vector<Quest*> getDiary();
+        bool containsQuest(std::string name);
+        void addQuest(Quest quest);
+        void removeQuest (Quest quest);
+        Quest* getQuest(std::string name);
+        std::vector<Quest> getDiary();
         std::map<Item::Type, std::vector<Item>>& getInventory();
         void addSkill (Skill skill);
         std::vector<Skill> getSkills();
@@ -48,7 +49,7 @@ namespace sorrok {
         int xp, xpReqForNextLevel;
         std::map<Item::Type, std::vector<Item>> inventory;
         std::vector<Skill> skills;
-        std::vector<Quest*> diary;
+        std::vector<Quest> diary;
     };
 }
 #endif // HERO_HPP

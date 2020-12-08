@@ -156,12 +156,7 @@ namespace odfaeg {
         m_primitiveType(type),
         m_entity(entity)
         {
-            vboVertexBuffer = 0;
-            vboNormalBuffer = 0;
-            vboIndexBuffer = 0;
-            needToUpdateVBOBuffer = true;
-            loop = true;
-            nbVerticesPerFace = 4;
+
         }
         void VertexArray::setEntity(Entity* entity) {
             m_entity = entity;
@@ -177,8 +172,7 @@ namespace odfaeg {
         void VertexArray::addIndex(unsigned int index) {
             m_indexes.push_back(index);
             //std::cout<<"va index : "<<index<<"size : "<<m_indexes.size()<<std::endl;
-            if (!needToUpdateVBOBuffer)
-                needToUpdateVBOBuffer = true;
+
         }
         std::vector<unsigned int> VertexArray::getBaseIndexes() {
             return m_baseIndexes;
@@ -396,37 +390,7 @@ namespace odfaeg {
         void VertexArray::draw(RenderTarget& target, RenderStates states)
         {
             if (!m_vertices.empty()) {
-
-                /*if (GLEW_ARB_vertex_buffer_object) {
-                    if (needToUpdateVBOBuffer) {
-                        if (vboVertexBuffer == 0) {
-                            GLuint vbo;
-                            glCheck(glGenBuffers(1, &vbo));
-                            vboVertexBuffer = static_cast<unsigned int>(vbo);
-                        }
-                        if (oldVerticesSize != m_vertices.size()) {
-                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboVertexBuffer));
-                            glCheck(glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vertex), &m_vertices[0], GL_STREAM_DRAW));
-                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                        } else {
-                            GLvoid *pos_vbo = nullptr;
-                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboVertexBuffer));
-                            pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-                            if (pos_vbo != nullptr) {
-                                memcpy(pos_vbo,&m_vertices[0],  m_vertices.size() * sizeof(Vertex));
-                                glCheck(glUnmapBuffer(GL_ARRAY_BUFFER));
-                                pos_vbo = nullptr;
-                            }
-                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                        }
-                        needToUpdateVBOBuffer = false;
-                    }
-                    states.vboVertexID = vboVertexBuffer;
-                    target.draw(&m_vertices[0], m_vertices.size(), m_primitiveType, states);
-                } else {*/
-                    target.draw(&m_vertices[0], m_vertices.size(), m_primitiveType, states);
-                //}
-                oldVerticesSize = m_vertices.size();
+                target.draw(&m_vertices[0], m_vertices.size(), m_primitiveType, states);
             }
         }
         ////////////////////////////////////////////////////////////
@@ -474,9 +438,6 @@ namespace odfaeg {
                 return physic::BoundingBox();
             }
         }
-        void VertexArray::updateVBOBuffer() {
-            needToUpdateVBOBuffer = true;
-        }
         void VertexArray::remove (unsigned int index) {
             std::vector<Vertex>::iterator it = m_vertices.begin();
             for (unsigned int i = 0; i < m_vertices.size(); i++) {
@@ -496,18 +457,7 @@ namespace odfaeg {
             }
         }
         VertexArray::~VertexArray() {
-            if (VBO::isAvailable() && vboVertexBuffer != 0) {
-                GLuint vbo = static_cast<GLuint>(vboVertexBuffer);
-                glCheck(glDeleteBuffers(1, &vbo));
-            }
-            if (VBO::isAvailable() && vboNormalBuffer != 0) {
-                GLuint vbo = static_cast<GLuint>(vboNormalBuffer);
-                glCheck(glDeleteBuffers(1, &vbo));
-            }
-            if (VBO::isAvailable() && vboIndexBuffer != 0) {
-                GLuint vbo = static_cast<GLuint>(vboIndexBuffer);
-                glCheck(glDeleteBuffers(1, &vbo));
-            }
+
         }
     }
 } // namespace sf3
