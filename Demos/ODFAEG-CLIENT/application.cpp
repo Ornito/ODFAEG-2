@@ -1501,7 +1501,7 @@ namespace sorrok {
                     sf::Int64 time = caracter->getDmgTransferTime();
                     if (!caracter->getDamages().empty() && caracter->getTimeOfLastAttack().asSeconds() >= caracter->getAttackSpeed() - time / 1e+6f) {
                         if (time  > 0) {
-                            time -= caracter->getAttackSpeed() * 1e+6;
+                            time -= caracter->getAttackSpeed() * 1e+6f;
                             if (time < 0)
                                 time = 0;
                             caracter->setDmgTransferTime(time);
@@ -1554,7 +1554,7 @@ namespace sorrok {
                     sf::Int64 time = caracter->getRgnTransferTime();
                     if (!caracter->getRegen().empty() && caracter->getTimeOfLastHpRegen().asSeconds() >= caracter->getRegenHpSpeed() - time / 1e+6f) {
                         if (time > 0) {
-                            time -= caracter->getRegenHpSpeed() * 1e+6;
+                            time -= caracter->getRegenHpSpeed() * 1e+6f;
                             if (time < 0)
                                 time = 0;
                             caracter->setRgnTransferTime(time);
@@ -1601,7 +1601,7 @@ namespace sorrok {
                     sf::Int64 time2 = caracter->getRgnManaTransferTime();
                     if (!caracter->getManaRegen().empty() && caracter->getTimeOfLastManaRegen().asSeconds() >= caracter->getRegenManaSpeed() - time2 / 1e+6f) {
                         if (time2 > 0) {
-                            time2 -= caracter->getRegenManaSpeed() * 1e+6;
+                            time2 -= caracter->getRegenManaSpeed() * 1e+6f;
                             if (time2 < 0)
                                 time2 = 0;
                             caracter->setRgnManaTransferTime(time2);
