@@ -138,14 +138,13 @@ namespace sorrok {
             if (attacking) {
                 changeAttribute("isAttacking"+conversionIntString(getId()), Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
-                anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
+                //anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
                 baseAnimIndex = ATTACKING;
                 BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
-                //World::update();
             } else {
                 changeAttribute("isAttacking"+conversionIntString(getId()), Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
-                anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
+                //anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
                 damages.clear();
             }
         }
@@ -290,7 +289,7 @@ namespace sorrok {
             } else {
                 changeAttribute("isMoving"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
-                anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
+                //anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
             }
         }
     }
