@@ -2396,22 +2396,6 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
 
-C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Network/client.cpp
-../../../include/odfaeg/Network/client.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Network/client.h
-../../../include/odfaeg/Network/network.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Network/network.h
-../../../include/odfaeg/Network/cliEncryptedPacket.hpp
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Network/cliEncryptedPacket.hpp
-../../../include/odfaeg/Core/application.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/application.h
-
-C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Network/network.cpp
-../../../include/odfaeg/Network/network.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Network/network.h
-../../../include/odfaeg/Core/application.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/application.h
-
 C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Network/srkserveur.cpp
 ../../../include/odfaeg/Network/srkserveur.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Network/srkserveur.h

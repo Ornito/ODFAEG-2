@@ -69,8 +69,8 @@ namespace odfaeg {
                         User* user = Network::getUser(client);
                         if (user != nullptr && user->getRemotePortUDP()) {
                             Packet packet;
-                            packet<<"GET_TIME";
                             sf::Int64 lastSrvTime = core::Application::getTimeClk().getElapsedTime().asMicroseconds();
+                            packet<<"GET_TIME*"+core::conversionLongString(lastSrvTime);
                             user->setLastSrvTime(lastSrvTime);
                             user->sendUdpPacket(packet);
                         }

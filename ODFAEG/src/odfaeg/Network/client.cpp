@@ -192,7 +192,7 @@ namespace odfaeg {
                                     message = "PONG";
                                     packet<<message;
                                     Network::sendUdpPacket(packet);
-                                } else if (message == "GET_TIME") {
+                                } else if (message.find("GET_TIME") != std::string::npos) {
                                     packet.clear();
                                     sf::Int64 time = core::Application::getTimeClk().getElapsedTime().asMicroseconds();
                                     message = "SET_TIME*"+core::conversionLongString(time);

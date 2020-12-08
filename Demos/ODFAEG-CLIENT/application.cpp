@@ -14,25 +14,25 @@ namespace sorrok {
         getView().setScale(1, -1, 1);
         sf::Clock clock1;
         addClock(clock1, "RequestTime");
-        std::cout<<"add clock"<<std::endl;
+        //std::cout<<"add clock"<<std::endl;
         sf::Clock clock2;
         addClock(clock2, "FPS");
-        std::cout<<"add clock 2"<<std::endl;
+        //std::cout<<"add clock 2"<<std::endl;
         fps = 0;
         hero = nullptr;
         selectedPnj = nullptr;
         selectedQuest = nullptr;
         received = false;
-        std::cout<<"set client message"<<std::endl;
+        //std::cout<<"set client message"<<std::endl;
         Network::setCertifiateClientMess("SORROKCLIENT");
-        std::cout<<"client message set"<<std::endl;
+        //std::cout<<"client message set"<<std::endl;
         isClientAuthentified = false;
-        std::cout<<"create ps"<<std::endl;
+        //std::cout<<"create ps"<<std::endl;
         ps = new ParticleSystem(Vec3f(0, 0, 150),Vec3f(100, 100, 0));
-        std::cout<<"ps created"<<std::endl;
+        //std::cout<<"ps created"<<std::endl;
         doubleClicks.insert(std::make_pair("useItem", getClock("TimeClock").getElapsedTime()));
         doubleClicks.insert(std::make_pair("useSkill", getClock("TimeClock").getElapsedTime()));
-        std::cout<<"appli created"<<std::endl;
+        //std::cout<<"appli created"<<std::endl;
     }
     void MyAppli::onF1Pressed() {
         if (shorcuts[0] != nullptr) {
@@ -40,17 +40,17 @@ namespace sorrok {
         }
     }
     void MyAppli::onIconMoved(Icon* icon) {
-        std::cout<<"move icon"<<std::endl;
+        //std::cout<<"move icon"<<std::endl;
         floatingIcon->setPosition(Vec3f(IMouse::getPosition(getRenderWindow()).x, IMouse::getPosition(getRenderWindow()).y, 0));
 
     }
     void MyAppli::onIconPressed(Icon* icon) {
-        std::cout<<"icon pressed"<<std::endl;
+        //std::cout<<"icon pressed"<<std::endl;
         floatingIcon->getSprite().setTexture(*icon->getSprite().getTexture());
         floatingIcon->setVisible(true);
     }
     void MyAppli::onIconMouseButtonReleased(Icon* icon) {
-        std::cout<<"release icon"<<std::endl;
+        //std::cout<<"release icon"<<std::endl;
         unsigned int distMin = std::numeric_limits<unsigned int>::max();
         int id = -1;
         for (unsigned int i = 0; i < 9; i++) {
@@ -99,7 +99,7 @@ namespace sorrok {
             TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
             ps->setTexture(*tm.getResourceByAlias("HEAL_PARTICLE"));
             for (unsigned int i = 0; i < 10; i++) {
-                ps->addTextureRect(sf::IntRect(i*10, 558, 10, 10));
+                ps->addTextureRect(sf::IntRect(i*10, 148, 10, 10));
             }
             emitter.setEmissionRate(30);
             emitter.setParticleLifetime(Distributions::uniform(sf::seconds(5), sf::seconds(7)));
@@ -535,16 +535,16 @@ namespace sorrok {
         cache.addResourceManager(tm, "TextureManager");
         cache.addResourceManager(tm2, "TextureManager2");
         cache.addResourceManager(tm3, "TextureManager3");
-        std::cout<<"resources loaded"<<std::endl;
+        //std::cout<<"resources loaded"<<std::endl;
         //shader.loadFromFile("Shaders/SimpleVertexShader.vertexshader", "Shaders/SimpleFragmentShader.fragmentshader");
     }
     void MyAppli::onInit () {
 
         setEventContextActivated(false);
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
-        std::cout<<"init"<<std::endl;
+        //std::cout<<"init"<<std::endl;
         Network::startCli(10'000, 10'001,sf::IpAddress::LocalHost);
-        std::cout<<"client connected"<<std::endl;
+        //std::cout<<"client connected"<<std::endl;
         TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
         Vec2f pos (getView().getPosition().x - getView().getSize().x * 0.5f, getView().getPosition().y - getView().getSize().y * 0.5f);
         BoundingBox bx (pos.x, pos.y, 0, getView().getSize().x, getView().getSize().y, 0);
