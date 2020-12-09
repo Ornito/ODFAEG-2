@@ -91,9 +91,6 @@ namespace sorrok {
         std::vector<odfaeg::graphic::Entity*> monsters;
         std::array<odfaeg::core::Variant<Item, Skill>*, 9> shorcuts;
         odfaeg::physic::ParticleSystem* ps;
-        std::vector<ItemAction*> itemsActions;
-        std::vector<SkillAction*> skillsActions;
-        std::vector<SkillAction*> skillsActionsShorcutBar;
     public :
         enum Fonts {
             Serif

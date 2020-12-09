@@ -17,6 +17,7 @@ namespace sorrok {
             ar(requiredClass);
         }
         unsigned int getManaCost();
+        std::string getRequiredClass();
         private :
         std::string name, requiredClass;
         unsigned int manaCost;

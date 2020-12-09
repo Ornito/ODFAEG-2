@@ -1,6 +1,7 @@
 #ifndef GAME_ACTION_HPP
 #define GAME_ACTION_HPP
 #include "hero.h"
+#include "odfaeg/Network/network.h"
 namespace sorrok {
     class GameAction : public odfaeg::core::Visitor<> {
         public :

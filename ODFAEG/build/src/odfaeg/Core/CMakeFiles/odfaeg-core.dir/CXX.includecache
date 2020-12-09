@@ -1096,16 +1096,6 @@ openssl/opensslconf.h
 openssl/evp.h
 -
 
-../extlibs/headers/openssl/kssl.h
-openssl/opensslconf.h
--
-stdio.h
--
-ctype.h
--
-krb5.h
--
-
 ../extlibs/headers/openssl/lhash.h
 openssl/e_os2.h
 -
@@ -1160,14 +1150,6 @@ openssl/e_os2.h
 openssl/symhacks.h
 -
 openssl/ossl_typ.h
--
-
-../extlibs/headers/openssl/pqueue.h
-stdio.h
--
-stdlib.h
--
-string.h
 -
 
 ../extlibs/headers/openssl/rand.h
@@ -1243,8 +1225,6 @@ openssl/srtp.h
 -
 
 ../extlibs/headers/openssl/ssl2.h
-
-../extlibs/headers/openssl/ssl23.h
 
 ../extlibs/headers/openssl/ssl3.h
 openssl/comp.h

@@ -11,4 +11,7 @@ namespace sorrok {
     std::string Item::getName() {
         return name;
     }
+    std::string Item::getRequiredClass() {
+        return requiredClass;
+    }
 }

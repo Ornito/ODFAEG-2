@@ -145,7 +145,7 @@ namespace sorrok {
         Monster* monster = new Monster("Ogro", "Orc","MapTest",1,monsterZone);
         //std::cout<<"monster id : "<<monster->getId()<<std::endl;
         Vec3f pos = monster->respawn();
-        Item item("HP potion", Item::HP_POTION,"ALL");
+        Item item("HP potion", Item::HP_POTION,"All");
         monster->addLootableItem(item, 1.f);
         tmpPosition = pos;
         monster->setCenter(pos);
@@ -159,7 +159,7 @@ namespace sorrok {
         pnj->setCenter(Vec3f (300, 300, 300));
         quest.setPnjToVisit("Questy");
         World::addEntity(pnj);
-        //std::cout<<"server is ready!"<<std::endl;
+        std::cout<<"server is ready!"<<std::endl;
     }
     void MyAppli::onExec () {
         if (Network::hasRequest()) {
@@ -418,7 +418,7 @@ namespace sorrok {
                 caracter->getGlobalBounds().getSize().x, caracter->getGlobalBounds().getSize().y * 0.25f, 0);
                 caracter->setCollisionVolume(bb2);
                 caracter->setCenter(Vec3f(0, 300, 300));
-                Skill skill("LastHeal", 10, "ALL");
+                Skill skill("LastHeal", 10, "All");
                 static_cast<Hero*>(caracter)->addSkill(skill);
                 SymEncPacket packet;
                 packet<<"IDOK"+conversionIntString(caracter->getId());
@@ -467,6 +467,48 @@ namespace sorrok {
                 SymEncPacket packet;
                 packet<<response;
                 user->sendTcpPacket(packet);
+            } else if (request == "CANUSE") {
+                int id = conversionStringInt(infos[1]);
+                int type = conversionStringInt(infos[2]);
+                Hero* caracter = static_cast<Hero*>(World::getEntity(id));
+                std::map<Item::Type, std::vector<Item>> items = caracter->getInventory();
+                std::map<Item::Type, std::vector<Item>>::iterator it;
+                it = items.find(static_cast<Item::Type>(type));
+                std::string response = "CANUSENO";
+                if (it != items.end() && it->second.size() > 0) {
+                    for (unsigned int i = 0; i < it->second.size(); i++) {
+                        if (it->second[i].getType() == type && it->second[i].getRequiredClass().find(caracter->getClass()) != std::string::npos || it->second[i].getRequiredClass() == "All") {
+                            response = "CANUSEOK";
+                        }
+                    }
+                }
+                //std::cout<<"can use : "<<response<<std::endl;
+                SymEncPacket packet;
+                packet<<response;
+                user->sendTcpPacket(packet);
+            } else if (request == "CANLAUNCH") {
+                int id = conversionStringInt(infos[1]);
+                std::string name = infos[2];
+                Hero* caracter = static_cast<Hero*>(World::getEntity(id));
+                std::vector<Skill> skills = caracter->getSkills();
+                std::string response = "CANLAUNCHNO";
+                for (unsigned int i = 0; i < skills.size(); i++) {
+                    //std::cout<<"Ok ? "<<(skills[i].getRequiredClass().find(caracter->getClass()) != std::string::npos || skills[i].getRequiredClass() == "All")<<std::endl;
+                    if (skills[i].getName() == name && caracter->getMana() >= skills[i].getManaCost() && skills[i].getRequiredClass().find(caracter->getClass()) != std::string::npos || skills[i].getRequiredClass() == "All") {
+                        response = "CANLAUNCHOK";
+                    }
+                }
+                SymEncPacket packet;
+                packet<<response;
+                user->sendTcpPacket(packet);
+            } else if (request == "DROPITEM") {
+                int id = conversionStringInt(infos[1]);
+                std::istringstream iss(infos[2]);
+                ITextArchive ia(iss);
+                Item item;
+                ia(item);
+                Hero* hero = static_cast<Hero*>(World::getEntity(id));
+                hero->addItem(item);
             }
         }
         if (getClock("LoopTime").getElapsedTime().asMilliseconds() < 100)
@@ -639,6 +681,9 @@ namespace sorrok {
                             damage = (damage < 0) ? 0 : damage;
                             //std::cout<<"damage : "<<damage<<std::endl;
                             caracter->attackFocusedCaracter(damage);
+                            SymEncPacket packet;
+                            packet<<"TAKE_DMG"+conversionIntString(caracter->getFocusedCaracter()->getId())+"*"+conversionIntString(damage);
+                            Network::sendTcpPacket(packet);
                             if (!caracter->getFocusedCaracter()->isAlive()) {
                                 SymEncPacket packet;
                                 packet<<"DEATH"+conversionIntString(caracter->getFocusedCaracter()->getId());
@@ -646,6 +691,9 @@ namespace sorrok {
                                 Network::sendTcpPacket(packet);
                                 if (caracter->getFocusedCaracter()->getType() == "E_MONSTER") {
                                     std::vector<Item> items = static_cast<Monster*>(caracter->getFocusedCaracter())->getLootedItems();
+                                    for (unsigned int i = 0; i < items.size(); i++) {
+                                        itemsLooted.push_back(std::make_pair(items[i], std::make_pair(Application::getTimeClk().getElapsedTime(), sf::seconds(120))));
+                                    }
                                     std::ostringstream oss;
                                     OTextArchive ota(oss);
                                     ota(items);
@@ -656,10 +704,6 @@ namespace sorrok {
                                     static_cast<Hero*>(caracter)->up(static_cast<Monster*>(caracter->getFocusedCaracter())->getXp());
 
                                 }
-                            } else {
-                                SymEncPacket packet;
-                                packet<<"TAKE_DMG"+conversionIntString(caracter->getFocusedCaracter()->getId())+"*"+conversionIntString(damage);
-                                Network::sendTcpPacket(packet);
                             }
                         }
                     }
@@ -826,6 +870,10 @@ namespace sorrok {
         std::vector<Entity*> heroes = World::getEntities("E_HERO");
         for (unsigned int i = 0; i < heroes.size(); i++) {
             if (user == static_cast<Hero*>(heroes[i])->getUser()) {
+                if (static_cast<Hero*>(heroes[i])->getFocusedCaracter() != nullptr) {
+                    static_cast<Hero*>(heroes[i])->getFocusedCaracter()->setFightingMode(false);
+                    static_cast<Hero*>(heroes[i])->getFocusedCaracter()->setAttacking(false);
+                }
                 World::deleteEntity(heroes[i]);
             }
         }

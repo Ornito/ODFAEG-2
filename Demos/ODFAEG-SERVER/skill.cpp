@@ -13,4 +13,7 @@ namespace sorrok {
     std::string Skill::getName() {
         return name;
     }
+    std::string Skill::getRequiredClass() {
+        return requiredClass;
+    }
 }

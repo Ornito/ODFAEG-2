@@ -20,6 +20,7 @@ namespace sorrok {
         void up (int xp);
         int getCurrentXp ();
         int getXpReqForNextLevel ();
+        std::vector<Skill> getSkills();
         template <typename Archive>
         void vtserialize(Archive& ar) {
             Caracter::vtserialize(ar);
@@ -41,7 +42,6 @@ namespace sorrok {
         std::vector<Quest> getDiary();
         std::map<Item::Type, std::vector<Item>>& getInventory();
         void addSkill (Skill skill);
-        std::vector<Skill> getSkills();
         ~Hero();
     private :
         std::string factionName, sex, hairColor, eyesColor, skinColor, faceType;

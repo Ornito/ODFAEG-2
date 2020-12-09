@@ -85,9 +85,8 @@ namespace sorrok {
                     skill = static_cast<Hero*>(hero)->getSkills()[i];
                 }
             }
-            SkillAction *skillAction = new SkillAction();
+            SkillAction skillAction;
             skill.setSkillBehaviour(new FastDelegate<void>(&SkillAction::launchLastHeal, skillAction, static_cast<Hero*>(hero), skill));
-            skillsActions.push_back(skillAction);
             gameActions.push_back(std::make_pair(skill, static_cast<Hero*>(hero)));
         } else {
             it->second = getClock("TimeClock").getElapsedTime();
@@ -281,8 +280,7 @@ namespace sorrok {
                 }
             }
             if (item.getType() == Item::HP_POTION) {
-                ItemAction* ia = new ItemAction();
-                itemsActions.push_back(ia);
+                ItemAction ia;
                 item.setItemBehaviour(new FastDelegate<void>(&ItemAction::useHpPotion,ia,static_cast<Hero*>(hero),item));
             }
             gameActions.push_back(std::make_pair(item, static_cast<Hero*>(hero)));
@@ -334,6 +332,13 @@ namespace sorrok {
             if (it->getName() == label->getText()) {
                 static_cast<Hero*>(hero)->addItem(*it);
                 it = selectedCristal.second.erase(it);
+                SymEncPacket packet;
+                std::ostringstream oss;
+                OTextArchive oa(oss);
+                oa(*it);
+                std::string response= "DROPITEM*"+conversionIntString(hero->getId())+"*"+oss.str();
+                packet<<response;
+                Network::sendTcpPacket(packet);
             } else {
                 it++;
             }
@@ -1731,12 +1736,6 @@ namespace sorrok {
             apply_visitor(ga, gameActions.back().first, gameActions.back().second);
             gameActions.pop_back();
         }
-        for (unsigned int i = 0; i < itemsActions.size(); i++) {
-            delete itemsActions[i];
-        }
-        for (unsigned int i = 0; i < skillsActions.size(); i++) {
-            delete skillsActions[i];
-        }
         std::map<ParticleSystem*, std::pair<sf::Time, sf::Time>>::iterator it;
         for (it = particles.begin(); it != particles.end(); ) {
             sf::Time elapsedTime = Application::getTimeClk().getElapsedTime() - it->second.first;
@@ -1847,8 +1846,6 @@ namespace sorrok {
         }
     }
     MyAppli::~MyAppli() {
-        for (unsigned int i = 0; i < skillsActionsShorcutBar.size(); i++) {
-            delete skillsActionsShorcutBar[i];
-        }
+
     }
 }

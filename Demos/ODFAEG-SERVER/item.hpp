@@ -12,6 +12,7 @@ namespace sorrok {
         Item (std::string name, Type type, std::string requiredClass);
         Type getType();
         std::string getName();
+        std::string getRequiredClass();
         template <typename Archive>
         void serialize(Archive& ar) {
             ar(name);
