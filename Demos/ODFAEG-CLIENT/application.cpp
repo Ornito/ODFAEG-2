@@ -437,7 +437,7 @@ namespace sorrok {
     }
     void MyAppli::keyHeldDown (IKeyboard::Key key) {
         //BoundingRectangle rect (pos.x, pos.y, getView().getSize().x, getView().getSize().y);
-        if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::Z) {
+        if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::Up) {
             if (!hero->isMoving()) {
                 //if (actualKey != previousKey) {
                     Vec2f dir(0, -1);
@@ -451,7 +451,7 @@ namespace sorrok {
                 //}
 
             }
-        } else if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::Q) {
+        } else if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::Left) {
             if (!hero->isMoving()) {
                 //if (actualKey != previousKey) {
                     Vec2f dir(-1, 0);
@@ -464,7 +464,7 @@ namespace sorrok {
                     Network::sendTcpPacket(packet);
                 //}
             }
-        } else if (actualKey != IKeyboard::Key::Unknown && actualKey == IKeyboard::Key::S) {
+        } else if (actualKey != IKeyboard::Key::Unknown && actualKey == IKeyboard::Key::Down) {
             if (!hero->isMoving()) {
                 //if (actualKey != previousKey) {
                     Vec2f dir(0, 1);
@@ -477,7 +477,7 @@ namespace sorrok {
                     Network::sendTcpPacket(packet);
                 //}
             }
-        } else if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::D) {
+        } else if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::Right) {
             if (!hero->isMoving()) {
                 //if (actualKey != previousKey) {
                     Vec2f dir(1, 0);
@@ -612,10 +612,10 @@ namespace sorrok {
         //World::computeIntersectionsWithWalls();
         //World::update();
         //World::computeIntersectionsWithWalls();
-        Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Z);
-        Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Q);
-        Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::S);
-        Action a4 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::D);
+        Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Up);
+        Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Left);
+        Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Down);
+        Action a4 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Right);
         Action a5 (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
         Action a6 (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Right);
         Action combined  = a1 || a2 || a3 || a4;
