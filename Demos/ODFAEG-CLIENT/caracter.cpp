@@ -334,7 +334,7 @@ namespace sorrok {
         target.draw(*getCurrentFrame(), states);
     }
     Entity* Caracter::getCurrentFrame() const {
-        return anims[baseAnimIndex + currentAnimIndex]->getCurrentFrame();
+        return anims[baseAnimIndex + currentAnimIndex];
     }
     sf::Clock& Caracter::getClkTransfertTime() {
         return clockTransfertTime;

@@ -829,7 +829,7 @@ namespace odfaeg {
                                     for (unsigned int n = 0; n < cell->getNbEntitiesInside(); n++) {
                                        Entity* entity = cell->getEntityInside(n);
                                        physic::BoundingBox& bounds = entity->getGlobalBounds();
-                                       if (bx.intersects(bounds) || bx.isInside(bounds) || bounds.isInside(bx) && visibleEntities[entity->getRootTypeInt()][entity->getId()] == nullptr) {
+                                       if (bx.intersects(bounds) || bx.isInside(bounds) && visibleEntities[entity->getRootTypeInt()][entity->getId()] == nullptr) {
                                            visibleEntities[entity->getRootTypeInt()][entity->getId()] = entity;
                                        }
 
@@ -1155,6 +1155,8 @@ namespace odfaeg {
                         if (visibleEntitiesType[i] != nullptr && found) {
                             BoneAnimation* ba = dynamic_cast<BoneAnimation*>(visibleEntitiesType[i]->getRootEntity());
                             if (ba != nullptr) {
+                                /*if (visibleEntitiesType[i]->getRootEntity()->getType() == "E_HERO")
+                                    std::cout<<"bones indexes : "<<visibleEntitiesType[i]->getBoneIndex()<<std::endl;*/
                                 if (ba->getBoneIndex() == visibleEntitiesType[i]->getBoneIndex()) {
                                     entities.push_back(visibleEntitiesType[i]);
                                 }

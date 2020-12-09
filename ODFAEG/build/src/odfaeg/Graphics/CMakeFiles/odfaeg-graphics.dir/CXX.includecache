@@ -1512,6 +1512,10 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/export.hpp
 plane.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/plane.h
 
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/export.hpp
+../config.hpp
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
+
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/maths.h
 math.h
 -
@@ -1773,6 +1777,10 @@ iWindow.hpp
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
+
+C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/boneAnimation.cpp
+../../../include/odfaeg/Graphics/boneAnimation.hpp
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/boneAnimation.hpp
 
 C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/map.cpp
 ../../../include/odfaeg/Graphics/map.h
