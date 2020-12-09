@@ -1033,6 +1033,7 @@ namespace sorrok {
            int id = conversionStringInt(response);
            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
            std::cout<<caracter->getType()<<" is death"<<std::endl;
+           caracter->setLife(0);
            caracter->setAttacking(false);
            caracter->setFightingMode(false);
            caracter->setAlive(false);
