@@ -30,7 +30,9 @@ namespace odfaeg {
                 void onUpdate(RenderWindow* window, window::IEvent& event);
                 bool isPointInside(math::Vec3f point);
                 void clearDrawables();
+                void setScissorEnabled(bool scissor);
             private :
+                bool enableScissor;
                 math::Vec3f mousePos;
                 bool scrollX, scrollY;
                 RectangleShape rect;

@@ -49,7 +49,6 @@ namespace odfaeg {
                         getChildren()[i]->setEventContextActivated(false);
                     }
                 }
-                onTabChanged(panel);
             }
             bool TabPane::isOnXScroll() {
                 math::Vec3f mousePos (window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y, 0);

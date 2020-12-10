@@ -475,18 +475,22 @@ void ODFAEGCreator::onInit() {
     pScriptsFiles->setBackgroundColor(sf::Color::Black);
     pInfos = new Panel(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     pInfos->setBackgroundColor(sf::Color::White);
+    pInfos->setScissorEnabled(false);
     rootInfosNode = std::make_unique<Node>("Infos", pInfos, Vec2f(0.f, 0.05f), Vec2f(1.f, 1.f-0.05f));
     tabPane->addTab(pInfos, "Informations", *fm.getResourceByAlias(Fonts::Serif));
     pTransform = new Panel(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     pTransform->setBackgroundColor(sf::Color::White);
+    pTransform->setScissorEnabled(false);
     rootPropNode = std::make_unique<Node>("Properties", pTransform, Vec2f(0.f, 0.05f), Vec2f(1.f, 1.f-0.05f));
     tabPane->addTab(pTransform, "Transform", *fm.getResourceByAlias(Fonts::Serif));
     pMaterial = new Panel(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     pMaterial->setBackgroundColor(sf::Color::White);
+    pMaterial->setScissorEnabled(false);
     rootMaterialNode = std::make_unique<Node>("Material", pMaterial, Vec2f(0.f, 0.05f), Vec2f(1.f, 1.f-0.05f));
     tabPane->addTab(pMaterial,"Material",*fm.getResourceByAlias(Fonts::Serif));
     pShadows = new Panel(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     pShadows->setBackgroundColor(sf::Color::White);
+    pShadows->setScissorEnabled(false);
     rootShadowsNode = std::make_unique<Node>("Shadows", pShadows, Vec2f(0.f, 0.05f), Vec2f(1.f, 1.f-0.05f));
     tabPane->addTab(pShadows,"Shadow",*fm.getResourceByAlias(Fonts::Serif));
     tScriptEdit = new TextArea(Vec3f(200, 20, 0),Vec3f(790,650,0),fm.getResourceByAlias(Fonts::Serif),"",getRenderWindow());
@@ -2087,9 +2091,11 @@ void ODFAEGCreator::displayTransformInfos(Transformable* tile) {
     rootPropNode->deleteAllNodes();
     rootMaterialNode->deleteAllNodes();
     rootInfosNode->deleteAllNodes();
+    rootShadowsNode->deleteAllNodes();
     pTransform->removeAll();
     pMaterial->removeAll();
     pInfos->removeAll();
+    pShadows->removeAll();
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
     //Position.
     lPosition = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Position : ", 15);
@@ -2339,7 +2345,10 @@ void ODFAEGCreator::displayEntityInfos(Entity* tile) {
     Command cmdParentChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectParent), FastDelegate<void>(&ODFAEGCreator::onSelectedParentChanged, this, dpSelectParent));
     dpSelectParent->getListener().connect("ParentChanged",cmdParentChanged);
     selectParentNode->addOtherComponent(dpSelectParent,Vec2f(0.75, 0.025));
-
+    Label* lShadowCenter = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Shadow center : ", 15);
+    Node* nShadowCenter = new Node("ShadowCenter", lShadowCenter, Vec2f(0, 0), Vec2f(1, 0.025),rootShadowsNode.get());
+    lShadowCenter->setParent(lShadowCenter);
+    pShadows->addChild(lShadowCenter);
 }
 void ODFAEGCreator::displayInfos(Decor* decor) {
     displayTransformInfos(decor);

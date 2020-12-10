@@ -17,6 +17,7 @@ namespace odfaeg {
                 core::Command cmd2(a, core::FastDelegate<bool>(&Panel::isOnYScroll, this),core::FastDelegate<void>(&Panel::moveYItems, this));
                 getListener().connect("scrollYMove", cmd2);
                 maxSize = math::Vec2f(0, 0);
+                enableScissor = true;
             }
             bool Panel::isOnXScroll() {
                 math::Vec3f mousePos (window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y, 0);
@@ -165,9 +166,14 @@ namespace odfaeg {
             void Panel::addSprite(Sprite sprite) {
                 sprites.push_back(sprite);
             }
+            void Panel::setScissorEnabled(bool scissor) {
+                enableScissor = scissor;
+            }
             void Panel::onDraw(RenderTarget& target, RenderStates states) {
-                glCheck(glEnable(GL_SCISSOR_TEST));
-                glCheck(glScissor(getPosition().x, getWindow().getSize().y - (getPosition().y + getSize().y), getSize().x, getSize().y));
+                if (enableScissor) {
+                    glCheck(glEnable(GL_SCISSOR_TEST));
+                    glCheck(glScissor(getPosition().x, getWindow().getSize().y - (getPosition().y + getSize().y), getSize().x, getSize().y));
+                }
                 rect.setPosition(getPosition());
                 rect.setSize(getSize());
                 target.draw(rect, states);
@@ -191,7 +197,9 @@ namespace odfaeg {
                     horScrollBar.setFillColor(sf::Color::Red);
                     target.draw(horScrollBar, states);
                 }
-                glCheck(glDisable(GL_SCISSOR_TEST));
+                if (enableScissor) {
+                    glCheck(glDisable(GL_SCISSOR_TEST));
+                }
             }
             void Panel::setBorderThickness(float thickness) {
                 rect.setOutlineThickness(thickness);
