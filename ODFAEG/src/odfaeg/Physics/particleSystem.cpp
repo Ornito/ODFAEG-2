@@ -75,6 +75,7 @@ namespace odfaeg
           scene(scene)
         {
             graphic::Material material;
+            material.addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
             graphic::Face* face = new graphic::Face(mVertices, material, getTransform());
             addFace(face);
         }
@@ -84,6 +85,7 @@ namespace odfaeg
         void ParticleSystem::setTexture(const graphic::Texture& texture)
         {
             mTexture = &texture;
+            getFaces()[0]->getMaterial().clearTextures();
             getFaces()[0]->getMaterial().addTexture(mTexture, sf::IntRect(0, 0, 0, 0));
             mNeedsQuadUpdate = true;
         }

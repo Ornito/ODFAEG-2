@@ -404,11 +404,14 @@ namespace odfaeg {
                         currentStates.blendMode = sf::BlendNone;
                         currentStates.shader = &perPixelLinkedList;
                         currentStates.texture = m_instances[i].getMaterial().getTexture();
+                        //std::cout<<"entity : "<<m_instances[i].getVertexArrays()[0]->getEntity()->getRootEntity()->getType()<<std::endl;
                         if (m_instances[i].getMaterial().getTexture() != nullptr) {
+                            //std::cout<<"texture"<<std::endl;
                             math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
                             perPixelLinkedList.setParameter("textureMatrix", texMatrix);
                             perPixelLinkedList.setParameter("haveTexture", 1.f);
                         } else {
+                            //std::cout<<"no texture"<<std::endl;
                             perPixelLinkedList.setParameter("haveTexture", 0.f);
                         }
                         frameBuffer.drawInstanced(vb, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
