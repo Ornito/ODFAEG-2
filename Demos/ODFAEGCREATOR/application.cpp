@@ -434,6 +434,7 @@ void ODFAEGCreator::onInit() {
     pScriptsEdit->setBorderColor(sf::Color(128, 128, 128));
     pScriptsEdit->setBackgroundColor(sf::Color::White);
     pScriptsEdit->setBorderThickness(5);
+    pScriptsEdit->setName("PSCRIPTEDIT");
     getRenderComponentManager().addComponent(pScriptsEdit);
     pScriptsFiles = new Panel(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     pScriptsFiles->setBorderColor(sf::Color(128, 128, 128));
@@ -484,6 +485,10 @@ void ODFAEGCreator::onInit() {
     pMaterial->setBackgroundColor(sf::Color::White);
     rootMaterialNode = std::make_unique<Node>("Material", pMaterial, Vec2f(0.f, 0.05f), Vec2f(1.f, 1.f-0.05f));
     tabPane->addTab(pMaterial,"Material",*fm.getResourceByAlias(Fonts::Serif));
+    pShadows = new Panel(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
+    pShadows->setBackgroundColor(sf::Color::White);
+    rootShadowsNode = std::make_unique<Node>("Shadows", pShadows, Vec2f(0.f, 0.05f), Vec2f(1.f, 1.f-0.05f));
+    tabPane->addTab(pShadows,"Shadow",*fm.getResourceByAlias(Fonts::Serif));
     tScriptEdit = new TextArea(Vec3f(200, 20, 0),Vec3f(790,650,0),fm.getResourceByAlias(Fonts::Serif),"",getRenderWindow());
     tScriptEdit->setParent(pScriptsEdit);
     tScriptEdit->setRelPosition(0.f, 0.f);

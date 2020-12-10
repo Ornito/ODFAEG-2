@@ -22,11 +22,12 @@ namespace odfaeg {
                         maxSizeX = tabXPos - getPosition().x + 100;
                     }
                 }
-                std::cout<<"max size : "<<maxSizeX<<std::endl<<"size : "<<getSize().x<<std::endl;
+                //std::cout<<"max size : "<<maxSizeX<<std::endl<<"size : "<<getSize().x<<std::endl;
                 if (maxSizeX > getSize().x) {
                     unsigned int scrollXSize = (getSize().x) / maxSizeX * (getSize().x);
                     vertScrollBar = RectangleShape(math::Vec3f(scrollXSize, 10, 0));
                     vertScrollBar.setPosition(math::Vec3f(getPosition().x, getPosition().y + 25, 0));
+                    vertScrollBar.setFillColor(sf::Color::Red);
                     scrollX = true;
                 } else {
                     scrollX = false;
@@ -48,6 +49,7 @@ namespace odfaeg {
                         getChildren()[i]->setEventContextActivated(false);
                     }
                 }
+                onTabChanged(panel);
             }
             bool TabPane::isOnXScroll() {
                 math::Vec3f mousePos (window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y, 0);
@@ -63,14 +65,16 @@ namespace odfaeg {
                 if (mouseDeltaX > 0 && vertScrollBar.getPosition().x + vertScrollBar.getSize().x + mouseDeltaX <= getPosition().x + getSize().x) {
                     vertScrollBar.move(math::Vec3f(mouseDeltaX, 0, 0));
                     for (unsigned int i = 0; i < getChildren().size(); i++) {
-                        if (dynamic_cast<Label*>(getChildren()[i]))
+                        if (dynamic_cast<Label*>(getChildren()[i])) {
                             getChildren()[i]->move(math::Vec3f(-(maxSizeX / (getSize().x) * mouseDeltaX), 0, 0));
+                        }
                     }
                 } else if (mouseDeltaX < 0 && vertScrollBar.getPosition().x +  mouseDeltaX >= getPosition().x) {
                     vertScrollBar.move(math::Vec3f(mouseDeltaX, 0, 0));
                     for (unsigned int i = 0; i < getChildren().size(); i++) {
-                        if (dynamic_cast<Label*>(getChildren()[i]))
+                        if (dynamic_cast<Label*>(getChildren()[i])) {
                             getChildren()[i]->move(math::Vec3f(-(maxSizeX / (getSize().x) * mouseDeltaX), 0, 0));
+                        }
                     }
                 }
             }
@@ -84,10 +88,15 @@ namespace odfaeg {
                     }
                 }
             }
+            /*void TabPane::onDraw(RenderTarget& target, RenderStates states) {
+                glCheck(glEnable(GL_SCISSOR_TEST));
+                glCheck(glScissor(getPosition().x, getWindow().getSize().y - (getPosition().y + getSize().y), getSize().x, getSize().y));
+            }*/
             void TabPane::drawOn(RenderTarget& target, RenderStates states) {
                 if (scrollX) {
                     target.draw(vertScrollBar, states);
                 }
+                //glCheck(glDisable(GL_SCISSOR_TEST));
             }
         }
     }

@@ -104,13 +104,13 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent, *dpSelectAU, *dpSelectPPType, *dpSelectPSU;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
         odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight, *taWallType;
-        odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial, *pComponent;
+        odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial, *pShadows, *pComponent;
         std::string appliname, minAppliname;
         std::string applitype;
         std::string path;
         std::map<std::string, std::string> cppAppliContent;
         std::vector<std::string> textPaths;
-        std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode, rootMaterialNode, rootInfosNode;
+        std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode, rootMaterialNode, rootInfosNode, rootShadowsNode;
         odfaeg::graphic::CircleShape cursor;
         odfaeg::math::Vec3f guiSize, guiPos, mousePosition;
         bool isGuiShown, showGrid, alignToGrid, showRectSelect;
