@@ -42,7 +42,8 @@ namespace sorrok {
         odfaeg::math::Vec3f tmpPosition;
         sql::Driver *driver;
         sql::Connection *connection;
-        std::vector<std::pair<Item, std::pair<sf::Time, sf::Time>>> itemsLooted;
+        std::map<int, std::pair<std::vector<Item>, std::pair<sf::Time, sf::Time>>> itemsLooted;
+        static int spotID;
     public :
         MyAppli();
         ~MyAppli();

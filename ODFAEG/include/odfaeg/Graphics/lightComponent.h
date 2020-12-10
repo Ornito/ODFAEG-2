@@ -109,6 +109,8 @@ namespace odfaeg {
             }
             virtual void processEvents() {
                 if (isEventContextActivated()) {
+                    /*if (getName() == "TaChangeComponentExpression")
+                        std::cout<<"process ta change component expression event"<<std::endl;*/
                     getListener().processEvents();
                     for (unsigned int i = 0; i < children.size(); i++) {
                         children[i]->processEvents();

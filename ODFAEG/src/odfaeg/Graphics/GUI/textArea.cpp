@@ -2,7 +2,7 @@
 namespace odfaeg {
     namespace graphic {
         namespace gui {
-            TextArea::TextArea(math::Vec3f position, math::Vec3f size, const Font* font, std::string t, RenderWindow& rw) :
+            TextArea::TextArea(math::Vec3f position, math::Vec3f size, const Font* font, sf::String t, RenderWindow& rw) :
                 LightComponent(rw, position, size, math::Vec3f(0, 0, 0)) {
                 tmp_text = t;
                 background = sf::Color::White;
@@ -25,7 +25,7 @@ namespace odfaeg {
                 core::Action a4 (core::Action::TEXT_ENTERED);
                 core::Command cmd5(a4, core::FastDelegate<bool>(&TextArea::hasFocus, this), core::FastDelegate<void>(&TextArea::onTextEntered, this, 'a'));
                 getListener().connect("CTEXTENTERED", cmd5);
-                currentIndex = tmp_text.length();
+                currentIndex = tmp_text.getSize();
                 sf::Vector2f pos = text.findCharacterPos(currentIndex);
                 cursorPos = math::Vec3f(pos.x, pos.y, 0);
                 //setSize(text.getSize());
@@ -42,7 +42,7 @@ namespace odfaeg {
             void TextArea::setCursorPos() {
                 math::Vec2f mousePos = math::Vec2f(window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y);
                 bool found = false;
-                for (unsigned int i = 0; i <= tmp_text.length() && !found; i++) {
+                for (unsigned int i = 0; i <= tmp_text.getSize() && !found; i++) {
                     sf::Vector2f pos = text.findCharacterPos(i);
                     if (pos.x > mousePos.x && pos.y > mousePos.y - text.getCharacterSize()) {
                         cursorPos = math::Vec3f(pos.x, pos.y, 0);
@@ -74,7 +74,7 @@ namespace odfaeg {
                 text.setColor(color);
             }
             std::string TextArea::getText() {
-                return tmp_text;
+                return tmp_text.toAnsiString();
             }
             math::Vec3f TextArea::getTextSize() {
                 return text.getGlobalBounds().getSize();
@@ -114,21 +114,25 @@ namespace odfaeg {
                 }
             }
             void TextArea::onTextEntered(char caracter) {
-                if (tmp_text.length() > 0 && currentIndex-1 >= 0 && caracter == 8) {
+                if (tmp_text.getSize() > 0 && currentIndex-1 >= 0 && caracter == 8) {
                     currentIndex--;
-                    tmp_text.erase(currentIndex, 1);
+                    std::string text = tmp_text.toAnsiString();
+                    text.erase(currentIndex, 1);
+                    tmp_text = text;
                 }
                 else if (caracter != 8) {
-                    tmp_text.insert(currentIndex, 1, caracter);
+                    std::string text = tmp_text.toAnsiString();
+                    text.insert(currentIndex, 1, caracter);
+                    tmp_text = text;
                     currentIndex++;
                 }
                 setText(tmp_text);
                 sf::Vector2f pos = text.findCharacterPos(currentIndex);
                 cursorPos = math::Vec3f(pos.x, pos.y, 0);
             }
-            void TextArea::setText(std::string text) {
-                tmp_text = text;
-                this->text.setString(tmp_text);
+            void TextArea::setText(sf::String text) {
+                tmp_text = text.toAnsiString();
+                this->text.setString(text);
                 textChanged = true;
             }
             bool TextArea::isTextChanged() {

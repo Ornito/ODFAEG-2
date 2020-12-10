@@ -76,7 +76,7 @@ namespace sorrok {
         odfaeg::graphic::gui::ProgressBar* hpBar, *xpBar, *manaBar;
         odfaeg::graphic::gui::Panel* pItems, *pInventory, *pQuestList, *pQuestNames, *pQuestProgress, *pRewards, *pSkills;
         bool isClientAuthentified;
-        std::vector<std::pair<odfaeg::graphic::Sprite*, std::vector<Item>>> cristals;
+        std::map<int, std::pair<odfaeg::graphic::Sprite*, std::vector<Item>>> cristals;
         std::pair<odfaeg::graphic::Sprite*, std::vector<Item>> selectedCristal;
         Quest* selectedQuest;
         Pnj* selectedPnj;

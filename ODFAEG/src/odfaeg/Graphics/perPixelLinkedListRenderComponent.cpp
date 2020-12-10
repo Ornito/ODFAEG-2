@@ -10,7 +10,8 @@ namespace odfaeg {
                           math::Vec3f(window.getView().getSize().x + window.getView().getSize().x * 0.5f, window.getView().getPosition().y + window.getView().getSize().y * 0.5f, layer)),
             view(window.getView()),
             expression(expression),
-            quad(math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, window.getSize().y * 0.5f)) {
+            quad(math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, window.getSize().y * 0.5f)),
+            layer(layer) {
             quad.move(math::Vec3f(-window.getView().getSize().x * 0.5f, -window.getView().getSize().y * 0.5f, 0));
             GLuint maxNodes = 20 * window.getView().getSize().x * window.getView().getSize().y;
             GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
@@ -66,8 +67,7 @@ namespace odfaeg {
                                                         float yOff = 0;
                                                         if (water > 0.9f) {
                                                             yOff = 0.05*sin(position.x*12+time*FPI)*resolution.y;
-                                                            /*if((position.x != resolution.x * 0.5f && position.x != -resolution.x * 0.5f))*/
-                                                                xOff = 0.025*cos(position.x*12+time*FPI)*resolution.x;
+                                                            xOff = 0.025*cos(position.x*12+time*FPI)*resolution.x;
                                                         }
                                                         gl_Position = projectionMatrix * viewMatrix * worldMat * vec4((position.x - xOff), (position.y + yOff), position.z, 1.f);
                                                         fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
@@ -105,8 +105,7 @@ namespace odfaeg {
                                                                 float yOff = 0;
                                                                 if (water > 0.9f) {
                                                                     yOff = 0.05*sin(position.x*12+time*FPI)*resolution.y;
-                                                                    /*if((position.x != resolution.x * 0.5f && position.x != -resolution.x * 0.5f))*/
-                                                                        xOff = 0.025*cos(position.x*12+time*FPI)*resolution.x;
+                                                                    xOff = 0.025*cos(position.x*12+time*FPI)*resolution.x;
                                                                 }
                                                                 gl_Position = projectionMatrix * viewMatrix * vec4((position.x - xOff), (position.y + yOff), position.z, 1.f);
                                                                 fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
@@ -213,9 +212,6 @@ namespace odfaeg {
                    if (!perPixelLinkedList2.loadFromMemory(simpleVertexShader2, fragmentShader)) {
                        throw core::Erreur(56, "Failed to load per pixel linked list 2 shader");
                    }
-                   /*if (!filterNotOpaque.loadFromMemory(simpleVertexShader, filterNotOpaquePixels)) {
-                        throw core::Erreur(54, "Failed to load filter not opaque shader");
-                   }*/
                    perPixelLinkedList.setParameter("maxNodes", maxNodes);
                    perPixelLinkedList.setParameter("texture", Shader::CurrentTexture);
                    perPixelLinkedList.setParameter("resolution", resolution.x, resolution.y, resolution.z);
@@ -330,9 +326,6 @@ namespace odfaeg {
                       }
                       gl_FragColor = color;
                    })";
-                   /*if (!initialize.loadFromMemory(simpleVertexShader, initializeSSBO)) {
-                        throw core::Erreur(54, "Failed to load initialize ssbo shader");
-                   } */
                    if (!perPixelLinkedList.loadFromMemory(simpleVertexShader, fragmentShader)) {
                         throw core::Erreur(54, "Failed to load per pixel linked list shader");
                    }
@@ -340,9 +333,6 @@ namespace odfaeg {
                         throw core::Erreur(54, "Failed to load per pixel linked list pass 2 shader");
                    }
                    std::cout<<"shaders compilated"<<std::endl;
-                   /*if (!filterNotOpaque.loadFromMemory(simpleVertexShader, filterNotOpaquePixels)) {
-                        throw core::Erreur(54, "Failed to load filter not opaque shader");
-                   }*/
                    perPixelLinkedList.setParameter("maxNodes", maxNodes);
                    perPixelLinkedList.setParameter("texture", Shader::CurrentTexture);
                 }
@@ -366,6 +356,7 @@ namespace odfaeg {
             glCheck(glBindTexture(GL_TEXTURE_2D, headPtrTex));
             glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, view.getSize().x, view.getSize().y, GL_RED_INTEGER,
             GL_UNSIGNED_INT, NULL));
+            glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
             frameBuffer.resetGLStates();
             //getWindow().resetGLStates();*/
@@ -475,7 +466,7 @@ namespace odfaeg {
                 glCheck(glFinish());
                 frameBuffer.display();
             } else {
-                currentStates.blendMode = sf::BlendNone;
+                /*currentStates.blendMode = sf::BlendNone;
                 currentStates.shader=&perPixelLinkedList;
 
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
@@ -500,11 +491,11 @@ namespace odfaeg {
                    if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                         frameBuffer.draw(m_instances[i].getAllVertices(), currentStates);
                    }
-                //glCheck(glDepthMask(GL_TRUE));*/
+                //glCheck(glDepthMask(GL_TRUE));
 
                 //quad.setCenter(frameBuffer.getView().getPosition());
                 frameBuffer.draw(quad, currentStates);
-                glCheck(glFinish());
+                glCheck(glFinish());*/
                 frameBuffer.display();
             }
         }
@@ -541,7 +532,7 @@ namespace odfaeg {
 
         }
         int  PerPixelLinkedListRenderComponent::getLayer() {
-            return getPosition().z;
+            return layer;
         }
         void PerPixelLinkedListRenderComponent::draw(Drawable& drawable, RenderStates states) {
             //drawables.insert(std::make_pair(drawable, states));
@@ -570,6 +561,8 @@ namespace odfaeg {
         bool PerPixelLinkedListRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities) {
             batcher.clear();
             normalBatcher.clear();
+
+            //std::cout<<"load tile"<<std::endl;
             for (unsigned int i = 0; i < vEntities.size(); i++) {
                 if ( vEntities[i]->isLeaf()) {
                     for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {

@@ -98,6 +98,7 @@ namespace odfaeg {
             Sprite frameBufferSprite;
             VertexBuffer vb, vb2;
             std::vector<float> matrices;
+            int layer;
         };
     }
 }

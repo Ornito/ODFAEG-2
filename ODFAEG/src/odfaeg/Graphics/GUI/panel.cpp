@@ -131,11 +131,11 @@ namespace odfaeg {
                 }
             }
             void Panel::addChild(LightComponent* child) {
-                std::cout<<"add child"<<std::endl;
+                //std::cout<<"add child"<<std::endl;
                 LightComponent::addChild(child);
-                std::cout<<"recompute size"<<std::endl;
+                //std::cout<<"recompute size"<<std::endl;
                 recomputeSize();
-                std::cout<<"update scrolls"<<std::endl;
+                //std::cout<<"update scrolls"<<std::endl;
                 updateScrolls();
             }
             void Panel::onSizeRecomputed() {

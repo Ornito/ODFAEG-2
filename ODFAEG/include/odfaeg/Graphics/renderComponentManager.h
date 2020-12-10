@@ -84,6 +84,7 @@ namespace odfaeg {
             LightComponent* getGuiComponent(unsigned int layer);
             Component* getComponent(unsigned int layer);
             std::vector<Component*> getComponents();
+            std::vector<Component*> getRenderComponents();
             /**
             * \fn ~RenderComponentManager();
             * \brief destructor.

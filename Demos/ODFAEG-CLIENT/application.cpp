@@ -365,10 +365,10 @@ namespace sorrok {
                 pItems->addChild(icon);
             }
         } else {
-            std::vector<std::pair<Sprite*, std::vector<Item>>>::iterator it;
+            std::map<int, std::pair<Sprite*, std::vector<Item>>>::iterator it;
             for (it = cristals.begin(); it != cristals.end();) {
-                if (it->first == selectedCristal.first) {
-                    delete it->first;
+                if (it->second.first == selectedCristal.first) {
+                    delete it->second.first;
                     //std::cout<<"erase it"<<std::endl;
                     it = cristals.erase(it);
                     //std::cout<<"it erased"<<std::endl;
@@ -381,23 +381,23 @@ namespace sorrok {
     }
     void MyAppli::pickUpItems (IKeyboard::Key key) {
         if (key != IKeyboard::Key::Unknown && key == IKeyboard::Key::A) {
-            std::vector<std::pair<Sprite*, std::vector<Item>>>::iterator it, itf;
+            std::map<int, std::pair<Sprite*, std::vector<Item>>>::iterator it, itf;
             std::vector<Item> itemsToDisplay;
             if (cristals.size() > 0) {
                 itf = cristals.begin();
-                float minDist = itf->first->getPosition().computeDist(hero->getPosition());
+                float minDist = itf->second.first->getPosition().computeDist(hero->getPosition());
                 if (minDist < 100) {
-                    itemsToDisplay = itf->second;
-                    selectedCristal = *itf;
+                    itemsToDisplay = itf->second.second;
+                    selectedCristal = itf->second;
                 }
                 itf++;
                 for (it = itf; it != cristals.end(); it++) {
-                    float dist = it->first->getPosition().computeDist(hero->getPosition());
+                    float dist = it->second.first->getPosition().computeDist(hero->getPosition());
                     if (dist < 100
                         && dist < minDist) {
-                        itemsToDisplay = it->second;
+                        itemsToDisplay = it->second.second;
                         minDist = dist;
-                        selectedCristal = *it;
+                        selectedCristal = it->second;
                     }
                 }
                 wPickupItems->setPosition(sf::Vector2i(selectedCristal.first->getPosition().x, selectedCristal.first->getPosition().y));
@@ -779,9 +779,9 @@ namespace sorrok {
     }
     void MyAppli::onDisplay(RenderWindow* window) {
         if (window == &getRenderWindow()) {
-            std::vector<std::pair<Sprite*, std::vector<Item>>>::iterator it;
+            std::map<int, std::pair<Sprite*, std::vector<Item>>>::iterator it;
             for (it = cristals.begin(); it != cristals.end(); it++) {
-                Sprite sprite = *it->first;
+                Sprite sprite = *(it->second.first);
                 window->draw(sprite);
             }
             std::vector<std::pair<std::pair<Caracter*, Text>, std::pair<sf::Time, sf::Time>>>::iterator it2;
@@ -1419,16 +1419,28 @@ namespace sorrok {
             setEventContextActivated(true);
        }
        if (Network::getResponse("ITEMS", response)) {
-            std::istringstream iss(response);
+            std::vector<std::string> parts = split(response,"*");
+            int spotID = conversionStringInt(parts[0]);
+            std::istringstream iss(parts[1]);
             ITextArchive ita(iss);
             std::vector<Item> items;
             ita(items);
             if (items.size() > 0) {
-                cristals.clear();
                 TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
                 Sprite* cristal = new Sprite(*tm.getResourceByAlias("CRISTAL"),hero->getFocusedCaracter()->getPosition(),Vec3f(50, 100, 0),sf::IntRect(0, 0, 50, 100));
-                cristals.push_back(std::make_pair(cristal, items));
+                cristals.insert(std::make_pair(spotID, std::make_pair(cristal, items)));
             }
+       }
+       if (Network::getResponse("REMOVEITEM", response)) {
+           std::map<int, std::pair<Sprite*, std::vector<Item>>>::iterator it;
+           int spotID = conversionStringInt(response);
+           for (it = cristals.begin(); it != cristals.end();) {
+               if (spotID == it->first) {
+                    it = cristals.erase(it);
+               } else {
+                   it++;
+               }
+           }
        }
        if (Network::getResponse("TAKE_DMG", response)) {
             std::vector<std::string> parts = split(response, "*");

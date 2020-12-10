@@ -16,6 +16,7 @@ Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0
     dpSelectTexture = nullptr;
     dpSelectEm = nullptr;
     sTextRect = nullptr;
+    dpSelectPSU = nullptr;
     showGrid = false;
     alignToGrid = false;
     showRectSelect = false;
@@ -274,7 +275,7 @@ void ODFAEGCreator::onInit() {
     taParticleSystemUpdaterName = new TextArea(Vec3f(200, 0, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewParticleSystemUpdater);
     getRenderComponentManager().addComponent(taParticleSystemUpdaterName);
     bCreateParticleSystemUpdater = new Button(Vec3f(200, 50, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Create ps updater",15,*wNewParticleSystemUpdater);
-    bCreateAnimUpdater->addActionListener(this);
+    bCreateParticleSystemUpdater->addActionListener(this);
     getRenderComponentManager().addComponent(bCreateParticleSystemUpdater);
     addWindow(wNewParticleSystemUpdater);
     wNewParticleSystemUpdater->setVisible(false);
@@ -429,7 +430,7 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(pProjects);
     pScriptsEdit = new Panel(getRenderWindow(),Vec3f(200, 10, 0),Vec3f(800, 700, 0));
     pScriptsEdit->setRelPosition(1.f / 6.f, 0.015f);
-    pScriptsEdit->setRelSize(0.60f, 1.f);
+    pScriptsEdit->setRelSize(0.60f, 0.75f);
     pScriptsEdit->setBorderColor(sf::Color(128, 128, 128));
     pScriptsEdit->setBackgroundColor(sf::Color::White);
     pScriptsEdit->setBorderThickness(5);
@@ -455,7 +456,16 @@ void ODFAEGCreator::onInit() {
     dpSelectComponent->setRelSize(0.3, 0.1);
     dpSelectComponent->setParent(pComponent);
     pComponent->addChild(dpSelectComponent);
-
+    Command cmdSelectComponent (FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectComponent), FastDelegate<void>(&ODFAEGCreator::onSelectedComponentChanged, this, dpSelectComponent));
+    dpSelectComponent->getListener().connect("SELECTCOMPONENT", cmdSelectComponent);
+    taChangeComponentExpression = new TextArea(Vec3f(0, 0, 0),Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif),"change component expression", getRenderWindow());
+    taChangeComponentExpression->setRelPosition(0.3, 0);
+    taChangeComponentExpression->setRelSize(0.7, 0.1);
+    taChangeComponentExpression->setParent(pComponent);
+    taChangeComponentExpression->setName("TaChangeComponentExpression");
+    pComponent->addChild(taChangeComponentExpression);
+    Command cmdCEChanged(FastDelegate<bool>(&TextArea::isTextChanged, taChangeComponentExpression), FastDelegate<void>(&ODFAEGCreator::onComponentExpressionChanged, this, taChangeComponentExpression));
+    taChangeComponentExpression->getListener().connect("CECHANGED", cmdCEChanged);
     tabPane = new TabPane(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(200, 700, 0));
     tabPane->setRelPosition(0, 0);
     tabPane->setRelSize(1, 1);
@@ -777,6 +787,9 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
             }
             if (rectSelect.getItems().size() > 0)
                 selectedObject = rectSelect.getItems()[0];
+            if (dynamic_cast<Tile*>(selectedObject)) {
+                displayInfos(static_cast<Tile*>(selectedObject));
+            }
             rectSelect.setRect(savedPos.x, savedPos.y, box.getSize().x, box.getSize().y);
         }
         if (pScriptsFiles->isPointInside(mousePosition) && sTextRect != nullptr) {
@@ -887,10 +900,12 @@ void ODFAEGCreator::onExec() {
         std::ifstream ifs(appliname+"\\"+"textures.oc");
         TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
         if (ifs) {
+            std::cout<<"textures : "<<std::endl;
             ITextArchive ia(ifs);
             std::vector<std::string> paths;
             ia(paths);
             for (unsigned int i = 0; i < paths.size(); i++) {
+                std::cout<<"load texture : "<<paths[i]<<std::endl;
                 unsigned int lastSlash;
                 #if defined(ODFAEG_SYSTEM_LINUX)
                 lastSlash = paths[i].find_last_of("/");
@@ -898,6 +913,7 @@ void ODFAEGCreator::onExec() {
                 lastSlash = paths[i].find_last_of("\\");
                 #endif // if
                 std::string ImgName = paths[i].substr(lastSlash+1);
+                std::cout<<"alias : "<<ImgName<<std::endl;
                 tm.fromFileWithAlias(paths[i], ImgName);
             }
             ifs.close();
@@ -908,11 +924,16 @@ void ODFAEGCreator::onExec() {
             ITextArchive ia3(ifs3);
             ia3(entities);
             for (unsigned int i = 0; i < entities.size(); i++) {
+                std::cout<<"load entities"<<std::endl;
                 for (unsigned int f = 0; f < entities[i]->getNbFaces(); f++) {
                     Face* face = entities[i]->getFace(f);
-                    if (face->getMaterial().getTexId() != "") {
+                    std::string alias = face->getMaterial().getTexId();
+                    if (alias != "") {
                         face->getMaterial().clearTextures();
-                        face->getMaterial().addTexture(tm.getResourceByAlias(face->getMaterial().getTexId()), face->getMaterial().getTexRect());
+                        face->getMaterial().addTexture(tm.getResourceByAlias(alias), face->getMaterial().getTexRect());
+                    } else {
+                        face->getMaterial().clearTextures();
+                        face->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
                     }
                 }
             }
@@ -932,6 +953,7 @@ void ODFAEGCreator::onExec() {
                 int cellHeight;
                 bool is2DIsoMatrix;
                 if (type == "Map") {
+                    std::cout<<"load map"<<std::endl;
                     ia2(cellWidth);
                     ia2(cellHeight);
                     Map* scene = new Map(&getRenderComponentManager(),name,cellWidth,cellHeight,0);
@@ -944,6 +966,7 @@ void ODFAEGCreator::onExec() {
                     World::addEntityManager(scene);
                     World::setCurrentEntityManager(name);
                     for (unsigned int e = 0; e < entities.size(); e++) {
+                        std::cout<<"add entity"<<std::endl;
                         World::addEntity(entities[e]);
                     }
                 }
@@ -980,15 +1003,21 @@ void ODFAEGCreator::onExec() {
             ITextArchive ia5(ifs5);
             ia5(size);
             for (unsigned int i = 0; i < size; i++) {
+                std::string name;
                 std::string type;
+                ia5(name);
                 ia5(type);
                 if (type == "PerPixelLinkedList") {
+                    std::cout<<"load components"<<std::endl;
                     int layer;
                     ia5(layer);
                     std::string expression;
                     ia5(expression);
+                    std::cout<<"layer : "<<layer<<std::endl;
                     PerPixelLinkedListRenderComponent* ppll = new PerPixelLinkedListRenderComponent(getRenderWindow(),layer,expression,ContextSettings(0, 0, 4, 4, 6));
+                    ppll->setName(name);
                     getRenderComponentManager().addComponent(ppll);
+                    dpSelectComponent->addItem(name, 15);
                 }
             }
             ifs5.close();
@@ -1003,6 +1032,7 @@ void ODFAEGCreator::onExec() {
                 ia6(name);
                 ia6(type);
                 if (type == "EntityUpdater") {
+                    std::cout<<"load entities updater"<<std::endl;
                     EntitiesUpdater* eu = new EntitiesUpdater();
                     eu->setName(name);
                     World::addWorker(eu);
@@ -1320,21 +1350,25 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             PerPixelLinkedListRenderComponent* ppll = new PerPixelLinkedListRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 4, 6));
             getRenderComponentManager().addComponent(ppll);
             ppll->setName(taComponentName->getText());
+            dpSelectComponent->addItem(taComponentName->getText(), 15);
         }
         if (dpComponentType->getSelectedItem() == "Shadow") {
             ShadowRenderComponent* src = new ShadowRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 4, 6));
             getRenderComponentManager().addComponent(src);
             src->setName(taComponentName->getText());
+            dpSelectComponent->addItem(taComponentName->getText(), 15);
         }
         if (dpComponentType->getSelectedItem() == "Light") {
             LightRenderComponent* lrc = new LightRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 4, 6));
             getRenderComponentManager().addComponent(lrc);
             lrc->setName(taComponentName->getText());
+            dpSelectComponent->addItem(taComponentName->getText(), 15);
         }
         if (dpComponentType->getSelectedItem() == "Refraction") {
             ReflectRefractRenderComponent* rrrc = new ReflectRefractRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 4, 6));
             getRenderComponentManager().addComponent(rrrc);
             rrrc->setName(taComponentName->getText());
+            dpSelectComponent->addItem(taComponentName->getText(), 15);
         }
     }
     if(button==bCreateEntitiesUpdater) {
@@ -1414,10 +1448,15 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         emitterParams.push_back(taColor2->getText());
         Entity* ps = World::getEntity(psName);
         if (dynamic_cast<ParticleSystem*>(ps)) {
+            std::cout<<"add emitter"<<std::endl;
             static_cast<ParticleSystem*>(ps)->addEmitter(emitter);
         }
+        wNewEmitter->setVisible(false);
+        getRenderComponentManager().setEventContextActivated(false, *wNewEmitter);
+        tScriptEdit->setEventContextActivated(true);
     }
     if (button == bCreateParticleSystemUpdater) {
+        std::cout<<"add particle system"<<std::endl;
         std::string name = taParticleSystemUpdaterName->getText();
         ParticleSystemUpdater* psu = new ParticleSystemUpdater();
         psu->setName(name);
@@ -1427,6 +1466,17 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         tScriptEdit->setEventContextActivated(true);
         if (dpSelectPSU != nullptr) {
             dpSelectPSU->addItem(name, 15);
+        }
+    }
+    if (button == bAddTexRect) {
+        std::cout<<"add text rect"<<std::endl;
+        sf::IntRect rect;
+        rect.left = conversionStringInt(tTexCoordX->getText());
+        rect.top = conversionStringInt(tTexCoordY->getText());
+        rect.width = conversionStringInt(tTexCoordW->getText());
+        rect.height = conversionStringInt(tTexCoordH->getText());
+        if (dynamic_cast<ParticleSystem*>(selectedObject)) {
+            static_cast<ParticleSystem*>(selectedObject)->addTextureRect(rect);
         }
     }
 }
@@ -1711,16 +1761,21 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         //Save components.
         std::ofstream file3(appliname+"\\"+"components.oc");
         OTextArchive oa3(file3);
-        std::vector<Component*> components = getRenderComponentManager().getComponents();
+        std::vector<Component*> components = getRenderComponentManager().getRenderComponents();
         unsigned int size = components.size();
         oa3(size);
         for (unsigned int i = 0; i < components.size(); i++) {
-            std::string componentType;
+            std::string name = components[i]->getName();
+            std::string componentType="";
+            int layer=0;
+            std::string expression="";
             if (dynamic_cast<PerPixelLinkedListRenderComponent*>(components[i])) {
                 componentType = "PerPixelLinkedList";
+                layer = static_cast<PerPixelLinkedListRenderComponent*>(components[i])->getLayer();
+                expression = static_cast<PerPixelLinkedListRenderComponent*>(components[i])->getExpression();
+                std::cout<<"layer : "<<layer<<std::endl;
             }
-            int layer = static_cast<PerPixelLinkedListRenderComponent*>(components[i])->getLayer();
-            std::string expression = static_cast<PerPixelLinkedListRenderComponent*>(components[i])->getExpression();
+            oa3(name);
             oa3(componentType);
             oa3(layer);
             oa3(expression);
@@ -3115,6 +3170,19 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
         }
     }
 }
+void ODFAEGCreator::onSelectedComponentChanged(DropDownList* dp) {
+    std::string name = dp->getSelectedItem();
+    if(name == "MAIN WINDOW") {
+        taComponentExpression->setText("");
+    } else {
+        std::vector<Component*> components = getRenderComponentManager().getRenderComponents();
+        for (unsigned int i = 0; i < components.size(); i++) {
+            if (components[i]->getName() == name && dynamic_cast<HeavyComponent*>(components[i])) {
+                taChangeComponentExpression->setText(static_cast<HeavyComponent*>(components[i])->getExpression());
+            }
+        }
+    }
+}
 void ODFAEGCreator::onParentClicked(Label* label) {
     std::vector<std::string> parts = split(label->getText(), ":");
     std::string pName = parts[1].substr(1, parts[1].size()-1);
@@ -3156,6 +3224,7 @@ void ODFAEGCreator::onAnimUpdaterChanged(DropDownList* dp) {
 void ODFAEGCreator::onParticleSystemUpdaterChanged(DropDownList* dp) {
     EntitySystem* worker = World::getWorker(dp->getSelectedItem());
     if (dynamic_cast<ParticleSystemUpdater*>(worker) && dynamic_cast<ParticleSystem*>(selectedObject)) {
+        std::cout<<"add particle system to updater"<<std::endl;
         static_cast<ParticleSystemUpdater*>(worker)->addParticleSystem(static_cast<ParticleSystem*>(selectedObject));
     }
 }
@@ -3518,6 +3587,16 @@ void ODFAEGCreator::onSelectedEmChanged(DropDownList* dp) {
         if (dynamic_cast<Entity*>(selectedObject)) {
             World::setCurrentEntityManager(dp->getSelectedItem());
             World::addEntity(static_cast<Entity*>(selectedObject));
+        }
+    }
+}
+void ODFAEGCreator::onComponentExpressionChanged(TextArea* ta) {
+    //std::cout<<"component expression changed"<<std::endl;
+    std::string name = dpSelectComponent->getSelectedItem();
+    std::vector<Component*> components = getRenderComponentManager().getRenderComponents();
+    for (unsigned int i = 0; i < components.size(); i++) {
+        if (name == components[i]->getName() && dynamic_cast<HeavyComponent*>(components[i])) {
+            static_cast<HeavyComponent*>(components[i])->setExpression(ta->getText());
         }
     }
 }

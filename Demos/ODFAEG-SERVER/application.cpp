@@ -5,6 +5,7 @@ using namespace odfaeg::math;
 using namespace odfaeg::physic;
 using namespace odfaeg::network;
 namespace sorrok {
+    int MyAppli::spotID = 0;
     MyAppli::MyAppli() : Application () {
         std::cout<<"application"<<std::endl;
         running = false;
@@ -423,6 +424,18 @@ namespace sorrok {
                 SymEncPacket packet;
                 packet<<"IDOK"+conversionIntString(caracter->getId());
                 user->sendTcpPacket(packet);
+                std::map<int, std::pair<std::vector<Item>, std::pair<sf::Time, sf::Time>>>::iterator it;
+                for (it = itemsLooted.begin(); it != itemsLooted.end(); it++) {
+                    int spotID = it->first;
+                    std::vector<Item> items = it->second.first;
+                    std::ostringstream oss;
+                    OTextArchive oa(oss);
+                    oa(items);
+                    SymEncPacket packet;
+                    std::string response = "ITEMS"+conversionIntString(spotID)+"*"+oss.str();
+                    packet<<response;
+                    Network::sendTcpPacket(packet);
+                }
                 World::addEntity(caracter);
             } else if (request == "CONNECT") {
                 std::vector<Entity*> caracters = World::getEntities("E_HERO+E_MONSTER");
@@ -691,14 +704,13 @@ namespace sorrok {
                                 Network::sendTcpPacket(packet);
                                 if (caracter->getFocusedCaracter()->getType() == "E_MONSTER") {
                                     std::vector<Item> items = static_cast<Monster*>(caracter->getFocusedCaracter())->getLootedItems();
-                                    for (unsigned int i = 0; i < items.size(); i++) {
-                                        itemsLooted.push_back(std::make_pair(items[i], std::make_pair(Application::getTimeClk().getElapsedTime(), sf::seconds(120))));
-                                    }
+                                    itemsLooted.insert(std::make_pair(spotID, std::make_pair(items, std::make_pair(Application::getTimeClk().getElapsedTime(), sf::seconds(120)))));
                                     std::ostringstream oss;
                                     OTextArchive ota(oss);
                                     ota(items);
                                     SymEncPacket packet;
-                                    std::string response = "ITEMS"+oss.str();
+                                    std::string response = "ITEMS"+conversionIntString(spotID)+"*"+oss.str();
+                                    spotID++;
                                     packet<<response;
                                     Network::sendTcpPacket(packet);
                                     static_cast<Hero*>(caracter)->up(static_cast<Monster*>(caracter->getFocusedCaracter())->getXp());
@@ -863,6 +875,19 @@ namespace sorrok {
                     monster->setAttacking(false);
                     monster->setMoving(false);
                 }
+            }
+        }
+        std::map<int, std::pair<std::vector<Item>, std::pair<sf::Time, sf::Time>>>::iterator it;
+        for (it = itemsLooted.begin(); it != itemsLooted.end();) {
+            sf::Time elapsedTime = Application::getTimeClk().getElapsedTime() - it->second.second.first;
+            if (elapsedTime >= it->second.second.second) {
+                int spotID = it->first;
+                it = itemsLooted.erase(it);
+                SymEncPacket packet;
+                std::string response = "REMOVEITEM"+conversionIntString(spotID);
+                Network::sendTcpPacket(packet);
+            } else {
+                it++;
             }
         }
     }

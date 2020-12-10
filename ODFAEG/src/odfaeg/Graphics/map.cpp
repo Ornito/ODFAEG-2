@@ -830,6 +830,7 @@ namespace odfaeg {
                                        Entity* entity = cell->getEntityInside(n);
                                        physic::BoundingBox& bounds = entity->getGlobalBounds();
                                        if (bx.intersects(bounds) || bx.isInside(bounds) && visibleEntities[entity->getRootTypeInt()][entity->getId()] == nullptr) {
+                                           //std::cout<<"add entities on component"<<std::endl;
                                            visibleEntities[entity->getRootTypeInt()][entity->getId()] = entity;
                                        }
 
@@ -839,7 +840,9 @@ namespace odfaeg {
                         }
                     }
                 }
+                //std::cout<<"load entities on component : "<<c<<std::endl;
                 if (c < frcm->getNbComponents() && frcm->getRenderComponent(c) != nullptr) {
+
                     std::vector<Entity*> entities = getVisibleEntities(frcm->getRenderComponent(c)->getExpression());
                     frcm->getRenderComponent(c)->loadEntitiesOnComponent(entities);
                 }
