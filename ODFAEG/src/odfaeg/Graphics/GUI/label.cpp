@@ -10,6 +10,7 @@ namespace odfaeg {
                 text.setCharacterSize(charSize);
                 rect = RectangleShape (size);
                 background = sf::Color::Black;
+                text.setColor(sf::Color::Black);
                 rect.setFillColor(background);
                 mousePos = math::Vec3f(0, 0, 0);
             }
