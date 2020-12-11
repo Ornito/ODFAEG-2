@@ -238,6 +238,7 @@ namespace odfaeg
             ///
             ////////////////////////////////////////////////////////////
             void setOutlineColor(const sf::Color& color);
+            void setBackgroundColor(const sf::Color& color);
 
             ////////////////////////////////////////////////////////////
             /// \brief Set the thickness of the text's outline
@@ -360,6 +361,7 @@ namespace odfaeg
             ///
             ////////////////////////////////////////////////////////////
             const sf::Color& getOutlineColor() const;
+            const sf::Color& getBackgroundColor() const;
 
             ////////////////////////////////////////////////////////////
             /// \brief Get the outline thickness of the text
@@ -415,6 +417,7 @@ namespace odfaeg
             ///
             ////////////////////////////////////////////////////////////
             physic::BoundingBox& getGlobalBounds();
+            void setSelected(int indexMin, int indexMax);
 
         private:
 
@@ -447,12 +450,15 @@ namespace odfaeg
             sf::Uint32              m_style;               ///< Text style (see Style enum)
             sf::Color               m_fillColor;           ///< Text fill color
             sf::Color               m_outlineColor;        ///< Text outline color
+            sf::Color               m_backgroundColor;
             float               m_outlineThickness;    ///< Thickness of the text's outline
             mutable VertexArray m_vertices;            ///< Vertex array containing the fill geometry
             mutable VertexArray m_outlineVertices;     ///< Vertex array containing the outline geometry
+            mutable VertexArray m_backgroundVertices;
             mutable physic::BoundingBox   m_bounds, m_globalBounds;              ///< Bounding rectangle of the text (in local coordinates)
             mutable bool        m_geometryNeedUpdate;  ///< Does the geometry need to be recomputed?
             mutable sf::Uint64      m_fontTextureId;       ///< The font texture id
+            int indexMin, indexMax;
         };
     }
 

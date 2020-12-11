@@ -33,6 +33,7 @@ namespace odfaeg {
                     scrollX = false;
                 }
                 Label* lTabName = new Label(getWindow(),math::Vec3f(tabXPos,getPosition().y+10,0),math::Vec3f(100,15,0),&font,tabName,15);
+                lTabName->setForegroundColor(sf::Color::Black);
                 lTabName->setBorderColor(sf::Color::Red);
                 lTabName->setBorderThickness(1.f);
                 core::Action a (core::Action::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);

@@ -8,6 +8,7 @@ namespace odfaeg {
                 background = sf::Color::Black;
                 if (t != "") {
                     Label* label = new Label(window, position, math::Vec3f(size.x - 50, size.y, 0), font, t, charSize);
+                    label->setForegroundColor(sf::Color::Black);
                     label->setEventContextActivated(false);
                     items.push_back(label);
                     nbItems = 1;
@@ -73,6 +74,7 @@ namespace odfaeg {
             void DropDownList::addItem(std::string t, unsigned int charSize) {
                 Label* label = new Label (getWindow(), getPosition(), math::Vec3f(getSize().x - 50, getSize().y, 0), font, t, charSize);
                 label->setPosition(math::Vec3f(getPosition().x, getPosition().y + getSize().y * nbItems, 0));
+                label->setForegroundColor(sf::Color::Black);
                 items.push_back(label);
                 nbItems++;
                 selectedItem = items[0];

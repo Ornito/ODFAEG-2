@@ -25,7 +25,15 @@ namespace odfaeg {
                 core::Action a4 (core::Action::TEXT_ENTERED);
                 core::Command cmd5(a4, core::FastDelegate<bool>(&TextArea::hasFocus, this), core::FastDelegate<void>(&TextArea::onTextEntered, this, 'a'));
                 getListener().connect("CTEXTENTERED", cmd5);
-                currentIndex = tmp_text.getSize();
+                core::Action a5(core::Action::MOUSE_MOVED_);
+                core::Action a6(core::Action::MOUSE_BUTTON_HELD_DOWN, window::IMouse::Left);
+                core::Action a7 = a5 && a6;
+                core::Command cmd6(a7, core::FastDelegate<bool>(&TextArea::isMouseInTextArea, this), core::FastDelegate<void>(&TextArea::setCursorPos2, this));
+                getListener().connect("CMOUSEMOVED", cmd6);
+                core::Action a8(core::Action::MOUSE_BUTTON_RELEASED, window::IMouse::Left);
+                core::Command cmd7(a8, core::FastDelegate<bool>(&TextArea::isMouseInTextArea, this), core::FastDelegate<void>(&TextArea::setSelectedText, this));
+                getListener().connect("CSELECTTEXT", cmd7);
+                currentIndex = currentIndex2 = tmp_text.getSize();
                 sf::Vector2f pos = text.findCharacterPos(currentIndex);
                 cursorPos = math::Vec3f(pos.x, pos.y, 0);
                 //setSize(text.getSize());
@@ -42,13 +50,38 @@ namespace odfaeg {
             void TextArea::setCursorPos() {
                 math::Vec2f mousePos = math::Vec2f(window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y);
                 bool found = false;
-                for (unsigned int i = 0; i <= tmp_text.getSize() && !found; i++) {
+                for (unsigned int i = 0; i < tmp_text.getSize() && !found; i++) {
                     sf::Vector2f pos = text.findCharacterPos(i);
                     if (pos.x > mousePos.x && pos.y > mousePos.y - text.getCharacterSize()) {
                         cursorPos = math::Vec3f(pos.x, pos.y, 0);
                         currentIndex = i;
                         found = true;
                     }
+                }
+                text.setSelected(currentIndex, currentIndex);
+            }
+            void TextArea::setCursorPos2() {
+                math::Vec2f mousePos = math::Vec2f(window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y);
+                bool found = false;
+                for (unsigned int i = 0; i < tmp_text.getSize() && !found; i++) {
+                    sf::Vector2f pos = text.findCharacterPos(i);
+                    if (pos.x > mousePos.x && pos.y > mousePos.y - text.getCharacterSize()) {
+                        cursorPos = math::Vec3f(pos.x, pos.y, 0);
+                        currentIndex2 = i;
+                        found = true;
+                    }
+                }
+                if (currentIndex2 > currentIndex) {
+                    //std::cout<<"set selected text : "<<currentIndex<<","<<currentIndex2<<std::endl;
+                    text.setSelected(currentIndex, currentIndex2);
+                }
+            }
+            std::string TextArea::getSelectedText() {
+                return selected_text.toAnsiString();
+            }
+            void TextArea::setSelectedText() {
+                if (currentIndex2 > currentIndex) {
+                    selected_text = tmp_text.substring(currentIndex, currentIndex2 - currentIndex);
                 }
             }
             void TextArea::gaignedFocus() {
@@ -89,7 +122,8 @@ namespace odfaeg {
 
                 target.draw(rect);
                 target.draw(text);
-                target.draw(va);
+                if(haveFocus)
+                    target.draw(va);
             }
             bool TextArea::isMouseInTextArea() {
                 physic::BoundingBox bb = getGlobalBounds();
@@ -116,14 +150,14 @@ namespace odfaeg {
             void TextArea::onTextEntered(char caracter) {
                 if (tmp_text.getSize() > 0 && currentIndex-1 >= 0 && caracter == 8) {
                     currentIndex--;
-                    std::string text = tmp_text.toAnsiString();
-                    text.erase(currentIndex, 1);
-                    tmp_text = text;
+                    tmp_text.erase(currentIndex, 1);
                 }
                 else if (caracter != 8) {
-                    std::string text = tmp_text.toAnsiString();
-                    text.insert(currentIndex, 1, caracter);
-                    tmp_text = text;
+                    if (caracter == 13) {
+                        tmp_text.insert(currentIndex, "\n");
+                    } else {
+                        tmp_text.insert(currentIndex, sf::String(caracter));
+                    }
                     currentIndex++;
                 }
                 setText(tmp_text);

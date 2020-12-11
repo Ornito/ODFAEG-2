@@ -25,15 +25,18 @@ namespace odfaeg {
                 void onTextEntered(char caracter);
                 void onUpdate(RenderWindow* window, window::IEvent& event);
                 std::string getText();
+                std::string getSelectedText();
                 void setText(sf::String text);
                 void setCursorPos();
+                void setCursorPos2();
+                void setSelectedText();
                 bool hasFocus();
                 bool isTextChanged();
                 void onEventPushed(window::IEvent event, RenderWindow& window);
                 math::Vec3f getTextSize();
             private :
-                int currentIndex;
-                sf::String tmp_text, id_text;
+                int currentIndex, currentIndex2;
+                sf::String tmp_text, selected_text;
                 math::Vec3f size;
                 Text text;
                 RectangleShape rect;

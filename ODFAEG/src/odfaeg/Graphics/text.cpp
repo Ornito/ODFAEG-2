@@ -82,13 +82,17 @@ namespace odfaeg
         m_lineSpacingFactor  (1.f),
         m_style              (Regular),
         m_fillColor          (255, 255, 255),
+        m_backgroundColor    (255, 255, 255),
         m_outlineColor       (0, 0, 0),
         m_outlineThickness   (0),
         m_vertices           (sf::Triangles),
         m_outlineVertices    (sf::Triangles),
+        m_backgroundVertices (sf::Triangles),
         m_bounds             (),
         m_geometryNeedUpdate (false),
-        m_fontTextureId      (0)
+        m_fontTextureId      (0),
+        indexMin(0),
+        indexMax(0)
         {
 
         }
@@ -103,13 +107,17 @@ namespace odfaeg
         m_lineSpacingFactor  (1.f),
         m_style              (Regular),
         m_fillColor          (255, 255, 255),
+        m_backgroundColor    (255, 255, 255),
         m_outlineColor       (0, 0, 0),
         m_outlineThickness   (0),
         m_vertices           (sf::Triangles),
         m_outlineVertices    (sf::Triangles),
+        m_backgroundVertices (sf::Triangles),
         m_bounds             (),
         m_geometryNeedUpdate (true),
-        m_fontTextureId      (0)
+        m_fontTextureId      (0),
+        indexMin(0),
+        indexMax(0)
         {
 
         }
@@ -222,7 +230,18 @@ namespace odfaeg
                 }
             }
         }
-
+        void Text::setBackgroundColor(const sf::Color& color) {
+            if (color != m_backgroundColor) {
+                m_backgroundColor = color;
+                // Change vertex colors directly, no need to update whole geometry
+                // (if geometry is updated anyway, we can skip this step)
+                if (!m_geometryNeedUpdate)
+                {
+                    for (std::size_t i = 0; i < m_backgroundVertices.getVertexCount(); ++i)
+                        m_backgroundVertices[i].color = m_backgroundColor;
+                }
+            }
+        }
 
         ////////////////////////////////////////////////////////////
         void Text::setOutlineThickness(float thickness)
@@ -378,16 +397,21 @@ namespace odfaeg
                 ensureGeometryUpdate();
 
                 states.transform.combine(getTransform().getMatrix());
+                target.draw(m_backgroundVertices, states);
                 states.texture = &m_font->getTexture(m_characterSize);
-
                 // Only draw the outline if there is something to draw
                 if (m_outlineThickness != 0)
                     target.draw(m_outlineVertices, states);
 
                 target.draw(m_vertices, states);
+
             }
         }
-
+        void Text::setSelected(int indexMin, int indexMax) {
+            this->indexMin = indexMin;
+            this->indexMax = indexMax;
+            m_geometryNeedUpdate = true;
+        }
 
         ////////////////////////////////////////////////////////////
         void Text::ensureGeometryUpdate() const
@@ -517,9 +541,14 @@ namespace odfaeg
 
                 // Extract the current glyph's description
                 const sf::Glyph& glyph = m_font->getGlyph(curChar, m_characterSize, isBold);
-
-                // Add the glyph to the vertices
-                addGlyphQuad(m_vertices, sf::Vector2f(x, y), m_fillColor, glyph, italicShear);
+                if (i >= indexMin && i < indexMax) {
+                    addGlyphQuad(m_vertices, sf::Vector2f(x, y), sf::Color::White, glyph, italicShear);
+                    addGlyphQuad(m_backgroundVertices, sf::Vector2f(x, y), sf::Color::Blue, glyph, italicShear);
+                } else {
+                    // Add the glyph to the vertices
+                    addGlyphQuad(m_vertices, sf::Vector2f(x, y), m_fillColor, glyph, italicShear);
+                    addGlyphQuad(m_backgroundVertices, sf::Vector2f(x, y), m_backgroundColor, glyph, italicShear);
+                }
 
                 // Update the current bounds with the non outlined glyph bounds
                 if (m_outlineThickness == 0)

@@ -40,6 +40,7 @@ namespace odfaeg {
                 getcwd(cCurrentPath,sizeof(cCurrentPath));
                 lTop->setRelPosition(0.f, 0.f);
                 lTop->setRelSize(1.f, 1.f);
+                lTop->setForegroundColor(sf::Color::Black);
                 pTop->addChild(lTop);
                 std::string currentPath (cCurrentPath);
                 lTop->setText(currentPath);
@@ -122,6 +123,7 @@ namespace odfaeg {
                                 lDirectory->setForegroundColor(sf::Color::Red);
                                 getListener().connect("1d"+textDir, cmd);
                             } else {
+                                lDirectory->setForegroundColor(sf::Color::Black);
                                 getListener().connect("1f"+textDir, cmd);
                             }
                             i++;
@@ -151,6 +153,7 @@ namespace odfaeg {
                                 lFile->setForegroundColor(sf::Color::Red);
                                 getListener().connect("2d"+fileNames, cmd);
                             } else {
+                                lFile->setForegroundColor(sf::Color::Black);
                                 getListener().connect("2f"+fileNames, cmd);
                             }
                             i++;
@@ -259,6 +262,7 @@ namespace odfaeg {
                                     lFile->setForegroundColor(sf::Color::Red);
                                     getListener().connect("2d"+fileNames, cmd);
                                 } else {
+                                    lFile->setForegroundColor(sf::Color::Black);
                                     getListener().connect("2f"+fileNames, cmd);
                                 }
                                 i++;
@@ -347,6 +351,7 @@ namespace odfaeg {
                                     lFile->setForegroundColor(sf::Color::Red);
                                     getListener().connect("2d"+fileNames, cmd);
                                 } else {
+                                    lFile->setForegroundColor(sf::Color::Black);
                                     getListener().connect("2f"+fileNames, cmd);
                                 }
                                 i++;
@@ -395,7 +400,7 @@ namespace odfaeg {
                 if (button->getText() == "Choose") {
                     for (unsigned int i = 0; i < pDirectories->getChildren().size(); i++) {
                         Label* label = static_cast<Label*>(pDirectories->getChildren()[i]);
-                        if (label->getForegroundColor() == sf::Color::White
+                        if (label->getForegroundColor() == sf::Color::Black
                             && label->getBackgroundColor() == sf::Color::Blue) {
                             pathChosen = lTop->getText();
                             return;
@@ -403,7 +408,7 @@ namespace odfaeg {
                     }
                     for (unsigned int i = 0; i < pFiles->getChildren().size(); i++) {
                         Label* label = static_cast<Label*>(pFiles->getChildren()[i]);
-                        if (label->getForegroundColor() == sf::Color::White
+                        if (label->getForegroundColor() == sf::Color::Black
                             && label->getBackgroundColor() == sf::Color::Blue) {
                             #if defined (ODFAEG_SYSTEM_LINUX)
                                 pathChosen = lTop.getText()+"/"+label->getText();
