@@ -39,8 +39,6 @@ namespace odfaeg {
              * \param Command command : the command to add.
              */
              void connect(std::string key, Command command) {
-                if (key == "CECHANGED")
-                    std::cout<<"connect ce changed"<<std::endl;
                 command.setName(key);
                 toAdd.insert(std::make_pair(key, command));
              }

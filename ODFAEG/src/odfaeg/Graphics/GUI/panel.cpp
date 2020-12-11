@@ -17,7 +17,7 @@ namespace odfaeg {
                 core::Command cmd2(a, core::FastDelegate<bool>(&Panel::isOnYScroll, this),core::FastDelegate<void>(&Panel::moveYItems, this));
                 getListener().connect("scrollYMove", cmd2);
                 maxSize = math::Vec2f(0, 0);
-                enableScissor = true;
+                disableScissor = true;
             }
             bool Panel::isOnXScroll() {
                 math::Vec3f mousePos (window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y, 0);
@@ -166,11 +166,11 @@ namespace odfaeg {
             void Panel::addSprite(Sprite sprite) {
                 sprites.push_back(sprite);
             }
-            void Panel::setScissorEnabled(bool scissor) {
-                enableScissor = scissor;
+            void Panel::setScissorDisable(bool scissor) {
+                disableScissor = scissor;
             }
             void Panel::onDraw(RenderTarget& target, RenderStates states) {
-                if (enableScissor) {
+                if (disableScissor) {
                     glCheck(glEnable(GL_SCISSOR_TEST));
                     glCheck(glScissor(getPosition().x, getWindow().getSize().y - (getPosition().y + getSize().y), getSize().x, getSize().y));
                 }
@@ -197,7 +197,7 @@ namespace odfaeg {
                     horScrollBar.setFillColor(sf::Color::Red);
                     target.draw(horScrollBar, states);
                 }
-                if (enableScissor) {
+                if (disableScissor) {
                     glCheck(glDisable(GL_SCISSOR_TEST));
                 }
             }

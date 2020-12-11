@@ -84,6 +84,9 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onParticleSystemUpdaterChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onComponentExpressionChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedComponentChanged(odfaeg::graphic::gui::DropDownList* dp);
+    void onShadowCenterChanged(odfaeg::graphic::gui::TextArea* ta);
+    void onShadowScaleChanged(odfaeg::graphic::gui::TextArea* ta);
+    void onShadowRotAngleChanged(odfaeg::graphic::gui::TextArea* ta);
     enum Fonts {
         Serif
     };
@@ -117,7 +120,8 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::vector<std::unique_ptr<odfaeg::graphic::Shape>> shapes;
         odfaeg::graphic::Transformable* selectedObject;
         odfaeg::graphic::gui::TextArea *tPosX, *tPosY, *tPosZ, *tRColor, *tGColor, *tBColor, *tAColor, *tSizeW, *tSizeH, *tSizeD,
-        *tMoveX, *tMoveY, *tMoveZ, *tScaleX, *tScaleY, *tScaleZ, *tRotAngle, *tTexCoordX, *tTexCoordY, *tTexCoordW, *tTexCoordH, *taName, *taChangeComponentExpression;
+        *tMoveX, *tMoveY, *tMoveZ, *tScaleX, *tScaleY, *tScaleZ, *tRotAngle, *tTexCoordX, *tTexCoordY, *tTexCoordW, *tTexCoordH, *taName, *taChangeComponentExpression,
+        *taXShadowCenter, *taYShadowCenter, *taZShadowCenter, *taXShadowScale, *taYShadowScale, *taZShadowScale, *taShadowRotAngle;
         odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition, *lColor, *lRColor,
         *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage, *lParent;
         odfaeg::graphic::gui::TabPane* tabPane;

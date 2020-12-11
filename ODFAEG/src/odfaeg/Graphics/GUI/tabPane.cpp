@@ -43,6 +43,7 @@ namespace odfaeg {
                 addChild(lTabName);
                 addChild(panel);
                 panel->recomputeSize();
+                panel->setScissorDisable(false);
                 for (unsigned int i = 2; i < getChildren().size(); i++) {
                     if (dynamic_cast<Panel*> (getChildren()[i]) != nullptr) {
                         getChildren()[i]->setVisible(false);

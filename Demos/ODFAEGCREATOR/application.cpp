@@ -475,22 +475,22 @@ void ODFAEGCreator::onInit() {
     pScriptsFiles->setBackgroundColor(sf::Color::Black);
     pInfos = new Panel(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     pInfos->setBackgroundColor(sf::Color::White);
-    pInfos->setScissorEnabled(false);
+    //pInfos->setScissorEnabled(false);
     rootInfosNode = std::make_unique<Node>("Infos", pInfos, Vec2f(0.f, 0.05f), Vec2f(1.f, 1.f-0.05f));
     tabPane->addTab(pInfos, "Informations", *fm.getResourceByAlias(Fonts::Serif));
     pTransform = new Panel(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     pTransform->setBackgroundColor(sf::Color::White);
-    pTransform->setScissorEnabled(false);
+    //pTransform->setScissorEnabled(false);
     rootPropNode = std::make_unique<Node>("Properties", pTransform, Vec2f(0.f, 0.05f), Vec2f(1.f, 1.f-0.05f));
     tabPane->addTab(pTransform, "Transform", *fm.getResourceByAlias(Fonts::Serif));
     pMaterial = new Panel(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     pMaterial->setBackgroundColor(sf::Color::White);
-    pMaterial->setScissorEnabled(false);
+    //pMaterial->setScissorEnabled(false);
     rootMaterialNode = std::make_unique<Node>("Material", pMaterial, Vec2f(0.f, 0.05f), Vec2f(1.f, 1.f-0.05f));
     tabPane->addTab(pMaterial,"Material",*fm.getResourceByAlias(Fonts::Serif));
     pShadows = new Panel(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     pShadows->setBackgroundColor(sf::Color::White);
-    pShadows->setScissorEnabled(false);
+    //pShadows->setScissorEnabled(false);
     rootShadowsNode = std::make_unique<Node>("Shadows", pShadows, Vec2f(0.f, 0.05f), Vec2f(1.f, 1.f-0.05f));
     tabPane->addTab(pShadows,"Shadow",*fm.getResourceByAlias(Fonts::Serif));
     tScriptEdit = new TextArea(Vec3f(200, 20, 0),Vec3f(790,650,0),fm.getResourceByAlias(Fonts::Serif),"",getRenderWindow());
@@ -2345,10 +2345,105 @@ void ODFAEGCreator::displayEntityInfos(Entity* tile) {
     Command cmdParentChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectParent), FastDelegate<void>(&ODFAEGCreator::onSelectedParentChanged, this, dpSelectParent));
     dpSelectParent->getListener().connect("ParentChanged",cmdParentChanged);
     selectParentNode->addOtherComponent(dpSelectParent,Vec2f(0.75, 0.025));
+    //Shadow center.
     Label* lShadowCenter = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Shadow center : ", 15);
     Node* nShadowCenter = new Node("ShadowCenter", lShadowCenter, Vec2f(0, 0), Vec2f(1, 0.025),rootShadowsNode.get());
-    lShadowCenter->setParent(lShadowCenter);
+    lShadowCenter->setParent(pShadows);
     pShadows->addChild(lShadowCenter);
+    //X
+    Label* lXShadowCenter = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "X : ", 15);
+    Node* nXShadowCenter = new Node("XShadowCenter", lXShadowCenter, Vec2f(0, 0), Vec2f(0.25, 0.025), rootShadowsNode.get());
+    lXShadowCenter->setParent(pShadows);
+    pShadows->addChild(lXShadowCenter);
+    taXShadowCenter = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getShadowCenter().x),getRenderWindow());
+    nXShadowCenter->addOtherComponent(taXShadowCenter, Vec2f(0.75, 0.025));
+    taXShadowCenter->setTextSize(15);
+    taXShadowCenter->setParent(pShadows);
+    pShadows->addChild(taXShadowCenter);
+    //Y
+    Label* lYShadowCenter = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Y : ", 15);
+    Node* nYShadowCenter = new Node("YShadowCenter", lYShadowCenter, Vec2f(0, 0), Vec2f(0.25, 0.025), rootShadowsNode.get());
+    lYShadowCenter->setParent(pShadows);
+    pShadows->addChild(lYShadowCenter);
+    taYShadowCenter = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getShadowCenter().y),getRenderWindow());
+    nYShadowCenter->addOtherComponent(taYShadowCenter, Vec2f(0.75, 0.025));
+    taYShadowCenter->setTextSize(15);
+    taYShadowCenter->setParent(pShadows);
+    pShadows->addChild(taYShadowCenter);
+    //Z
+    Label* lZShadowCenter = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Z : ", 15);
+    Node* nZShadowCenter = new Node("ZShadowCenter", lZShadowCenter, Vec2f(0, 0), Vec2f(0.25, 0.025), rootShadowsNode.get());
+    lZShadowCenter->setParent(pShadows);
+    pShadows->addChild(lZShadowCenter);
+    taZShadowCenter = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getShadowCenter().z),getRenderWindow());
+    nZShadowCenter->addOtherComponent(taZShadowCenter, Vec2f(0.75, 0.025));
+    taZShadowCenter->setTextSize(15);
+    taZShadowCenter->setParent(pShadows);
+    pShadows->addChild(taZShadowCenter);
+    Command cmdXShadowCenter(FastDelegate<bool>(&TextArea::isTextChanged, taXShadowCenter), FastDelegate<void>(&ODFAEGCreator::onShadowCenterChanged, this, taXShadowCenter));
+    taXShadowCenter->getListener().connect("XSHADOWCENTERCHANGED", cmdXShadowCenter);
+    Command cmdYShadowCenter(FastDelegate<bool>(&TextArea::isTextChanged, taYShadowCenter), FastDelegate<void>(&ODFAEGCreator::onShadowCenterChanged, this, taYShadowCenter));
+    taYShadowCenter->getListener().connect("YSHADOWCENTERCHANGED", cmdYShadowCenter);
+    Command cmdZShadowCenter(FastDelegate<bool>(&TextArea::isTextChanged, taZShadowCenter), FastDelegate<void>(&ODFAEGCreator::onShadowCenterChanged, this, taZShadowCenter));
+    taZShadowCenter->getListener().connect("ZSHADOWCENTERCHANGED", cmdZShadowCenter);
+    //Shadow scale.
+    Label* lShadowScale = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Shadow scale : ", 15);
+    Node* nShadowScale = new Node("ShadowSale", lShadowScale, Vec2f(0, 0), Vec2f(1, 0.025),rootShadowsNode.get());
+    lShadowScale->setParent(pShadows);
+    pShadows->addChild(lShadowScale);
+    //X
+    Label* lXShadowScale = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "X : ", 15);
+    Node* nXShadowScale = new Node("XShadowCenter", lXShadowScale, Vec2f(0, 0), Vec2f(0.25, 0.025), rootShadowsNode.get());
+    lXShadowScale->setParent(pShadows);
+    pShadows->addChild(lXShadowScale);
+    taXShadowScale = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getShadowScale().x),getRenderWindow());
+    nXShadowScale->addOtherComponent(taXShadowScale, Vec2f(0.75, 0.025));
+    taXShadowScale->setTextSize(15);
+    taXShadowScale->setParent(pShadows);
+    pShadows->addChild(taXShadowScale);
+    //Y
+    Label* lYShadowScale = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Y : ", 15);
+    Node* nYShadowScale = new Node("YShadowScale", lYShadowScale, Vec2f(0, 0), Vec2f(0.25, 0.025), rootShadowsNode.get());
+    lYShadowScale->setParent(pShadows);
+    pShadows->addChild(lYShadowScale);
+    taYShadowScale = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getShadowScale().y),getRenderWindow());
+    nYShadowScale->addOtherComponent(taYShadowScale, Vec2f(0.75, 0.025));
+    taYShadowScale->setTextSize(15);
+    taYShadowScale->setParent(pShadows);
+    pShadows->addChild(taYShadowScale);
+    //Z
+    Label* lZShadowScale = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Z : ", 15);
+    Node* nZShadowScale = new Node("ZShadowScale", lZShadowScale, Vec2f(0, 0), Vec2f(0.25, 0.025), rootShadowsNode.get());
+    lZShadowScale->setParent(pShadows);
+    pShadows->addChild(lZShadowScale);
+    taZShadowScale = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getShadowScale().z),getRenderWindow());
+    nZShadowScale->addOtherComponent(taZShadowScale, Vec2f(0.75, 0.025));
+    taZShadowScale->setTextSize(15);
+    taZShadowScale->setParent(pShadows);
+    pShadows->addChild(taZShadowScale);
+    Command cmdXShadowScale(FastDelegate<bool>(&TextArea::isTextChanged, taXShadowScale), FastDelegate<void>(&ODFAEGCreator::onShadowScaleChanged, this, taXShadowScale));
+    taXShadowScale->getListener().connect("XSHADOWSCALECHANGED", cmdXShadowScale);
+    Command cmdYShadowScale(FastDelegate<bool>(&TextArea::isTextChanged, taYShadowScale), FastDelegate<void>(&ODFAEGCreator::onShadowScaleChanged, this, taYShadowScale));
+    taYShadowScale->getListener().connect("YSHADOWSCALECHANGED", cmdYShadowScale);
+    Command cmdZShadowScale(FastDelegate<bool>(&TextArea::isTextChanged, taZShadowScale), FastDelegate<void>(&ODFAEGCreator::onShadowScaleChanged, this, taZShadowScale));
+    taZShadowScale->getListener().connect("ZSHADOWSCALECHANGED", cmdZShadowScale);
+    //Shadow rotation angle.
+    Label* lShadowRotation = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Shadow rotation : ", 15);
+    Node* nShadowRotation = new Node("ShadowRotation", lShadowRotation, Vec2f(0, 0), Vec2f(1, 0.025),rootShadowsNode.get());
+    lShadowRotation->setParent(pShadows);
+    pShadows->addChild(lShadowRotation);
+    //X
+    Label* lShadowRotAngle = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "A : ", 15);
+    Node* nShadowRotAngle = new Node("ShadowRotAngle", lShadowRotAngle, Vec2f(0, 0), Vec2f(0.25, 0.025), rootShadowsNode.get());
+    lShadowRotAngle->setParent(pShadows);
+    pShadows->addChild(lShadowRotAngle);
+    taShadowRotAngle = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getShadowRotationAngle()),getRenderWindow());
+    nShadowRotAngle->addOtherComponent(taShadowRotAngle, Vec2f(0.75, 0.025));
+    taShadowRotAngle->setTextSize(15);
+    taShadowRotAngle->setParent(pShadows);
+    pShadows->addChild(taShadowRotAngle);
+    Command cmdRotAngle(FastDelegate<bool>(&TextArea::isTextChanged, taShadowRotAngle), FastDelegate<void>(ODFAEGCreator::onShadowRotAngleChanged, this, taShadowRotAngle));
+    taShadowRotAngle->getListener().connect("SHADOWROTANGLECHANGED", cmdRotAngle);
 }
 void ODFAEGCreator::displayInfos(Decor* decor) {
     displayTransformInfos(decor);
@@ -2670,6 +2765,164 @@ void ODFAEGCreator::updateScriptPos(Transformable* shape) {
                 content.erase(pos, endpos - pos);
                 content.insert(pos,"tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
                 +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+"));\n");
+            }
+        }
+    }
+}
+void ODFAEGCreator::onShadowScaleChanged(TextArea* ta) {
+    if (ta == taXShadowScale) {
+        if (is_number(ta->getText())) {
+            float xShadScale = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEXSHADSCALE"+conversionFloatString(xShadScale));
+            State* state = new State("SCHANGEXSHADSCALE", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", static_cast<Entity*>(selectedObject)->getShadowScale().x);
+            state->addParameter("NEWVALUE", xShadScale);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            static_cast<Entity*>(selectedObject)->setShadowScale(Vec3f(xShadScale, static_cast<Entity*>(selectedObject)->getShadowScale().y, static_cast<Entity*>(selectedObject)->getShadowScale().z));
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGEXSHADSCALE", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", static_cast<Entity*>(rectSelect.getItems()[i])->getShadowScale().x);
+                selectState->addParameter("NEWVALUE", xShadScale);
+                static_cast<Entity*>(rectSelect.getItems()[i])->setShadowScale(Vec3f(xShadScale, static_cast<Entity*>(rectSelect.getItems()[i])->getShadowScale().y, static_cast<Entity*>(rectSelect.getItems()[i])->getShadowScale().z));
+                sg->addState(selectState);
+            }
+        }
+    }
+    if (ta == taYShadowScale) {
+        if (is_number(ta->getText())) {
+            float yShadScale = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEYSHADSCALE"+conversionFloatString(yShadScale));
+            State* state = new State("SCHANGEYSHADSCALE", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", static_cast<Entity*>(selectedObject)->getShadowScale().y);
+            state->addParameter("NEWVALUE", yShadScale);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            static_cast<Entity*>(selectedObject)->setShadowScale(Vec3f(static_cast<Entity*>(selectedObject)->getShadowScale().x, yShadScale, static_cast<Entity*>(selectedObject)->getShadowScale().z));
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGEYSHADSCALE", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", static_cast<Entity*>(rectSelect.getItems()[i])->getShadowScale().y);
+                selectState->addParameter("NEWVALUE", yShadScale);
+                static_cast<Entity*>(rectSelect.getItems()[i])->setShadowScale(Vec3f(static_cast<Entity*>(rectSelect.getItems()[i])->getShadowScale().x, yShadScale, static_cast<Entity*>(rectSelect.getItems()[i])->getShadowScale().z));
+                sg->addState(selectState);
+            }
+        }
+    }
+    if (ta == taZShadowScale) {
+        if (is_number(ta->getText())) {
+            float zShadScale = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEZSHADSCALE"+conversionFloatString(zShadScale));
+            State* state = new State("SCHANGEZSHADSCALE", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", static_cast<Entity*>(selectedObject)->getShadowScale().z);
+            state->addParameter("NEWVALUE", zShadScale);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            static_cast<Entity*>(selectedObject)->setShadowScale(Vec3f(static_cast<Entity*>(selectedObject)->getShadowScale().x, static_cast<Entity*>(selectedObject)->getShadowScale().y, zShadScale));
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGEZSHADSCALE", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", static_cast<Entity*>(rectSelect.getItems()[i])->getShadowScale().z);
+                selectState->addParameter("NEWVALUE", zShadScale);
+                static_cast<Entity*>(rectSelect.getItems()[i])->setShadowScale(Vec3f(static_cast<Entity*>(rectSelect.getItems()[i])->getShadowScale().x, static_cast<Entity*>(rectSelect.getItems()[i])->getShadowScale().y, zShadScale));
+                sg->addState(selectState);
+            }
+        }
+    }
+}
+void ODFAEGCreator::onShadowRotAngleChanged(TextArea* ta) {
+    if (ta == taShadowRotAngle) {
+        if (is_number(ta->getText())) {
+            float rotAngle = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGESHADROTANGLE"+conversionFloatString(rotAngle));
+            State* state = new State("SGCHANGESHADROTANGLE", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", static_cast<Entity*>(selectedObject)->getShadowRotationAngle());
+            state->addParameter("NEWVALUE", rotAngle);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            static_cast<Entity*>(selectedObject)->setShadowRotation(rotAngle);
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SGCHANGESHADROTANGLE", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", static_cast<Entity*>(rectSelect.getItems()[i])->getShadowRotationAngle());
+                selectState->addParameter("NEWVALUE", rotAngle);
+                static_cast<Entity*>(rectSelect.getItems()[i])->setShadowRotation(rotAngle);
+                sg->addState(selectState);
+            }
+        }
+    }
+}
+void ODFAEGCreator::onShadowCenterChanged(TextArea* ta) {
+    if (ta == taXShadowCenter) {
+        if (is_number(ta->getText())) {
+            float xShadCenter = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEXSHADCENTER"+conversionFloatString(xShadCenter));
+            State* state = new State("SCHANGEXSHADCENTER", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", static_cast<Entity*>(selectedObject)->getShadowCenter().x);
+            state->addParameter("NEWVALUE", xShadCenter);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            static_cast<Entity*>(selectedObject)->setShadowCenter(Vec3f(xShadCenter, static_cast<Entity*>(selectedObject)->getShadowCenter().y, static_cast<Entity*>(selectedObject)->getShadowCenter().z));
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGEXSHADCENTER", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", static_cast<Entity*>(rectSelect.getItems()[i])->getShadowCenter().x);
+                selectState->addParameter("NEWVALUE", xShadCenter);
+                static_cast<Entity*>(rectSelect.getItems()[i])->setShadowCenter(Vec3f(xShadCenter, static_cast<Entity*>(rectSelect.getItems()[i])->getShadowCenter().y, static_cast<Entity*>(rectSelect.getItems()[i])->getShadowCenter().z));
+                sg->addState(selectState);
+            }
+        }
+    } else if (ta == taYShadowCenter) {
+        if(is_number(ta->getText())) {
+            float yShadCenter = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEYSHADCENTER"+conversionFloatString(yShadCenter));
+            State* state = new State("SCHANGEYSHADCENTER", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", static_cast<Entity*>(selectedObject)->getShadowCenter().y);
+            state->addParameter("NEWVALUE", yShadCenter);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            static_cast<Entity*>(selectedObject)->setShadowCenter(Vec3f(static_cast<Entity*>(selectedObject)->getShadowCenter().x, yShadCenter, static_cast<Entity*>(selectedObject)->getShadowCenter().z));
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGEYSHADCENTER", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", static_cast<Entity*>(rectSelect.getItems()[i])->getShadowCenter().x);
+                selectState->addParameter("NEWVALUE", yShadCenter);
+                static_cast<Entity*>(rectSelect.getItems()[i])->setShadowCenter(Vec3f(static_cast<Entity*>(rectSelect.getItems()[i])->getShadowCenter().x, yShadCenter, static_cast<Entity*>(rectSelect.getItems()[i])->getShadowCenter().z));
+                sg->addState(selectState);
+            }
+        }
+    } else if (ta == taZShadowCenter) {
+        if(is_number(ta->getText())) {
+            float zShadCenter = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEZSHADCENTER"+conversionFloatString(zShadCenter));
+            State* state = new State("SCHANGEZSHADCENTER", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", static_cast<Entity*>(selectedObject)->getShadowCenter().z);
+            state->addParameter("NEWVALUE", zShadCenter);
+            sg->addState(state);
+            stateStack.addStateGroup(sg);
+            static_cast<Entity*>(selectedObject)->setShadowCenter(Vec3f(static_cast<Entity*>(selectedObject)->getShadowCenter().x, static_cast<Entity*>(selectedObject)->getShadowCenter().y, zShadCenter));
+            //updateScriptPos(selectedObject);
+            for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
+                State* selectState = new State("SCHANGEYSHADCENTER", &se);
+                selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
+                selectState->addParameter("OLDVALUE", static_cast<Entity*>(rectSelect.getItems()[i])->getShadowCenter().z);
+                selectState->addParameter("NEWVALUE", zShadCenter);
+                static_cast<Entity*>(rectSelect.getItems()[i])->setShadowCenter(Vec3f(static_cast<Entity*>(rectSelect.getItems()[i])->getShadowCenter().x, static_cast<Entity*>(rectSelect.getItems()[i])->getShadowCenter().y, zShadCenter));
+                sg->addState(selectState);
             }
         }
     }
