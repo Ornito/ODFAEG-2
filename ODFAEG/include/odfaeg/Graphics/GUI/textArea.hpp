@@ -6,6 +6,7 @@
 #include "../text.h"
 #include "../font.h"
 #include "focusListener.hpp"
+#include "panel.hpp"
 namespace odfaeg {
     namespace graphic {
         namespace gui {
@@ -35,6 +36,7 @@ namespace odfaeg {
                 void onEventPushed(window::IEvent event, RenderWindow& window);
                 math::Vec3f getTextSize();
             private :
+                int scrollX, scrollY;
                 int currentIndex, currentIndex2;
                 sf::String tmp_text, selected_text;
                 math::Vec3f size;

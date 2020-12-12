@@ -461,6 +461,7 @@ void ODFAEGCreator::onInit() {
     Command cmdSelectComponent (FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectComponent), FastDelegate<void>(&ODFAEGCreator::onSelectedComponentChanged, this, dpSelectComponent));
     dpSelectComponent->getListener().connect("SELECTCOMPONENT", cmdSelectComponent);
     taChangeComponentExpression = new TextArea(Vec3f(0, 0, 0),Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif),"change component expression", getRenderWindow());
+    taChangeComponentExpression->setTextSize(15);
     taChangeComponentExpression->setRelPosition(0.3, 0);
     taChangeComponentExpression->setRelSize(0.7, 0.1);
     taChangeComponentExpression->setParent(pComponent);
@@ -2566,6 +2567,16 @@ void ODFAEGCreator::displayEntityInfos(Entity* tile) {
     pShadows->addChild(taShadowRotAngle);
     Command cmdRotAngle(FastDelegate<bool>(&TextArea::isTextChanged, taShadowRotAngle), FastDelegate<void>(ODFAEGCreator::onShadowRotAngleChanged, this, taShadowRotAngle));
     taShadowRotAngle->getListener().connect("SHADOWROTANGLECHANGED", cmdRotAngle);
+    //Collision.
+    Label* lCollision = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Collision : ", 15);
+    Node* nCollision = new Node("Collision", lCollision, Vec2f(0, 0), Vec2f(1, 0.025),rootCollisionNode.get());
+    lCollision->setParent(pCollisions);
+    pCollisions->addChild(lCollision);
+    //X.
+    Label* lCollisionXPos = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "X : ", 15);
+    Node* nCollisionPosX = new Node("CollisionPosX", lCollisionXPos,Vec2f(0, 0), Vec2f(1, 0.025),rootCollisionNode.get());
+    lCollisionXPos->setParent(pCollisions);
+    pCollisions->addChild(lCollisionXPos);
 }
 void ODFAEGCreator::displayInfos(Decor* decor) {
     displayTransformInfos(decor);

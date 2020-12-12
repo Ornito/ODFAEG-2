@@ -9,7 +9,7 @@ namespace odfaeg {
         class LightComponent : public Component {
             public :
             LightComponent(RenderWindow& window, math::Vec3f position, math::Vec3f size, math::Vec3f origin, unsigned int priority = 0, LightComponent* parent = nullptr) :
-                Component (window, position, size, origin, priority), parent(parent) {
+                Component (window, position, size, origin, priority), parent(parent), enableScissorTest(true) {
             }
             void setParent(LightComponent* parent) {
                 this->parent = parent;
@@ -57,7 +57,17 @@ namespace odfaeg {
             void draw(RenderTarget& target, RenderStates states) {
                 //states.transform = getTransform();
                 getWindow().setActive(true);
+
                 onDraw(target, states);
+                /*if (getName() == "TAB_PANE") {
+                    GLint values[4];
+                    glCheck(glGetIntegerv(GL_SCISSOR_BOX, values));
+                    GLboolean sctest;
+                    glGetBooleanv(GL_SCISSOR_TEST, &sctest);
+                    std::cout<<"scissor test activated ? "<<(int) sctest<<std::endl;
+                    for (unsigned int i = 0; i < 4; i++)
+                        std::cout<<"value : "<<values[i]<<std::endl;
+                }*/
                 std::multimap<int, LightComponent*, std::greater<int>> sortedChildren;
                 for (unsigned int i = 0; i < children.size(); i++) {
                     sortedChildren.insert(std::make_pair(children[i]->getPriority(), children[i].get()));
@@ -73,12 +83,18 @@ namespace odfaeg {
                         it->second->draw(target, states);
                     }
                 }
+                /*if (enableScissorTest) {
+                    glCheck(glScissor(getPosition().x, getWindow().getSize().y - (getPosition().y + getSize().y), getSize().x, getSize().y));
+                }*/
                 drawOn(target, states);
+                /*if (getParent() == nullptr)
+                    glCheck(glDisable(GL_SCISSOR_TEST));*/
             }
             virtual void onDraw(RenderTarget &target, RenderStates states) {}
             virtual void drawOn(RenderTarget &target, RenderStates states) {}
             virtual void onSizeRecomputed() {}
             virtual void addChild(LightComponent* child) {
+                //child->setScissorTestEnabled(enableScissorTest);
                 std::unique_ptr<LightComponent> ptr;
                 ptr.reset(child);
                 children.push_back(std::move(ptr));
@@ -134,7 +150,15 @@ namespace odfaeg {
                 return found;
             }
             virtual ~LightComponent() {}
+            void setScissorTestEnabled(bool scissor) {
+                enableScissorTest = scissor;
+                /*for (unsigned int i = 0; i < children.size(); i++) {
+                    children[i]->setScissorTestEnabled(scissor);
+                }*/
+
+            }
             private :
+            bool enableScissorTest;
             LightComponent* parent;
             std::vector<std::unique_ptr<LightComponent>> children;
         };

@@ -121,7 +121,8 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::Transformable* selectedObject;
         odfaeg::graphic::gui::TextArea *tPosX, *tPosY, *tPosZ, *tRColor, *tGColor, *tBColor, *tAColor, *tSizeW, *tSizeH, *tSizeD,
         *tMoveX, *tMoveY, *tMoveZ, *tScaleX, *tScaleY, *tScaleZ, *tRotAngle, *tTexCoordX, *tTexCoordY, *tTexCoordW, *tTexCoordH, *taName, *taChangeComponentExpression,
-        *taXShadowCenter, *taYShadowCenter, *taZShadowCenter, *taXShadowScale, *taYShadowScale, *taZShadowScale, *taShadowRotAngle;
+        *taXShadowCenter, *taYShadowCenter, *taZShadowCenter, *taXShadowScale, *taYShadowScale, *taZShadowScale, *taShadowRotAngle, *taBoundingBoxColX, *taBoundingBoxColY,
+        *taBoundingBoxColZ, *taBoundingBoxColW, *taBoundingBoxColH, *taBoundingBoxColD;
         odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition, *lColor, *lRColor,
         *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage, *lParent;
         odfaeg::graphic::gui::TabPane* tabPane;
@@ -131,6 +132,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         ODFAEGCreatorStateExecutor se;
         std::vector<odfaeg::graphic::ConvexShape> cshapes;
         std::vector<odfaeg::graphic::ConvexShape> cellsPassableShapes;
+        std::vector<odfaeg::graphic::RectangleShape> collisionsBox;
         odfaeg::graphic::Map* theMap;
         int gridWidth, gridHeight;
         RectangularSelection rectSelect;

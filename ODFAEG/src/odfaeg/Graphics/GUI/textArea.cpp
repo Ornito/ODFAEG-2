@@ -38,6 +38,7 @@ namespace odfaeg {
                 cursorPos = math::Vec3f(pos.x, pos.y, 0);
                 //setSize(text.getSize());
                 haveFocus = textChanged = false;
+                scrollX = scrollY = 0;
             }
             void TextArea::onEventPushed(window::IEvent event, RenderWindow& window) {
                 if (&window == &getWindow()) {
@@ -117,11 +118,22 @@ namespace odfaeg {
                 va.append(Vertex(sf::Vector3f(cursorPos.x, cursorPos.y, 0), sf::Color::Black));
                 va.append(Vertex(sf::Vector3f(cursorPos.x, cursorPos.y + text.getCharacterSize(), 0), sf::Color::Black));
                 rect.setPosition(getPosition());
-                text.setPosition(getPosition());
+                text.setPosition(math::Vec3f(getPosition().x + scrollX, getPosition().y + scrollY, 0));
                 rect.setSize(getSize());
 
                 target.draw(rect);
+                GLboolean sctest;
+                glCheck(glGetBooleanv(GL_SCISSOR_TEST, &sctest));
+                GLint values[4];
+                glCheck(glGetIntegerv(GL_SCISSOR_BOX, values));
+                glCheck(glEnable(GL_SCISSOR_TEST));
+                glCheck(glScissor(getPosition().x, getWindow().getSize().y - (getPosition().y + getSize().y), getSize().x, getSize().y));
                 target.draw(text);
+                if (sctest == false) {
+                    glCheck(glDisable(GL_SCISSOR_TEST));
+                } else {
+                    glCheck(glScissor(values[0], values[1], values[2], values[3]));
+                }
                 if(haveFocus)
                     target.draw(va);
             }
@@ -163,6 +175,9 @@ namespace odfaeg {
                 setText(tmp_text);
                 sf::Vector2f pos = text.findCharacterPos(currentIndex);
                 cursorPos = math::Vec3f(pos.x, pos.y, 0);
+                if (text.getGlobalBounds().getSize().x > getSize().x) {
+                    scrollX = getSize().x - text.getGlobalBounds().getSize().x;
+                }
             }
             void TextArea::setText(sf::String text) {
                 tmp_text = text.toAnsiString();

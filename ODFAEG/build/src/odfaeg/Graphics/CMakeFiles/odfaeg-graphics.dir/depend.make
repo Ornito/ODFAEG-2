@@ -3467,6 +3467,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../incl
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../include/odfaeg/Core/variant.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../include/odfaeg/Graphics/GUI/focusListener.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../include/odfaeg/Graphics/GUI/panel.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../include/odfaeg/Graphics/GUI/textArea.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../include/odfaeg/Graphics/GlDebug.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../include/odfaeg/Graphics/component.h
@@ -3482,6 +3483,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../incl
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../include/odfaeg/Graphics/renderWindow.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../include/odfaeg/Graphics/shader.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../include/odfaeg/Graphics/shape.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../include/odfaeg/Graphics/sprite.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../include/odfaeg/Graphics/text.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../include/odfaeg/Graphics/texture.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj: ../include/odfaeg/Graphics/transformMatrix.h

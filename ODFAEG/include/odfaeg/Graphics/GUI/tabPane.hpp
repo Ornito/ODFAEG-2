@@ -15,7 +15,9 @@ namespace odfaeg {
                             getChildren()[i]->clear();
                     }
                     void drawOn(RenderTarget& target, RenderStates states);
+                    void onDraw(RenderTarget& target, RenderStates states);
                     std::string getSelectedTab();
+
                 private :
                     bool isOnXScroll();
                     void moveXItems();

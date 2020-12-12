@@ -395,7 +395,6 @@ namespace odfaeg
             if (m_font)
             {
                 ensureGeometryUpdate();
-
                 states.transform.combine(getTransform().getMatrix());
                 target.draw(m_backgroundVertices, states);
                 states.texture = &m_font->getTexture(m_characterSize);

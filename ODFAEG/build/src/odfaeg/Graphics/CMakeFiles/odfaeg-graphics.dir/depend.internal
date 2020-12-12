@@ -3468,6 +3468,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/utilities.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/variant.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/GUI/focusListener.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/GUI/panel.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/GUI/textArea.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/GlDebug.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/component.h
@@ -3483,6 +3484,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/renderWindow.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/shader.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/shape.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/sprite.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/text.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/texture.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/transformMatrix.h

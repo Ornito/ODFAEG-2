@@ -52,6 +52,7 @@ namespace odfaeg {
                         getChildren()[i]->setEventContextActivated(false);
                     }
                 }
+                setName("TAB_PANE");
                 selectedTab = static_cast<Label*>(getChildren()[0]);
             }
             bool TabPane::isOnXScroll() {
@@ -95,6 +96,10 @@ namespace odfaeg {
             }
             std::string TabPane::getSelectedTab() {
                 return selectedTab->getText();
+            }
+            void TabPane::onDraw(RenderTarget& target, RenderStates states) {
+
+
             }
             void TabPane::drawOn(RenderTarget& target, RenderStates states) {
                 if (scrollX) {
