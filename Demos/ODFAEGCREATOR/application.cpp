@@ -745,23 +745,28 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_PRESSED && event.mouseButton.button == IMouse::Left) {
         if (tabPane->getSelectedTab() == "Collisions") {
             sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
-            Vec3f pos = getRenderWindow().mapPixelToCoords(Vec3f(mousePos.x, getRenderWindow().getSize().y-mousePos.y, 0));
-            Vec3f delta = viewPos-getRenderWindow().getView().getPosition();
-            pos += delta;
+            Vec3f pos;
+            bool isOk;
+            do {
+                pos = getRenderWindow().mapPixelToCoords(Vec3f(mousePos.x, getRenderWindow().getSize().y-mousePos.y, 0));
+                Vec3f delta = viewPos-getRenderWindow().getView().getPosition();
+                pos += delta;
+                isOk = true;
+                if ((int) delta.x / gridWidth != 0 || delta.x < 0) {
+                    viewPos.x = (int) getRenderWindow().getView().getPosition().x / gridWidth * gridWidth;
+                    if (getRenderWindow().getView().getPosition().x > viewPos.x)
+                        viewPos.x += gridWidth;
+                    isOk = false;
+                }
+
+                if ((int) delta.y / gridHeight != 0 || delta.y < 0) {
+                    viewPos.y = (int) getRenderWindow().getView().getPosition().y / gridHeight * gridHeight;
+                    if (getRenderWindow().getView().getPosition().y > viewPos.y)
+                        viewPos.y += gridHeight;
+                    isOk = false;
+                }
+            } while (!isOk);
             CellMap* cell = World::getGridCellAt(pos);
-            std::cout<<"delta : "<<delta<<pos<<viewPos<<getRenderWindow().getView().getPosition()<<std::endl;
-            if ((int) delta.x / gridWidth != 0 || delta.x < 0) {
-                viewPos.x = (int) getRenderWindow().getView().getPosition().x / gridWidth * gridWidth;
-                if (getRenderWindow().getView().getPosition().x > viewPos.x)
-                    viewPos.x += gridWidth;
-            }
-
-            if ((int) delta.y / gridHeight != 0 || delta.y < 0) {
-                viewPos.y = (int) getRenderWindow().getView().getPosition().y / gridHeight * gridHeight;
-                if (getRenderWindow().getView().getPosition().y > viewPos.y)
-                    viewPos.y += gridHeight;
-            }
-
             //std::cout<<"pos : "<<getRenderWindow().getView().getPosition()<<"view pos : "<<viewPos<<std::endl;
             if (cell != nullptr) {
                 BoundingPolyhedron* bp = cell->getCellVolume();
