@@ -57,6 +57,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void displayInfos(odfaeg::graphic::g2d::Wall* wall);
     void displayInfos(odfaeg::graphic::Anim* anim);
     void displayInfos(odfaeg::physic::ParticleSystem* ps);
+    void displayInfos(odfaeg::graphic::g2d::PonctualLight* pl);
     void displayChildren(odfaeg::graphic::gui::Label* label);
     void onObjectPosChanged(odfaeg::graphic::gui::TextArea* ta);
     void onObjectSizeChanged(odfaeg::graphic::gui::TextArea* ta);
@@ -87,6 +88,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onShadowCenterChanged(odfaeg::graphic::gui::TextArea* ta);
     void onShadowScaleChanged(odfaeg::graphic::gui::TextArea* ta);
     void onShadowRotAngleChanged(odfaeg::graphic::gui::TextArea* ta);
+    void onCollisionBoundingBoxChanged(odfaeg::graphic::gui::TextArea* ta);
     enum Fonts {
         Serif
     };
@@ -96,7 +98,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::MenuBar* menuBar;
         odfaeg::graphic::gui::Menu *menu1, *menu2, *menu3, *menu4;
         odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item14, *item15, *item16, *item17, *item18, *item21, *item22, *item23, *item31, *item32, *item33,
-        *item34, *item35, *item36, *item37, *item38, *item39, *item310, *item41, *item42, *item43, *item44, *item45;
+        *item34, *item35, *item36, *item37, *item38, *item39, *item310, *item311, *item41, *item42, *item43, *item44, *item45;
         odfaeg::core::ResourceCache<> cache;
         odfaeg::graphic::gui::FileDialog* fdTexturePath, *fdProjectPath;
         odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent, *wNewEntitiesUpdater, *wNewAnimUpdater, *wNewEmitter, *wNewParticleSystemUpdater;
@@ -106,7 +108,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         *taParticleSystemUpdaterName;
         odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent, *dpSelectAU, *dpSelectPPType, *dpSelectPSU;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
-        odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight, *taWallType;
+        odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight, *taWallType, *taIntensity, *taQuality;
         odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial, *pShadows, *pCollisions, *pComponent;
         std::string appliname, minAppliname;
         std::string applitype;

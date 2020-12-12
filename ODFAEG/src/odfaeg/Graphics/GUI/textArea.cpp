@@ -129,6 +129,7 @@ namespace odfaeg {
                 glCheck(glEnable(GL_SCISSOR_TEST));
                 glCheck(glScissor(getPosition().x, getWindow().getSize().y - (getPosition().y + getSize().y), getSize().x, getSize().y));
                 target.draw(text);
+                //Il faut restaurer les paramètres d'avant si un scissor test a été défini avant de dessiner la TextArea.
                 if (sctest == false) {
                     glCheck(glDisable(GL_SCISSOR_TEST));
                 } else {

@@ -120,6 +120,9 @@ void ODFAEGCreator::onInit() {
     item310 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "Affector");
     item310->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item310);
+    item311 = new MenuItem(getRenderWindow(),fm.getResourceByAlias(Fonts::Serif), "Ponctual Light");
+    item311->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item311);
     menu3->addMenuItem(item31);
     menu3->addMenuItem(item32);
     menu3->addMenuItem(item33);
@@ -130,6 +133,7 @@ void ODFAEGCreator::onInit() {
     menu3->addMenuItem(item38);
     menu3->addMenuItem(item39);
     menu3->addMenuItem(item310);
+    menu3->addMenuItem(item311);
     item41 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Undo");
     item41->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item41);
@@ -608,10 +612,10 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
             window->draw(*shapes[i]);
         View currentView = window->getView();
         View defaultView = window->getDefaultView();
-        window->setView(defaultView);
+
         if (isGuiShown) {
             if (tabPane->getSelectedTab() == "Collisions") {
-                //std::cout<<"show cell passable"<<std::endl;
+                window->setView(defaultView);
                 BoundingBox view = currentView.getViewVolume();
                 Vec3f delta = defaultView.getPosition()-currentView.getPosition();
                 int moveX = (int) delta.x / (int) (gridWidth) * (int) (gridWidth);
@@ -646,8 +650,13 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
                         }
                     }
                 }
+                window->setView(currentView);
+                for (unsigned int i = 0; i < collisionsBox.size(); i++) {
+                    std::cout<<"draw collision rect!"<<std::endl;
+                    window->draw(collisionsBox[i]);
+                }
             }
-
+            window->setView(defaultView);
             window->draw(cursor);
             if (showGrid) {
                 window->getView().move(getRenderWindow().getSize().x * 0.5f, 300, 0);
@@ -901,6 +910,15 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                 selectedObject = rectSelect.getItems()[0];
             if (dynamic_cast<Tile*>(selectedObject)) {
                 displayInfos(static_cast<Tile*>(selectedObject));
+            }
+            if (tabPane->getSelectedTab() == "Collisions") {
+                BoundingBox selectRect = rectSelect.getSelectionRect();
+                taBoundingBoxColX->setText(conversionFloatString(selectRect.getPosition().x));
+                taBoundingBoxColY->setText(conversionFloatString(selectRect.getPosition().y));
+                taBoundingBoxColZ->setText(conversionFloatString(selectRect.getPosition().z));
+                taBoundingBoxColW->setText(conversionFloatString(selectRect.getSize().x));
+                taBoundingBoxColH->setText(conversionFloatString(selectRect.getSize().y));
+                taBoundingBoxColZ->setText(conversionFloatString(selectRect.getSize().z));
             }
             rectSelect.setRect(savedPos.x, savedPos.y, box.getSize().x, box.getSize().y);
         }
@@ -1821,6 +1839,16 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "Affector") {
         //wNewAffector->setVisbile(true);
     }
+    if (item->getText() == "Ponctual Light") {
+        if (appliname != "" && World::getCurrentEntityManager() != nullptr) {
+            if (!showRectSelect) {
+                PonctualLight* pl = new PonctualLight(Vec3f(-50, 420, 420), 100, 50, 0, 255, sf::Color::Yellow, 16);
+                selectedObject = pl;
+                displayInfos(pl);
+                World::addEntity(pl);
+            }
+        }
+    }
     if (item->getText() == "Undo") {
         stateStack.undo();
     }
@@ -2568,15 +2596,82 @@ void ODFAEGCreator::displayEntityInfos(Entity* tile) {
     Command cmdRotAngle(FastDelegate<bool>(&TextArea::isTextChanged, taShadowRotAngle), FastDelegate<void>(ODFAEGCreator::onShadowRotAngleChanged, this, taShadowRotAngle));
     taShadowRotAngle->getListener().connect("SHADOWROTANGLECHANGED", cmdRotAngle);
     //Collision.
-    Label* lCollision = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Collision : ", 15);
+    Label* lCollision = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Collision box : ", 15);
     Node* nCollision = new Node("Collision", lCollision, Vec2f(0, 0), Vec2f(1, 0.025),rootCollisionNode.get());
     lCollision->setParent(pCollisions);
     pCollisions->addChild(lCollision);
     //X.
     Label* lCollisionXPos = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "X : ", 15);
-    Node* nCollisionPosX = new Node("CollisionPosX", lCollisionXPos,Vec2f(0, 0), Vec2f(1, 0.025),rootCollisionNode.get());
+    Node* nCollisionPosX = new Node("CollisionPosX", lCollisionXPos,Vec2f(0, 0), Vec2f(0.25, 0.025),rootCollisionNode.get());
     lCollisionXPos->setParent(pCollisions);
     pCollisions->addChild(lCollisionXPos);
+    taBoundingBoxColX = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), (tile->getCollisionVolume() != nullptr) ? conversionFloatString(tile->getCollisionVolume()->getPosition().x) : "0",getRenderWindow());
+    taBoundingBoxColX->setTextSize(15);
+    nCollisionPosX->addOtherComponent(taBoundingBoxColX, Vec2f(0.75, 0.025));
+    taBoundingBoxColX->setParent(pCollisions);
+    pCollisions->addChild(taBoundingBoxColX);
+    //Y.
+    Label* lCollisionYPos = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Y : ", 15);
+    Node* nCollisionPosY = new Node("CollisionPosY", lCollisionYPos,Vec2f(0, 0), Vec2f(0.25, 0.025),rootCollisionNode.get());
+    lCollisionYPos->setParent(pCollisions);
+    pCollisions->addChild(lCollisionYPos);
+    taBoundingBoxColY = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), (tile->getCollisionVolume() != nullptr) ? conversionFloatString(tile->getCollisionVolume()->getPosition().y) : "0",getRenderWindow());
+    taBoundingBoxColY->setTextSize(15);
+    nCollisionPosY->addOtherComponent(taBoundingBoxColY, Vec2f(0.75, 0.025));
+    taBoundingBoxColY->setParent(pCollisions);
+    pCollisions->addChild(taBoundingBoxColY);
+    //Z.
+    Label* lCollisionZPos = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Z : ", 15);
+    Node* nCollisionPosZ = new Node("CollisionPosZ", lCollisionZPos,Vec2f(0, 0), Vec2f(0.25, 0.025),rootCollisionNode.get());
+    lCollisionZPos->setParent(pCollisions);
+    pCollisions->addChild(lCollisionZPos);
+    taBoundingBoxColZ = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), (tile->getCollisionVolume() != nullptr) ? conversionFloatString(tile->getCollisionVolume()->getPosition().z) : "0",getRenderWindow());
+    taBoundingBoxColZ->setTextSize(15);
+    nCollisionPosZ->addOtherComponent(taBoundingBoxColZ, Vec2f(0.75, 0.025));
+    taBoundingBoxColZ->setParent(pCollisions);
+    pCollisions->addChild(taBoundingBoxColZ);
+    //Width.
+    Label* lCollisionWPos = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "W : ", 15);
+    Node* nCollisionPosW = new Node("CollisionPosW", lCollisionWPos,Vec2f(0, 0), Vec2f(0.25, 0.025),rootCollisionNode.get());
+    lCollisionWPos->setParent(pCollisions);
+    pCollisions->addChild(lCollisionWPos);
+    taBoundingBoxColW = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), (tile->getCollisionVolume() != nullptr) ? conversionFloatString(tile->getCollisionVolume()->getSize().x) : "0",getRenderWindow());
+    taBoundingBoxColW->setTextSize(15);
+    nCollisionPosW->addOtherComponent(taBoundingBoxColW, Vec2f(0.75, 0.025));
+    taBoundingBoxColW->setParent(pCollisions);
+    pCollisions->addChild(taBoundingBoxColW);
+    //Height.
+    Label* lCollisionHPos = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "H : ", 15);
+    Node* nCollisionPosH = new Node("CollisionPosH", lCollisionHPos,Vec2f(0, 0), Vec2f(0.25, 0.025),rootCollisionNode.get());
+    lCollisionHPos->setParent(pCollisions);
+    pCollisions->addChild(lCollisionHPos);
+    taBoundingBoxColH = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), (tile->getCollisionVolume() != nullptr) ? conversionFloatString(tile->getCollisionVolume()->getSize().y) : "0",getRenderWindow());
+    taBoundingBoxColH->setTextSize(15);
+    nCollisionPosH->addOtherComponent(taBoundingBoxColH, Vec2f(0.75, 0.025));
+    taBoundingBoxColH->setParent(pCollisions);
+    pCollisions->addChild(taBoundingBoxColH);
+    //Depth.
+    Label* lCollisionDPos = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), "D : ", 15);
+    Node* nCollisionPosD = new Node("CollisionPosD", lCollisionDPos,Vec2f(0, 0), Vec2f(0.25, 0.025),rootCollisionNode.get());
+    lCollisionDPos->setParent(pCollisions);
+    pCollisions->addChild(lCollisionDPos);
+    taBoundingBoxColD = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif), (tile->getCollisionVolume() != nullptr) ? conversionFloatString(tile->getCollisionVolume()->getSize().z) : "0",getRenderWindow());
+    taBoundingBoxColD->setTextSize(15);
+    nCollisionPosD->addOtherComponent(taBoundingBoxColD, Vec2f(0.75, 0.025));
+    taBoundingBoxColD->setParent(pCollisions);
+    pCollisions->addChild(taBoundingBoxColD);
+    Command cmdBBColPosX (FastDelegate<bool>(&TextArea::isTextChanged, taBoundingBoxColX), FastDelegate<void>(ODFAEGCreator::onCollisionBoundingBoxChanged, this, taBoundingBoxColX));
+    taBoundingBoxColX->getListener().connect("BBColPosXChanged", cmdBBColPosX);
+    Command cmdBBColPosY (FastDelegate<bool>(&TextArea::isTextChanged, taBoundingBoxColY), FastDelegate<void>(ODFAEGCreator::onCollisionBoundingBoxChanged, this, taBoundingBoxColY));
+    taBoundingBoxColY->getListener().connect("BBColPosYChanged", cmdBBColPosY);
+    Command cmdBBColPosZ (FastDelegate<bool>(&TextArea::isTextChanged, taBoundingBoxColZ), FastDelegate<void>(ODFAEGCreator::onCollisionBoundingBoxChanged, this, taBoundingBoxColZ));
+    taBoundingBoxColZ->getListener().connect("BBColPosZChanged", cmdBBColPosZ);
+    Command cmdBBColPosW (FastDelegate<bool>(&TextArea::isTextChanged, taBoundingBoxColW), FastDelegate<void>(ODFAEGCreator::onCollisionBoundingBoxChanged, this, taBoundingBoxColW));
+    taBoundingBoxColW->getListener().connect("BBColPosWChanged", cmdBBColPosW);
+    Command cmdBBColPosH (FastDelegate<bool>(&TextArea::isTextChanged, taBoundingBoxColH), FastDelegate<void>(ODFAEGCreator::onCollisionBoundingBoxChanged, this, taBoundingBoxColH));
+    taBoundingBoxColH->getListener().connect("BBColPosHChanged", cmdBBColPosH);
+    Command cmdBBColPosD (FastDelegate<bool>(&TextArea::isTextChanged, taBoundingBoxColD), FastDelegate<void>(ODFAEGCreator::onCollisionBoundingBoxChanged, this, taBoundingBoxColD));
+    taBoundingBoxColD->getListener().connect("BBColPosDChanged", cmdBBColPosD);
 }
 void ODFAEGCreator::displayInfos(Decor* decor) {
     displayTransformInfos(decor);
@@ -2700,6 +2795,80 @@ void ODFAEGCreator::displayInfos(ParticleSystem* ps) {
     pMaterial->addChild(bAddTexRect);
     chooseTextNode->addOtherComponent(bAddTexRect,Vec2f(0.5f, 0.025f));
     bAddTexRect->addActionListener(this);
+}
+void ODFAEGCreator::displayInfos(PonctualLight* pl) {
+    displayTransformInfos(pl);
+    displayEntityInfos(pl);
+    FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+    //Intensity.
+    Label* lIntensity = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif), "Intensity : ", 15);
+    Node* nIntensity = new Node("Intensity",lIntensity,Vec2f(0, 0),Vec2f(0.25, 0.025),rootInfosNode.get());
+    lIntensity->setParent(pInfos);
+    pInfos->addChild(lIntensity);
+    taIntensity = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionIntString(pl->getIntensity()),getRenderWindow());
+    taIntensity->setTextSize(15);
+    nIntensity->addOtherComponent(taIntensity, Vec2f(0.75, 0.025));
+    taIntensity->setParent(pInfos);
+    pInfos->addChild(taIntensity);
+    //Quality.
+    Label* lQuality = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif), "Quality : ", 15);
+    Node* nQuality = new Node("Quality",lQuality,Vec2f(0, 0),Vec2f(0.25, 0.025),rootInfosNode.get());
+    lQuality->setParent(pInfos);
+    pInfos->addChild(lQuality);
+    taQuality = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"16",getRenderWindow());
+    taQuality->setTextSize(15);
+    nQuality->addOtherComponent(taQuality, Vec2f(0.75, 0.025));
+    taQuality->setParent(pInfos);
+    pInfos->addChild(taQuality);
+    //Color.
+    lColor = new Label(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Color : ", 15);
+    lColor->setParent(pMaterial);
+    Node* lColorNode = new Node("LabColor",lColor,Vec2f(0, 0), Vec2f(1.f, 0.025f), rootMaterialNode.get());
+    pMaterial->addChild(lColor);
+    lRColor = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"r : ", 15);
+    lRColor->setParent(pMaterial);
+    Node* lRColorNode = new Node("LabRColor",lRColor,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lRColor);
+    tRColor = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(pl->getColor().r), getRenderWindow());
+    tRColor->setTextSize(15);
+    tRColor->setParent(pMaterial);
+    lRColorNode->addOtherComponent(tRColor, Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tRColor);
+    lGColor = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"g : ", 15);
+    lGColor->setParent(pMaterial);
+    Node* lGColorNode = new Node("LabRColor",lGColor,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lGColor);
+    tGColor = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(pl->getColor().g), getRenderWindow());
+    tGColor->setTextSize(15);
+    tGColor->setParent(pMaterial);
+    lGColorNode->addOtherComponent(tGColor, Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tGColor);
+    lBColor = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"b : ", 15);
+    lBColor->setParent(pMaterial);
+    Node* lBColorNode = new Node("LabBColor",lBColor,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lBColor);
+    tBColor = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(pl->getColor().b), getRenderWindow());
+    tBColor->setTextSize(15);
+    tBColor->setParent(pMaterial);
+    lBColorNode->addOtherComponent(tBColor, Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tBColor);
+    lAColor = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"a : ", 15);
+    lAColor->setParent(pMaterial);
+    Node* lAColorNode = new Node("LabAColor",lAColor,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lAColor);
+    tAColor = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(pl->getColor().a), getRenderWindow());
+    tAColor->setTextSize(15);
+    tAColor->setParent(pMaterial);
+    lAColorNode->addOtherComponent(tAColor,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tAColor);
+    Command cmdRColChanged(FastDelegate<bool>(&TextArea::isTextChanged, tRColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tRColor));
+    tRColor->getListener().connect("TRColorChanged", cmdRColChanged);
+    Command cmdGColChanged(FastDelegate<bool>(&TextArea::isTextChanged, tGColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tGColor));
+    tGColor->getListener().connect("TGColorChanged", cmdGColChanged);
+    Command cmdBColChanged(FastDelegate<bool>(&TextArea::isTextChanged, tBColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tBColor));
+    tBColor->getListener().connect("TBColorChanged", cmdBColChanged);
+    Command cmdAColChanged(FastDelegate<bool>(&TextArea::isTextChanged, tAColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tAColor));
+    tAColor->getListener().connect("TAColorChanged", cmdAColChanged);
 }
 void ODFAEGCreator::displayInfos(Wall* wall) {
     displayTransformInfos(wall);
@@ -3413,6 +3582,9 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             if (dynamic_cast<Tile*>(selectedObject)) {
                 state->addParameter("OLDVALUE", static_cast<Tile*>(selectedObject)->getColor().r);
             }
+            if (dynamic_cast<PonctualLight*>(selectedObject)) {
+                state->addParameter("OLDVALUE", static_cast<PonctualLight*>(selectedObject)->getColor().r);
+            }
             state->addParameter("NEWVALUE", color);
             sg->addState(state);
             if (dynamic_cast<Shape*>(selectedObject)) {
@@ -3421,6 +3593,10 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             }
             if (dynamic_cast<Tile*>(selectedObject)) {
                 static_cast<Tile*>(selectedObject)->setColor(sf::Color(Math::clamp(color, 0, 255), static_cast<Tile*>(selectedObject)->getColor().g,static_cast<Tile*>(selectedObject)->getColor().b, static_cast<Tile*>(selectedObject)->getColor().a));
+                rectSelect.setColor(selectedObject, static_cast<Tile*>(selectedObject)->getColor());
+            }
+            if (dynamic_cast<PonctualLight*>(selectedObject)) {
+                static_cast<PonctualLight*>(selectedObject)->setColor(sf::Color(Math::clamp(color, 0, 255), static_cast<Tile*>(selectedObject)->getColor().g,static_cast<Tile*>(selectedObject)->getColor().b, static_cast<Tile*>(selectedObject)->getColor().a));
                 rectSelect.setColor(selectedObject, static_cast<Tile*>(selectedObject)->getColor());
             }
             updateScriptColor(selectedObject);
@@ -3436,6 +3612,11 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
                     selectState->addParameter("OLDVALUE", static_cast<Tile*>(rectSelect.getItems()[i])->getColor().r);
                     static_cast<Tile*>(rectSelect.getItems()[i])->setColor(sf::Color(Math::clamp(color, 0, 255), static_cast<Tile*>(rectSelect.getItems()[i])->getColor().g,static_cast<Tile*>(rectSelect.getItems()[i])->getColor().b, static_cast<Tile*>(rectSelect.getItems()[i])->getColor().a));
                     rectSelect.setColor(rectSelect.getItems()[i], static_cast<Tile*>(rectSelect.getItems()[i])->getColor());
+                }
+                if (dynamic_cast<PonctualLight*>(rectSelect.getItems()[i])) {
+                    selectState->addParameter("OLDVALUE", static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().r);
+                    static_cast<PonctualLight*>(rectSelect.getItems()[i])->setColor(sf::Color(Math::clamp(color, 0, 255), static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().g,static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().b, static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().a));
+                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor());
                 }
                 selectState->addParameter("NEWVALUE", color);
                 sg->addState(selectState);
@@ -3455,6 +3636,9 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             if (dynamic_cast<Tile*>(selectedObject)) {
                 state->addParameter("OLDVALUE", static_cast<Tile*>(selectedObject)->getColor().g);
             }
+            if (dynamic_cast<PonctualLight*>(selectedObject)) {
+                state->addParameter("OLDVALUE", static_cast<PonctualLight*>(selectedObject)->getColor().g);
+            }
             updateScriptColor(selectedObject);
             state->addParameter("NEWVALUE", color);
             sg->addState(state);
@@ -3465,6 +3649,10 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             if (dynamic_cast<Tile*>(selectedObject)) {
                 static_cast<Tile*>(selectedObject)->setColor(sf::Color(static_cast<Tile*>(selectedObject)->getColor().r, Math::clamp(color, 0, 255),static_cast<Tile*>(selectedObject)->getColor().b, static_cast<Tile*>(selectedObject)->getColor().a));
                 rectSelect.setColor(selectedObject, static_cast<Tile*>(selectedObject)->getColor());
+            }
+            if (dynamic_cast<PonctualLight*>(selectedObject)) {
+                static_cast<PonctualLight*>(selectedObject)->setColor(sf::Color(static_cast<PonctualLight*>(selectedObject)->getColor().r, Math::clamp(color, 0, 255),static_cast<PonctualLight*>(selectedObject)->getColor().b, static_cast<PonctualLight*>(selectedObject)->getColor().a));
+                rectSelect.setColor(selectedObject, static_cast<PonctualLight*>(selectedObject)->getColor());
             }
             for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
                 State* selectState = new State("SCHANGEGCOLOR", &se);
@@ -3477,6 +3665,11 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
                 if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
                     selectState->addParameter("OLDVALUE", static_cast<Tile*>(rectSelect.getItems()[i])->getColor().g);
                     static_cast<Tile*>(rectSelect.getItems()[i])->setColor(sf::Color(static_cast<Tile*>(rectSelect.getItems()[i])->getColor().r, Math::clamp(color, 0, 255),static_cast<Tile*>(rectSelect.getItems()[i])->getColor().b, static_cast<Tile*>(rectSelect.getItems()[i])->getColor().a));
+                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<Tile*>(rectSelect.getItems()[i])->getColor());
+                }
+                if (dynamic_cast<PonctualLight*>(rectSelect.getItems()[i])) {
+                    selectState->addParameter("OLDVALUE", static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().g);
+                    static_cast<PonctualLight*>(rectSelect.getItems()[i])->setColor(sf::Color(static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().r, Math::clamp(color, 0, 255),static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().b, static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().a));
                     rectSelect.setColor(rectSelect.getItems()[i], static_cast<Tile*>(rectSelect.getItems()[i])->getColor());
                 }
                 selectState->addParameter("NEWVALUE", color);
@@ -3497,6 +3690,9 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             if (dynamic_cast<Tile*>(selectedObject)) {
                 state->addParameter("OLDVALUE", static_cast<Tile*>(selectedObject)->getColor().b);
             }
+            if (dynamic_cast<PonctualLight*>(selectedObject)) {
+                state->addParameter("OLDVALUE", static_cast<PonctualLight*>(selectedObject)->getColor().b);
+            }
             updateScriptColor(selectedObject);
             state->addParameter("NEWVALUE", color);
             sg->addState(state);
@@ -3507,6 +3703,10 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             if (dynamic_cast<Tile*>(selectedObject)) {
                 static_cast<Tile*>(selectedObject)->setColor(sf::Color(static_cast<Tile*>(selectedObject)->getColor().r, static_cast<Tile*>(selectedObject)->getColor().g, Math::clamp(color, 0, 255), static_cast<Tile*>(selectedObject)->getColor().a));
                 rectSelect.setColor(selectedObject, static_cast<Tile*>(selectedObject)->getColor());
+            }
+            if (dynamic_cast<PonctualLight*>(selectedObject)) {
+                static_cast<PonctualLight*>(selectedObject)->setColor(sf::Color(static_cast<PonctualLight*>(selectedObject)->getColor().r, static_cast<PonctualLight*>(selectedObject)->getColor().g, Math::clamp(color, 0, 255), static_cast<PonctualLight*>(selectedObject)->getColor().a));
+                rectSelect.setColor(selectedObject, static_cast<PonctualLight*>(selectedObject)->getColor());
             }
             for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
                 State* selectState = new State("SCHANGEBCOLOR", &se);
@@ -3520,6 +3720,11 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
                     selectState->addParameter("OLDVALUE", static_cast<Tile*>(rectSelect.getItems()[i])->getColor().b);
                     static_cast<Tile*>(rectSelect.getItems()[i])->setColor(sf::Color(static_cast<Tile*>(rectSelect.getItems()[i])->getColor().r, static_cast<Tile*>(rectSelect.getItems()[i])->getColor().g, Math::clamp(color, 0, 255), static_cast<Tile*>(rectSelect.getItems()[i])->getColor().a));
                     rectSelect.setColor(rectSelect.getItems()[i], static_cast<Tile*>(rectSelect.getItems()[i])->getColor());
+                }
+                if (dynamic_cast<PonctualLight*>(rectSelect.getItems()[i])) {
+                    selectState->addParameter("OLDVALUE", static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().b);
+                    static_cast<PonctualLight*>(rectSelect.getItems()[i])->setColor(sf::Color(static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().r, static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().g, Math::clamp(color, 0, 255), static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().a));
+                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor());
                 }
                 selectState->addParameter("NEWVALUE", color);
                 sg->addState(selectState);
@@ -3539,6 +3744,9 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             if (dynamic_cast<Tile*>(selectedObject)) {
                 state->addParameter("OLDVALUE", static_cast<Tile*>(selectedObject)->getColor().a);
             }
+            if (dynamic_cast<PonctualLight*>(selectedObject)) {
+                state->addParameter("OLDVALUE", static_cast<PonctualLight*>(selectedObject)->getColor().a);
+            }
             updateScriptColor(selectedObject);
             state->addParameter("NEWVALUE", color);
             sg->addState(state);
@@ -3549,6 +3757,10 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             if (dynamic_cast<Tile*>(selectedObject)) {
                 static_cast<Tile*>(selectedObject)->setColor(sf::Color(static_cast<Tile*>(selectedObject)->getColor().r, static_cast<Tile*>(selectedObject)->getColor().g,static_cast<Tile*>(selectedObject)->getColor().b, Math::clamp(color, 0, 255)));
                 rectSelect.setColor(selectedObject, static_cast<Tile*>(selectedObject)->getColor());
+            }
+            if (dynamic_cast<PonctualLight*>(selectedObject)) {
+                static_cast<PonctualLight*>(selectedObject)->setColor(sf::Color(static_cast<PonctualLight*>(selectedObject)->getColor().r, static_cast<PonctualLight*>(selectedObject)->getColor().g,static_cast<PonctualLight*>(selectedObject)->getColor().b, Math::clamp(color, 0, 255)));
+                rectSelect.setColor(selectedObject, static_cast<PonctualLight*>(selectedObject)->getColor());
             }
             for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
                 State* selectState = new State("SCHANGEACOLOR", &se);
@@ -3562,6 +3774,11 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
                     selectState->addParameter("OLDVALUE", static_cast<Tile*>(rectSelect.getItems()[i])->getColor().a);
                     static_cast<Tile*>(rectSelect.getItems()[i])->setColor(sf::Color(static_cast<Tile*>(rectSelect.getItems()[i])->getColor().r, static_cast<Tile*>(rectSelect.getItems()[i])->getColor().g,static_cast<Tile*>(rectSelect.getItems()[i])->getColor().b, Math::clamp(color, 0, 255)));
                     rectSelect.setColor(rectSelect.getItems()[i], static_cast<Tile*>(rectSelect.getItems()[i])->getColor());
+                }
+                if (dynamic_cast<PonctualLight*>(rectSelect.getItems()[i])) {
+                    selectState->addParameter("OLDVALUE", static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().a);
+                    static_cast<PonctualLight*>(rectSelect.getItems()[i])->setColor(sf::Color(static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().r, static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().g,static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().b, Math::clamp(color, 0, 255)));
+                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor());
                 }
                 selectState->addParameter("NEWVALUE", color);
                 sg->addState(selectState);
@@ -3999,4 +4216,17 @@ void ODFAEGCreator::onComponentExpressionChanged(TextArea* ta) {
             static_cast<HeavyComponent*>(components[i])->setExpression(ta->getText());
         }
     }
+}
+void ODFAEGCreator::onCollisionBoundingBoxChanged(TextArea* ta) {
+    std::cout<<"set collision volume!"<<std::endl;
+    collisionsBox.clear();
+    BoundingBox* bx = new BoundingBox(conversionStringFloat(taBoundingBoxColX->getText()), conversionStringFloat(taBoundingBoxColY->getText()),conversionStringFloat(taBoundingBoxColZ->getText()),
+                                      conversionStringFloat(taBoundingBoxColW->getText()), conversionStringFloat(taBoundingBoxColH->getText()), conversionStringFloat(taBoundingBoxColD->getText()));
+    if (dynamic_cast<Entity*>(selectedObject)) {
+        static_cast<Entity*>(selectedObject)->setCollisionVolume(bx);
+    }
+    RectangleShape rect(bx->getSize());
+    rect.setPosition(bx->getPosition());
+    rect.setFillColor(sf::Color(255, 0, 0, 128));
+    collisionsBox.push_back(rect);
 }
