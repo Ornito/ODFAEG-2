@@ -107,13 +107,13 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent, *dpSelectAU, *dpSelectPPType, *dpSelectPSU;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
         odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight, *taWallType;
-        odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial, *pShadows, *pComponent;
+        odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial, *pShadows, *pCollisions, *pComponent;
         std::string appliname, minAppliname;
         std::string applitype;
         std::string path;
         std::map<std::string, std::string> cppAppliContent;
         std::vector<std::string> textPaths;
-        std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode, rootMaterialNode, rootInfosNode, rootShadowsNode;
+        std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode, rootMaterialNode, rootInfosNode, rootShadowsNode, rootCollisionNode;
         odfaeg::graphic::CircleShape cursor;
         odfaeg::math::Vec3f guiSize, guiPos, mousePosition;
         bool isGuiShown, showGrid, alignToGrid, showRectSelect;
@@ -130,10 +130,12 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::core::StateStack stateStack;
         ODFAEGCreatorStateExecutor se;
         std::vector<odfaeg::graphic::ConvexShape> cshapes;
+        std::vector<odfaeg::graphic::ConvexShape> cellsPassableShapes;
         odfaeg::graphic::Map* theMap;
         int gridWidth, gridHeight;
         RectangularSelection rectSelect;
         std::vector<std::string> emitterParams;
         std::vector<std::string> affectorParams;
+        odfaeg::math::Vec3f viewPos;
 };
 #endif

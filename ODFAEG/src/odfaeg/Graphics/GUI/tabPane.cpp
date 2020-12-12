@@ -36,6 +36,7 @@ namespace odfaeg {
                 lTabName->setForegroundColor(sf::Color::Black);
                 lTabName->setBorderColor(sf::Color::Red);
                 lTabName->setBorderThickness(1.f);
+                lTabName->setPriority(-1);
                 core::Action a (core::Action::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
                 core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lTabName), core::FastDelegate<void>(&TabPane::onTabChanged, this, panel));
                 lTabName->getListener().connect("ChangeTab", cmd);
@@ -51,6 +52,7 @@ namespace odfaeg {
                         getChildren()[i]->setEventContextActivated(false);
                     }
                 }
+                selectedTab = static_cast<Label*>(getChildren()[0]);
             }
             bool TabPane::isOnXScroll() {
                 math::Vec3f mousePos (window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y, 0);
@@ -86,18 +88,18 @@ namespace odfaeg {
                     if (dynamic_cast<Panel*> (getChildren()[i]) != nullptr && getChildren()[i] != panel) {
                         getChildren()[i]->setVisible(false);
                         getChildren()[i]->setEventContextActivated(false);
+                    } else if (getChildren()[i] == panel) {
+                        selectedTab = static_cast<Label*>(getChildren()[i-1]);
                     }
                 }
             }
-            /*void TabPane::onDraw(RenderTarget& target, RenderStates states) {
-                glCheck(glEnable(GL_SCISSOR_TEST));
-                glCheck(glScissor(getPosition().x, getWindow().getSize().y - (getPosition().y + getSize().y), getSize().x, getSize().y));
-            }*/
+            std::string TabPane::getSelectedTab() {
+                return selectedTab->getText();
+            }
             void TabPane::drawOn(RenderTarget& target, RenderStates states) {
                 if (scrollX) {
                     target.draw(vertScrollBar, states);
                 }
-                //glCheck(glDisable(GL_SCISSOR_TEST));
             }
         }
     }

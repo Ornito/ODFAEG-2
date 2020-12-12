@@ -23,6 +23,7 @@ Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0
     gridWidth = 100;
     gridHeight = 50;
     appliname = "";
+    viewPos = getRenderWindow().getView().getPosition();
 }
 void ODFAEGCreator::onLoad() {
     FontManager<Fonts> fm;
@@ -493,6 +494,10 @@ void ODFAEGCreator::onInit() {
     //pShadows->setScissorEnabled(false);
     rootShadowsNode = std::make_unique<Node>("Shadows", pShadows, Vec2f(0.f, 0.05f), Vec2f(1.f, 1.f-0.05f));
     tabPane->addTab(pShadows,"Shadow",*fm.getResourceByAlias(Fonts::Serif));
+    pCollisions = new Panel(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
+    pCollisions->setBackgroundColor(sf::Color::White);
+    rootCollisionNode = std::make_unique<Node>("Collisions", pCollisions, Vec2f(0.f, 0.05f), Vec2f(1.f, 1.f-0.05f));
+    tabPane->addTab(pCollisions, "Collisions",*fm.getResourceByAlias(Fonts::Serif));
     tScriptEdit = new TextArea(Vec3f(200, 20, 0),Vec3f(790,650,0),fm.getResourceByAlias(Fonts::Serif),"",getRenderWindow());
     tScriptEdit->setParent(pScriptsEdit);
     tScriptEdit->setRelPosition(0.f, 0.f);
@@ -604,12 +609,52 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
         View defaultView = window->getDefaultView();
         window->setView(defaultView);
         if (isGuiShown) {
+            if (tabPane->getSelectedTab() == "Collisions") {
+                //std::cout<<"show cell passable"<<std::endl;
+                BoundingBox view = currentView.getViewVolume();
+                Vec3f delta = defaultView.getPosition()-currentView.getPosition();
+                int moveX = (int) delta.x / (int) (gridWidth) * (int) (gridWidth);
+                int moveY = (int) delta.y / (int) (gridHeight) * (int) (gridHeight);
+                if (delta.x < 0)
+                    moveX-=gridWidth;
+                if (delta.y < 0)
+                    moveY-=gridHeight;
+                int x = view.getPosition().x;
+                int y = view.getPosition().y;
+                int endX = view.getPosition().x + view.getWidth();
+                int endY = view.getPosition().y + view.getHeight();
+                for (int i = x; i <= endX; i+=gridWidth*0.5f) {
+                    for (int j = y; j <= endY; j+=gridHeight*0.5f) {
+                        Vec3f point(i, j, 0);
+                        CellMap* cellMap = World::getGridCellAt(point);
+                        if(cellMap != nullptr) {
+                            ConvexShape cellPassable(4);
+                            BoundingPolyhedron* bp = cellMap->getCellVolume();
+                            std::vector<Vec3f> points = bp->getPoints();
+                            cellPassable.setPoint(0, sf::Vector3f(points[0].x, points[0].y, points[0].z));
+                            cellPassable.setPoint(1, sf::Vector3f(points[1].x, points[1].y, points[1].z));
+                            cellPassable.setPoint(2, sf::Vector3f(points[2].x, points[2].y, points[2].z));
+                            cellPassable.setPoint(3, sf::Vector3f(points[points.size()-1].x, points[points.size()-1].y, points[points.size()-1].z));
+                            if (cellMap->isPassable()) {
+                                cellPassable.setFillColor(sf::Color(0, 255, 0, 1));
+                            } else {
+                                cellPassable.setFillColor(sf::Color(255, 0, 0, 1));
+                            }
+                            cellPassable.move(Vec3f(moveX, moveY, 0));
+                            window->draw(cellPassable);
+                        }
+                    }
+                }
+            }
+
             window->draw(cursor);
             if (showGrid) {
                 window->getView().move(getRenderWindow().getSize().x * 0.5f, 300, 0);
                 for (unsigned int  i = 0; i < cshapes.size(); i++)
                     window->draw(cshapes[i]);
             }
+            //std::cout<<"selected tab : "<<tabPane->getSelectedTab()<<std::endl;
+
         }
         window->setView(defaultView);
         if (showRectSelect) {
@@ -661,21 +706,73 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
         View view = getRenderWindow().getView();
         view.move(speed * getClock("LoopTime").getElapsedTime().asSeconds(), 0, 0);
         getRenderWindow().setView(view);
+        for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
+            if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
+                getRenderComponentManager().getRenderComponent(i)->setView(view);
+            }
+        }
     }
     if (IKeyboard::isKeyPressed(IKeyboard::Q)) {
         View view = getRenderWindow().getView();
         view.move(-speed * getClock("LoopTime").getElapsedTime().asSeconds(), 0, 0);
         getRenderWindow().setView(view);
+        for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
+            if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
+                getRenderComponentManager().getRenderComponent(i)->setView(view);
+            }
+        }
     }
     if (IKeyboard::isKeyPressed(IKeyboard::Z)) {
         View view = getRenderWindow().getView();
         view.move(0, speed * getClock("LoopTime").getElapsedTime().asSeconds(), 0);
         getRenderWindow().setView(view);
+        for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
+            if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
+                getRenderComponentManager().getRenderComponent(i)->setView(view);
+            }
+        }
     }
     if (IKeyboard::isKeyPressed(IKeyboard::S)) {
         View view = getRenderWindow().getView();
         view.move(0, -speed * getClock("LoopTime").getElapsedTime().asSeconds(), 0);
         getRenderWindow().setView(view);
+        for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
+            if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
+                getRenderComponentManager().getRenderComponent(i)->setView(view);
+            }
+        }
+    }
+    if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_PRESSED && event.mouseButton.button == IMouse::Left) {
+        if (tabPane->getSelectedTab() == "Collisions") {
+            sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
+            Vec3f pos = getRenderWindow().mapPixelToCoords(Vec3f(mousePos.x, getRenderWindow().getSize().y-mousePos.y, 0));
+            Vec3f delta = viewPos-getRenderWindow().getView().getPosition();
+            pos += delta;
+            CellMap* cell = World::getGridCellAt(pos);
+            std::cout<<"delta : "<<delta<<pos<<viewPos<<getRenderWindow().getView().getPosition()<<std::endl;
+            if ((int) delta.x / gridWidth != 0 || delta.x < 0) {
+                viewPos.x = (int) getRenderWindow().getView().getPosition().x / gridWidth * gridWidth;
+                if (getRenderWindow().getView().getPosition().x > viewPos.x)
+                    viewPos.x += gridWidth;
+            }
+
+            if ((int) delta.y / gridHeight != 0 || delta.y < 0) {
+                viewPos.y = (int) getRenderWindow().getView().getPosition().y / gridHeight * gridHeight;
+                if (getRenderWindow().getView().getPosition().y > viewPos.y)
+                    viewPos.y += gridHeight;
+            }
+
+            //std::cout<<"pos : "<<getRenderWindow().getView().getPosition()<<"view pos : "<<viewPos<<std::endl;
+            if (cell != nullptr) {
+                BoundingPolyhedron* bp = cell->getCellVolume();
+                //std::cout<<"center cell : "<<cell->getCenter()<<std::endl;
+                if (cell->isPassable()) {
+                    cell->setPassable(false);
+                } else {
+                    cell->setPassable(true);
+                }
+            }
+        }
     }
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_PRESSED && event.mouseButton.button == IMouse::Right) {
         sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
@@ -970,6 +1067,26 @@ void ODFAEGCreator::onExec() {
                     BaseChangementMatrix bcm;
                     if (is2DIsoMatrix) {
                         bcm.set2DIsoMatrix();
+                    }
+                    cshapes.clear();
+                    for (int i = 0; i < getRenderWindow().getSize().x; i+=100) {
+                        for (int j = 0; j < getRenderWindow().getSize().y; j+=50) {
+                            ConvexShape cshape(4);
+                            cshape.setFillColor(sf::Color::Transparent);
+                            cshape.setOutlineColor(sf::Color(75, 75, 75));
+                            cshape.setOutlineThickness(1.f);
+                            Vec2f points[4];
+                            points[0] = Vec2f(0, 0);
+                            points[1] = Vec2f(100, 0);
+                            points[2] = Vec2f(100, 50);
+                            points[3] = Vec2f(0, 50);
+                            for (unsigned int n = 0; n < 4; n++) {
+                                points[n] = bcm.changeOfBase(points[n]);
+                                points[n] += Vec2f(i, j);
+                                cshape.setPoint(n, sf::Vector3f(points[n].x, points[n].y, 0));
+                            }
+                            cshapes.push_back(cshape);
+                        }
                     }
                     scene->setBaseChangementMatrix(bcm);
                     World::addEntityManager(scene);
