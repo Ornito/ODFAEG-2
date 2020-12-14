@@ -29,6 +29,9 @@
 #include "odfaeg/Graphics/particleSystemUpdater.hpp"
 #include "odfaeg/Graphics/tGround.h"
 #include "odfaeg/Math/distributions.h"
+#include "odfaeg/Core/class.hpp"
+#include "odfaeg/Core/runtimeCompiler.hpp"
+#include "../../../Projets/ODFAEGCREATOR/Test/item.hpp"
 class ODFAEGCreator : public odfaeg::core::Application,
                       public odfaeg::graphic::gui::MenuItemListener,
                       public odfaeg::graphic::gui::ActionListener {

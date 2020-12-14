@@ -12,6 +12,7 @@ C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/application.h
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/archive.h
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/bind.h
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/callback.h
+C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/class.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/clock.h
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/command.h
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/command.tpp
@@ -33,6 +34,7 @@ C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/multdispvisitors.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/resourceCache.h
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/resourceManager.h
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/resourceSystem.h
+C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/runtimeCompiler.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/serialisation.h
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/serialization.cpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/serialization.h

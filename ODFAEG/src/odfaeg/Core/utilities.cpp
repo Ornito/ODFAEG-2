@@ -103,11 +103,21 @@ namespace odfaeg {
                        std::string path = startDir + "\\" + std::string(ent->d_name);
                        struct stat st;
                        stat(path.c_str(), &st);
+                       //std::cout<<"path : "<<path<<" keyword : "<<keyword<<std::endl;
                        if (S_ISDIR(st.st_mode)) {
-                            findFiles(keyword, files, path);
-                       } else if (path.find(keyword) != std::string::npos) {
-                           path = std::string(ent->d_name);
-                           files.push_back(path);
+                           findFiles(keyword, files, path);
+                       } else {
+                           std::vector<std::string> parts = split(keyword, " ");
+                           for (unsigned int i = 0; i < parts.size(); i++) {
+                                if (path.find(parts[i]) != std::string::npos) {
+                                    //path = std::string(ent->d_name);
+                                    files.push_back(path);
+                                }
+                           }
+                           if (keyword == "*") {
+                                //path = std::string(ent->d_name);
+                                files.push_back(path);
+                           }
                        }
                     }
                 }
@@ -124,6 +134,16 @@ namespace odfaeg {
             }
             return !abs.empty() && std::find_if(abs.begin(),
             abs.end(), [](char c) { return !std::isdigit(c); }) == abs.end();
+        }
+        /// Try to find in the Haystack the Needle - ignore case
+        bool findStringIC(const std::string & strHaystack, const std::string & strNeedle)
+        {
+          auto it = std::search(
+            strHaystack.begin(), strHaystack.end(),
+            strNeedle.begin(),   strNeedle.end(),
+            [](char ch1, char ch2) { return ch1 == ch2; }
+          );
+          return (it != strHaystack.end() );
         }
         std::string getCurrentPath() {
             char cCurrentPath[FILENAME_MAX];

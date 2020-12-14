@@ -41,6 +41,10 @@ set(SRC
 	${INCROOT}/clock.h
 	${SRCROOT}/clock.cpp
 	${INCROOT}/variant.h
+	${INCROOT}/class.hpp
+	${SRCROOT}/class.cpp
+	${INCROOT}/runtimeCompiler.hpp
+	${SRCROOT}/runtimeCompiler.cpp
 	)	
 
 include_directories(${CMAKE_INCLUDE_PATH})

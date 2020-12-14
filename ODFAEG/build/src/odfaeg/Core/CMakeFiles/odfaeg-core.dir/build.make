@@ -224,6 +224,34 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/clock.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/clock.cpp.s"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\clock.cpp -o CMakeFiles\odfaeg-core.dir\clock.cpp.s
 
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../src/odfaeg/Core/class.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\class.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\class.cpp
+
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/class.cpp.i"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\class.cpp > CMakeFiles\odfaeg-core.dir\class.cpp.i
+
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/class.cpp.s"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\class.cpp -o CMakeFiles\odfaeg-core.dir\class.cpp.s
+
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj: ../src/odfaeg/Core/runtimeCompiler.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\runtimeCompiler.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\runtimeCompiler.cpp
+
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.i"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\runtimeCompiler.cpp > CMakeFiles\odfaeg-core.dir\runtimeCompiler.cpp.i
+
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.s"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\runtimeCompiler.cpp -o CMakeFiles\odfaeg-core.dir\runtimeCompiler.cpp.s
+
 # Object files for target odfaeg-core
 odfaeg__core_OBJECTS = \
 "CMakeFiles/odfaeg-core.dir/archive.cpp.obj" \
@@ -237,7 +265,9 @@ odfaeg__core_OBJECTS = \
 "CMakeFiles/odfaeg-core.dir/stateStack.cpp.obj" \
 "CMakeFiles/odfaeg-core.dir/actions.cpp.obj" \
 "CMakeFiles/odfaeg-core.dir/time.cpp.obj" \
-"CMakeFiles/odfaeg-core.dir/clock.cpp.obj"
+"CMakeFiles/odfaeg-core.dir/clock.cpp.obj" \
+"CMakeFiles/odfaeg-core.dir/class.cpp.obj" \
+"CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj"
 
 # External object files for target odfaeg-core
 odfaeg__core_EXTERNAL_OBJECTS =
@@ -254,9 +284,11 @@ lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateStack.cp
 lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/actions.cpp.obj
 lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/time.cpp.obj
 lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/clock.cpp.obj
+lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj
+lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj
 lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/build.make
 lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX static library ..\..\..\lib\libodfaeg-core-s.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX static library ..\..\..\lib\libodfaeg-core-s.a"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && $(CMAKE_COMMAND) -P CMakeFiles\odfaeg-core.dir\cmake_clean_target.cmake
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\odfaeg-core.dir\link.txt --verbose=$(VERBOSE)
 

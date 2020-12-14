@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include "odfaeg/Core/utilities.h"
+
 using namespace odfaeg::core;
 using namespace odfaeg::math;
 using namespace odfaeg::graphic;
@@ -24,6 +25,8 @@ Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0
     gridHeight = 50;
     appliname = "";
     viewPos = getRenderWindow().getView().getPosition();
+
+
 }
 void ODFAEGCreator::onLoad() {
     FontManager<Fonts> fm;

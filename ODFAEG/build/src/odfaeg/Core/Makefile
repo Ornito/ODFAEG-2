@@ -278,6 +278,33 @@ archive.cpp.s:
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/archive.cpp.s
 .PHONY : archive.cpp.s
 
+class.obj: class.cpp.obj
+
+.PHONY : class.obj
+
+# target to build an object file
+class.cpp.obj:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj
+.PHONY : class.cpp.obj
+
+class.i: class.cpp.i
+
+.PHONY : class.i
+
+# target to preprocess a source file
+class.cpp.i:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.i
+.PHONY : class.cpp.i
+
+class.s: class.cpp.s
+
+.PHONY : class.s
+
+# target to generate assembly for a file
+class.cpp.s:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.s
+.PHONY : class.cpp.s
+
 clock.obj: clock.cpp.obj
 
 .PHONY : clock.obj
@@ -358,6 +385,33 @@ erreur.s: erreur.cpp.s
 erreur.cpp.s:
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.s
 .PHONY : erreur.cpp.s
+
+runtimeCompiler.obj: runtimeCompiler.cpp.obj
+
+.PHONY : runtimeCompiler.obj
+
+# target to build an object file
+runtimeCompiler.cpp.obj:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj
+.PHONY : runtimeCompiler.cpp.obj
+
+runtimeCompiler.i: runtimeCompiler.cpp.i
+
+.PHONY : runtimeCompiler.i
+
+# target to preprocess a source file
+runtimeCompiler.cpp.i:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.i
+.PHONY : runtimeCompiler.cpp.i
+
+runtimeCompiler.s: runtimeCompiler.cpp.s
+
+.PHONY : runtimeCompiler.s
+
+# target to generate assembly for a file
+runtimeCompiler.cpp.s:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.s
+.PHONY : runtimeCompiler.cpp.s
 
 state.obj: state.cpp.obj
 
@@ -519,6 +573,9 @@ help:
 	@echo ... archive.obj
 	@echo ... archive.i
 	@echo ... archive.s
+	@echo ... class.obj
+	@echo ... class.i
+	@echo ... class.s
 	@echo ... clock.obj
 	@echo ... clock.i
 	@echo ... clock.s
@@ -528,6 +585,9 @@ help:
 	@echo ... erreur.obj
 	@echo ... erreur.i
 	@echo ... erreur.s
+	@echo ... runtimeCompiler.obj
+	@echo ... runtimeCompiler.i
+	@echo ... runtimeCompiler.s
 	@echo ... state.obj
 	@echo ... state.i
 	@echo ... state.s

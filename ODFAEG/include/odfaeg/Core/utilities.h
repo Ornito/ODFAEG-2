@@ -65,6 +65,7 @@ namespace odfaeg {
         std::string getCurrentPath();
         void findFiles (const std::string keyword, std::vector<std::string>& files,std::string startDir = "/");
         bool is_number(const std::string& s);
+        bool findStringIC(const std::string & strHaystack, const std::string & strNeedle);
     }
 }
 #endif
