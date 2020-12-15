@@ -1,4 +1,5 @@
 #include "application.hpp"
+#include "../../../Projets/ODFAEGCREATOR/Test/Scripts/item.hpp"
 using namespace odfaeg::graphic::gui;
 using namespace odfaeg::graphic;
 using namespace odfaeg::physic;
@@ -23,20 +24,20 @@ int main(int argc, char* argv[]) {
                     Item item = pfunc("1", "2");
                     std::cout<<item.getName()<<std::endl;
                 }*/
-    std::ofstream file("test.cpp");
+    /*std::ofstream file("test.cpp");
     file<<"#include \"odfaeg/Core/class.hpp\"\n";
-    file<<"#include \"Test/item.hpp\"\n";
+    file<<"#include \"Test/Scripts/item.hpp\"\n";
     file<<"extern \"C\" {\n";
     file<<"   sorrok::Item createItem(const char* name, sorrok::Item::Type type, const char* requiredClass);\n";
     file<<"}\n";
     file<<"sorrok::Item createItem(const char* name, sorrok::Item::Type type, const char* requiredClass) {\n";
-    file<<"    odfaeg::core::Class cl = odfaeg::core::getClass(\"Item\");\n";
-    file<<"    return cl.instanciate<sorrok::Item>(name, type, requiredClass);\n";
+    file<<"    return sorrok::Item(name, type, requiredClass);\n";
     file<<"}\n";
     file.close();
-    RuntimeCompiler rtc("createItem");
+    RuntimeCompiler rtc("create");
+    rtc.addRuntimeFunction("createItem");
     rtc.addSourceFile("test");
-    rtc.addSourceFile("Test/item");
+    rtc.addSourceFile("Test/Scripts/item");
     rtc.addOption("std=c++14");
     rtc.addMacro("ODFAEG_STATIC");
     rtc.addIncludeDir("\"..\\..\\..\\..\\Program Files (x86)\\ODFAEG\\include\"");
@@ -64,12 +65,21 @@ int main(int argc, char* argv[]) {
 	rtc.addLibrary("dl.dll");
 	rtc.compile();
 	std::string errors = rtc.getCompileErrors();
-	sorrok::Item item = rtc.run<sorrok::Item>("HP_POTION", sorrok::Item::Type::HP_POTION, "All");
+	std::cout<<"errors : "<<errors<<std::endl;
+	sorrok::Item item = rtc.run<sorrok::Item>("createItem", "HP_POTION", sorrok::Item::Type::HP_POTION, "All");
 	std::cout<<"item name : "<<item.getName()<<std::endl;
-    /*Class cl = Class::getClass("Item");
-    sorrok::Item item = cl.instanciate<sorrok::Item>("HP Potion", sorrok::Item::HP_POTION, "All");*/
-    //std::cout<<item.getName()<<std::endl;
-    /*ODFAEGCreator app(sf::VideoMode(1000,700),"ODFAEG Creator");
-    return app.exec();*/
+	//Class cl = Class::getClass("Item");
+    //std::cout<<item.getName()<<std::endl;*/
+    /*std::vector<sorrok::Item> vItem;
+   sorrok::Item item = sorrok::Item ("HP_POTION",sorrok::Item::HP_POTION,"All");
+   vItem.push_back(item);
+   sorrok::Item item3 = sorrok::Item ();
+   vItem.push_back(item3);
+   std::ofstream ofItem ("Item.oc");
+   odfaeg::core::OTextArchive oaItem (ofItem);
+   oaItem (vItem);
+   ofItem.close();*/
+    ODFAEGCreator app(sf::VideoMode(1000,700),"ODFAEG Creator");
+    return app.exec();
 
 }

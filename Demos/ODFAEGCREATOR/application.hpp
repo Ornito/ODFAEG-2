@@ -11,6 +11,7 @@
 #include "odfaeg/Graphics/GUI/dropDownList.hpp"
 #include "odfaeg/Graphics/GUI/node.hpp"
 #include "odfaeg/Graphics/GUI/tabPane.hpp"
+#include "odfaeg/Graphics/GUI/checkBox.hpp"
 #include "odfaeg/Graphics/circleShape.h"
 #include "odfaeg/Graphics/rectangleShape.h"
 #include "odfaeg/Graphics/sprite.h"
@@ -31,7 +32,6 @@
 #include "odfaeg/Math/distributions.h"
 #include "odfaeg/Core/class.hpp"
 #include "odfaeg/Core/runtimeCompiler.hpp"
-#include "../../../Projets/ODFAEGCREATOR/Test/item.hpp"
 class ODFAEGCreator : public odfaeg::core::Application,
                       public odfaeg::graphic::gui::MenuItemListener,
                       public odfaeg::graphic::gui::ActionListener {
@@ -92,33 +92,38 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onShadowScaleChanged(odfaeg::graphic::gui::TextArea* ta);
     void onShadowRotAngleChanged(odfaeg::graphic::gui::TextArea* ta);
     void onCollisionBoundingBoxChanged(odfaeg::graphic::gui::TextArea* ta);
+    void onSelectedClassChanged(odfaeg::graphic::gui::DropDownList* dp);
+    void onSelectedFunctionChanged(odfaeg::graphic::gui::DropDownList* dp);
+    void onSelectedFunctionDroppedDown(odfaeg::graphic::gui::DropDownList* dp);
     enum Fonts {
         Serif
     };
     private :
+        void convertSlash(std::string& path);
         odfaeg::math::Vec3f getGridCellPos(odfaeg::math::Vec3f pos);
         const float speed = 10.f;
         odfaeg::graphic::gui::MenuBar* menuBar;
-        odfaeg::graphic::gui::Menu *menu1, *menu2, *menu3, *menu4;
+        odfaeg::graphic::gui::Menu *menu1, *menu2, *menu3, *menu4, *menu5;
         odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item14, *item15, *item16, *item17, *item18, *item21, *item22, *item23, *item31, *item32, *item33,
-        *item34, *item35, *item36, *item37, *item38, *item39, *item310, *item311, *item41, *item42, *item43, *item44, *item45;
+        *item34, *item35, *item36, *item37, *item38, *item39, *item310, *item311, *item41, *item42, *item43, *item44, *item45, *item51, *item52;
         odfaeg::core::ResourceCache<> cache;
         odfaeg::graphic::gui::FileDialog* fdTexturePath, *fdProjectPath;
-        odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent, *wNewEntitiesUpdater, *wNewAnimUpdater, *wNewEmitter, *wNewParticleSystemUpdater;
+        odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent, *wNewEntitiesUpdater, *wNewAnimUpdater, *wNewEmitter, *wNewParticleSystemUpdater, *wCreateNewWindow, *wCreateNewObject;
         odfaeg::graphic::gui::TextArea* ta, *taComponentExpression, *taComponentLayer, *taEntitiesUpdaterName, *taComponentName, *taAnimUpdaterName, *taPSName, *taEmissionRate,
         *taMinLifeTime, *taMaxLifeTime, *taRCPosX, *taRCPosY, *taRCPosZ, *taRCSizeX, *taRCSizeY, *taRCSizeZ, *taDeflX, *taDeflY, *taDeflZ, *taDeflAngle,
         *taRotMin, *taRotMax, *taTexIndexMin, *taTexIndexMax, *taScaleMinX, *taScaleMinY, *taScaleMinZ, *taScaleMaxX, *taScaleMaxY, *taScaleMaxZ, *taColor1, *taColor2,
         *taParticleSystemUpdaterName;
-        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent, *dpSelectAU, *dpSelectPPType, *dpSelectPSU;
+        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent, *dpSelectAU, *dpSelectPPType, *dpSelectPSU, *dpSelectClass, *dpSelectFunction;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
-        odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight, *taWallType, *taIntensity, *taQuality;
-        odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial, *pShadows, *pCollisions, *pComponent;
+        odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight, *taWallType, *taIntensity, *taQuality, *taWindowPos, *taWindowSize, *taWindowTitle, *taWindowName, *taObjectName;
+        odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial, *pShadows, *pCollisions, *pComponent, *pObjectsParameters;
         std::string appliname, minAppliname;
         std::string applitype;
         std::string path;
         std::map<std::string, std::string> cppAppliContent;
         std::vector<std::string> textPaths;
-        std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode, rootMaterialNode, rootInfosNode, rootShadowsNode, rootCollisionNode;
+        std::vector<odfaeg::graphic::gui::TextArea*> tmpTextAreas;
+        std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode, rootMaterialNode, rootInfosNode, rootShadowsNode, rootCollisionNode, rootObjectParams;
         odfaeg::graphic::CircleShape cursor;
         odfaeg::math::Vec3f guiSize, guiPos, mousePosition;
         bool isGuiShown, showGrid, alignToGrid, showRectSelect;
@@ -131,7 +136,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition, *lColor, *lRColor,
         *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage, *lParent;
         odfaeg::graphic::gui::TabPane* tabPane;
-        odfaeg::graphic::gui::Button* bChooseText, *bAddTexRect, *bCreateComponent, *bCreateScene, *bCreateEntitiesUpdater, *bCreateAppli, *bCreateAnimUpdater, *bCreateEmitter, *bCreateParticleSystemUpdater;
+        odfaeg::graphic::gui::Button* bChooseText, *bAddTexRect, *bCreateComponent, *bCreateScene, *bCreateEntitiesUpdater, *bCreateAppli, *bCreateAnimUpdater, *bCreateEmitter, *bCreateParticleSystemUpdater, *bCreateWindow, *bCreateObject;
         odfaeg::graphic::Shape* sTextRect;
         odfaeg::core::StateStack stateStack;
         ODFAEGCreatorStateExecutor se;
@@ -144,5 +149,6 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::vector<std::string> emitterParams;
         std::vector<std::string> affectorParams;
         odfaeg::math::Vec3f viewPos;
+        odfaeg::core::RuntimeCompiler rtc;
 };
 #endif

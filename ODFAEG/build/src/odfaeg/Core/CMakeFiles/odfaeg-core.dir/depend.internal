@@ -335,6 +335,7 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/dlfcn.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/class.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/constructor.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/export.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/utilities.h
@@ -395,6 +396,9 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/command.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/command.cpp
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.obj
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/constructor.hpp
+ C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/constructor.cpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/export.hpp

@@ -123,7 +123,6 @@ namespace odfaeg {
                  toAdd.clear();
                  for (it = commands.begin(); it != commands.end(); it++) {
                     if (it->second.isTriggered()) {
-
                         (it->second)();
                         if (removeListener) {
                             break;

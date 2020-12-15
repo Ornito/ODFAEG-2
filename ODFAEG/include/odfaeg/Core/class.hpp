@@ -8,73 +8,36 @@
 #include <windows.h>
 #include <dlfcn.h>
 #include <string>
+#include "constructor.hpp"
 namespace odfaeg {
     namespace core {
         class Class {
         public :
             Class(std::string name, std::string filePath, std::string sourceFile);
+            static std::vector<std::string> getClasses(std::string filePath);
             static Class getClass(std::string name);
             template<typename C, typename... Args>
             C instanciate(Args... args) {
-                std::ifstream file(filePath);
-                std::cout<<filePath<<std::endl;
 
-                if (file) {
-                    std::string line;
-
-                    while (getline(file, line)) {
-                        if (line.find(name) != std::string::npos && line.find("(") != std::string::npos) {
-                            while (line.size() > 0 && line.at(0) == ' ') {
-                                line = line.erase(0, 1);
-                            }
-                            while (line.size() > 0 && line.at(name.size()) == ' ') {
-                                line = line.erase(name.size(), 1);
-                            }
-                            int index = line.find_first_of("(");
-                            if (line.find(name) == 0 && index == name.size()) {
-                               int pos = line.find_first_of("(");
-                               int pos2 = line.find_first_of(")");
-                               std::string types = line.substr(pos+1, pos2-pos-1);
-                               std::vector<std::string> arguments = split(types, ",");
-                               std::vector<std::string> constructArgsTypes;
-                               for (unsigned int i = 0; i < arguments.size(); i++) {
-                                    while(arguments[i].size() > 0 && arguments[i].at(0) == ' ') {
-                                        arguments[i] = arguments[i].erase(0, 1);
-                                    }
-                                    std::vector<std::string> argTypeName = split(arguments[i], " ");
-                                    std::string fullTypeName;
-                                    if (argTypeName[0] == "const") {
-                                        fullTypeName = argTypeName[0]+" "+argTypeName[1];
-                                    } else {
-                                        fullTypeName = argTypeName[0];
-                                    }
-                                    if(fullTypeName != "") {
-                                        for (unsigned int i = 0; i < innerClasses.size(); i++) {
-                                            //std::cout<<"inner class : "<<innerClasses[i]<<std::endl;
-                                            if (innerClasses[i].find(fullTypeName) != std::string::npos) {
-                                                fullTypeName = namespc + "::" + innerClasses[i];
-                                            }
-                                        }
-                                    }
-                                    std::cout<<"full type name : "<<fullTypeName<<std::endl;
-                                    constructArgsTypes.push_back(fullTypeName);
-                               }
-                               constructors.push_back(constructArgsTypes);
-                            }
-                        }
-                    }
-                    file.close();
-                }
                 std::ofstream outfile("tmp.cpp");
+                //std::cout<<"file path : "<<filePath<<std::endl;
                 outfile<<"#include \""<<filePath<<"\"\n";
                 outfile<<"#include <iostream>\n";
                 outfile<<"extern \"C\" {\n";
                 outfile<<name<<" instanciate(";
                 for (unsigned int i = 0; i < constructors.size(); i++) {
-                    if (sizeof...(Args) == constructors[i].size()) {
-                        for (unsigned int j = 0; j < constructors[i].size(); j++) {
-                            outfile<<constructors[i][j]<<" arg"<<j;
-                            if (j != constructors[i].size()-1) {
+                    std::vector<std::string> argsTypes = constructors[i].getArgsTypes();
+                    if (sizeof...(Args) == argsTypes.size()) {
+                        for (unsigned int j = 0; j < argsTypes.size(); j++) {
+                            std::string argType = argsTypes[j];
+                            for (unsigned int n = 0; n < innerClasses.size(); n++) {
+                                if (innerClasses[n].getName().find(argType) != std::string::npos) {
+                                    std::cout<<"inner class name : "<<innerClasses[n].getName()<<std::endl;
+                                    argType = namespc + "::" + innerClasses[n].getName();
+                                }
+                            }
+                            outfile<<argType<<" arg"<<j;
+                            if (j != argsTypes.size()-1) {
                                 outfile<<",";
                             }
                         }
@@ -84,11 +47,18 @@ namespace odfaeg {
                 outfile<<name<<" instanciate(";
                 unsigned int numArgs = -1;
                 for (unsigned int i = 0; i < constructors.size(); i++) {
-                    if (sizeof...(Args) == constructors[i].size()) {
-                        numArgs = constructors[i].size();
-                        for (unsigned int j = 0; j < constructors[i].size(); j++) {
-                            outfile<<constructors[i][j]<<" arg"<<j;
-                            if (j != constructors[i].size()-1) {
+                    std::vector<std::string> argsTypes = constructors[i].getArgsTypes();
+                    if (sizeof...(Args) == argsTypes.size()) {
+                        numArgs = argsTypes.size();
+                        for (unsigned int j = 0; j < argsTypes.size(); j++) {
+                            std::string argType = argsTypes[j];
+                            for (unsigned int n = 0; n < innerClasses.size(); n++) {
+                                if (innerClasses[n].getName().find(argType) != std::string::npos) {
+                                    argType = namespc + "::" + innerClasses[n].getName();
+                                }
+                            }
+                            outfile<<argType<<" arg"<<j;
+                            if (j != argsTypes.size()-1) {
                                 outfile<<",";
                             }
                         }
@@ -114,7 +84,7 @@ namespace odfaeg {
                 outfile2<<"EXPORTS\n";
                 outfile2<<"instanciate\n";
                 outfile2.close();
-                std::string cmd = "g++ -c Test/"+name+".cpp"+" -o "+name+".o";
+                std::string cmd = "g++ -c "+sourceFile+" -o "+name+".o";
                 system (cmd.c_str());
                 system ( "g++ -c tmp.cpp -o tmp.o");
                 cmd = "g++ -shared -o libtmp.so tmp.o "+name+".o";
@@ -133,16 +103,22 @@ namespace odfaeg {
                 }
             }
             std::string getName();
-            void addInnerClass(std::string innerClass);
+            void addInnerClass(Class innerClass);
             void setNamespace(std::string namespc);
+            void addConstructor(Constructor constructor);
+            std::string getFilePath();
+            std::string getSourcePath();
+            std::vector<Constructor> getConstructors();
+            std::string getNamespace();
         private :
-            static void checkInnerClass(std::string innerClass, std::string fileContent, int lvl, Class& cl);
+            static void checkInnerClass(std::string innerClass, std::string type, std::string& fileContent, int lvl, Class& cl);
+            static void checkConstructors(std::string& fileContent, Class& cl);
             std::string name;
             std::string filePath;
             std::string sourceFile;
             std::string namespc;
-            std::vector<std::string> innerClasses;
-            std::vector<std::vector<std::string>> constructors;
+            std::vector<Class> innerClasses;
+            std::vector<Constructor> constructors;
             std::vector<std::string> innerClass;
         };
     }

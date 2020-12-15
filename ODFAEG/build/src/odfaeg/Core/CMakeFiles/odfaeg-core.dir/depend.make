@@ -334,6 +334,7 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/archive.cpp.obj: ../src/odfaeg/Core/a
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../extlibs/headers/SFML/Config.hpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../extlibs/headers/dlfcn.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../include/odfaeg/Core/class.hpp
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../include/odfaeg/Core/constructor.hpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../include/odfaeg/Core/erreur.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../include/odfaeg/Core/export.hpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../include/odfaeg/Core/utilities.h
@@ -394,6 +395,9 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/command.cpp.obj: ../include/odfaeg/Wi
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/command.cpp.obj: ../include/odfaeg/Window/iMouse.hpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/command.cpp.obj: ../include/odfaeg/config.hpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/command.cpp.obj: ../src/odfaeg/Core/command.cpp
+
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.obj: ../include/odfaeg/Core/constructor.hpp
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.obj: ../src/odfaeg/Core/constructor.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.obj: ../include/odfaeg/Core/erreur.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.obj: ../include/odfaeg/Core/export.hpp

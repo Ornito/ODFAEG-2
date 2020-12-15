@@ -8,7 +8,9 @@ namespace odfaeg {
             std::ofstream file(funcName+".DEF");
             file<<"LIBRARY \""+funcName+"\"\n";
             file<<"EXPORTS\n";
-            file<<funcName+"\n";
+            for (unsigned int i = 0; i < functions.size(); i++) {
+                file<<functions[i]+"\n";
+            }
             file.close();
             std::string command;
             for (unsigned int s = 0; s < sourceFiles.size(); s++) {
@@ -34,7 +36,7 @@ namespace odfaeg {
                     }
                     ifs.close();
                 }
-                std::cout<<"command : "<<command<<std::endl;
+                //std::cout<<"command : "<<command<<std::endl;
             }
             for (unsigned int i = 0; i < libraryDirs.size(); i++) {
                 if (i == 0)
@@ -44,14 +46,30 @@ namespace odfaeg {
             for (unsigned int i = 0; i < libraries.size(); i++) {
                 command += "-l"+libraries[i]+" ";
             }
-            std::cout<<"command : "<<command<<std::endl;
+            //std::cout<<"command : "<<command<<std::endl;
             system(command.c_str());
             command = "g++ -shared -o "+funcName+".so";
             for (unsigned int s = 0; s < sourceFiles.size(); s++) {
-                command+=" "+sourceFiles[s]+".o";
+                command+=" "+sourceFiles[s]+".o ";
             }
+            for (unsigned int i = 0; i < libraryDirs.size(); i++) {
+                command += "-L"+libraryDirs[i]+" ";
+            }
+            for (unsigned int i = 0; i < libraries.size(); i++) {
+                command += "-l"+libraries[i]+" ";
+            }
+            command += " 2> "+funcName+".err";
+
             std::cout<<"command : "<<command<<std::endl;
             system(command.c_str());
+            std::ifstream ifs(funcName+".err");
+            std::string line;
+            if (ifs) {
+                while (getline(ifs, line)) {
+                    compileErrors+=line+"\n";
+                }
+                ifs.close();
+            }
         }
         void RuntimeCompiler::addSourceFile(std::string sourceFile) {
             sourceFiles.push_back(sourceFile);
@@ -73,6 +91,9 @@ namespace odfaeg {
         }
         void RuntimeCompiler::addLibrary(std::string library) {
             libraries.push_back(library);
+        }
+        void RuntimeCompiler::addRuntimeFunction(std::string f) {
+            functions.push_back(f);
         }
     }
 }

@@ -12,14 +12,14 @@ namespace odfaeg {
             RuntimeCompiler(std::string funcName);
             void compile();
             template<typename R, typename... A>
-            R run(A... a) {
+            R run(std::string fName, A... a) {
                 std::string path = "./"+funcName+".so";
                 void* flib = dlopen(path.c_str(), RTLD_LAZY);
                 if (!flib) {
                     throw Erreur(10, "Failed to open dynamic library!", 3);
                 }
                 typedef R(*func)(A...);
-                func pfunc = (func) dlsym(flib, funcName.c_str());
+                func pfunc = (func) dlsym(flib, fName.c_str());
                 if (!pfunc) {
                     throw Erreur(10, "Failed to load the function!", 3);
                 }
@@ -31,6 +31,7 @@ namespace odfaeg {
             void addSourceFile(std::string sourceFile);
             void addOption(std::string option);
             void addMacro(std::string macro);
+            void addRuntimeFunction (std::string f);
             std::string getCompileErrors();
             private :
             std::string funcName;
@@ -41,6 +42,7 @@ namespace odfaeg {
             std::vector<std::string> libraries;
             std::vector<std::string> macros;
             std::vector<std::string> options;
+            std::vector<std::string> functions;
         };
     }
 }

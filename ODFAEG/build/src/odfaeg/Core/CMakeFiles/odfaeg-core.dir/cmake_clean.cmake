@@ -8,6 +8,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/odfaeg-core.dir/class.cpp.obj"
   "CMakeFiles/odfaeg-core.dir/clock.cpp.obj"
   "CMakeFiles/odfaeg-core.dir/command.cpp.obj"
+  "CMakeFiles/odfaeg-core.dir/constructor.cpp.obj"
   "CMakeFiles/odfaeg-core.dir/erreur.cpp.obj"
   "CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj"
   "CMakeFiles/odfaeg-core.dir/state.cpp.obj"

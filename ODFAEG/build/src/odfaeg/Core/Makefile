@@ -359,6 +359,33 @@ command.cpp.s:
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/command.cpp.s
 .PHONY : command.cpp.s
 
+constructor.obj: constructor.cpp.obj
+
+.PHONY : constructor.obj
+
+# target to build an object file
+constructor.cpp.obj:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.obj
+.PHONY : constructor.cpp.obj
+
+constructor.i: constructor.cpp.i
+
+.PHONY : constructor.i
+
+# target to preprocess a source file
+constructor.cpp.i:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.i
+.PHONY : constructor.cpp.i
+
+constructor.s: constructor.cpp.s
+
+.PHONY : constructor.s
+
+# target to generate assembly for a file
+constructor.cpp.s:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.s
+.PHONY : constructor.cpp.s
+
 erreur.obj: erreur.cpp.obj
 
 .PHONY : erreur.obj
@@ -582,6 +609,9 @@ help:
 	@echo ... command.obj
 	@echo ... command.i
 	@echo ... command.s
+	@echo ... constructor.obj
+	@echo ... constructor.i
+	@echo ... constructor.s
 	@echo ... erreur.obj
 	@echo ... erreur.i
 	@echo ... erreur.s

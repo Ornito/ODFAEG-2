@@ -13,7 +13,7 @@ using namespace odfaeg::graphic::g2d;
 using namespace odfaeg::physic;
 using namespace odfaeg::window;
 ODFAEGCreator::ODFAEGCreator(sf::VideoMode vm, std::string title) :
-Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0, 0, 3, 0)), isGuiShown (false), cursor(10), se(this) {
+Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0, 0, 3, 0)), isGuiShown (false), cursor(10), se(this), rtc("create") {
     dpSelectTexture = nullptr;
     dpSelectEm = nullptr;
     sTextRect = nullptr;
@@ -25,8 +25,32 @@ Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0
     gridHeight = 50;
     appliname = "";
     viewPos = getRenderWindow().getView().getPosition();
-
-
+    rtc.addOption("std=c++14");
+    rtc.addMacro("ODFAEG_STATIC");
+    rtc.addIncludeDir("\"..\\..\\..\\..\\Program Files (x86)\\ODFAEG\\include\"");
+    rtc.addIncludeDir("..\\..\\Windows\\ODFAEG\\extlibs\\headers");
+    rtc.addLibraryDir("\"..\\..\\..\\..\\Program Files (x86)\\ODFAEG\\lib\"");
+    rtc.addLibraryDir("..\\..\\Windows\\ODFAEG\\extlibs\\libs-mingw\\x86");
+    rtc.addLibrary("odfaeg-network-s");
+	rtc.addLibrary("odfaeg-audio-s");
+	rtc.addLibrary("odfaeg-graphics-s");
+	rtc.addLibrary("odfaeg-physics-s");
+	rtc.addLibrary("odfaeg-core-s");
+	rtc.addLibrary("odfaeg-window-s");
+	rtc.addLibrary("odfaeg-math-s");
+	rtc.addLibrary("sfml-network");
+	rtc.addLibrary("sfml-audio");
+	rtc.addLibrary("sfml-graphics");
+	rtc.addLibrary("sfml-window");
+	rtc.addLibrary("sfml-system");
+	rtc.addLibrary("crypto.dll");
+	rtc.addLibrary("ssl.dll");
+	rtc.addLibrary("freetype");
+	rtc.addLibrary("glew32.dll");
+	rtc.addLibrary("opengl32");
+	rtc.addLibrary("gdi32");
+	rtc.addLibrary("dl.dll");
+	rtc.addRuntimeFunction("createObject");
 }
 void ODFAEGCreator::onLoad() {
     FontManager<Fonts> fm;
@@ -47,10 +71,13 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(menu3);
     menu4 = new Menu(getRenderWindow(),fm.getResourceByAlias(Fonts::Serif),"Edition");
     getRenderComponentManager().addComponent(menu4);
+    menu5 = new Menu(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"new GUI");
+    getRenderComponentManager().addComponent(menu5);
     menuBar->addMenu(menu1);
     menuBar->addMenu(menu2);
     menuBar->addMenu(menu3);
     menuBar->addMenu(menu4);
+    menuBar->addMenu(menu5);
     item11 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"New application");
     item11->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item11);
@@ -152,11 +179,17 @@ void ODFAEGCreator::onInit() {
     item45 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "Rect selection");
     item45->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item45);
+
     menu4->addMenuItem(item41);
     menu4->addMenuItem(item42);
     menu4->addMenuItem(item43);
     menu4->addMenuItem(item44);
     menu4->addMenuItem(item45);
+
+    item51 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "New object");
+    item51->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item51);
+    menu5->addMenuItem(item51);
     Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Z);
     Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Q);
     Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::S);
@@ -419,6 +452,65 @@ void ODFAEGCreator::onInit() {
     wNewEmitter->setVisible(false);
     addWindow(wNewEmitter);
     getRenderComponentManager().setEventContextActivated(false, *wNewEmitter);
+    //Create new window.
+    wCreateNewWindow = new RenderWindow(sf::VideoMode(400, 300), "Create new window", sf::Style::Default, ContextSettings(0, 0, 4, 3, 0));
+    //Title.
+    Label* lWindowTitle = new Label(*wCreateNewWindow, Vec3f(0, 0, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Title : ", 15);
+    getRenderComponentManager().addComponent(lWindowTitle);
+    taWindowTitle = new TextArea(Vec3f(200, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "", *wCreateNewWindow);
+    getRenderComponentManager().addComponent(taWindowTitle);
+    //Position.
+    Label* lWindowPosition = new Label(*wCreateNewWindow, Vec3f(0, 50, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "Position (x;y)", 15);
+    getRenderComponentManager().addComponent(lWindowPosition);
+    taWindowPos = new TextArea(Vec3f(200, 50, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"", *wCreateNewWindow);
+    getRenderComponentManager().addComponent(taWindowPos);
+    //Size.
+    Label* lWindowSize = new Label(*wCreateNewWindow, Vec3f(0, 100, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "Size (x;y)", 15);
+    getRenderComponentManager().addComponent(lWindowSize);
+    taWindowSize = new TextArea(Vec3f(200, 100, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"", *wCreateNewWindow);
+    getRenderComponentManager().addComponent(taWindowSize);
+    //Name.
+    Label* lWindowName = new Label(*wCreateNewWindow, Vec3f(0, 150, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Name : ", 15);
+    getRenderComponentManager().addComponent(lWindowName);
+    taWindowName = new TextArea(Vec3f(200, 150, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "", *wCreateNewWindow);
+    getRenderComponentManager().addComponent(taWindowName);
+    //Button.
+    bCreateWindow = new Button(Vec3f(0, 200, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "Create window", 15, *wCreateNewWindow);
+    bCreateWindow->addActionListener(this);
+    getRenderComponentManager().addComponent(bCreateWindow);
+    wCreateNewWindow->setVisible(false);
+    addWindow(wCreateNewWindow);
+    getRenderComponentManager().setEventContextActivated(false, *wCreateNewWindow);
+    //Create new object.
+    wCreateNewObject = new RenderWindow(sf::VideoMode(400, 1000), "Create new object", sf::Style::Default, ContextSettings(0, 0, 4, 3, 0));
+    Label* objectName = new Label(*wCreateNewObject, Vec3f(0, 0, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Name : ", 15);
+    getRenderComponentManager().addComponent(objectName);
+    taObjectName = new TextArea(Vec3f(200, 0, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "", *wCreateNewObject);
+    getRenderComponentManager().addComponent(taObjectName);
+    Label* selectClass = new Label(*wCreateNewObject, Vec3f(0, 50, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Class : ", 15);
+    getRenderComponentManager().addComponent(selectClass);
+    dpSelectClass = new DropDownList(*wCreateNewObject, Vec3f(200, 50, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Select class", 15);
+    dpSelectClass->setPriority(-2);
+    getRenderComponentManager().addComponent(dpSelectClass);
+    Command cmdSelectClass(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectClass), FastDelegate<void>(&ODFAEGCreator::onSelectedClassChanged, this, dpSelectClass));
+    dpSelectClass->getListener().connect("CLASSCHANGED", cmdSelectClass);
+    Label* lSelectFunction = new Label(*wCreateNewObject, Vec3f(0, 100, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Function : ", 15);
+    getRenderComponentManager().addComponent(lSelectFunction);
+    dpSelectFunction = new DropDownList(*wCreateNewObject, Vec3f(200, 100, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Select function : ", 15);
+    getRenderComponentManager().addComponent(dpSelectFunction);
+    Command cmdSelectFunction(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectFunction), FastDelegate<void>(&ODFAEGCreator::onSelectedFunctionChanged, this, dpSelectFunction));
+    Command cmdSelectFuncDroppedDown(FastDelegate<bool>(&DropDownList::isDroppedDown, dpSelectFunction), FastDelegate<void>(&ODFAEGCreator::onSelectedFunctionDroppedDown, this, dpSelectFunction));
+    dpSelectFunction->getListener().connect("FUNCTIONCHANGED", cmdSelectFunction);
+    dpSelectFunction->getListener().connect("FUNCTIONDROPPEDDOWN", cmdSelectFuncDroppedDown);
+    bCreateObject = new Button(Vec3f(200, 150, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Apply",15,*wCreateNewObject);
+    bCreateObject->addActionListener(this);
+    getRenderComponentManager().addComponent(bCreateObject);
+    pObjectsParameters = new Panel(*wCreateNewObject, Vec3f(0, 200, 0), Vec3f(400, 800, 0));
+    getRenderComponentManager().addComponent(pObjectsParameters);
+    rootObjectParams = std::make_unique<Node>("object params", pObjectsParameters, Vec2f(0.f, 200.f / 1000.f), Vec2f(1.f, 800.f / 1000.f));
+    wCreateNewObject->setVisible(false);
+    addWindow(wCreateNewObject);
+    getRenderComponentManager().setEventContextActivated(false, *wCreateNewObject);
     //Create panel for project files.
     pProjects = new Panel(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     rootNode = std::make_unique<Node> ("projects", pProjects, Vec2f(0.f, 0.015f), Vec2f(1.f / 6.f, 1.f));
@@ -1193,6 +1285,11 @@ void ODFAEGCreator::onExec() {
             }
             ifs6.close();
         }
+        std::vector<std::string> classes = Class::getClasses(appliname+"\\Scripts");
+        for (unsigned int i = 0; i < classes.size(); i++) {
+            std::cout<<"add class"<<std::endl;
+            dpSelectClass->addItem(classes[i], 15);
+        }
         fdProjectPath->setVisible(false);
         fdProjectPath->setEventContextActivated(false);
         tScriptEdit->setEventContextActivated(true);
@@ -1632,6 +1729,102 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             static_cast<ParticleSystem*>(selectedObject)->addTextureRect(rect);
         }
     }
+    if (button == bCreateObject) {
+        Class cl = Class::getClass(dpSelectClass->getSelectedItem());
+        std::string headerFile = cl.getFilePath();
+        convertSlash(headerFile);
+        std::cout<<"header file : "<<headerFile<<std::endl;
+        std::ifstream ifs("sourceCode.cpp");
+        std::string sourceCode="";
+        bool fileExist = false;
+        if (ifs) {
+            fileExist = true;
+            std::string line;
+            while (getline(ifs, line)) {
+                sourceCode += line+"\n";
+            }
+            ifs.close();
+        } else {
+            sourceCode += "#include <fstream>\n";
+            sourceCode += "#include <vector>\n";
+            sourceCode += "#include \"odfaeg/Core/archive.h\"\n";
+            sourceCode += "#include \"odfaeg/Core/class.hpp\"\n";
+            sourceCode += "extern \"C\" {\n";
+            sourceCode += "    void createObject();\n";
+            sourceCode += "}\n";
+            sourceCode += "void createObject() {\n";
+            sourceCode += "}\n";
+        }
+        if (sourceCode.find("#include \""+headerFile+"\"") == std::string::npos) {
+            sourceCode.insert(0, "#include \""+headerFile+"\"\n");
+            std::string sourceFile = cl.getSourcePath();
+            //std::cout<<"source file : "<<sourceFile<<std::endl;
+            if (sourceFile.find(".cpp") != std::string::npos) {
+                int pos = sourceFile.find(".cpp");
+                std::string file = sourceFile.erase(pos, sourceFile.size() - pos);
+                std::cout<<"file : "<<file<<std::endl;
+                rtc.addSourceFile(file);
+            }
+            std::string toInsert = "";
+            if (sourceCode.find("{") != std::string::npos) {
+                int pos = sourceCode.find_last_of("{")+2;
+
+                if (cl.getNamespace() != "") {
+                    toInsert = "    std::vector<"+cl.getNamespace()+"::"+cl.getName()+"> v"+cl.getName()+";\n";
+                } else {
+                    toInsert = "    std::vector<"+cl.getName()+"> v"+cl.getName()+";\n";
+                }
+                toInsert += "   std::ofstream of"+cl.getName()+" (\""+cl.getName()+".oc\");\n";
+                toInsert += "   odfaeg::core::OTextArchive oa"+cl.getName()+" (of"+cl.getName()+");\n";
+            }
+            if (sourceCode.find("}") != std::string::npos) {
+                int pos = sourceCode.find_last_of("}");
+                toInsert += "   oa"+cl.getName()+" (v"+cl.getName()+");\n";
+                toInsert += "   of"+cl.getName()+".close();\n";
+                sourceCode.insert(pos, toInsert);
+            }
+
+        }
+        std::vector<std::string> argValues;
+        for (unsigned int i = 0; i < tmpTextAreas.size(); i++) {
+            argValues.push_back(tmpTextAreas[i]->getText());
+        }
+        if(sourceCode.find("std::ofstream of"+cl.getName()+" (\""+cl.getName()+".oc\");\n") != std::string::npos) {
+            std::cout<<"found "<<std::endl;
+            int pos = sourceCode.find("std::ofstream of"+cl.getName()+" (\""+cl.getName()+".oc\");\n")-3;
+
+
+            std::string args;
+            for (unsigned int j = 0; j < argValues.size(); j++) {
+                args += argValues[j];
+                if (j != argValues.size()-1) {
+                    args += ",";
+                }
+            }
+            std::string toInsert = "";
+            if (cl.getNamespace() != "") {
+                toInsert += "   "+cl.getNamespace()+"::"+cl.getName()+" "+taObjectName->getText()+" = "+cl.getNamespace()+"::"+cl.getName()+" ("+args+");\n";
+            } else {
+                toInsert += "   "+cl.getName()+" "+taObjectName->getText()+" ("+args+");\n";
+            }
+            toInsert += "   v"+cl.getName()+".push_back("+taObjectName->getText()+");\n";
+            sourceCode.insert(pos, toInsert);
+        }
+        std::cout<<"source code : "<<sourceCode<<std::endl;
+        std::ofstream file("sourceCode.cpp");
+        file<<sourceCode;
+        file.close();
+        if (!fileExist) {
+            rtc.addSourceFile("sourceCode");
+        }
+        rtc.compile();
+        std::string errors = rtc.getCompileErrors();
+        //std::cout<<"errors : "<<rtc.getCompileErrors();
+        rtc.run<void>("createObject");
+        wCreateNewObject->setVisible(false);
+        getRenderComponentManager().setEventContextActivated(false, *wCreateNewObject);
+        tScriptEdit->setEventContextActivated(true);
+    }
 }
 void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "New application") {
@@ -2012,6 +2205,11 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
      if (item == item18) {
         wNewParticleSystemUpdater->setVisible(true);
         getRenderComponentManager().setEventContextActivated(true, *wNewParticleSystemUpdater);
+        tScriptEdit->setEventContextActivated(false);
+     }
+     if (item == item51) {
+        wCreateNewObject->setVisible(true);
+        getRenderComponentManager().setEventContextActivated(true, *wCreateNewObject);
         tScriptEdit->setEventContextActivated(false);
      }
 }
@@ -4232,4 +4430,68 @@ void ODFAEGCreator::onCollisionBoundingBoxChanged(TextArea* ta) {
     rect.setPosition(bx->getPosition());
     rect.setFillColor(sf::Color(255, 0, 0, 128));
     collisionsBox.push_back(rect);
+}
+void ODFAEGCreator::onSelectedClassChanged(DropDownList* dp) {
+    dpSelectFunction->removeAllItems();
+    Class cl = Class::getClass(dp->getSelectedItem());
+    std::vector<Constructor> constructors = cl.getConstructors();
+    for (unsigned int i = 0; i < constructors.size(); i++) {
+        std::string name = constructors[i].getName()+"(";
+        std::vector<std::string> argsTypes = constructors[i].getArgsTypes();
+        for (unsigned int j = 0; j < argsTypes.size(); j++) {
+            name += argsTypes[j];
+            if (j != argsTypes.size() - 1) {
+                name += ",";
+            }
+        }
+        name += ")";
+        dpSelectFunction->addItem(name, 15);
+    }
+}
+void ODFAEGCreator::onSelectedFunctionChanged(DropDownList* dp) {
+    rootObjectParams->deleteAllNodes();
+    pObjectsParameters->removeAll();
+    Class cl = Class::getClass(dpSelectClass->getSelectedItem());
+    tmpTextAreas.clear();
+    std::vector<Constructor> constructors = cl.getConstructors();
+    bool found = false;
+    Constructor* c=nullptr;
+    for (unsigned int i = 0; i < constructors.size() && !found; i++) {
+        std::string name = constructors[i].getName()+"(";
+        std::vector<std::string> argsTypes = constructors[i].getArgsTypes();
+        for (unsigned int j = 0; j < argsTypes.size(); j++) {
+            name += argsTypes[j];
+            if (j != argsTypes.size() - 1) {
+                name += ",";
+            }
+        }
+        name += ")";
+        if (name == dp->getSelectedItem()) {
+            c = &constructors[i];
+            found = true;
+        }
+    }
+    if (c != nullptr) {
+        FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+        std::vector<std::string> argsTypes = c->getArgsTypes();
+        for (unsigned int i = 0; i < argsTypes.size(); i++) {
+            Label* label = new Label(*wCreateNewObject, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), argsTypes[i]+" : ", 15);
+            Node* node = new Node(argsTypes[i], label, Vec2f(0, 0), Vec2f(0.25, 0.025),rootObjectParams.get());
+            label->setParent(pObjectsParameters);
+            pObjectsParameters->addChild(label);
+            TextArea* ta = new TextArea(Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "", *wCreateNewObject);
+            node->addOtherComponent(ta, Vec2f(0.75, 0.025));
+            ta->setTextSize(15);
+            ta->setParent(pObjectsParameters);
+            pObjectsParameters->addChild(ta);
+            tmpTextAreas.push_back(ta);
+        }
+    }
+    bCreateObject->setEventContextActivated(true);
+}
+void ODFAEGCreator::onSelectedFunctionDroppedDown(DropDownList* dp) {
+    bCreateObject->setEventContextActivated(false);
+}
+void ODFAEGCreator::convertSlash(std::string& path) {
+    std::replace(path.begin(),path.end(), '\\', '/');
 }

@@ -43,6 +43,8 @@ set(SRC
 	${INCROOT}/variant.h
 	${INCROOT}/class.hpp
 	${SRCROOT}/class.cpp
+	${INCROOT}/constructor.hpp
+	${SRCROOT}/constructor.cpp
 	${INCROOT}/runtimeCompiler.hpp
 	${SRCROOT}/runtimeCompiler.cpp
 	)	

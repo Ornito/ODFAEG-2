@@ -83,6 +83,9 @@ namespace odfaeg {
                 core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, items.back()), core::FastDelegate<void>(&DropDownList::onItemSelected, this, items.back()));
                 label->getListener().connect(items.back()->getText(), cmd);
             }
+            void DropDownList::removeAllItems() {
+                items.clear();
+            }
             void DropDownList::onDraw(RenderTarget& target, RenderStates states) {
                 rect.setPosition(getPosition());
                 rect.setSize(getSize());

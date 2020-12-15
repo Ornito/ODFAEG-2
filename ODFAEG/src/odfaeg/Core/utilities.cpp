@@ -136,14 +136,26 @@ namespace odfaeg {
             abs.end(), [](char c) { return !std::isdigit(c); }) == abs.end();
         }
         /// Try to find in the Haystack the Needle - ignore case
-        bool findStringIC(const std::string & strHaystack, const std::string & strNeedle)
+        int findString(const std::string & strHaystack, const std::string & strNeedle)
         {
-          auto it = std::search(
-            strHaystack.begin(), strHaystack.end(),
-            strNeedle.begin(),   strNeedle.end(),
-            [](char ch1, char ch2) { return ch1 == ch2; }
-          );
-          return (it != strHaystack.end() );
+              if(strNeedle > strHaystack) {
+                return false;
+              }
+              int e = 0, indx = -1;
+              for (unsigned int i = 0; i < strHaystack.size(); i++) {
+                   if (strHaystack.at(i) == strNeedle.at(e)) {
+                       if (e == 0) {
+                            indx = i;
+                       }
+                       e++;
+                       if (e == strNeedle.size()) {
+                           return indx;
+                       } else {
+                           e = 0;
+                       }
+                   }
+              }
+            return -1;
         }
         std::string getCurrentPath() {
             char cCurrentPath[FILENAME_MAX];
