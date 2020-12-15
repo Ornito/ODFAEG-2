@@ -101,7 +101,7 @@ namespace odfaeg
         /// @brief Default constructor
         /// @details Requires a call to setTexture() and possibly addTextureRect() before the particle system can be used.
         ParticleSystem(math::Vec3f position, math::Vec3f size, graphic::EntityManager* scene = nullptr);
-
+        graphic::Entity* clone();
         /// @brief Swaps the contents of two instances in constant time.
         ///
         void	swap(ParticleSystem& other);

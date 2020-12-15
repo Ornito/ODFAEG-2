@@ -29,6 +29,7 @@ namespace odfaeg {
                 Decor() : Model(math::Vec3f(0, 0, 0), math::Vec3f(1, 1, 1), math::Vec3f(0.5f, 0.5f, 0.5f),"E_DECOR"){
 
                 }
+                Entity* clone();
                 /**
                   * \fn Decor(Tile *t, Light* light, int height, Shadow::SHADOW_TYPE shadowType)
                   * \brief constructor.

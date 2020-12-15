@@ -805,6 +805,22 @@ Vec3f ODFAEGCreator::getGridCellPos(Vec3f pos) {
 void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     if (&getRenderWindow() == window && event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED)
         getListener().setCommandSlotParams("MoveAction", this, static_cast<IKeyboard::Key>(event.keyboard.code));
+        if (event.keyboard.control && event.keyboard.code == IKeyboard::V) {
+            if (selectedObject != nullptr) {
+                if (dynamic_cast<RectangleShape*>(selectedObject)) {
+                    std::unique_ptr<Shape> shape = std::make_unique<RectangleShape> (*static_cast<RectangleShape*>(selectedObject));
+                    Vec3f position = getRenderWindow().mapPixelToCoords(Vec3f(cursor.getPosition().x, getRenderWindow().getSize().y - cursor.getPosition().y, 0))+getRenderWindow().getView().getSize()*0.5f;
+                    shape->setPosition(position);
+                    shapes.push_back(std::move(shape));
+                } else if (dynamic_cast<Entity*>(selectedObject)) {
+                    Entity* entity = static_cast<Entity*>(selectedObject)->clone();
+                    Vec3f position = getRenderWindow().mapPixelToCoords(Vec3f(cursor.getPosition().x, getRenderWindow().getSize().y - cursor.getPosition().y, 0))+getRenderWindow().getView().getSize()*0.5f;
+                    entity->setPosition(position);
+                    entity->getTransform().update();
+                    World::addEntity(entity);
+                }
+            }
+        }
     if (&getRenderWindow() == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
         stop();
     }
@@ -1084,219 +1100,230 @@ void ODFAEGCreator::onExec() {
         bChooseText->setEventContextActivated(true);
     }
     std::string projectPath = fdProjectPath->getPathChosen();
-    if (projectPath != "") {
+    if (projectPath != "" && projectPath.find(".poc") != std::string::npos) {
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
         std::ifstream applis(projectPath);
         std::string line;
+        bool opened = false;
         if (applis) {
             if(getline(applis, line)) {
-                Label* lab = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),line, 15);
-                Node* node = new Node("test",lab,Vec2f(0, 0),Vec2f(1.f, 0.025f),rootNode.get());
-                lab->setParent(pProjects);
-                lab->setForegroundColor(sf::Color::Red);
-                lab->setBackgroundColor(sf::Color::White);
-                pProjects->addChild(lab);
-                Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
-                Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, lab), FastDelegate<void>(&ODFAEGCreator::showProjectsFiles, this, lab));
-                lab->getListener().connect("SHOWPFILES", cmd);
-                appliname = line;
-            }
-        }
-        const char* lcars = appliname.c_str();
-        char* ucars = new char[appliname.size()];
-        for (unsigned int i = 0; i < appliname.length(); i++) {
-            ucars[i] = std::tolower(lcars[i]);
-        }
-        minAppliname = std::string(ucars, appliname.length());
-        if (appliname != "") {
-            while(getline(applis, line)) {
-                #if defined (ODFAEG_SYSTEM_LINUX)
-                std::string path = fdProjectPath->getAppiDir() + "/" + appliname + "/" + line;
-                #else if defined (ODFAEG_SYSTEM_WINDOWS
-                std::string path = fdProjectPath->getAppiDir() + "\\" + appliname + "\\" + line;
-                #endif // if
-                std::ifstream source (path);
-                std::string fileContent;
-                std::string line2;
-                while(getline(source, line2)) {
-                    fileContent += line2+"\n";
-                }
-                source.close();
-                cppAppliContent.insert(std::make_pair(line, fileContent));
-            }
-        }
-        applis.close();
-        //Load textures.
-        std::ifstream ifs(appliname+"\\"+"textures.oc");
-        TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
-        if (ifs) {
-            std::cout<<"textures : "<<std::endl;
-            ITextArchive ia(ifs);
-            std::vector<std::string> paths;
-            ia(paths);
-            for (unsigned int i = 0; i < paths.size(); i++) {
-                std::cout<<"load texture : "<<paths[i]<<std::endl;
-                unsigned int lastSlash;
-                #if defined(ODFAEG_SYSTEM_LINUX)
-                lastSlash = paths[i].find_last_of("/");
-                #else if defined (ODFAEG_SYSTEM_WINDOWS)
-                lastSlash = paths[i].find_last_of("\\");
-                #endif // if
-                std::string ImgName = paths[i].substr(lastSlash+1);
-                std::cout<<"alias : "<<ImgName<<std::endl;
-                tm.fromFileWithAlias(paths[i], ImgName);
-            }
-            ifs.close();
-        }
-        std::ifstream ifs3(appliname+"\\"+"entities.oc");
-        std::vector<Entity*> entities;
-        if (ifs3) {
-            ITextArchive ia3(ifs3);
-            ia3(entities);
-            for (unsigned int i = 0; i < entities.size(); i++) {
-                std::cout<<"load entities"<<std::endl;
-                for (unsigned int f = 0; f < entities[i]->getNbFaces(); f++) {
-                    Face* face = entities[i]->getFace(f);
-                    std::string alias = face->getMaterial().getTexId();
-                    if (alias != "") {
-                        face->getMaterial().clearTextures();
-                        face->getMaterial().addTexture(tm.getResourceByAlias(alias), face->getMaterial().getTexRect());
-                    } else {
-                        face->getMaterial().clearTextures();
-                        face->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
+                for (unsigned int i = 0; i < openedProjects.size() && !opened; i++) {
+                    if (openedProjects[i] == line) {
+                        opened = true;
                     }
                 }
+                if (!opened) {
+                    Label* lab = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),line, 15);
+                    Node* node = new Node("test",lab,Vec2f(0, 0),Vec2f(1.f, 0.025f),rootNode.get());
+                    lab->setParent(pProjects);
+                    lab->setForegroundColor(sf::Color::Red);
+                    lab->setBackgroundColor(sf::Color::White);
+                    pProjects->addChild(lab);
+                    Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+                    Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, lab), FastDelegate<void>(&ODFAEGCreator::showProjectsFiles, this, lab));
+                    lab->getListener().connect("SHOWPFILES", cmd);
+                    appliname = line;
+                    openedProjects.push_back(line);
+                }
             }
-            ifs3.close();
         }
-        std::ifstream ifs2(appliname+"\\"+"scenes.oc");
-        unsigned int size;
-        if (ifs2) {
-            ITextArchive ia2(ifs2);
-            ia2(size);
-            for (unsigned int i = 0; i < size; i++) {
-                std::string name;
-                ia2(name);
-                std::string type;
-                ia2(type);
-                int cellWidth;
-                int cellHeight;
-                bool is2DIsoMatrix;
-                if (type == "Map") {
-                    std::cout<<"load map"<<std::endl;
-                    ia2(cellWidth);
-                    ia2(cellHeight);
-                    Map* scene = new Map(&getRenderComponentManager(),name,cellWidth,cellHeight,0);
-                    ia2(is2DIsoMatrix);
-                    BaseChangementMatrix bcm;
-                    if (is2DIsoMatrix) {
-                        bcm.set2DIsoMatrix();
+        if (!opened) {
+            const char* lcars = appliname.c_str();
+            char* ucars = new char[appliname.size()];
+            for (unsigned int i = 0; i < appliname.length(); i++) {
+                ucars[i] = std::tolower(lcars[i]);
+            }
+            minAppliname = std::string(ucars, appliname.length());
+            if (appliname != "") {
+                while(getline(applis, line)) {
+                    #if defined (ODFAEG_SYSTEM_LINUX)
+                    std::string path = fdProjectPath->getAppiDir() + "/" + appliname + "/" + line;
+                    #else if defined (ODFAEG_SYSTEM_WINDOWS
+                    std::string path = fdProjectPath->getAppiDir() + "\\" + appliname + "\\" + line;
+                    #endif // if
+                    std::ifstream source (path);
+                    std::string fileContent;
+                    std::string line2;
+                    while(getline(source, line2)) {
+                        fileContent += line2+"\n";
                     }
-                    cshapes.clear();
-                    for (int i = 0; i < getRenderWindow().getSize().x; i+=100) {
-                        for (int j = 0; j < getRenderWindow().getSize().y; j+=50) {
-                            ConvexShape cshape(4);
-                            cshape.setFillColor(sf::Color::Transparent);
-                            cshape.setOutlineColor(sf::Color(75, 75, 75));
-                            cshape.setOutlineThickness(1.f);
-                            Vec2f points[4];
-                            points[0] = Vec2f(0, 0);
-                            points[1] = Vec2f(100, 0);
-                            points[2] = Vec2f(100, 50);
-                            points[3] = Vec2f(0, 50);
-                            for (unsigned int n = 0; n < 4; n++) {
-                                points[n] = bcm.changeOfBase(points[n]);
-                                points[n] += Vec2f(i, j);
-                                cshape.setPoint(n, sf::Vector3f(points[n].x, points[n].y, 0));
+                    source.close();
+                    cppAppliContent.insert(std::make_pair(line, fileContent));
+                }
+            }
+            applis.close();
+            //Load textures.
+            std::ifstream ifs(appliname+"\\"+"textures.oc");
+            TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
+            if (ifs) {
+                std::cout<<"textures : "<<std::endl;
+                ITextArchive ia(ifs);
+                std::vector<std::string> paths;
+                ia(paths);
+                for (unsigned int i = 0; i < paths.size(); i++) {
+                    std::cout<<"load texture : "<<paths[i]<<std::endl;
+                    unsigned int lastSlash;
+                    #if defined(ODFAEG_SYSTEM_LINUX)
+                    lastSlash = paths[i].find_last_of("/");
+                    #else if defined (ODFAEG_SYSTEM_WINDOWS)
+                    lastSlash = paths[i].find_last_of("\\");
+                    #endif // if
+                    std::string ImgName = paths[i].substr(lastSlash+1);
+                    std::cout<<"alias : "<<ImgName<<std::endl;
+                    tm.fromFileWithAlias(paths[i], ImgName);
+                }
+                ifs.close();
+            }
+            std::ifstream ifs3(appliname+"\\"+"entities.oc");
+            std::vector<Entity*> entities;
+            if (ifs3) {
+                ITextArchive ia3(ifs3);
+                ia3(entities);
+                for (unsigned int i = 0; i < entities.size(); i++) {
+                    std::cout<<"load entities"<<std::endl;
+                    for (unsigned int f = 0; f < entities[i]->getNbFaces(); f++) {
+                        Face* face = entities[i]->getFace(f);
+                        std::string alias = face->getMaterial().getTexId();
+                        if (alias != "") {
+                            face->getMaterial().clearTextures();
+                            face->getMaterial().addTexture(tm.getResourceByAlias(alias), face->getMaterial().getTexRect());
+                        } else {
+                            face->getMaterial().clearTextures();
+                            face->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
+                        }
+                    }
+                }
+                ifs3.close();
+            }
+            std::ifstream ifs2(appliname+"\\"+"scenes.oc");
+            unsigned int size;
+            if (ifs2) {
+                ITextArchive ia2(ifs2);
+                ia2(size);
+                for (unsigned int i = 0; i < size; i++) {
+                    std::string name;
+                    ia2(name);
+                    std::string type;
+                    ia2(type);
+                    int cellWidth;
+                    int cellHeight;
+                    bool is2DIsoMatrix;
+                    if (type == "Map") {
+                        std::cout<<"load map"<<std::endl;
+                        ia2(cellWidth);
+                        ia2(cellHeight);
+                        Map* scene = new Map(&getRenderComponentManager(),name,cellWidth,cellHeight,0);
+                        ia2(is2DIsoMatrix);
+                        BaseChangementMatrix bcm;
+                        if (is2DIsoMatrix) {
+                            bcm.set2DIsoMatrix();
+                        }
+                        cshapes.clear();
+                        for (int i = 0; i < getRenderWindow().getSize().x; i+=100) {
+                            for (int j = 0; j < getRenderWindow().getSize().y; j+=50) {
+                                ConvexShape cshape(4);
+                                cshape.setFillColor(sf::Color::Transparent);
+                                cshape.setOutlineColor(sf::Color(75, 75, 75));
+                                cshape.setOutlineThickness(1.f);
+                                Vec2f points[4];
+                                points[0] = Vec2f(0, 0);
+                                points[1] = Vec2f(100, 0);
+                                points[2] = Vec2f(100, 50);
+                                points[3] = Vec2f(0, 50);
+                                for (unsigned int n = 0; n < 4; n++) {
+                                    points[n] = bcm.changeOfBase(points[n]);
+                                    points[n] += Vec2f(i, j);
+                                    cshape.setPoint(n, sf::Vector3f(points[n].x, points[n].y, 0));
+                                }
+                                cshapes.push_back(cshape);
                             }
-                            cshapes.push_back(cshape);
+                        }
+                        scene->setBaseChangementMatrix(bcm);
+                        World::addEntityManager(scene);
+                        World::setCurrentEntityManager(name);
+                        for (unsigned int e = 0; e < entities.size(); e++) {
+                            std::cout<<"add entity"<<std::endl;
+                            World::addEntity(entities[e]);
                         }
                     }
-                    scene->setBaseChangementMatrix(bcm);
-                    World::addEntityManager(scene);
-                    World::setCurrentEntityManager(name);
-                    for (unsigned int e = 0; e < entities.size(); e++) {
-                        std::cout<<"add entity"<<std::endl;
-                        World::addEntity(entities[e]);
-                    }
                 }
+                ifs2.close();
             }
-            ifs2.close();
-        }
-        std::ifstream ifs4(appliname+"\\"+"timers.oc");
-        if (ifs4) {
-            ITextArchive ia4(ifs4);
-            ia4(size);
-            for (unsigned int i  = 0; i < size; i++) {
-                std::string name;
-                std::string type;
-                ia4(name);
-                ia4(type);
-                if (type == "AnimationUpdater") {
-                    AnimUpdater* au = new AnimUpdater();
-                    au->setName(name);
-                    std::vector<int> animsIds;
-                    ia4(animsIds);
-                    for (unsigned int a = 0; a < animsIds.size(); a++) {
-                        Entity* entity = World::getEntity(animsIds[a]);
-                        if (entity != nullptr && dynamic_cast<Anim*>(entity)) {
-                            au->addAnim(static_cast<Anim*>(entity));
+            std::ifstream ifs4(appliname+"\\"+"timers.oc");
+            if (ifs4) {
+                ITextArchive ia4(ifs4);
+                ia4(size);
+                for (unsigned int i  = 0; i < size; i++) {
+                    std::string name;
+                    std::string type;
+                    ia4(name);
+                    ia4(type);
+                    if (type == "AnimationUpdater") {
+                        AnimUpdater* au = new AnimUpdater();
+                        au->setName(name);
+                        std::vector<int> animsIds;
+                        ia4(animsIds);
+                        for (unsigned int a = 0; a < animsIds.size(); a++) {
+                            Entity* entity = World::getEntity(animsIds[a]);
+                            if (entity != nullptr && dynamic_cast<Anim*>(entity)) {
+                                au->addAnim(static_cast<Anim*>(entity));
+                            }
                         }
+                        World::addTimer(au);
                     }
-                    World::addTimer(au);
                 }
+                ifs4.close();
             }
-            ifs4.close();
-        }
-        std::ifstream ifs5(appliname+"\\"+"components.oc");
-        if (ifs5) {
-            ITextArchive ia5(ifs5);
-            ia5(size);
-            for (unsigned int i = 0; i < size; i++) {
-                std::string name;
-                std::string type;
-                ia5(name);
-                ia5(type);
-                if (type == "PerPixelLinkedList") {
-                    std::cout<<"load components"<<std::endl;
-                    int layer;
-                    ia5(layer);
-                    std::string expression;
-                    ia5(expression);
-                    std::cout<<"layer : "<<layer<<std::endl;
-                    PerPixelLinkedListRenderComponent* ppll = new PerPixelLinkedListRenderComponent(getRenderWindow(),layer,expression,ContextSettings(0, 0, 4, 4, 6));
-                    ppll->setName(name);
-                    getRenderComponentManager().addComponent(ppll);
-                    dpSelectComponent->addItem(name, 15);
+            std::ifstream ifs5(appliname+"\\"+"components.oc");
+            if (ifs5) {
+                ITextArchive ia5(ifs5);
+                ia5(size);
+                for (unsigned int i = 0; i < size; i++) {
+                    std::string name;
+                    std::string type;
+                    ia5(name);
+                    ia5(type);
+                    if (type == "PerPixelLinkedList") {
+                        std::cout<<"load components"<<std::endl;
+                        int layer;
+                        ia5(layer);
+                        std::string expression;
+                        ia5(expression);
+                        std::cout<<"layer : "<<layer<<std::endl;
+                        PerPixelLinkedListRenderComponent* ppll = new PerPixelLinkedListRenderComponent(getRenderWindow(),layer,expression,ContextSettings(0, 0, 4, 4, 6));
+                        ppll->setName(name);
+                        getRenderComponentManager().addComponent(ppll);
+                        dpSelectComponent->addItem(name, 15);
+                    }
                 }
+                ifs5.close();
             }
-            ifs5.close();
-        }
-        std::ifstream ifs6(appliname+"\\"+"workers.oc");
-        if (ifs6) {
-            ITextArchive ia6(ifs6);
-            ia6(size);
-            for (unsigned int i = 0; i < size; i++) {
-                std::string name;
-                std::string type;
-                ia6(name);
-                ia6(type);
-                if (type == "EntityUpdater") {
-                    std::cout<<"load entities updater"<<std::endl;
-                    EntitiesUpdater* eu = new EntitiesUpdater();
-                    eu->setName(name);
-                    World::addWorker(eu);
+            std::ifstream ifs6(appliname+"\\"+"workers.oc");
+            if (ifs6) {
+                ITextArchive ia6(ifs6);
+                ia6(size);
+                for (unsigned int i = 0; i < size; i++) {
+                    std::string name;
+                    std::string type;
+                    ia6(name);
+                    ia6(type);
+                    if (type == "EntityUpdater") {
+                        std::cout<<"load entities updater"<<std::endl;
+                        EntitiesUpdater* eu = new EntitiesUpdater();
+                        eu->setName(name);
+                        World::addWorker(eu);
+                    }
                 }
+                ifs6.close();
             }
-            ifs6.close();
-        }
-        std::vector<std::string> classes = Class::getClasses(appliname+"\\Scripts");
-        for (unsigned int i = 0; i < classes.size(); i++) {
-            Class cl = Class::getClass(classes[i]);
-            if (cl.getNamespace() == "") {
-                dpSelectClass->addItem(classes[i], 15);
-            } else {
-                dpSelectClass->addItem(cl.getNamespace()+"::"+classes[i], 15);
+            std::vector<std::string> classes = Class::getClasses(appliname+"\\Scripts");
+            for (unsigned int i = 0; i < classes.size(); i++) {
+                Class cl = Class::getClass(classes[i]);
+                if (cl.getNamespace() == "") {
+                    dpSelectClass->addItem(classes[i], 15);
+                } else {
+                    dpSelectClass->addItem(cl.getNamespace()+"::"+classes[i], 15);
+                }
             }
         }
         fdProjectPath->setVisible(false);
@@ -1423,7 +1450,7 @@ void ODFAEGCreator::processKeyHeldDown (IKeyboard::Key key) {
 void ODFAEGCreator::actionPerformed(Button* button) {
     if (button->getText() == "Create") {
         appliname = ta->getText();
-        std::ofstream applis(appliname+".oc");
+        std::ofstream applis(appliname+".poc");
         applis<<appliname<<std::endl;
         applitype = dpList->getSelectedItem();
         #if defined (ODFAEG_SYSTEM_LINUX)
@@ -1837,7 +1864,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             toInsert += "   v"+cl.getName()+".push_back("+taObjectName->getText()+");\n";
             sourceCode.insert(pos, toInsert);
         }
-        std::cout<<"source code : "<<sourceCode<<std::endl;
+        //std::cout<<"source code : "<<sourceCode<<std::endl;
         std::ofstream file("sourceCode.cpp");
         file<<sourceCode;
         file.close();
@@ -2421,6 +2448,12 @@ void ODFAEGCreator::displayInfos (Shape* shape) {
     dpSelectTexture = new DropDownList(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif),"NONE", 15);
     dpSelectTexture->setName("SELECTTEXT");
     dpSelectTexture->setParent(pMaterial);
+    TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
+    std::vector<std::string> paths = tm.getPaths();
+    for (unsigned int i = 0; i < paths.size(); i++) {
+        std::vector<std::string> alias = tm.getAliasByResource(const_cast<Texture*>(tm.getResourceByPath(paths[i])));
+        dpSelectTexture->addItem(alias[0], 15);
+    }
     Command cmdTxtChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectTexture), FastDelegate<void>(&ODFAEGCreator::onSelectedTextureChanged, this, dpSelectTexture));
     dpSelectTexture->getListener().connect("TextureChanged", cmdTxtChanged);
     selectTextNode->addOtherComponent(dpSelectTexture,Vec2f(0.75f, 0.025f));
@@ -3218,6 +3251,12 @@ void ODFAEGCreator::displayInfos (Tile* tile) {
     dpSelectTexture = new DropDownList(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif),"NONE", 15);
     dpSelectTexture->setName("SELECTTEXT");
     dpSelectTexture->setParent(pMaterial);
+    TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
+    std::vector<std::string> paths = tm.getPaths();
+    for (unsigned int i = 0; i < paths.size(); i++) {
+        std::vector<std::string> alias = tm.getAliasByResource(const_cast<Texture*>(tm.getResourceByPath(paths[i])));
+        dpSelectTexture->addItem(alias[0], 15);
+    }
     Command cmdTxtChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectTexture), FastDelegate<void>(&ODFAEGCreator::onSelectedTextureChanged, this, dpSelectTexture));
     dpSelectTexture->getListener().connect("TextureChanged", cmdTxtChanged);
     selectTextNode->addOtherComponent(dpSelectTexture,Vec2f(0.75f, 0.025f));
@@ -3266,33 +3305,41 @@ void ODFAEGCreator::updateScriptPos(Transformable* shape) {
         if (dynamic_cast<Shape*>(shape)) {
             if(content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition") == std::string::npos) {
                 unsigned int pos = content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+" = std::make_unique<RectangleShape>");
-                std::string subs = content.substr(pos);
-                pos += subs.find_first_of('\n') + 1;
-                content.insert(pos,"    shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
-                +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+");\n");
+                if (pos != std::string::npos) {
+                    std::string subs = content.substr(pos);
+                    pos += subs.find_first_of('\n') + 1;
+                    content.insert(pos,"    shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
+                    +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+");\n");
+                }
             } else {
                 unsigned int pos = content.find("shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition");
-                std::string subs = content.substr(pos);
-                unsigned int endpos = subs.find_first_of('\n') + pos + 1;
-                content.erase(pos, endpos - pos);
-                content.insert(pos,"shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
-                +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+"));\n");
+                if (pos != std::string::npos) {
+                    std::string subs = content.substr(pos);
+                    unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+                    content.erase(pos, endpos - pos);
+                    content.insert(pos,"shape"+conversionUIntString(static_cast<Shape*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
+                    +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+"));\n");
+                }
             }
         }
         if (dynamic_cast<Tile*>(shape)) {
             if(content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition") == std::string::npos) {
                 unsigned int pos = content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+" = new Tile");
-                std::string subs = content.substr(pos);
-                pos += subs.find_first_of('\n') + 1;
-                content.insert(pos,"    tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
-                +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+");\n");
+                if (pos != std::string::npos) {
+                    std::string subs = content.substr(pos);
+                    pos += subs.find_first_of('\n') + 1;
+                    content.insert(pos,"    tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
+                    +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+");\n");
+                }
             } else {
                 unsigned int pos = content.find("tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition");
-                std::string subs = content.substr(pos);
-                unsigned int endpos = subs.find_first_of('\n') + pos + 1;
-                content.erase(pos, endpos - pos);
-                content.insert(pos,"tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
-                +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+"));\n");
+                if (pos != std::string::npos) {
+                    std::string subs = content.substr(pos);
+                    unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+                    content.erase(pos, endpos - pos);
+                    content.insert(pos,"tile"+conversionUIntString(static_cast<Tile*>(shape)->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
+                    +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+"));\n");
+                }
             }
         }
     }

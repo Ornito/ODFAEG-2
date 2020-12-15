@@ -7,6 +7,11 @@ namespace odfaeg {
         tileSize(tileSize), nbTilesPerRow(nbTilesPerRow) {
 
         }
+        Entity* BigTile::clone() {
+            BigTile* bt = new BigTile();
+            Entity::copy(bt);
+            return bt;
+        }
         void BigTile::addTile (Tile *tile, math::Vec2f tilePos, float* heights) {
             if (heights != nullptr) {
                 tile->setDrawMode(Entity::NORMAL);

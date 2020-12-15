@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "../../../lib/libodfaeg-graphics-s.a"
-  "../../../lib/libodfaeg-graphics-s.pdb"
+  "../../../lib/libodfaeg-graphics-s-d.a"
+  "../../../lib/libodfaeg-graphics-s-d.pdb"
   "CMakeFiles/odfaeg-graphics.dir/2D/ambientLight.cpp.obj"
   "CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.obj"
   "CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.obj"

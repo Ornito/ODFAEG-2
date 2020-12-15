@@ -3,6 +3,11 @@ namespace odfaeg {
     namespace graphic {
         Mesh::Mesh() : Entity(math::Vec3f(0, 0, 0), math::Vec3f(0, 0, 0),math::Vec3f(0, 0, 0), "E_MESH") {}
         Mesh::Mesh(math::Vec3f position, math::Vec3f size, std::string type) : Entity(position, size, size*0.5f, type) {}
+        Entity* Mesh::clone() {
+            Mesh* mesh = new Mesh();
+            Entity::copy(mesh);
+            return mesh;
+        }
         bool Mesh::operator==(Entity& other) {
             Mesh *mesh = dynamic_cast<Mesh*>(&other);
             if (mesh == nullptr)

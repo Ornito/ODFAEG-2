@@ -41,6 +41,7 @@ namespace odfaeg {
                 * \fn void initTriangles ();
                 * \brief init the triangles of the light.
                 */
+                Entity* clone();
                 void initTriangles ();
                 /**
                 * \fn int& getLightId()

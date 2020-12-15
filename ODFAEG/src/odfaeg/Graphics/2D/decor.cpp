@@ -11,6 +11,11 @@ namespace odfaeg {
                 shadowOrigin = math::Vec3f(t->getPosition().x, t->getPosition().y, 0) + getSize();
                 setShadowOrigin(shadowOrigin);
             }
+            Entity* Decor::clone() {
+                Decor* decor = new Decor();
+                Entity::copy(decor);
+                return decor;
+            }
             void Decor::onMove(math::Vec3f &t) {
                 Entity::onMove(t);
             }

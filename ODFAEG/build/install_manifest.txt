@@ -264,10 +264,10 @@ C:/Program Files (x86)/ODFAEG/extlibs/libs-mingw/x86b/libsfml-network.a
 C:/Program Files (x86)/ODFAEG/extlibs/libs-mingw/x86/libsfml-audio.a
 C:/Program Files (x86)/ODFAEG/extlibs/bin/x86/libsndfile-1.dll
 C:/Program Files (x86)/ODFAEG/extlibs/bin/x86/openal32.dll
-C:/Program Files (x86)/ODFAEG/lib/libodfaeg-core-s.a
-C:/Program Files (x86)/ODFAEG/lib/libodfaeg-math-s.a
-C:/Program Files (x86)/ODFAEG/lib/libodfaeg-window-s.a
-C:/Program Files (x86)/ODFAEG/lib/libodfaeg-physics-s.a
-C:/Program Files (x86)/ODFAEG/lib/libodfaeg-graphics-s.a
-C:/Program Files (x86)/ODFAEG/lib/libodfaeg-network-s.a
-C:/Program Files (x86)/ODFAEG/lib/libodfaeg-audio-s.a
+C:/Program Files (x86)/ODFAEG/lib/libodfaeg-core-s-d.a
+C:/Program Files (x86)/ODFAEG/lib/libodfaeg-math-s-d.a
+C:/Program Files (x86)/ODFAEG/lib/libodfaeg-window-s-d.a
+C:/Program Files (x86)/ODFAEG/lib/libodfaeg-physics-s-d.a
+C:/Program Files (x86)/ODFAEG/lib/libodfaeg-graphics-s-d.a
+C:/Program Files (x86)/ODFAEG/lib/libodfaeg-network-s-d.a
+C:/Program Files (x86)/ODFAEG/lib/libodfaeg-audio-s-d.a

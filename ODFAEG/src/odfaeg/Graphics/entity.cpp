@@ -35,6 +35,33 @@ namespace odfaeg {
             water = false;
             layer = 0;
         }
+        void Entity::copy(Entity* entity) {
+            entity->setPosition(getPosition());
+            entity->setSize(getSize());
+            entity->setOrigin(getOrigin());
+            entity->setRotation(getRotation());
+            entity->parent = (parent == nullptr) ? nullptr : parent->clone();
+            entity->entityState = entityState;
+            entity->alreadySerialized = false;
+            entity->collisionVolume = (collisionVolume == nullptr) ? nullptr : getCollisionVolume()->clone();
+            entity->shadowOrigin = getShadowOrigin();
+            entity->shadowScale = getShadowScale();
+            entity->shadowRotationAngle = getShadowRotationAngle();
+            entity->shadowRotationAxis = getShadowRotationAxis();
+            entity->boneIndex = boneIndex;
+            entity->drawMode = drawMode;
+            entity->reflectable = reflectable;
+            entity->water = water;
+            entity->layer = layer;
+            entity->type = type;
+            for (unsigned int i = 0; i < faces.size(); i++) {
+
+                entity->addFace(new Face(faces[i]->getVertexArray(), faces[i]->getMaterial(), entity->getTransform()));
+            }
+            for (unsigned int i = 0; i < children.size(); i++) {
+                entity->addChild(children[i]->clone());
+            }
+        }
         void Entity::setLayer(float layer) {
             if (layer > nbLayers)
                 nbLayers = layer;
@@ -288,5 +315,6 @@ namespace odfaeg {
             void Entity::setReflectable(bool reflectable) {
                 this->reflectable = reflectable;
             }
+
     }
 }

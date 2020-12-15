@@ -30,6 +30,19 @@ namespace odfaeg {
             interpolatedFrame = std::make_unique<Mesh>(position, size, "E_MESH");
             interpolatedFrame->setParent(this);
         }
+        Entity* Anim::clone() {
+            Anim* anim = new Anim();
+            Entity::copy(anim);
+            anim->fr = fr;
+            anim->currentFrameIndex = currentFrameIndex;
+            anim->currentFrame = currentFrame;
+            anim->previousFrame = previousFrame;
+            anim->nextFrame = nextFrame;
+            anim->loop = loop;
+            anim->interpLevels = interpLevels;
+            anim->interpPerc = interpPerc;
+            anim->interpolatedFrame.reset(interpolatedFrame->clone());
+        }
         bool Anim::isCurrentFrameChanged() {
             return currentFrameChanged;
         }

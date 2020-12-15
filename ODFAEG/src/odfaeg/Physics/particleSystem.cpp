@@ -79,6 +79,15 @@ namespace odfaeg
             graphic::Face* face = new graphic::Face(mVertices, material, getTransform());
             addFace(face);
         }
+        graphic::Entity* ParticleSystem::clone() {
+            ParticleSystem* ps = new ParticleSystem(getPosition(), getSize());
+            Entity::copy(ps);
+            ps->mAffectors = mAffectors;
+            ps->mEmitters = mEmitters;
+            ps->mTexture = mTexture;
+            ps->mTextureRects = mTextureRects;
+            ps->mVertices = mVertices;
+        }
         void ParticleSystem::setScene(graphic::EntityManager* scene) {
             this->scene = scene;
         }

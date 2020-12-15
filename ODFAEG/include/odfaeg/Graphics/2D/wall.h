@@ -107,6 +107,7 @@ namespace odfaeg {
                     void vtserialize(Archive & ar) {
                         Model::vtserialize(ar);
                     }
+                    Entity* clone();
             };
         }
     }

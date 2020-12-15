@@ -121,6 +121,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::string applitype;
         std::string path;
         std::map<std::string, std::string> cppAppliContent;
+        std::vector<std::string> openedProjects;
         std::vector<std::string> textPaths;
         std::vector<odfaeg::graphic::gui::TextArea*> tmpTextAreas;
         std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode, rootMaterialNode, rootInfosNode, rootShadowsNode, rootCollisionNode, rootObjectParams;

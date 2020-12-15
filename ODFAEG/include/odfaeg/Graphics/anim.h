@@ -170,6 +170,7 @@ namespace odfaeg {
                     ar(currentFrameChanged);
                     ar(interpolatedFrame);
                 }
+                Entity* clone();
                 void onMove(math::Vec3f& t);
                 /**
                 *  \fn ~Anim()

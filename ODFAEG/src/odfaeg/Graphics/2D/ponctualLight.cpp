@@ -23,7 +23,15 @@ namespace odfaeg {
                 this->intensity = intensity;
                 initTriangles ();
             }
-
+            Entity* PonctualLight::clone() {
+                PonctualLight* pl = new PonctualLight();
+                Entity::copy(pl);
+                pl->intensity = intensity;
+                pl->color = color;
+                pl->height = height;
+                pl->triangles = triangles;
+                pl->quality = quality;
+            }
             //On initialise les triangles lumineux pour former une élipse.
             void PonctualLight::initTriangles () {
 

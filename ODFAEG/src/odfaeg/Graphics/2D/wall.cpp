@@ -12,6 +12,11 @@ namespace odfaeg {
                 int c = getSize().y * sy;
                 setShadowCenter(math::Vec3f(0, 0, -c));
             }
+            Entity* Wall::clone() {
+                Wall* w = new Wall();
+                Entity::copy(w);
+                return w;
+            }
             bool Wall::isLeaf() const {
                 return false;
             }

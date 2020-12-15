@@ -33,6 +33,7 @@ namespace odfaeg {
             * \brief compare two entities.
             * \param entity : the other entity.
             */
+            Entity* clone();
             bool operator== (Entity &entity);
             /**
             * \fn void addTile (Tile *tile);

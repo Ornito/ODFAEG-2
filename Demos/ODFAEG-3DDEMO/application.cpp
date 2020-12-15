@@ -122,7 +122,8 @@ void MyAppli::onInit() {
     billboard->setView(view);
     billboard->setCenter(Vec3f(0, 0, z+20));
     g2d::AmbientLight::getAmbientLight().setColor(sf::Color::White);
-    Entity* model = new g3d::Model("tilesets/mesh_puddingmill/puddingmill.obj", Vec3f(0, 0, 0));
+    Model loader = g3d::Model();
+    Entity* model = loader.loadModel("tilesets/mesh_puddingmill/puddingmill.obj")
     model->move(Vec3f(0, 0, 20));
     model->setShadowCenter(Vec3f(0, 20, 0));
     World::addEntity(model);

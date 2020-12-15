@@ -47,8 +47,7 @@ namespace odfaeg {
                 * \param tile : the tile to copy.
                 */
                 Tile (const Tile& tile);
-                Tile& operator= (Tile& tile);
-                Tile* clone();
+                Entity* clone();
                 void changeVerticesHeights (float h1, float h2, float h3, float h4);
                 /**
                 * \fn void setParentType (std::string parentType);

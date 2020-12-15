@@ -389,6 +389,8 @@ namespace odfaeg {
                 void setLayer(float layer);
                 float getLayer();
                 static float getNbLayers();
+                void copy (Entity* entity);
+                virtual Entity* clone() = 0;
             protected :
                 math::Vec3f shadowCenter, shadowScale, shadowRotationAxis, shadowOrigin, refractDir; /**> The center of the shadow of the entity.*/
                 float shadowRotationAngle;

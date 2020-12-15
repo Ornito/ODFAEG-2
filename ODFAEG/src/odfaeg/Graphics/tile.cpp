@@ -36,8 +36,10 @@ namespace odfaeg {
             water = tile.water;
             layer = tile.layer;
         }
-        Tile* Tile::clone() {
-            return new Tile(getFaces()[0]->getMaterial().getTexture(), getPosition(), getSize(), getFaces()[0]->getMaterial().getTexRect(),getFaces()[0]->getVertexArray()[0].color,getParent());
+        Entity* Tile::clone() {
+            Tile* t = new Tile();
+            Entity::copy(t);
+            return t;
         }
         Tile::Tile (const Texture *image, math::Vec3f position, math::Vec3f size, sf::IntRect subRect, sf::Color color, Entity *parent)
         : Entity (position, size, size * 0.5f, "E_TILE") {

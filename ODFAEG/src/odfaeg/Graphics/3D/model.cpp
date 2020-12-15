@@ -2,24 +2,24 @@
 namespace odfaeg {
     namespace graphic {
         namespace g3d {
-            Model::Model (std::string path, math::Vec3f position) : Entity(position, math::Vec3f(0, 0, 0), math::Vec3f(0, 0, 0),"E_3DMODEL") {
-                loadModel(path);
+            Model::Model ()  {
                 float maxF = std::numeric_limits<float>::max();
                 float minF = std::numeric_limits<float>::min();
                 min = math::Vec3f(maxF, maxF, maxF);
                 max = math::Vec3f(minF, minF, minF);
             }
-            void Model::loadModel(std::string path) {
+            Entity* Model::loadModel(std::string path) {
+                Mesh* emesh = new Mesh(math::Vec3f(0, 0, 0), math::Vec3f(0, 0, 0),"E_MESH");
                 Assimp::Importer importer;
                 const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
                 if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
                 {
                     std::cerr << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
-                    return;
+                    return emesh;
                 }
                 directory = path.substr(0, path.find_last_of('/'));
-                processNode(scene->mRootNode, scene);
-                setSize(max - min);
+                processNode(scene->mRootNode, scene, emesh);
+                return emesh;
             }
             bool Model::operator==(Entity& other) {
                 if (!dynamic_cast<Model*>(&other))
@@ -44,24 +44,23 @@ namespace odfaeg {
             bool Model::isLeaf() const {
                 return false;
             }
-            void Model::processNode(aiNode *node, const aiScene *scene)
+            void Model::processNode(aiNode *node, const aiScene *scene, Mesh* emesh)
             {
+
                 // process all the node's meshes (if any)
                 for(unsigned int i = 0; i < node->mNumMeshes; i++)
                 {
                     aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-                    Entity* emesh = processMesh(mesh, scene);
-                    addChild(emesh);
-                    emesh->setParent(this);
+                    processMesh(mesh, scene, emesh);
                 }
                 // then do the same for each of its children
                 for(unsigned int i = 0; i < node->mNumChildren; i++)
                 {
-                    processNode(node->mChildren[i], scene);
+                    processNode(node->mChildren[i], scene, emesh);
                 }
             }
-            Entity* Model::processMesh(aiMesh *mesh, const aiScene *scene) {
-                Entity* emesh = new Mesh(getPosition(), math::Vec3f(0, 0, 0),"E_MESH");
+            void Model::processMesh(aiMesh *mesh, const aiScene *scene, Mesh* emesh) {
+
                 Material mat;
                 if(mesh->mMaterialIndex >= 0) {
                     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
@@ -77,7 +76,7 @@ namespace odfaeg {
                     }
                 }
                 std::vector<math::Vec3f> verts;
-                Face* f = new Face(sf::Triangles, getTransform());
+                Face* f = new Face(sf::Triangles, emesh->getTransform());
                 f->setMaterial(mat);
                 for(unsigned int i = 0; i < mesh->mNumFaces; i++)
                 {
@@ -108,7 +107,6 @@ namespace odfaeg {
                     min.z = exts[2][0];
                 if (exts[2][1] > max.z)
                     max.z = exts[2][1];
-                return emesh;
             }
             std::vector<const Texture*> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
             {

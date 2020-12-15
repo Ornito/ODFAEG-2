@@ -7,9 +7,9 @@
 namespace odfaeg {
     namespace graphic {
         namespace g3d {
-            class Model : public Entity {
+            class Model {
                 public :
-                    Model (std::string path, math::Vec3f position);
+                    Model ();
                     bool operator==(Entity& other);
                     bool isAnimated() const;
                     bool isModel() const;
@@ -18,9 +18,9 @@ namespace odfaeg {
                     bool isShadow() const;
                     bool isLeaf() const;
                 private :
-                    void loadModel(std::string path);
-                    void processNode(aiNode *node, const aiScene *scene);
-                    Entity* processMesh(aiMesh *mesh, const aiScene *scene);
+                    Entity* loadModel(std::string path);
+                    void processNode(aiNode *node, const aiScene *scene, Mesh* emesh);
+                    void processMesh(aiMesh *mesh, const aiScene *scene, Mesh* emesh);
                     std::vector<const Texture*> loadMaterialTextures(aiMaterial *mat, aiTextureType type,
                                              std::string typeName);
                     core::TextureManager<> tm;

@@ -15,6 +15,7 @@ namespace odfaeg {
             bool isShadow() const;
             bool isLeaf() const;
             void onDraw(RenderTarget& target, RenderStates states);
+            Entity* clone();
             template <typename Archive>
             void vtserialize(Archive& ar) {
                 Entity::vtserialize(ar);
