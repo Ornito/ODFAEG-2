@@ -236,11 +236,11 @@ namespace odfaeg {
                     innerClass += "::"+parts[0];
                 }
                 //std::cout<<"inner class : "<<innerClass<<std::endl;
-                lvl++;
                 int pos = fileContent.find_first_of("{");
                 fileContent = fileContent.substr(pos, fileContent.size() - pos + 1);
-                checkInnerClass(innerClass, type, fileContent, lvl, cl);
-            } else {
+                checkInnerClass(innerClass, type, fileContent, lvl+1, cl);
+            }
+            if (lvl > 0) {
                 std::cout<<"lvl : "<<lvl<<std::endl;
                 Class innerCl(innerClass, cl.getFilePath(), cl.getSourcePath());
                 int pos = fileContent.find_first_of("};");

@@ -6,7 +6,37 @@
 
 #IncludeRegexTransform: 
 
+../extlibs/headers/SFML/Config.hpp
+TargetConditionals.h
+../extlibs/headers/SFML/TargetConditionals.h
+
 ../extlibs/headers/dlfcn.h
+
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/class.hpp
+string
+-
+utilities.h
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/utilities.h
+erreur.h
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
+fstream
+-
+iostream
+-
+windows.h
+-
+dlfcn.h
+-
+string
+-
+constructor.hpp
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/constructor.hpp
+
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/constructor.hpp
+string
+-
+vector
+-
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
 exception
@@ -20,23 +50,29 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/export.hpp
 ../config.hpp
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
 
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/runtimeCompiler.hpp
-vector
--
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/utilities.h
 string
 -
-fstream
+regex
 -
-dlfcn.h
+vector
 -
-erreur.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
+sstream
+-
+SFML/Config.hpp
+-
+dirent.h
+-
+unistd.h
+-
+sys/types.h
+-
+sys/stat.h
+-
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
 
-C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/runtimeCompiler.cpp
-../../../include/odfaeg/Core/runtimeCompiler.hpp
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/runtimeCompiler.hpp
-iostream
--
+C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/class.cpp
+../../../include/odfaeg/Core/class.hpp
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/class.hpp
 

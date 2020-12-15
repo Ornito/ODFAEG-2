@@ -80,8 +80,8 @@ int main(int argc, char* argv[]) {
    std::cout<<vItem.size()<<std::endl;
    odfaeg::core::OTextArchive oaItem (ofItem);
    oaItem (vItem);
-   ofItem.close();
-   Class cl = Class::getClass("Item");*/
+   ofItem.close();*/
+   Class cl = Class::getClass("Item");
     ODFAEGCreator app(sf::VideoMode(1000,700),"ODFAEG Creator");
     return app.exec();
 
