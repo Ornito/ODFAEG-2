@@ -1344,7 +1344,9 @@ void ODFAEGCreator::showHeadersFiles(Label* label) {
         findFiles("hpp", files, cpath+"\\"+appliname);
         #endif // if
         for (unsigned int i = 0; i < files.size(); i++) {
-            Label* lab = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), files[i], 15);
+            int pos = files[i].find_last_of("\\");
+            std::string path = files[i].substr(pos+1, files[i].size()-pos-1);
+            Label* lab = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), path, 15);
             lab->setParent(pProjects);
             lab->setBackgroundColor(sf::Color::White);
             lab->setForegroundColor(sf::Color::Yellow);
@@ -1372,7 +1374,9 @@ void ODFAEGCreator::showSourcesFiles(Label* label) {
         findFiles("cpp", files, cpath+"\\"+appliname);
         #endif // if
         for (unsigned int i = 0; i < files.size(); i++) {
-            Label* lab = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), files[i], 15);
+            int pos = files[i].find_last_of("\\");
+            std::string path = files[i].substr(pos+1, files[i].size()-pos-1);
+            Label* lab = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), path, 15);
             Node* lNode = new Node("source files", lab, Vec2f(0, 0), Vec2f(1.f, 0.025f), node);
             lab->setBackgroundColor(sf::Color::White);
             lab->setForegroundColor(sf::Color::Yellow);
