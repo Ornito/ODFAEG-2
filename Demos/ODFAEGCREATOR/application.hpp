@@ -94,7 +94,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onCollisionBoundingBoxChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedClassChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onSelectedFunctionChanged(odfaeg::graphic::gui::DropDownList* dp);
-    void onSelectedFunctionDroppedDown(odfaeg::graphic::gui::DropDownList* dp);
+    void onDroppedDown(odfaeg::graphic::gui::DropDownList* dp);
     enum Fonts {
         Serif
     };
@@ -113,7 +113,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         *taMinLifeTime, *taMaxLifeTime, *taRCPosX, *taRCPosY, *taRCPosZ, *taRCSizeX, *taRCSizeY, *taRCSizeZ, *taDeflX, *taDeflY, *taDeflZ, *taDeflAngle,
         *taRotMin, *taRotMax, *taTexIndexMin, *taTexIndexMax, *taScaleMinX, *taScaleMinY, *taScaleMinZ, *taScaleMaxX, *taScaleMaxY, *taScaleMaxZ, *taColor1, *taColor2,
         *taParticleSystemUpdaterName;
-        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent, *dpSelectAU, *dpSelectPPType, *dpSelectPSU, *dpSelectClass, *dpSelectFunction;
+        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent, *dpSelectAU, *dpSelectPPType, *dpSelectPSU, *dpSelectClass, *dpSelectFunction, *dpSelectPointerType;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
         odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight, *taWallType, *taIntensity, *taQuality, *taWindowPos, *taWindowSize, *taWindowTitle, *taWindowName, *taObjectName;
         odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial, *pShadows, *pCollisions, *pComponent, *pObjectsParameters;

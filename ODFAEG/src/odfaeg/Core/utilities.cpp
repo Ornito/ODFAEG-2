@@ -4,22 +4,23 @@ namespace odfaeg {
     namespace core {
         using namespace std;
         using namespace sf;
-        std::vector<std::string> split (const std::string &input, const std::string &regex) {
-            std::vector<std::string> output;
-            std::string::size_type prev_pos = 0, pos = 0;
-
-            while((pos = input.find(regex, pos)) != std::string::npos)
+        std::vector<std::string> split(const std::string& stringToBeSplitted, const std::string& delimeter)
+        {
+            std::vector<std::string> splittedString;
+            int startIndex = 0;
+            int  endIndex = 0;
+            while( (endIndex = stringToBeSplitted.find(delimeter, startIndex)) < stringToBeSplitted.size() )
             {
-                std::string substring( input.substr(prev_pos, pos-prev_pos) );
-
-                output.push_back(substring);
-
-                prev_pos = ++pos;
+                std::string val = stringToBeSplitted.substr(startIndex, endIndex - startIndex);
+                splittedString.push_back(val);
+                startIndex = endIndex + delimeter.size();
             }
-
-            output.push_back(input.substr(prev_pos, pos-prev_pos)); // Last word
-
-            return output;
+            if(startIndex < stringToBeSplitted.size())
+            {
+                std::string val = stringToBeSplitted.substr(startIndex);
+                splittedString.push_back(val);
+            }
+            return splittedString;
         }
 
         float conversionStringFloat(std::string str)

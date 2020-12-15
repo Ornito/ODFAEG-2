@@ -2,9 +2,14 @@
 #include <iostream>
 namespace odfaeg {
     namespace core {
-        RuntimeCompiler::RuntimeCompiler(std::string functionName) : funcName(functionName) {
+        RuntimeCompiler::RuntimeCompiler(std::string functionName) : funcName(functionName), isDllOpened(false) {
+
         }
         void RuntimeCompiler::compile() {
+            if (isDllOpened) {
+                dlclose(flib);
+                isDllOpened = false;
+            }
             std::ofstream file(funcName+".DEF");
             file<<"LIBRARY \""+funcName+"\"\n";
             file<<"EXPORTS\n";
@@ -36,7 +41,7 @@ namespace odfaeg {
                     }
                     ifs.close();
                 }
-                //std::cout<<"command : "<<command<<std::endl;
+                std::cout<<"command : "<<command<<std::endl;
             }
             for (unsigned int i = 0; i < libraryDirs.size(); i++) {
                 if (i == 0)
@@ -70,9 +75,22 @@ namespace odfaeg {
                 }
                 ifs.close();
             }
+            /*std::string path = "./"+funcName+".so";
+            flib = dlopen(path.c_str(), RTLD_LAZY);
+            if (!flib) {
+                throw Erreur(10, "Failed to open dynamic library!", 3);
+            }*/
         }
         void RuntimeCompiler::addSourceFile(std::string sourceFile) {
-            sourceFiles.push_back(sourceFile);
+            bool found = false;
+            for (unsigned int i = 0; i < sourceFiles.size(); i++) {
+                if (sourceFiles[i] == sourceFile) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                sourceFiles.push_back(sourceFile);
+            }
         }
         std::string RuntimeCompiler::getCompileErrors() {
             return compileErrors;

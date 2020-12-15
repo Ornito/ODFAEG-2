@@ -33,8 +33,13 @@ namespace odfaeg {
             }
             return classes;
         }
-        Class Class::getClass(std::string name) {
-            std::string appiDir = getCurrentPath();
+        Class Class::getClass(std::string name, std::string path) {
+            std::string appiDir;
+            if (path == "")
+                appiDir = getCurrentPath();
+            else
+                appiDir = path;
+            std::cout<<"path : "<<appiDir<<std::endl;
             std::vector<std::string> files;
             findFiles(".hpp", files, appiDir);
             //Recherche si la classe existe dans le projet.
@@ -57,15 +62,15 @@ namespace odfaeg {
                 }
             }
             findFiles(".cpp", files, appiDir);
-            found = false;
-            for (unsigned int i = 0; i < files.size() && !found; i++) {
+            bool foundSrc = false;
+            for (unsigned int i = 0; i < files.size() && !foundSrc; i++) {
                 ifstream ifs(files[i]);
                 if (ifs) {
                     std::string line;
                     while(getline(ifs, line)) {
                         if (line.find(name+"::"+name) != std::string::npos) {
                             sourceFile = files[i];
-                            found = true;
+                            foundSrc = true;
                         }
                     }
                     ifs.close();
@@ -103,6 +108,7 @@ namespace odfaeg {
                         found = true;
                     }
                 }
+                checkSuperClasses(fileContent, cl);
                 int pos = fileContent.find_first_of("{");
                 fileContent = fileContent.substr(pos+1, fileContent.size()-pos-1);
 
@@ -110,11 +116,33 @@ namespace odfaeg {
                 std::string type = "";
                 int lvl = 0;
                 checkInnerClass(innerClass, type, fileContent, lvl,  cl);
-
                 checkConstructors(fileContent, cl);
                 return cl;
             }
             throw Erreur(70, "Class not found in project files!", 3);
+        }
+        void Class::checkSuperClasses (std::string &fileContent, Class& cl) {
+            int pos = fileContent.find("class");
+            int pos2 = fileContent.find("{");
+            std::string names = fileContent.substr(pos, pos2 - pos);
+            std::vector<std::string> parts = split(names, ":");
+            if (parts.size() > 1) {
+                std::string superClasses = parts[1];
+                parts = split(parts[1], ",");
+                for (unsigned int i = 0; i < parts.size(); i++) {
+                    if (parts[i].find("public") == std::string::npos && parts[i].find("private") == std::string::npos && parts[i].find("protected") == std::string::npos) {
+                        while (parts[i].size() > 0 && parts[i].at(0) == ' ') {
+                            parts[i] = parts[i].erase(0, 1);
+                        }
+                        while (parts[i].size() > 0 && parts[i].at(parts[i].size()-1) == ' ') {
+                            parts[i] = parts[i].erase(parts[i].size()-1, 1);
+                        }
+                        std::vector<std::string> parts2 = split(parts[i], "::");
+                        Class cla = Class::getClass(parts2[parts2.size() - 1], "C:\\");
+                        cl.addSuperClass(cla);
+                    }
+                }
+            }
         }
         void Class::checkConstructors(std::string& fileContent, Class& cl) {
             //std::cout<<"split parts"<<std::endl;
@@ -213,11 +241,15 @@ namespace odfaeg {
                 fileContent = fileContent.substr(pos, fileContent.size() - pos + 1);
                 checkInnerClass(innerClass, type, fileContent, lvl, cl);
             } else {
+                std::cout<<"lvl : "<<lvl<<std::endl;
                 Class innerCl(innerClass, cl.getFilePath(), cl.getSourcePath());
                 int pos = fileContent.find_first_of("};");
                 fileContent = fileContent.substr(pos+2, fileContent.size()-pos-2);
                 cl.addInnerClass(innerCl);
             }
+        }
+        void Class::addSuperClass(Class cl) {
+            superClasses.push_back(cl);
         }
         void Class::setNamespace(std::string namespc) {
             //std::cout<<"namespc : "<<namespc<<std::endl;
@@ -249,6 +281,9 @@ namespace odfaeg {
         }
         std::string Class::getNamespace() {
             return namespc;
+        }
+        std::vector<Class> Class::getSuperClasses() {
+            return superClasses;
         }
     }
 }

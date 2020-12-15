@@ -14,15 +14,19 @@ namespace odfaeg {
             template<typename R, typename... A>
             R run(std::string fName, A... a) {
                 std::string path = "./"+funcName+".so";
-                void* flib = dlopen(path.c_str(), RTLD_LAZY);
-                if (!flib) {
-                    throw Erreur(10, "Failed to open dynamic library!", 3);
+                if (!isDllOpened) {
+                    flib = dlopen(path.c_str(), RTLD_LAZY);
+                    if (!flib) {
+                        throw Erreur(10, "Failed to open dynamic library!", 3);
+                    }
+                    isDllOpened = true;
                 }
                 typedef R(*func)(A...);
                 func pfunc = (func) dlsym(flib, fName.c_str());
                 if (!pfunc) {
                     throw Erreur(10, "Failed to load the function!", 3);
                 }
+
                 return pfunc(a...);
             }
             void addIncludeDir(std::string includeDir);
@@ -34,6 +38,8 @@ namespace odfaeg {
             void addRuntimeFunction (std::string f);
             std::string getCompileErrors();
             private :
+            void* flib;
+            bool isDllOpened;
             std::string funcName;
             std::string compileErrors;
             std::vector<std::string> sourceFiles;

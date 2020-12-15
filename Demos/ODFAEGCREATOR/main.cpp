@@ -70,15 +70,18 @@ int main(int argc, char* argv[]) {
 	std::cout<<"item name : "<<item.getName()<<std::endl;
 	//Class cl = Class::getClass("Item");
     //std::cout<<item.getName()<<std::endl;*/
-    /*std::vector<sorrok::Item> vItem;
-   sorrok::Item item = sorrok::Item ("HP_POTION",sorrok::Item::HP_POTION,"All");
-   vItem.push_back(item);
-   sorrok::Item item3 = sorrok::Item ();
-   vItem.push_back(item3);
+
+   /*std::vector<sorrok::Item> vItem;
+   sorrok::Item hp_potion = sorrok::Item ("HP_POTION",sorrok::Item::HP_POTION,"All");
+   vItem.push_back(hp_potion);
+   sorrok::Item mana_potion = sorrok::Item ("MANA_POTION",sorrok::Item::HP_POTION,"All");
+   vItem.push_back(mana_potion);
    std::ofstream ofItem ("Item.oc");
+   std::cout<<vItem.size()<<std::endl;
    odfaeg::core::OTextArchive oaItem (ofItem);
    oaItem (vItem);
-   ofItem.close();*/
+   ofItem.close();
+   Class cl = Class::getClass("Item");*/
     ODFAEGCreator app(sf::VideoMode(1000,700),"ODFAEG Creator");
     return app.exec();
 
