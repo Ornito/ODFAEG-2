@@ -38,6 +38,9 @@ namespace odfaeg {
                     }
                 }
             }
+            std::vector<physic::ParticleSystem*> getParticleSystems() {
+                return particleSystems;
+            }
             void onUpdate () {
                 for (unsigned int i = 0; i < particleSystems.size(); i++) {
                     //std::cout<<"update particle"<<std::endl;

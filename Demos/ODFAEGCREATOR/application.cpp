@@ -51,6 +51,7 @@ Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0
 	rtc.addLibrary("gdi32");
 	rtc.addLibrary("dl.dll");
 	rtc.addRuntimeFunction("createObject");
+	getRenderWindow().setKeyRepeatEnabled(false);
 }
 void ODFAEGCreator::onLoad() {
     FontManager<Fonts> fm;
@@ -569,8 +570,20 @@ void ODFAEGCreator::onInit() {
     taChangeComponentExpression->setRelPosition(0.3, 0);
     taChangeComponentExpression->setRelSize(0.7, 0.1);
     taChangeComponentExpression->setParent(pComponent);
-    taChangeComponentExpression->setName("TaChangeComponentExpression");
     pComponent->addChild(taChangeComponentExpression);
+    taChangeComponentExpression->setName("TaChangeComponentExpression");
+    Label* ltaSelectExp = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif),"Selectable entities types : ", 15);
+    ltaSelectExp->setRelPosition(0, 0.1);
+    ltaSelectExp->setRelSize(0.3, 0.1);
+    ltaSelectExp->setParent(pComponent);
+    pComponent->addChild(ltaSelectExp);
+    taSelectExpression = new TextArea(Vec3f(0, 0, 0),Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif),"*", getRenderWindow());
+    taSelectExpression->setTextSize(15);
+    taSelectExpression->setRelPosition(0.3, 0.1);
+    taSelectExpression->setRelSize(0.7, 0.1);
+    taSelectExpression->setParent(pComponent);
+    pComponent->addChild(taSelectExpression);
+
     Command cmdCEChanged(FastDelegate<bool>(&TextArea::isTextChanged, taChangeComponentExpression), FastDelegate<void>(&ODFAEGCreator::onComponentExpressionChanged, this, taChangeComponentExpression));
     taChangeComponentExpression->getListener().connect("CECHANGED", cmdCEChanged);
     tabPane = new TabPane(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(200, 700, 0));
@@ -803,10 +816,11 @@ Vec3f ODFAEGCreator::getGridCellPos(Vec3f pos) {
     return Vec3f (extends[0][0], extends[1][0], extends[2][0]);
 }
 void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
-    if (&getRenderWindow() == window && event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED)
+    if (&getRenderWindow() == window && event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED) {
         getListener().setCommandSlotParams("MoveAction", this, static_cast<IKeyboard::Key>(event.keyboard.code));
         if (event.keyboard.control && event.keyboard.code == IKeyboard::V) {
             if (selectedObject != nullptr) {
+                std::cout<<"copy!"<<std::endl;
                 if (dynamic_cast<RectangleShape*>(selectedObject)) {
                     std::unique_ptr<Shape> shape = std::make_unique<RectangleShape> (*static_cast<RectangleShape*>(selectedObject));
                     Vec3f position = getRenderWindow().mapPixelToCoords(Vec3f(cursor.getPosition().x, getRenderWindow().getSize().y - cursor.getPosition().y, 0))+getRenderWindow().getView().getSize()*0.5f;
@@ -821,6 +835,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                 }
             }
         }
+    }
     if (&getRenderWindow() == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
         stop();
     }
@@ -1004,7 +1019,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
             pos = getRenderWindow().mapPixelToCoords(Vec3f(pos.x, getRenderWindow().getSize().y-pos.y, 0))+getRenderWindow().getView().getSize()*0.5f;
             rectSelect.setRect(pos.x, pos.y, box.getSize().x, box.getSize().y);
             if (World::getCurrentEntityManager() != nullptr) {
-                std::vector<Entity*> entities = World::getVisibleEntities("*");
+                std::vector<Entity*> entities = World::getVisibleEntities(taSelectExpression->getText());
                 for (unsigned int i = 0; i < entities.size(); i++) {
                     if (rectSelect.getSelectionRect().intersects(entities[i]->getGlobalBounds())) {
                         if (dynamic_cast<Tile*>(entities[i])) {
@@ -1184,6 +1199,7 @@ void ODFAEGCreator::onExec() {
                     for (unsigned int f = 0; f < entities[i]->getNbFaces(); f++) {
                         Face* face = entities[i]->getFace(f);
                         std::string alias = face->getMaterial().getTexId();
+                        std::cout<<"alias : "<<alias<<std::endl;
                         if (alias != "") {
                             face->getMaterial().clearTextures();
                             face->getMaterial().addTexture(tm.getResourceByAlias(alias), face->getMaterial().getTexRect());
@@ -1258,11 +1274,11 @@ void ODFAEGCreator::onExec() {
                     std::string type;
                     ia4(name);
                     ia4(type);
+                    std::vector<int> animsIds;
+                    ia4(animsIds);
                     if (type == "AnimationUpdater") {
                         AnimUpdater* au = new AnimUpdater();
                         au->setName(name);
-                        std::vector<int> animsIds;
-                        ia4(animsIds);
                         for (unsigned int a = 0; a < animsIds.size(); a++) {
                             Entity* entity = World::getEntity(animsIds[a]);
                             if (entity != nullptr && dynamic_cast<Anim*>(entity)) {
@@ -1307,14 +1323,93 @@ void ODFAEGCreator::onExec() {
                     std::string type;
                     ia6(name);
                     ia6(type);
+                    std::vector<int> psIds;
+                    ia6(psIds);
+                    std::cout<<"name : "<<name<<"type : "<<type<<std::endl;
                     if (type == "EntityUpdater") {
                         std::cout<<"load entities updater"<<std::endl;
                         EntitiesUpdater* eu = new EntitiesUpdater();
                         eu->setName(name);
                         World::addWorker(eu);
+                        std::cout<<"entities updater added"<<std::endl;
+                    }
+                    if (type == "ParticleSystemUpdater") {
+                        std::cout<<"add particle systme updater"<<std::endl;
+                        ParticleSystemUpdater* psu = new ParticleSystemUpdater();
+                        psu->setName(name);
+
+                        for (unsigned int p = 0; p < psIds.size(); p++) {
+
+                            Entity* entity = World::getEntity(psIds[p]);
+                            if (entity != nullptr && dynamic_cast<ParticleSystem*>(entity)) {
+                                std::cout<<"add particle system"<<std::endl;
+                                psu->addParticleSystem(static_cast<ParticleSystem*>(entity));
+                            }
+                        }
+                        World::addWorker(psu);
                     }
                 }
                 ifs6.close();
+            }
+            std::ifstream ifs7(appliname+"\\"+"emitters.oc");
+            if (ifs7) {
+                ITextArchive ia7(ifs7);
+                std::vector<std::string> parameters;
+                ia7(parameters);
+                int i = 0;
+                while (i < parameters.size()) {
+                    std::string psName = parameters[i];
+                    //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<std::endl;
+                    i++;
+                    UniversalEmitter emitter;
+                    emitter.setEmissionRate(conversionStringFloat(parameters[i]));
+                    //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<std::endl;
+                    i++;
+                    emitter.setParticleLifetime(Distributions::uniform(sf::seconds(conversionStringFloat(parameters[i])), sf::seconds(conversionStringFloat(parameters[i+1]))));
+                    //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<std::endl;
+                    i+=2;
+                    std::string type = parameters[i];
+                    //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<std::endl;
+                    i++;
+                    if (type == "Rect") {
+                        emitter.setParticlePosition(Distributions::rect(Vec3f(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1]), conversionStringFloat(parameters[i+2])),
+                                                                       Vec3f(conversionStringFloat(parameters[i+3]), conversionStringFloat(parameters[i+4]), conversionStringFloat(parameters[i+5]))));
+                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+2]<<","<<parameters[i+3]<<","<<parameters[i+4]<<","<<parameters[i+5]<<std::endl;
+                        i += 6;
+                    } else {
+                        emitter.setParticlePosition(Distributions::circle(Vec3f(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1]), conversionStringFloat(parameters[i+2])),
+                                                                         conversionStringFloat(parameters[i+3])));
+                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+2]<<std::endl;
+                        i += 4;
+                    }
+                    emitter.setParticleVelocity(Distributions::deflect(Vec3f(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1]), conversionStringFloat(parameters[i+2])), conversionStringFloat(parameters[i+3])));
+                    //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+3]<<std::endl;
+                    i += 4;
+                    emitter.setParticleRotation(Distributions::uniform(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1])));
+                    //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<std::endl;
+                    i += 2;
+                    emitter.setParticleTextureIndex(Distributions::uniformui(conversionStringInt(parameters[i]),conversionStringInt(parameters[i+1])));
+                    //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<std::endl;
+                    i += 2;
+                    emitter.setParticleScale(Distributions::rect(Vec3f(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1]), conversionStringFloat(parameters[i+2])),
+                                                                       Vec3f(conversionStringFloat(parameters[i+3]), conversionStringFloat(parameters[i+4]), conversionStringFloat(parameters[i+5]))));
+                    //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+2]<<","<<parameters[i+3]<<","<<parameters[i+4]<<","<<parameters[i+5]<<std::endl;
+                    i += 6;
+                    std::vector<std::string> color1 = split(parameters[i], ";");
+                    std::vector<std::string> color2 = split(parameters[i+1], ";");
+                    Vec3f c1(conversionStringInt(color1[0]), conversionStringInt(color1[1]), conversionStringInt(color1[2]), conversionStringInt(color1[3]));
+                    //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+3]<<std::endl;
+
+                    Vec3f c2(conversionStringInt(color2[0]), conversionStringInt(color2[1]), conversionStringInt(color2[2]), conversionStringInt(color2[3]));
+                    emitter.setParticleColor(Distributions::color(c1, c2));
+                    //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+3]<<std::endl;
+                    i += 2;
+                    Entity* ps = World::getEntity(psName);
+                    if (dynamic_cast<ParticleSystem*>(ps)) {
+                        std::cout<<"add emitter"<<std::endl;
+                        static_cast<ParticleSystem*>(ps)->addEmitter(emitter);
+                    }
+                }
             }
             std::vector<std::string> classes = Class::getClasses(appliname+"\\Scripts");
             for (unsigned int i = 0; i < classes.size(); i++) {
@@ -2156,10 +2251,13 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         //Save textures.
         TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
         std::vector<std::string> paths = tm.getPaths();
+        for (unsigned int i = 0; i < paths.size(); i++)
+            std::cout<<"path : "<<paths[i]<<std::endl;
         std::ofstream file(appliname+"\\"+"textures.oc");
         OTextArchive oa(file);
         oa(paths);
         file.close();
+        std::cout<<"save entities!"<<std::endl;
         //Save entities.
         std::vector<Entity*> entities = World::getEntities("*");
         std::ofstream file2(appliname+"\\"+"entities.oc");
@@ -2219,11 +2317,22 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         for (unsigned int i = 0; i < workers.size(); i++) {
             std::string name = workers[i]->getName();
             std::string workerType;
+            std::vector<int> psIds;
             if (dynamic_cast<EntitiesUpdater*>(workers[i])) {
                 workerType = "EntityUpdater";
             }
+            if (dynamic_cast<ParticleSystemUpdater*>(workers[i])) {
+                workerType = "ParticleSystemUpdater";
+                std::vector<ParticleSystem*> ps = static_cast<ParticleSystemUpdater*>(workers[i])->getParticleSystems();
+                for (unsigned int j = 0; j < ps.size(); j++) {
+                    std::cout<<"ps id  : "<<ps[j]->getId()<<std::endl;
+                    psIds.push_back(ps[j]->getId());
+                }
+            }
+            std::cout<<"name : "<<&name<<std::endl<<"worker type : "<<&workerType<<std::endl;
             oa5(name);
             oa5(workerType);
+            oa5(psIds);
         }
         file5.close();
         std::ofstream file6(appliname+"\\"+"scenes.oc");
@@ -2253,6 +2362,10 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
             oa6(is2DisoMatrix);
         }
         file6.close();
+        std::ofstream file7(appliname+"\\"+"emitters.oc");
+        OTextArchive oa7(file7);
+        oa7(emitterParams);
+        file7.close();
      }
      if (item == item18) {
         wNewParticleSystemUpdater->setVisible(true);
@@ -4166,6 +4279,7 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                 if (dynamic_cast<ParticleSystem*>(selectedObject)) {
                     static_cast<ParticleSystem*>(selectedObject)->setTexture(*text);
                     textRect = sf::IntRect(0, 0, text->getSize().x, text->getSize().y);
+                    static_cast<ParticleSystem*>(selectedObject)->getFace(0)->getMaterial().setTexId(alias[0]);
                 }
                 tTexCoordX->setText(conversionIntString(textRect.left));
                 tTexCoordY->setText(conversionIntString(textRect.top));

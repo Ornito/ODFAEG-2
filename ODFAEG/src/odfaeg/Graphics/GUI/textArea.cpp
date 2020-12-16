@@ -59,6 +59,11 @@ namespace odfaeg {
                         found = true;
                     }
                 }
+                if (!found) {
+                    currentIndex = tmp_text.getSize();
+                    sf::Vector2f pos = text.findCharacterPos(currentIndex);
+                    cursorPos = math::Vec3f(pos.x, pos.y, 0);
+                }
                 text.setSelected(currentIndex, currentIndex);
             }
             void TextArea::setCursorPos2() {

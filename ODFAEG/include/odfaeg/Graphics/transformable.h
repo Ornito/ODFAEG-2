@@ -60,6 +60,10 @@ namespace odfaeg {
             //Set the position of the entity, the position is always the top left corner of the entity.
             void setPosition(math::Vec3f position) {
                 math::Vec3f t = position - m_position;
+                if (getName() == "LFILE") {
+                    std::cout<<"set position : "<<position<<m_position<<t<<std::endl;
+                    std::cout<<position.x-m_position.x<<std::endl;
+                }
                 move(t);
             }
             /**
@@ -141,6 +145,9 @@ namespace odfaeg {
             void move (math::Vec3f t) {
                 m_center += t;
                 m_position += t;
+                /*if (getName() == "LFILE") {
+                    std::cout<<"position : "<<m_position<<"t : "<<t<<std::endl;
+                }*/
                 tm.setTranslation(m_center);
                 recomputeBounds();
                 onMove(t);
@@ -303,6 +310,7 @@ namespace odfaeg {
             }
             template <typename Archive>
             void serialize (Archive & ar) {
+                ar(name);
                 ar(m_position);
                 ar(m_center);
                 ar(m_size);

@@ -61,7 +61,18 @@ namespace odfaeg
 
         // ---------------------------------------------------------------------------------------------------------------------------
 
+        ParticleSystem::ParticleSystem() : graphic::Entity(math::Vec3f(0, 0, 0), math::Vec3f(0, 0, 0), math::Vec3f(0, 0, 0), "E_PARTICLES"), mParticles()
+        , mAffectors()
+        , mEmitters()
+        , mTexture(nullptr)
+        , mTextureRects()
+        , mVertices(sf::Quads)
+        , mNeedsVertexUpdate(true)
+        , mQuads()
+        , mNeedsQuadUpdate(true),
+          scene(nullptr){
 
+        }
         ParticleSystem::ParticleSystem(math::Vec3f position, math::Vec3f size, graphic::EntityManager* scene)
         : graphic::Entity(position, size, size*0.5f, "E_PARTICLES"), mParticles()
         , mAffectors()

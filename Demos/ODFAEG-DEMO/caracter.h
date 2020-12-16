@@ -25,6 +25,7 @@ namespace sorrok {
         bool selectable() const {
             return false;
         }
+        Entity* clone();
         bool operator== (Entity& other);
         void addAnimation (odfaeg::graphic::Anim *anim);
         odfaeg::graphic::Tile& getCurrentTile();

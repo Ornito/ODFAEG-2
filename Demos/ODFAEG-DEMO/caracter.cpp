@@ -165,7 +165,8 @@ namespace sorrok {
     Vec2f Caracter::getDir () {
         return dir;
     }
-
+    Entity* Caracter::clone() {
+    }
     void Caracter::setMoving (bool b) {
         if (moving != b) {
             this->moving = b;

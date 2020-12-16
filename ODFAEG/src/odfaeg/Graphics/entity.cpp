@@ -36,6 +36,7 @@ namespace odfaeg {
             layer = 0;
         }
         void Entity::copy(Entity* entity) {
+            std::cout<<"copy entity!"<<std::endl;
             entity->setPosition(getPosition());
             entity->setSize(getSize());
             entity->setOrigin(getOrigin());
@@ -55,8 +56,8 @@ namespace odfaeg {
             entity->layer = layer;
             entity->type = type;
             for (unsigned int i = 0; i < faces.size(); i++) {
-
                 entity->addFace(new Face(faces[i]->getVertexArray(), faces[i]->getMaterial(), entity->getTransform()));
+                entity->getFace(i)->getVertexArray().setEntity(entity);
             }
             for (unsigned int i = 0; i < children.size(); i++) {
                 entity->addChild(children[i]->clone());

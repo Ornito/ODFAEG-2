@@ -86,10 +86,15 @@ namespace odfaeg {
                 template <typename Archive>
                 void serialize(Archive &ar) {
                     ar(rect.left);
+                    //std::cout<<"mat rect left : "<<rect.left<<std::endl;
                     ar(rect.top);
+                    //std::cout<<"mat rect top : "<<rect.top<<std::endl;
                     ar(rect.width);
+                    //std::cout<<"mat rect width : "<<rect.width<<std::endl;
                     ar(rect.height);
+                    //std::cout<<"mat rect height : "<<rect.height<<std::endl;
                     ar(texId);
+                    //std::cout<<"mat tex id : "<<texId<<std::endl;
                 }
             };
             std::vector<TextureInfo*> texInfos; /**> The informations about the textures. */
@@ -209,12 +214,19 @@ namespace odfaeg {
             template <typename Archive>
             void serialize(Archive & ar) {
                 ar(texInfos);
+                //std::cout<<"tex infos"<<std::endl;
                 ar(color.r);
+                //std::cout<<"color r : "<<color.r<<std::endl;
                 ar(color.g);
+                //std::cout<<"color g : "<<color.g<<std::endl;
                 ar(color.b);
+                //std::cout<<"color b : "<<color.b<<std::endl;
                 ar(color.a);
+                //std::cout<<"color a : "<<color.a<<std::endl;
                 ar(specularIntensity);
+                //std::cout<<"specular intensity "<<specularIntensity<<std::endl;
                 ar(specularPower);
+                //std::cout<<"specular power : "<<specularPower<<std::endl;
                 if (ar.isInputArchive()) {
                     onLoad();
                 }
@@ -303,9 +315,26 @@ namespace odfaeg {
             */
             template <typename Archive>
             void serialize (Archive & ar) {
+                /*for (unsigned int j= 0; j< m_vertices.getVertexCount(); j++) {
+                    std::cout<<m_vertices[j].position.x<<","<<m_vertices[j].position.y<<","<<m_vertices[j].position.z<<std::endl;
+                }
+                std::cout<<"prim type : "<<m_vertices.getPrimitiveType()<<std::endl;
+                std::vector<math::Vec3f> locals = m_vertices.getLocals();
+                std::cout<<"locals : ";
+                for (unsigned int l = 0; l < locals.size(); l++) {
+                    std::cout<<locals[l]<<std::endl;
+                }
+                std::cout<<"indexes : "<<std::endl;
+                std::vector<unsigned int> indexes = m_vertices.getIndexes();
+                for (unsigned int j = 0; j < indexes.size(); j++) {
+                    std::cout<<"index  : "<<indexes[j]<<std::endl;
+                } */
                 ar(m_vertices);
+                //std::cout<<"vertices"<<std::endl;
                 ar(m_material);
+                //std::cout<<"material"<<std::endl;
                 ar(transform);
+                //std::cout<<"transform"<<std::endl;
             }
         private :
             VertexArray m_vertices; /**> the vertices.*/

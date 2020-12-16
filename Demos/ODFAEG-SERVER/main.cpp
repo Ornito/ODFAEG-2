@@ -21,6 +21,8 @@ int main (int argv, char* argc[]) {
     EXPORT_CLASS_GUID(EntityPnj, Entity, Pnj)
     EXPORT_CLASS_GUID(EntityMesh, Entity, Mesh)
     EXPORT_CLASS_GUID(EntityPLIGHT, Entity, g2d::PonctualLight)
+    EXPORT_CLASS_GUID(EntityPSystem, Entity, ParticleSystem)
+
     MyAppli app;
     return app.exec();
 }

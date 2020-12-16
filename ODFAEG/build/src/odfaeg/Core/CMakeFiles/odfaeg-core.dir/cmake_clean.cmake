@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "../../../lib/libodfaeg-core-s-d.a"
-  "../../../lib/libodfaeg-core-s-d.pdb"
+  "../../../lib/libodfaeg-core-s.a"
+  "../../../lib/libodfaeg-core-s.pdb"
   "CMakeFiles/odfaeg-core.dir/__/__/__/include/odfaeg/Core/factory.cpp.obj"
   "CMakeFiles/odfaeg-core.dir/actions.cpp.obj"
   "CMakeFiles/odfaeg-core.dir/application.cpp.obj"

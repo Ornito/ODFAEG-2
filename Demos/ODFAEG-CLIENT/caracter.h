@@ -22,6 +22,7 @@ namespace sorrok {
             currentAnimIndex = 0;
         }
         Caracter (std::string type, std::string name, std::string currentMapName, std::string classs, int level);
+        Entity* clone();
         void setXpHpBar(odfaeg::graphic::gui::ProgressBar* hpBar, odfaeg::graphic::gui::ProgressBar* xpBar, odfaeg::graphic::gui::ProgressBar* manaBar);
         bool isMovable() const {
             return true;

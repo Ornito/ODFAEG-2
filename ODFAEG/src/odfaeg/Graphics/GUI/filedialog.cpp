@@ -7,6 +7,7 @@ namespace odfaeg {
             rw(sf::VideoMode(size.x, size.y), "File Dialog", sf::Style::Default, window::ContextSettings(0, 0, 0, 3, 0)),
             LightComponent (rw, position, size, size * 0.5),
             font(font) {
+                std::cout<<"position : "<<getPosition()<<std::endl;
                 rw.setPosition(sf::Vector2i(position.x, position.y));
                 pTop = new Panel (rw, position, size);
                 pBottom = new Panel (rw, position, size);
@@ -169,6 +170,7 @@ namespace odfaeg {
                 bCancel->setRelSize(0.1f, 0.8f);
                 bCancel->setParent(pBottom);
                 pBottom->addChild(bCancel);
+                setRelPosition(0, 0);
                 setRelSize(1, 1);
                 setAutoResized(true);
             }
@@ -345,6 +347,7 @@ namespace odfaeg {
                                 lFile->setRelSize(1.f, 0.04f);
                                 pFiles->addChild(lFile);
                                 lFile->setText(fileNames);
+                                lFile->setName("LFILE");
                                 core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
                                 core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lFile), core::FastDelegate<void>(&FileDialog::onFileSelected, this, lFile));
                                 if(S_ISDIR(st.st_mode)) {

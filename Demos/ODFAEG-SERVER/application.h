@@ -21,6 +21,7 @@
 #include "odfaeg/Graphics/entitiesUpdater.h"
 #include "odfaeg/Graphics/animationUpdater.h"
 #include "odfaeg/Network/network.h"
+#include "odfaeg/Physics/particuleSystem.h"
 #include "hero.h"
 #include "monster.h"
 #include <fstream>

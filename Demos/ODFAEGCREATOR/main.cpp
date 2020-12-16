@@ -13,6 +13,7 @@ int main(int argc, char* argv[]) {
     EXPORT_CLASS_GUID(EntityDecor, Entity, g2d::Decor)
     EXPORT_CLASS_GUID(EntityAnimation, Entity, Anim)
     EXPORT_CLASS_GUID(EntityMesh, Entity, Mesh)
+    EXPORT_CLASS_GUID(EntityParticleSystem, Entity, ParticleSystem)
     EXPORT_CLASS_GUID(ShapeRectangleShape, Shape, RectangleShape)
     /*void * flib = dlopen ( "./libtmp.so", RTLD_LAZY );
     typedef Item (*func)(std::string, std::string);

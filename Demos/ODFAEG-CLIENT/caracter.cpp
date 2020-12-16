@@ -172,6 +172,8 @@ namespace sorrok {
         }
         alive = b;
     }
+    Entity* Caracter::clone() {
+    }
     bool Caracter::isAlive () {
         return alive;
     }

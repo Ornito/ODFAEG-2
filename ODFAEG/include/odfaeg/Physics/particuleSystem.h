@@ -98,6 +98,7 @@ namespace odfaeg
         // ---------------------------------------------------------------------------------------------------------------------------
         // Public member functions
         public:
+        ParticleSystem();
         /// @brief Default constructor
         /// @details Requires a call to setTexture() and possibly addTextureRect() before the particle system can be used.
         ParticleSystem(math::Vec3f position, math::Vec3f size, graphic::EntityManager* scene = nullptr);
@@ -171,36 +172,6 @@ namespace odfaeg
 
         void update();
         void setScene(graphic::EntityManager* scene);
-        // ---------------------------------------------------------------------------------------------------------------------------
-        // Private member functions
-        private:
-        /// @brief Draws all particles in the system.
-        /// @param target The render target to which the particles are drawn.
-        /// @param states Current render states (shader, blend mode, ...)
-        virtual void	draw(graphic::RenderTarget& target, graphic::RenderStates states);
-
-        /// @brief Emits a particle into the system.
-        /// @param particle Particle to emit.
-        virtual void	emitParticle(const Particle& particle);
-
-        // Updates a single particle.
-        void	updateParticle(Particle& particle, sf::Time dt);
-
-        // Recomputes the vertex array.
-        void	computeVertices() const;
-
-        // Recomputes the cached rectangles (position and texCoords quads)
-        void	computeQuads() const;
-        void	computeQuad(Quad& quad, const sf::IntRect& textureRect) const;
-        void removeEmitter (std::function<void(EmissionInterface&, sf::Time)>& em);
-        bool operator== (Entity& other) {
-            if (dynamic_cast<ParticleSystem*> (&other) != nullptr) {
-                ParticleSystem& ps = static_cast<ParticleSystem&> (other);
-                return mParticles == ps.mParticles && mTexture == ps.mTexture;
-            } else {
-                return false;
-            }
-        }
         bool isAnimated () const {
             return false;
         }
@@ -242,6 +213,36 @@ namespace odfaeg
                     ar(rect.height);
                     addTextureRect(rect);
                 }
+            }
+        }
+        // ---------------------------------------------------------------------------------------------------------------------------
+        // Private member functions
+        private:
+        /// @brief Draws all particles in the system.
+        /// @param target The render target to which the particles are drawn.
+        /// @param states Current render states (shader, blend mode, ...)
+        virtual void	draw(graphic::RenderTarget& target, graphic::RenderStates states);
+
+        /// @brief Emits a particle into the system.
+        /// @param particle Particle to emit.
+        virtual void	emitParticle(const Particle& particle);
+
+        // Updates a single particle.
+        void	updateParticle(Particle& particle, sf::Time dt);
+
+        // Recomputes the vertex array.
+        void	computeVertices() const;
+
+        // Recomputes the cached rectangles (position and texCoords quads)
+        void	computeQuads() const;
+        void	computeQuad(Quad& quad, const sf::IntRect& textureRect) const;
+        void removeEmitter (std::function<void(EmissionInterface&, sf::Time)>& em);
+        bool operator== (Entity& other) {
+            if (dynamic_cast<ParticleSystem*> (&other) != nullptr) {
+                ParticleSystem& ps = static_cast<ParticleSystem&> (other);
+                return mParticles == ps.mParticles && mTexture == ps.mTexture;
+            } else {
+                return false;
             }
         }
         // ---------------------------------------------------------------------------------------------------------------------------

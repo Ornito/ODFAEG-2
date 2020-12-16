@@ -316,18 +316,31 @@ namespace odfaeg {
                 template <typename Archive>
                 void vtserialize(Archive & ar) {
                     Transformable::serialize(ar);
+                    //std::cout<<"transformable"<<std::endl;
                     ar(parent);
+                    //std::cout<<"parent : "<<parent<<std::endl;
                     ar(id);
+                    //std::cout<<"id : "<<id<<std::endl;
                     ar(faces);
+                    //std::cout<<"faces"<<std::endl;
                     ar(type.first);
+                    //std::cout<<"type first : "<<type.first<<std::endl;
                     ar(type.second);
+                    //std::cout<<"type second : "<<type.second<<std::endl;
                     ar(collisionVolume);
+                    //std::cout<<"collisions volume"<<std::endl;
                     ar(shadowCenter);
+                    //std::cout<<"shadow center : "<<shadowCenter<<std::endl;
                     ar(shadowScale);
+                    //std::cout<<"shadow scale : "<<shadowScale<<std::endl;
                     ar(shadowOrigin);
+                    //std::cout<<"shadow origin : "<<shadowOrigin<<std::endl;
                     ar(shadowRotationAngle);
+                    //std::cout<<"shadow rotation angle : "<<shadowRotationAngle;
                     ar(shadowRotationAxis);
+                    //std::cout<<"shadow rotation axis : "<<shadowRotationAxis<<std::endl;
                     ar(boneIndex);
+                    //std::cout<<"bone index : "<<boneIndex<<std::endl;
                     if (ar.isInputArchive())
                         onLoad();
                     alreadySerialized = true;
