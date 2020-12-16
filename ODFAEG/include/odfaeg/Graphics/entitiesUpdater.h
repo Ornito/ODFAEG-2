@@ -26,6 +26,7 @@ namespace odfaeg {
             * \brief update all the entities which are in the current view.
             */
             void onUpdate () {
+                //std::cout<<"update"<<std::endl;
                 graphic::World::checkVisibleEntities();
             }
         private :

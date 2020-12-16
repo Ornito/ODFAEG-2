@@ -36,7 +36,7 @@ namespace odfaeg {
             layer = 0;
         }
         void Entity::copy(Entity* entity) {
-            std::cout<<"copy entity!"<<std::endl;
+            //std::cout<<"copy entity!"<<std::endl;
             entity->setPosition(getPosition());
             entity->setSize(getSize());
             entity->setOrigin(getOrigin());

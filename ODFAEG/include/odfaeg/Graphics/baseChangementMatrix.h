@@ -45,6 +45,16 @@ namespace odfaeg {
             */
             math::Matrix2f getMatrix();
             bool isIso2DMatrix();
+            template <typename Archive>
+            void serialize(Archive &ar) {
+                //std::cout<<"read matrix 2f"<<std::endl;
+                ar(matrix2f);
+                //std::cout<<"read inv matrix 2f"<<std::endl;
+                ar(invMatrix2f);
+                //std::cout<<"is 2D iso matrix"<<std::endl;
+                ar(iso2DMatrix);
+                //std::cout<<"end read"<<std::endl;
+            }
         private :
             math::Matrix2f matrix2f; /** > the base changement matrix.*/
             math::Matrix2f invMatrix2f; /**> the inverse of the base changement matrix.*/

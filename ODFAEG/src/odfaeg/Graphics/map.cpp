@@ -9,7 +9,12 @@
 namespace odfaeg {
     namespace graphic {
     using namespace std;
-
+        Map::Map() : EntityManager ("") {
+            frcm = nullptr;
+            cellWidth = cellHeight = 0;
+            gridMap = nullptr;
+            name = "";
+        }
         Map::Map (RenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight, int cellDepth) : EntityManager(name), frcm(frcm), cellWidth(cellWidth), cellHeight(cellHeight) {
             gridMap = new GridMap(cellWidth, cellHeight);
             updateComponents = false;
@@ -355,6 +360,9 @@ namespace odfaeg {
                     throw core::Erreur(55, "Shader not supported!", 0);
                 }
             }*/
+        }
+        void Map::setRenderComponentManager(RenderComponentManager* frcm) {
+            this->frcm = frcm;
         }
         int Map::getCellWidth() {
             return cellWidth;
@@ -798,6 +806,7 @@ namespace odfaeg {
             gridMap->addEntity(entity);*/
         }
         void Map::checkVisibleEntities() {
+            //std::cout<<"check visible entities"<<std::endl;
             for (unsigned int c = 0; c < frcm->getNbComponents() + 1; c++) {
                 if (c == frcm->getNbComponents() || c < frcm->getNbComponents() && frcm->getRenderComponent(c) != nullptr) {
                     physic::BoundingBox view;

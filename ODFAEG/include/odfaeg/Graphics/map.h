@@ -40,6 +40,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         enum Walls {
             TOP_LEFT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT, TOP_BOTTOM, RIGHT_LEFT, T_TOP, T_RIGHT, T_LEFT, T_BOTTOM, X
         };
+        Map();
         Map(RenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight, int cellDepth);
         GridMap *gridMap; /**> The grid used to store the entities.*/
         /**
@@ -173,6 +174,69 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         * \return the cells of the grid.
         */
         std::vector<CellMap*> getCasesMap();
+        template <typename Archive>
+        void serialize(Archive& ar) {
+            if (!ar.isInputArchive()) {
+                ar(name);
+                ar(cellWidth);
+                ar(cellHeight);
+                BaseChangementMatrix bcm = getBaseChangementMatrix();
+                ar(bcm);
+                std::vector<Entity*> entities = getEntities("*");
+                ar(entities);
+                std::vector<CellMap*> cells = getCasesMap();
+                unsigned int nb = 0;
+                for (unsigned int i = 0; i < cells.size(); i++) {
+                    if (cells[i] != nullptr) {
+                            nb++;
+                    }
+                }
+                ar(nb);
+                for (unsigned int i = 0; i < cells.size(); i++) {
+                    if (cells[i] != nullptr) {
+                        math::Vec3f center = cells[i]->getCenter();
+                        bool isPassable = cells[i]->isPassable();
+                        ar(center);
+                        ar(isPassable);
+                    }
+                }
+            } else {
+                ar(name);
+                ar(cellWidth);
+                ar(cellHeight);
+                EntityManager::setName(name);
+                gridMap = new GridMap(cellWidth, cellHeight);
+                BaseChangementMatrix bcm;
+                //std::cout<<"read bcm"<<std::endl;
+                ar(bcm);
+                //std::cout<<"bcm read"<<std::endl;
+                setBaseChangementMatrix(bcm);
+                std::vector<Entity*> entities;
+                //std::cout<<"read entities"<<std::endl;
+                ar(entities);
+                //std::cout<<"size : "<<entities.size()<<std::endl;
+                for (unsigned int i = 0; i < entities.size(); i++) {
+                    //std::cout<<"add entity"<<std::endl;
+                    addEntity(entities[i]);
+                }
+                unsigned int size;
+                ar(size);
+                //std::cout<<"cases maps : "<<std::endl;
+                for (unsigned int i = 0; i < size; i++) {
+                    math::Vec3f center;
+                    ar(center);
+                    //std::cout<<"center : "<<center<<std::endl;
+                    bool isPassable;
+                    ar(isPassable);
+                    //std::cout<<"passable : "<<isPassable<<std::endl;
+                    CellMap* cell = getGridCellAt(center);
+                    if (cell != nullptr) {
+                        cell->setPassable(isPassable);
+                    }
+                }
+            }
+        }
+        void setRenderComponentManager(RenderComponentManager* rcm);
         /**
         * \fn std::vector<Entity*> getEntities(std::string type)
         * \brief get the entities of the given types.

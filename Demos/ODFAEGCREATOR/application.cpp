@@ -1189,7 +1189,7 @@ void ODFAEGCreator::onExec() {
                 }
                 ifs.close();
             }
-            std::ifstream ifs3(appliname+"\\"+"entities.oc");
+            /*std::ifstream ifs3(appliname+"\\"+"entities.oc");
             std::vector<Entity*> entities;
             if (ifs3) {
                 ITextArchive ia3(ifs3);
@@ -1210,12 +1210,22 @@ void ODFAEGCreator::onExec() {
                     }
                 }
                 ifs3.close();
-            }
+            }*/
             std::ifstream ifs2(appliname+"\\"+"scenes.oc");
-            unsigned int size;
+            //unsigned int size;
             if (ifs2) {
                 ITextArchive ia2(ifs2);
-                ia2(size);
+                std::vector<Map*> maps;
+                //std::cout<<"read map"<<std::endl;
+                ia2(maps);
+                //std::cout<<"maps : "<<std::endl;
+                for (unsigned int i = 0; i < maps.size(); i++) {
+                    std::cout<<"add map "<<maps[i]->getName()<<std::endl;
+                    maps[i]->setRenderComponentManager(&getRenderComponentManager());
+                    World::addEntityManager(maps[i]);
+                    World::setCurrentEntityManager(maps[i]->getName());
+                }
+                /*ia2(size);
                 for (unsigned int i = 0; i < size; i++) {
                     std::string name;
                     ia2(name);
@@ -1262,10 +1272,28 @@ void ODFAEGCreator::onExec() {
                             World::addEntity(entities[e]);
                         }
                     }
-                }
+                }*/
                 ifs2.close();
             }
+            std::vector<Entity*> entities=World::getEntities("*");
+            for (unsigned int i = 0; i < entities.size(); i++) {
+                std::cout<<"load entities"<<std::endl;
+                for (unsigned int f = 0; f < entities[i]->getNbFaces(); f++) {
+                    Face* face = entities[i]->getFace(f);
+                    std::string alias = face->getMaterial().getTexId();
+                    std::cout<<"alias : "<<alias<<std::endl;
+                    if (alias != "") {
+                        face->getMaterial().clearTextures();
+                        face->getMaterial().addTexture(tm.getResourceByAlias(alias), face->getMaterial().getTexRect());
+                    } else {
+                        face->getMaterial().clearTextures();
+                        face->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
+                    }
+                }
+            }
+
             std::ifstream ifs4(appliname+"\\"+"timers.oc");
+            unsigned int size;
             if (ifs4) {
                 ITextArchive ia4(ifs4);
                 ia4(size);
@@ -1327,14 +1355,14 @@ void ODFAEGCreator::onExec() {
                     ia6(psIds);
                     std::cout<<"name : "<<name<<"type : "<<type<<std::endl;
                     if (type == "EntityUpdater") {
-                        std::cout<<"load entities updater"<<std::endl;
+                        //std::cout<<"load entities updater"<<std::endl;
                         EntitiesUpdater* eu = new EntitiesUpdater();
                         eu->setName(name);
                         World::addWorker(eu);
                         std::cout<<"entities updater added"<<std::endl;
                     }
                     if (type == "ParticleSystemUpdater") {
-                        std::cout<<"add particle systme updater"<<std::endl;
+                        //std::cout<<"add particle systme updater"<<std::endl;
                         ParticleSystemUpdater* psu = new ParticleSystemUpdater();
                         psu->setName(name);
 
@@ -1342,7 +1370,7 @@ void ODFAEGCreator::onExec() {
 
                             Entity* entity = World::getEntity(psIds[p]);
                             if (entity != nullptr && dynamic_cast<ParticleSystem*>(entity)) {
-                                std::cout<<"add particle system"<<std::endl;
+                                //std::cout<<"add particle system"<<std::endl;
                                 psu->addParticleSystem(static_cast<ParticleSystem*>(entity));
                             }
                         }
@@ -1406,7 +1434,7 @@ void ODFAEGCreator::onExec() {
                     i += 2;
                     Entity* ps = World::getEntity(psName);
                     if (dynamic_cast<ParticleSystem*>(ps)) {
-                        std::cout<<"add emitter"<<std::endl;
+                        //std::cout<<"add emitter"<<std::endl;
                         static_cast<ParticleSystem*>(ps)->addEmitter(emitter);
                     }
                 }
@@ -2259,11 +2287,11 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         file.close();
         std::cout<<"save entities!"<<std::endl;
         //Save entities.
-        std::vector<Entity*> entities = World::getEntities("*");
+        /*std::vector<Entity*> entities = World::getEntities("*");
         std::ofstream file2(appliname+"\\"+"entities.oc");
         OTextArchive oa2(file2);
         oa2(entities);
-        file.close();
+        file.close();*/
         //Save components.
         std::ofstream file3(appliname+"\\"+"components.oc");
         OTextArchive oa3(file3);
@@ -2338,7 +2366,14 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         std::ofstream file6(appliname+"\\"+"scenes.oc");
         OTextArchive oa6(file6);
         std::vector<EntityManager*> scenes = World::getEntityManagers();
-        size = scenes.size();
+        std::vector<Map*> maps;
+        for (unsigned int i = 0; i < scenes.size(); i++) {
+            if (dynamic_cast<Map*>(scenes[i])) {
+                maps.push_back(static_cast<Map*>(scenes[i]));
+            }
+        }
+        oa6(maps);
+        /*size = scenes.size();
         oa6(size);
         for (unsigned int i = 0; i < scenes.size(); i++) {
             std::string name;
@@ -2361,7 +2396,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
             oa6(cellHeight);
             oa6(is2DisoMatrix);
         }
-        file6.close();
+        file6.close();*/
         std::ofstream file7(appliname+"\\"+"emitters.oc");
         OTextArchive oa7(file7);
         oa7(emitterParams);

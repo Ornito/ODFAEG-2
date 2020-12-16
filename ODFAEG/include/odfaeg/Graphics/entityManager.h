@@ -185,6 +185,9 @@ namespace odfaeg {
             std::string getName() {
                 return name;
             }
+            void setName(std::string name) {
+                this->name = name;
+            }
             std::vector<TransformMatrix*> getTransforms() {
                 return transformMatrices;
             }

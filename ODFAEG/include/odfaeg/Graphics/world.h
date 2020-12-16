@@ -394,6 +394,7 @@ namespace odfaeg {
                 }
                 static void checkVisibleEntities() {
                     if (currentEntityManager != nullptr) {
+                        //std::cout<<"check visible entities"<<std::endl;
                         currentEntityManager->checkVisibleEntities();
                     }
                 }
@@ -422,6 +423,7 @@ namespace odfaeg {
                     for (it = cache.ems.begin(); it != cache.ems.end(); it++) {
                         std::string otherName = (*it)->getName();
                         if (otherName == mapName) {
+                            //std::cout<<"set current entity manager "<<mapName<<std::endl;
                            currentEntityManager = it->get();
                         }
                     }

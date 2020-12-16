@@ -162,15 +162,15 @@ namespace odfaeg {
             template <typename Archive>
             void serialize (Archive & ar) {
                 ar(m_indexes);
-                std::cout<<"indexes : "<<std::endl;
+                //std::cout<<"indexes : "<<std::endl;
                 ar(m_vertices);
-                std::cout<<"vertices : "<<std::endl;
+                //std::cout<<"vertices : "<<std::endl;
                 ar(m_primitiveType);
-                std::cout<<"primitive type : "<<m_primitiveType<<std::endl;
+                //std::cout<<"primitive type : "<<m_primitiveType<<std::endl;
                 ar(m_locals);
-                std::cout<<"locals : "<<std::endl;
+                //std::cout<<"locals : "<<std::endl;
                 ar(m_entity);
-                std::cout<<"entity : "<<m_entity<<std::endl;
+                //std::cout<<"entity : "<<m_entity<<std::endl;
                 if (ar.isInputArchive())
                     onLoad();
             }
