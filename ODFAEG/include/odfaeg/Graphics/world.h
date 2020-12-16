@@ -213,6 +213,12 @@ namespace odfaeg {
                     }
                     return std::vector<Entity*>();
                 }
+                static std::vector<Entity*> getChildrenEntities(std::string expression) {
+                    if (currentEntityManager != nullptr) {
+                        return currentEntityManager->getChildrenEntities(expression);
+                    }
+                    return std::vector<Entity*>();
+                }
                 /** \fn std::vector<math::Vec3f> getPath(E* entity, math::Vec3f finalPos)
                 *   \brief get the path between an entity and a position.
                 *   \param E* entity : the Entity.

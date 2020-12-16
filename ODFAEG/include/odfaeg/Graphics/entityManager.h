@@ -37,6 +37,7 @@ namespace odfaeg {
             * \param an expression which determine which entities types to get.
             */
             virtual std::vector<Entity*> getEntities(std::string expression) = 0;
+            virtual std::vector<Entity*> getChildrenEntities(std::string expression) = 0;
             /**
             * \fn void checkVisibleEntities()
             * \brief virtual function to redefine to check visible entities.

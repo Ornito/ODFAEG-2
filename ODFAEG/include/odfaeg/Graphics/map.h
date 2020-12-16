@@ -244,6 +244,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         * \return the entities.
         */
         std::vector<Entity*> getEntities(std::string type);
+        std::vector<Entity*> getChildrenEntities(std::string type);
         /**
         * \fn std::vector<Entity*> getVisibleEntities(std::string type)
         * \brief get the visible entities of the given types.

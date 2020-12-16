@@ -1121,6 +1121,55 @@ namespace odfaeg {
             }
             return entities;
         }
+        vector<Entity*> Map::getChildrenEntities(string type) {
+            vector<Entity*> entities;
+            vector<Entity*> allEntities = gridMap->getEntities();
+            if (type.size() > 0 && type.at(0) == '*') {
+                if (type.find("-") != string::npos)
+                    type = type.substr(2, type.size() - 3);
+                vector<string> excl = core::split(type, "-");
+                for (unsigned int i = 0; i < allEntities.size(); i++) {
+                    Entity* entity = allEntities[i];
+                    bool exclude = false;
+                    for (unsigned int j = 0; j < excl.size(); j++) {
+                        if (entity->getRootType() == excl[i])
+                            exclude = true;
+                    }
+                    if (!exclude) {
+                        bool contains = false;
+                        for (unsigned int n = 0; n < entities.size() && !contains; n++) {
+                            if (entities[n] == entity) {
+                                contains = true;
+                            }
+                        }
+                        if (!contains) {
+                            entity->getRootEntity()->updateTransform();
+                            entities.push_back(entity);
+                        }
+                    }
+                }
+                return entities;
+            }
+            vector<string> types = core::split(type, "+");
+            for (unsigned int i = 0; i < types.size(); i++) {
+                for (unsigned int j = 0; j < allEntities.size(); j++) {
+                    Entity* entity = allEntities[j];
+                    if (entity->getRootType() == types[i]) {
+                        bool contains = false;
+                        for (unsigned int n = 0; n < entities.size() && !contains; n++) {
+                            if (entities[n] == entity) {
+                                contains = true;
+                            }
+                        }
+                        if (!contains) {
+                            entity->getRootEntity()->updateTransform();
+                            entities.push_back(entity);
+                        }
+                    }
+                }
+            }
+            return entities;
+        }
 
         vector<Entity*> Map::getVisibleEntities (std::string type) {
             std::vector<Entity*> entities;

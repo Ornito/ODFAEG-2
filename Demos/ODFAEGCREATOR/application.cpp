@@ -1220,7 +1220,7 @@ void ODFAEGCreator::onExec() {
                 ia2(maps);
                 //std::cout<<"maps : "<<std::endl;
                 for (unsigned int i = 0; i < maps.size(); i++) {
-                    std::cout<<"add map "<<maps[i]->getName()<<std::endl;
+                    //std::cout<<"add map "<<maps[i]->getName()<<std::endl;
                     maps[i]->setRenderComponentManager(&getRenderComponentManager());
                     World::addEntityManager(maps[i]);
                     World::setCurrentEntityManager(maps[i]->getName());
@@ -1275,7 +1275,7 @@ void ODFAEGCreator::onExec() {
                 }*/
                 ifs2.close();
             }
-            std::vector<Entity*> entities=World::getEntities("*");
+            std::vector<Entity*> entities=World::getChildrenEntities("*");
             for (unsigned int i = 0; i < entities.size(); i++) {
                 std::cout<<"load entities"<<std::endl;
                 for (unsigned int f = 0; f < entities[i]->getNbFaces(); f++) {
