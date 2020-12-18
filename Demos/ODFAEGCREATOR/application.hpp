@@ -96,6 +96,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onSelectedFunctionChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onDroppedDown(odfaeg::graphic::gui::DropDownList* dp);
     void addExternalEntity(odfaeg::graphic::Entity* entity);
+    void updateNb(std::string name, unsigned int nb);
     enum Fonts {
         Serif
     };
@@ -152,5 +153,6 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::vector<std::string> affectorParams;
         odfaeg::math::Vec3f viewPos;
         odfaeg::core::RuntimeCompiler rtc;
+        std::map<std::string, unsigned int> nbs;
 };
 #endif

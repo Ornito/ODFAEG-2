@@ -51,6 +51,7 @@ Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0
 	rtc.addLibrary("gdi32");
 	rtc.addLibrary("dl.dll");
 	rtc.addRuntimeFunction("createObject");
+	rtc.addRuntimeFunction("readObjects");
 	getRenderWindow().setKeyRepeatEnabled(false);
 }
 void ODFAEGCreator::onLoad() {
@@ -2026,10 +2027,17 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         }
     }
     if (button == bCreateObject) {
-        std::vector<std::string> parts = split(dpSelectClass->getSelectedItem(), "::");
+         std::vector<std::string> parts = split(dpSelectClass->getSelectedItem(), "::");
         Class cl = Class::getClass(parts[parts.size()-1]);
         std::string headerFile = cl.getFilePath();
         convertSlash(headerFile);
+        int nb = 0;
+        std::map<std::string, unsigned int>::iterator it = nbs.find(cl.getName());
+        if (it != nbs.end()) {
+            nb - it->second;
+        } else {
+            updateNb(cl.getName(), nb);
+        }
         //std::cout<<"header file : "<<headerFile<<std::endl;
         std::ifstream ifs("sourceCode.cpp");
         std::string sourceCode="";
@@ -2045,6 +2053,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             sourceCode += "#include <fstream>\n";
             sourceCode += "#include <iostream>\n";
             sourceCode += "#include <vector>\n";
+            sourceCode += "#include <string>\n";
             sourceCode += "#include \"odfaeg/Core/archive.h\"\n";
             sourceCode += "#include \"odfaeg/Core/class.hpp\"\n";
             sourceCode += "#include \"../../Windows/Demos/ODFAEGCREATOR/application.hpp\"\n";
@@ -2096,7 +2105,6 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 } else {
                     toInsert = "std::vector<"+dpSelectPointerType->getSelectedItem()+"*> v"+cl.getName()+";\n";
                 }
-                toInsert += "unsigned int nb"+cl.getName()+"=0;\n";
                 sourceCode.insert(pos, toInsert);
                 toInsert = "";
                 std::string toFind = "void createObject(ODFAEGCreator *c) {";
@@ -2125,6 +2133,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 toInsert += "       for (unsigned int i = 0; i < v"+cl.getName()+".size(); i++)\n";
                 toInsert += "           c->addExternalEntity(v"+cl.getName()+"[i]);\n";
                 toInsert += "   #endif\n";
+                toInsert += "   c->updateNb(\""+cl.getName()+"\",v"+cl.getName()+".size());\n";
                 sourceCode.insert(pos, toInsert);
             }
         }
@@ -2144,7 +2153,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                     args += ",";
                 }
             }
-            std::string toInsert = "    if(v"+cl.getName()+".size() == nb"+cl.getName()+") {\n";
+            std::string toInsert = "    if(v"+cl.getName()+".size() == "+conversionIntString(nb)+") {\n";
             if (dpSelectPointerType->getSelectedItem() == "No pointer") {
                 if (cl.getNamespace() != "") {
                     toInsert += "       "+cl.getNamespace()+"::"+cl.getName()+" "+taObjectName->getText()+" = "+cl.getNamespace()+"::"+cl.getName()+" ("+args+");\n";
@@ -2155,7 +2164,6 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 toInsert += "       "+dpSelectPointerType->getSelectedItem()+" *"+taObjectName->getText()+" = new "+dpSelectClass->getSelectedItem()+" ("+args+");\n";
             }
             toInsert += "       v"+cl.getName()+".push_back("+taObjectName->getText()+");\n";
-            toInsert += "       nb"+cl.getName()+"++;\n";
             toInsert += "       #ifdef ENTITY"+taObjectName->getText()+"\n";
             toInsert += "           c->addExternalEntity("+taObjectName->getText()+");\n";
             toInsert += "       #endif\n";
@@ -2167,6 +2175,9 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         file<<sourceCode;
         file.close();
         rtc.addSourceFile("sourceCode");
+        rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/application");
+        rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/odfaegCreatorStateExecutor");
+        rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/rectangularSelection");
         rtc.compile();
         std::string errors = rtc.getCompileErrors();
         //std::cout<<"errors : "<<rtc.getCompileErrors();
@@ -2175,6 +2186,9 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         getRenderComponentManager().setEventContextActivated(false, *wCreateNewObject);
         tScriptEdit->setEventContextActivated(true);
     }
+}
+void ODFAEGCreator::updateNb(std::string name, unsigned int nb) {
+    nbs.insert(std::make_pair(name, nb));
 }
 void ODFAEGCreator::addExternalEntity(Entity* entity) {
     entity->setExternal(true);
