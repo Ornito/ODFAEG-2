@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "../../../lib/libodfaeg-physics-s-d.a"
-  "../../../lib/libodfaeg-physics-s-d.pdb"
+  "../../../lib/libodfaeg-physics-s.a"
+  "../../../lib/libodfaeg-physics-s.pdb"
   "CMakeFiles/odfaeg-physics.dir/affector.cpp.obj"
   "CMakeFiles/odfaeg-physics.dir/boundingBox.cpp.obj"
   "CMakeFiles/odfaeg-physics.dir/boundingEllipsoid.cpp.obj"

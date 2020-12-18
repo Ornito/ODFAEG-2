@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "../../../lib/libodfaeg-window-s-d.a"
-  "../../../lib/libodfaeg-window-s-d.pdb"
+  "../../../lib/libodfaeg-window-s.a"
+  "../../../lib/libodfaeg-window-s.pdb"
   "CMakeFiles/odfaeg-window.dir/SFML/sfmlContextImpl.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/SFML/sfmlKeyboard.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/SFML/sfmlMouse.cpp.obj"

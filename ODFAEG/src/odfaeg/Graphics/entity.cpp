@@ -34,6 +34,7 @@ namespace odfaeg {
             refractDir = math::Vec3f(0, 0, 1);
             water = false;
             layer = 0;
+            external = false;
         }
         void Entity::copy(Entity* entity) {
             //std::cout<<"copy entity!"<<std::endl;
@@ -62,6 +63,12 @@ namespace odfaeg {
             for (unsigned int i = 0; i < children.size(); i++) {
                 entity->addChild(children[i]->clone());
             }
+        }
+        void Entity::setExternal(bool external) {
+            this->external = external;
+        }
+        bool Entity::isExternal() {
+            return external;
         }
         void Entity::setLayer(float layer) {
             if (layer > nbLayers)

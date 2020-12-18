@@ -183,7 +183,13 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
                 BaseChangementMatrix bcm = getBaseChangementMatrix();
                 ar(bcm);
                 std::vector<Entity*> entities = getEntities("*");
-                ar(entities);
+                std::vector<Entity*> internalEntities;
+                for (unsigned int i = 0; i < entities.size(); i++) {
+                    if (!entities[i]->isExternal()) {
+                        internalEntities.push_back(entities[i]);
+                    }
+                }
+                ar(internalEntities);
                 std::vector<CellMap*> cells = getCasesMap();
                 unsigned int nb = 0;
                 for (unsigned int i = 0; i < cells.size(); i++) {

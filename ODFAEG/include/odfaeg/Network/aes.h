@@ -105,8 +105,8 @@ namespace odfaeg {
                 delete[] aesPass;
                 EVP_CIPHER_CTX_free(d_ctx);
                 EVP_CIPHER_CTX_free(e_ctx);
-                delete e_ctx;
-                delete d_ctx;
+                /*delete e_ctx;
+                delete d_ctx;*/
             //Expand a user-supplied key material into a session key.
             }
             // key        - The 128/192/256-bit user-key to use.

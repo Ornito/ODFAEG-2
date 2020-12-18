@@ -495,6 +495,8 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(dpSelectClass);
     Command cmdSelectClass(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectClass), FastDelegate<void>(&ODFAEGCreator::onSelectedClassChanged, this, dpSelectClass));
     dpSelectClass->getListener().connect("CLASSCHANGED", cmdSelectClass);
+    Command cmdSelectClassDroppedDown(FastDelegate<bool>(&DropDownList::isDroppedDown, dpSelectClass), FastDelegate<void>(&ODFAEGCreator::onDroppedDown, this, dpSelectClass));
+    dpSelectClass->getListener().connect("SELECTCLASSDROPPEDDOWN", cmdSelectClassDroppedDown);
     Label* lSelectFunction = new Label(*wCreateNewObject, Vec3f(0, 100, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Function : ", 15);
     getRenderComponentManager().addComponent(lSelectFunction);
     dpSelectFunction = new DropDownList(*wCreateNewObject, Vec3f(200, 100, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Select function : ", 15);
@@ -502,12 +504,15 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(dpSelectFunction);
     Command cmdSelectFunction(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectFunction), FastDelegate<void>(&ODFAEGCreator::onSelectedFunctionChanged, this, dpSelectFunction));
     dpSelectFunction->getListener().connect("FUNCTIONCHANGED", cmdSelectFunction);
+    Command cmdSelectFunctionDroppedDown(FastDelegate<bool>(&DropDownList::isDroppedDown, dpSelectFunction), FastDelegate<void>(&ODFAEGCreator::onDroppedDown, this, dpSelectFunction));
+    dpSelectFunction->getListener().connect("SELECTFUNCTIONDROPPEDDOWN", cmdSelectFunctionDroppedDown);
+    dpSelectFunction->setName("FUNCTION");
     Label* lSelectPointerType = new Label(*wCreateNewObject, Vec3f(0, 150, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Pointer type : ", 15);
     getRenderComponentManager().addComponent(lSelectPointerType);
     dpSelectPointerType = new DropDownList(*wCreateNewObject, Vec3f(200, 150, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "No pointer : ", 15);
     getRenderComponentManager().addComponent(dpSelectPointerType);
     Command cmdPointerTypeDroppedDown(FastDelegate<bool>(&DropDownList::isDroppedDown, dpSelectPointerType), FastDelegate<void>(&ODFAEGCreator::onDroppedDown, this, dpSelectPointerType));
-    dpSelectFunction->getListener().connect("POINTERTYPEDROPPEDDOWN", cmdPointerTypeDroppedDown);
+    dpSelectPointerType->getListener().connect("POINTERTYPEDROPPEDDOWN", cmdPointerTypeDroppedDown);
     bCreateObject = new Button(Vec3f(200, 200, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Apply",15,*wCreateNewObject);
     bCreateObject->addActionListener(this);
     getRenderComponentManager().addComponent(bCreateObject);
@@ -650,8 +655,9 @@ void ODFAEGCreator::onInit() {
             cshapes.push_back(cshape);
         }
     }
+    //std::cout<<"on init"<<std::endl;
 }
-void ODFAEGCreator::updateScriptText(Shape* shape, const Texture* text) {
+/*void ODFAEGCreator::updateScriptText(Shape* shape, const Texture* text) {
     std::map<std::string, std::string>::iterator it;
     it = cppAppliContent.find(minAppliname+".cpp");
     if (it != cppAppliContent.end()) {
@@ -715,7 +721,7 @@ void ODFAEGCreator::updateScriptText(Tile* tile, const Texture* text) {
             }
         }
     }
-}
+}*/
 void ODFAEGCreator::onRender(RenderComponentManager *cm) {
 
 }
@@ -1189,30 +1195,9 @@ void ODFAEGCreator::onExec() {
                 }
                 ifs.close();
             }
-            /*std::ifstream ifs3(appliname+"\\"+"entities.oc");
-            std::vector<Entity*> entities;
-            if (ifs3) {
-                ITextArchive ia3(ifs3);
-                ia3(entities);
-                for (unsigned int i = 0; i < entities.size(); i++) {
-                    std::cout<<"load entities"<<std::endl;
-                    for (unsigned int f = 0; f < entities[i]->getNbFaces(); f++) {
-                        Face* face = entities[i]->getFace(f);
-                        std::string alias = face->getMaterial().getTexId();
-                        std::cout<<"alias : "<<alias<<std::endl;
-                        if (alias != "") {
-                            face->getMaterial().clearTextures();
-                            face->getMaterial().addTexture(tm.getResourceByAlias(alias), face->getMaterial().getTexRect());
-                        } else {
-                            face->getMaterial().clearTextures();
-                            face->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
-                        }
-                    }
-                }
-                ifs3.close();
-            }*/
+
             std::ifstream ifs2(appliname+"\\"+"scenes.oc");
-            //unsigned int size;
+
             if (ifs2) {
                 ITextArchive ia2(ifs2);
                 std::vector<Map*> maps;
@@ -1225,54 +1210,6 @@ void ODFAEGCreator::onExec() {
                     World::addEntityManager(maps[i]);
                     World::setCurrentEntityManager(maps[i]->getName());
                 }
-                /*ia2(size);
-                for (unsigned int i = 0; i < size; i++) {
-                    std::string name;
-                    ia2(name);
-                    std::string type;
-                    ia2(type);
-                    int cellWidth;
-                    int cellHeight;
-                    bool is2DIsoMatrix;
-                    if (type == "Map") {
-                        std::cout<<"load map"<<std::endl;
-                        ia2(cellWidth);
-                        ia2(cellHeight);
-                        Map* scene = new Map(&getRenderComponentManager(),name,cellWidth,cellHeight,0);
-                        ia2(is2DIsoMatrix);
-                        BaseChangementMatrix bcm;
-                        if (is2DIsoMatrix) {
-                            bcm.set2DIsoMatrix();
-                        }
-                        cshapes.clear();
-                        for (int i = 0; i < getRenderWindow().getSize().x; i+=100) {
-                            for (int j = 0; j < getRenderWindow().getSize().y; j+=50) {
-                                ConvexShape cshape(4);
-                                cshape.setFillColor(sf::Color::Transparent);
-                                cshape.setOutlineColor(sf::Color(75, 75, 75));
-                                cshape.setOutlineThickness(1.f);
-                                Vec2f points[4];
-                                points[0] = Vec2f(0, 0);
-                                points[1] = Vec2f(100, 0);
-                                points[2] = Vec2f(100, 50);
-                                points[3] = Vec2f(0, 50);
-                                for (unsigned int n = 0; n < 4; n++) {
-                                    points[n] = bcm.changeOfBase(points[n]);
-                                    points[n] += Vec2f(i, j);
-                                    cshape.setPoint(n, sf::Vector3f(points[n].x, points[n].y, 0));
-                                }
-                                cshapes.push_back(cshape);
-                            }
-                        }
-                        scene->setBaseChangementMatrix(bcm);
-                        World::addEntityManager(scene);
-                        World::setCurrentEntityManager(name);
-                        for (unsigned int e = 0; e < entities.size(); e++) {
-                            std::cout<<"add entity"<<std::endl;
-                            World::addEntity(entities[e]);
-                        }
-                    }
-                }*/
                 ifs2.close();
             }
             std::vector<Entity*> entities=World::getChildrenEntities("*");
@@ -1654,9 +1591,205 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             oss<<"void "<<appliname<<"::onLoad() {"<<std::endl;
             oss<<"  TextureManager<> tm;"<<std::endl;
             oss<<"  cache.addResourceManager(tm, \"TextureManager\");"<<std::endl;
+            oss<<"  std::ifstream ifs(appliname+\"\\textures.oc\");"<<std::endl;
+            oss<<"  if (ifs) {"<<std::endl;
+            oss<<"      ITextArchive ia(ifs);"<<std::endl;
+            oss<<"      std::vector<std::string> paths;"<<std::endl;
+            oss<<"      ia(paths);"<<std::endl;
+            oss<<"      for (unsigned int i = 0; i < paths.size(); i++) {"<<std::endl;
+            oss<<"          unsigned int lastSlash;"<<std::endl;
+            oss<<"          #if defined(ODFAEG_SYSTEM_LINUX)"<<std::endl;
+            oss<<"              lastSlash = paths[i].find_last_of(\"/\");"<<std::endl;
+            oss<<"          #else if defined (ODFAEG_SYSTEM_WINDOWS)"<<std::endl;
+            oss<<"              lastSlash = paths[i].find_last_of(\"\\\");"<<std::endl;
+            oss<<"          #endif // if"<<std::endl;
+            oss<<"          std::string ImgName = paths[i].substr(lastSlash+1);"<<std::endl;
+            oss<<"          tm.fromFileWithAlias(paths[i], ImgName);"<<std::endl;
+            oss<<"      }"<<std::endl;
+            oss<<"      ifs.close();"<<std::endl;
+            oss<<"  }"<<std::endl;
             oss<<"}"<<std::endl;
             oss<<"void "<<appliname<<"::onInit() {"<<std::endl;
             oss<<"  TextureManager<>& tm = cache.resourceManager<Texture, std::string>(\"TextureManager\");"<<std::endl;
+            oss<<R"(std::ifstream ifs2(appliname+"\\"+"scenes.oc");
+                if (ifs2) {
+                    ITextArchive ia2(ifs2);
+                    std::vector<Map*> maps;
+                    //std::cout<<"read map"<<std::endl;
+                    ia2(maps);
+                    //std::cout<<"maps : "<<std::endl;
+                    for (unsigned int i = 0; i < maps.size(); i++) {
+                        //std::cout<<"add map "<<maps[i]->getName()<<std::endl;
+                        maps[i]->setRenderComponentManager(&getRenderComponentManager());
+                        World::addEntityManager(maps[i]);
+                        World::setCurrentEntityManager(maps[i]->getName());
+                    }
+                    ifs2.close();
+                }
+                std::vector<Entity*> entities=World::getChildrenEntities("*");
+                for (unsigned int i = 0; i < entities.size(); i++) {
+                    std::cout<<"load entities"<<std::endl;
+                    for (unsigned int f = 0; f < entities[i]->getNbFaces(); f++) {
+                        Face* face = entities[i]->getFace(f);
+                        std::string alias = face->getMaterial().getTexId();
+                        std::cout<<"alias : "<<alias<<std::endl;
+                        if (alias != "") {
+                            face->getMaterial().clearTextures();
+                            face->getMaterial().addTexture(tm.getResourceByAlias(alias), face->getMaterial().getTexRect());
+                        } else {
+                            face->getMaterial().clearTextures();
+                            face->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
+                        }
+                    }
+                }
+
+                std::ifstream ifs4(appliname+"\\"+"timers.oc");
+                unsigned int size;
+                if (ifs4) {
+                    ITextArchive ia4(ifs4);
+                    ia4(size);
+                    for (unsigned int i  = 0; i < size; i++) {
+                        std::string name;
+                        std::string type;
+                        ia4(name);
+                        ia4(type);
+                        std::vector<int> animsIds;
+                        ia4(animsIds);
+                        if (type == "AnimationUpdater") {
+                            AnimUpdater* au = new AnimUpdater();
+                            au->setName(name);
+                            for (unsigned int a = 0; a < animsIds.size(); a++) {
+                                Entity* entity = World::getEntity(animsIds[a]);
+                                if (entity != nullptr && dynamic_cast<Anim*>(entity)) {
+                                    au->addAnim(static_cast<Anim*>(entity));
+                                }
+                            }
+                            World::addTimer(au);
+                        }
+                    }
+                    ifs4.close();
+                }
+                std::ifstream ifs5(appliname+"\\"+"components.oc");
+                if (ifs5) {
+                    ITextArchive ia5(ifs5);
+                    ia5(size);
+                    for (unsigned int i = 0; i < size; i++) {
+                        std::string name;
+                        std::string type;
+                        ia5(name);
+                        ia5(type);
+                        if (type == "PerPixelLinkedList") {
+                            std::cout<<"load components"<<std::endl;
+                            int layer;
+                            ia5(layer);
+                            std::string expression;
+                            ia5(expression);
+                            std::cout<<"layer : "<<layer<<std::endl;
+                            PerPixelLinkedListRenderComponent* ppll = new PerPixelLinkedListRenderComponent(getRenderWindow(),layer,expression,ContextSettings(0, 0, 4, 4, 6));
+                            ppll->setName(name);
+                            getRenderComponentManager().addComponent(ppll);
+                            dpSelectComponent->addItem(name, 15);
+                        }
+                    }
+                    ifs5.close();
+                }
+                std::ifstream ifs6(appliname+"\\"+"workers.oc");
+                if (ifs6) {
+                    ITextArchive ia6(ifs6);
+                    ia6(size);
+                    for (unsigned int i = 0; i < size; i++) {
+                        std::string name;
+                        std::string type;
+                        ia6(name);
+                        ia6(type);
+                        std::vector<int> psIds;
+                        ia6(psIds);
+                        std::cout<<"name : "<<name<<"type : "<<type<<std::endl;
+                        if (type == "EntityUpdater") {
+                            //std::cout<<"load entities updater"<<std::endl;
+                            EntitiesUpdater* eu = new EntitiesUpdater();
+                            eu->setName(name);
+                            World::addWorker(eu);
+                            std::cout<<"entities updater added"<<std::endl;
+                        }
+                        if (type == "ParticleSystemUpdater") {
+                            //std::cout<<"add particle systme updater"<<std::endl;
+                            ParticleSystemUpdater* psu = new ParticleSystemUpdater();
+                            psu->setName(name);
+
+                            for (unsigned int p = 0; p < psIds.size(); p++) {
+
+                                Entity* entity = World::getEntity(psIds[p]);
+                                if (entity != nullptr && dynamic_cast<ParticleSystem*>(entity)) {
+                                    //std::cout<<"add particle system"<<std::endl;
+                                    psu->addParticleSystem(static_cast<ParticleSystem*>(entity));
+                                }
+                            }
+                            World::addWorker(psu);
+                        }
+                    }
+                    ifs6.close();
+                }
+                std::ifstream ifs7(appliname+"\\"+"emitters.oc");
+                if (ifs7) {
+                    ITextArchive ia7(ifs7);
+                    std::vector<std::string> parameters;
+                    ia7(parameters);
+                    int i = 0;
+                    while (i < parameters.size()) {
+                        std::string psName = parameters[i];
+                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<std::endl;
+                        i++;
+                        UniversalEmitter emitter;
+                        emitter.setEmissionRate(conversionStringFloat(parameters[i]));
+                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<std::endl;
+                        i++;
+                        emitter.setParticleLifetime(Distributions::uniform(sf::seconds(conversionStringFloat(parameters[i])), sf::seconds(conversionStringFloat(parameters[i+1]))));
+                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<std::endl;
+                        i+=2;
+                        std::string type = parameters[i];
+                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<std::endl;
+                        i++;
+                        if (type == "Rect") {
+                            emitter.setParticlePosition(Distributions::rect(Vec3f(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1]), conversionStringFloat(parameters[i+2])),
+                                                                           Vec3f(conversionStringFloat(parameters[i+3]), conversionStringFloat(parameters[i+4]), conversionStringFloat(parameters[i+5]))));
+                            //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+2]<<","<<parameters[i+3]<<","<<parameters[i+4]<<","<<parameters[i+5]<<std::endl;
+                            i += 6;
+                        } else {
+                            emitter.setParticlePosition(Distributions::circle(Vec3f(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1]), conversionStringFloat(parameters[i+2])),
+                                                                             conversionStringFloat(parameters[i+3])));
+                            //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+2]<<std::endl;
+                            i += 4;
+                        }
+                        emitter.setParticleVelocity(Distributions::deflect(Vec3f(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1]), conversionStringFloat(parameters[i+2])), conversionStringFloat(parameters[i+3])));
+                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+3]<<std::endl;
+                        i += 4;
+                        emitter.setParticleRotation(Distributions::uniform(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1])));
+                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<std::endl;
+                        i += 2;
+                        emitter.setParticleTextureIndex(Distributions::uniformui(conversionStringInt(parameters[i]),conversionStringInt(parameters[i+1])));
+                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<std::endl;
+                        i += 2;
+                        emitter.setParticleScale(Distributions::rect(Vec3f(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1]), conversionStringFloat(parameters[i+2])),
+                                                                           Vec3f(conversionStringFloat(parameters[i+3]), conversionStringFloat(parameters[i+4]), conversionStringFloat(parameters[i+5]))));
+                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+2]<<","<<parameters[i+3]<<","<<parameters[i+4]<<","<<parameters[i+5]<<std::endl;
+                        i += 6;
+                        std::vector<std::string> color1 = split(parameters[i], ";");
+                        std::vector<std::string> color2 = split(parameters[i+1], ";");
+                        Vec3f c1(conversionStringInt(color1[0]), conversionStringInt(color1[1]), conversionStringInt(color1[2]), conversionStringInt(color1[3]));
+                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+3]<<std::endl;
+
+                        Vec3f c2(conversionStringInt(color2[0]), conversionStringInt(color2[1]), conversionStringInt(color2[2]), conversionStringInt(color2[3]));
+                        emitter.setParticleColor(Distributions::color(c1, c2));
+                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+3]<<std::endl;
+                        i += 2;
+                        Entity* ps = World::getEntity(psName);
+                        if (dynamic_cast<ParticleSystem*>(ps)) {
+                            //std::cout<<"add emitter"<<std::endl;
+                            static_cast<ParticleSystem*>(ps)->addEmitter(emitter);
+                        }
+                    }
+                })";
             oss<<"}"<<std::endl;
             oss<<"void "<<appliname<<"::onRender(RenderComponentManager *cm) {"<<std::endl;
             oss<<"}"<<std::endl;
@@ -1914,11 +2047,14 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             sourceCode += "#include <vector>\n";
             sourceCode += "#include \"odfaeg/Core/archive.h\"\n";
             sourceCode += "#include \"odfaeg/Core/class.hpp\"\n";
-            sourceCode += "#include \"application.hpp\"\n";
+            sourceCode += "#include \"../../Windows/Demos/ODFAEGCREATOR/application.hpp\"\n";
             sourceCode += "extern \"C\" {\n";
             sourceCode += "    void createObject(ODFAEGCreator* c);\n";
+            sourceCode += "    void readObjects (ODFAEGCreator* c);\n";
             sourceCode += "}\n";
             sourceCode += "void createObject(ODFAEGCreator *c) {\n";
+            sourceCode += "}\n";
+            sourceCode += "void readObjects (ODFAEGCreator *c) {\n";
             sourceCode += "}\n";
         }
         std::string sourceFile = cl.getSourcePath();
@@ -1931,35 +2067,61 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         }
         if (sourceCode.find("#include \""+headerFile+"\"") == std::string::npos) {
             sourceCode.insert(0, "#include \""+headerFile+"\"\n");
+            std::vector<odfaeg::core::Class> superClasses = cl.getSuperClasses();
+            bool found = false;
+            for (unsigned int i = 0; i < superClasses.size() && !found; i++) {
+                if (superClasses[i].getName() == "Entity") {
+                    found = true;
+                }
+                std::vector<odfaeg::core::Class> tmpSuperClasses = superClasses[i].getSuperClasses();
+                for (unsigned int j = 0; j < tmpSuperClasses.size(); j++) {
+                    superClasses.push_back(tmpSuperClasses[i]);
+                 }
+                 if (superClasses.size() > 0)
+                    superClasses.erase(superClasses.begin(), superClasses.begin()+1);
+                 }
+                 if (found) {
+                    sourceCode.insert(0, "#define ENTITY"+taObjectName->getText());
+                 }
             std::string toInsert = "";
-            if (sourceCode.find("{") != std::string::npos) {
-                int pos = sourceCode.find_last_of("{")+2;
+            if (sourceCode.find("}") != std::string::npos) {
+                int pos = sourceCode.find_first_of("}")+2;
                 if (dpSelectPointerType->getSelectedItem() == "No pointer") {
                     if (cl.getNamespace() != "") {
-                        toInsert = "    std::vector<"+cl.getNamespace()+"::"+cl.getName()+"> v"+cl.getName()+";\n";
+                        toInsert = "std::vector<"+cl.getNamespace()+"::"+cl.getName()+"> v"+cl.getName()+";\n";
                     } else {
-                        toInsert = "    std::vector<"+cl.getName()+"> v"+cl.getName()+";\n";
+                        toInsert = "std::vector<"+cl.getName()+"> v"+cl.getName()+";\n";
                     }
                 } else {
-                    toInsert = "    std::vector<"+dpSelectPointerType->getSelectedItem()+"*> v"+cl.getName()+";\n";
+                    toInsert = "std::vector<"+dpSelectPointerType->getSelectedItem()+"*> v"+cl.getName()+";\n";
                 }
+                toInsert += "unsigned int nb"+cl.getName()+"=0;\n";
+                sourceCode.insert(pos, toInsert);
+                toInsert = "";
+                std::string toFind = "void createObject(ODFAEGCreator *c) {";
+                pos = sourceCode.find("void createObject(ODFAEGCreator *c) {")+toFind.size();
                 if (dpSelectPointerType->getSelectedItem() != "No pointer" && dpSelectPointerType->getSelectedItem() != dpSelectClass->getSelectedItem()) {
                     std::vector<std::string> parts = split(dpSelectPointerType->getSelectedItem(), "::");
                     std::string name = parts[parts.size()-1];
                     toInsert += "EXPORT_CLASS_GUID("+name+cl.getName()+","+dpSelectPointerType->getSelectedItem()+","+dpSelectClass->getSelectedItem()+")";
                 }
                 toInsert += "   std::ofstream of"+cl.getName()+" (\""+cl.getName()+".oc\");\n";
-                toInsert += "   c->displayMessage();\n";
                 toInsert += "   odfaeg::core::OTextArchive oa"+cl.getName()+" (of"+cl.getName()+");\n";
             }
-            if (sourceCode.find("}") != std::string::npos) {
-                int pos = sourceCode.find_last_of("}");
+            std::string str = sourceCode;
+            int pos;
+            while (str.find("}") < str.find("void readObjects (ODFAEGCreator *c) {")) {
+                pos = str.find("}");
+                str = str.substr(pos+2);
+            }
+            if (sourceCode.find_last_of("}") != std::string::npos) {
                 toInsert += "   oa"+cl.getName()+" (v"+cl.getName()+");\n";
                 toInsert += "   of"+cl.getName()+".close();\n";
                 sourceCode.insert(pos, toInsert);
             }
 
         }
+
         std::vector<std::string> argValues;
         for (unsigned int i = 0; i < tmpTextAreas.size(); i++) {
             argValues.push_back(tmpTextAreas[i]->getText());
@@ -1975,17 +2137,22 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                     args += ",";
                 }
             }
-            std::string toInsert = "";
+            std::string toInsert = "    if(v"+cl.getName()+".size() == nb"+cl.getName()+") {\n";
             if (dpSelectPointerType->getSelectedItem() == "No pointer") {
                 if (cl.getNamespace() != "") {
-                    toInsert += "   "+cl.getNamespace()+"::"+cl.getName()+" "+taObjectName->getText()+" = "+cl.getNamespace()+"::"+cl.getName()+" ("+args+");\n";
+                    toInsert += "       "+cl.getNamespace()+"::"+cl.getName()+" "+taObjectName->getText()+" = "+cl.getNamespace()+"::"+cl.getName()+" ("+args+");\n";
                 } else {
-                    toInsert += "   "+cl.getName()+" "+taObjectName->getText()+" ("+args+");\n";
+                    toInsert += "       "+cl.getName()+" "+taObjectName->getText()+" ("+args+");\n";
                 }
             } else {
-                toInsert += "   "+dpSelectPointerType->getSelectedItem()+" *"+taObjectName->getText()+" = new "+dpSelectClass->getSelectedItem()+" ("+args+");\n";
+                toInsert += "       "+dpSelectPointerType->getSelectedItem()+" *"+taObjectName->getText()+" = new "+dpSelectClass->getSelectedItem()+" ("+args+");\n";
             }
-            toInsert += "   v"+cl.getName()+".push_back("+taObjectName->getText()+");\n";
+            toInsert += "       v"+cl.getName()+".push_back("+taObjectName->getText()+");\n";
+            toInsert += "       nb"+cl.getName()+"++;\n";
+            toInsert += "       #ifdef ENTITY"+taObjectName->getText()+"\n";
+            toInsert += "           c->addExternalEntity("+taObjectName->getText()+");\n";
+            toInsert += "       #endif\n";
+            toInsert += "   }\n";
             sourceCode.insert(pos, toInsert);
         }
         //std::cout<<"source code : "<<sourceCode<<std::endl;
@@ -1996,11 +2163,15 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         rtc.compile();
         std::string errors = rtc.getCompileErrors();
         //std::cout<<"errors : "<<rtc.getCompileErrors();
-        rtc.run<void>("createObject");
+        rtc.run<void>("createObject", this);
         wCreateNewObject->setVisible(false);
         getRenderComponentManager().setEventContextActivated(false, *wCreateNewObject);
         tScriptEdit->setEventContextActivated(true);
     }
+}
+void ODFAEGCreator::addExternalEntity(Entity* entity) {
+    entity->setExternal(true);
+    World::addEntity(entity);
 }
 void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "New application") {
@@ -2040,7 +2211,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
             shape->setPosition(position);
             displayInfos(shape.get());
             selectedObject = shape.get();
-            addShape(shape.get());
+            //addShape(shape.get());
             shapes.push_back(std::move(shape));
         }
     }
@@ -2052,7 +2223,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
                 selectedObject = tile;
                 displayInfos(tile);
                 World::addEntity(tile);
-                addTile(tile);
+                //addTile(tile);
             } else {
                 BoundingBox rect = rectSelect.getSelectionRect();
                 Vec3f savedPos = rectSelect.getSelectionRect().getPosition();
@@ -2414,7 +2585,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         tScriptEdit->setEventContextActivated(false);
      }
 }
-void ODFAEGCreator::addShape(Shape *shape) {
+/*void ODFAEGCreator::addShape(Shape *shape) {
     std::map<std::string, std::string>::iterator it;
     it = cppAppliContent.find(minAppliname+".cpp");
     if (it != cppAppliContent.end()) {
@@ -2461,15 +2632,15 @@ void ODFAEGCreator::addTile(Tile* tile) {
         content.insert(pos, toInsert);
 
     }
-}
+}*/
 bool ODFAEGCreator::removeShape (unsigned int id) {
-    std::map<std::string, std::string>::iterator it;
+   /* std::map<std::string, std::string>::iterator it;
     it = cppAppliContent.find(minAppliname+".cpp");
     if (it != cppAppliContent.end()) {
-        std::string content = it->second;
+        std::string content = it->second;*/
         for (auto it = shapes.begin(); it != shapes.end();it++) {
             if ((*it)->getId() == id) {
-                unsigned int pos = content.find("std::unique_ptr<Shape*> shape"+conversionUIntString(id));
+                /*unsigned int pos = content.find("std::unique_ptr<Shape*> shape"+conversionUIntString(id));
                 std::string subs = content.substr(pos);
                 unsigned int endpos = pos + subs.find_first_of('\n') + 1;
                 content.erase(pos, pos - endpos);
@@ -2479,12 +2650,12 @@ bool ODFAEGCreator::removeShape (unsigned int id) {
                     unsigned int endpos = pos + subs.find_first_of('\n') + 1;
                     content.erase(pos, pos - endpos);
                     pos = content.find("shape"+conversionUIntString(id));
-                } while(pos != std::string::npos);
+                } while(pos != std::string::npos);*/
                 it = shapes.erase(it);
                 return true;
             }
         }
-    }
+    //}
     return false;
 }
 void ODFAEGCreator::displayInfos (Shape* shape) {
@@ -3452,7 +3623,7 @@ void ODFAEGCreator::moveCursor(sf::Vector2f mousePos) {
         }
     }
 }
-void ODFAEGCreator::updateScriptPos(Transformable* shape) {
+/*void ODFAEGCreator::updateScriptPos(Transformable* shape) {
     std::map<std::string, std::string>::iterator it;
     it = cppAppliContent.find(minAppliname+".cpp");
     if (it != cppAppliContent.end()) {
@@ -3498,7 +3669,7 @@ void ODFAEGCreator::updateScriptPos(Transformable* shape) {
             }
         }
     }
-}
+}*/
 void ODFAEGCreator::onShadowScaleChanged(TextArea* ta) {
     if (ta == taXShadowScale) {
         if (is_number(ta->getText())) {
@@ -3669,7 +3840,7 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
             sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(newXPos, selectedObject->getPosition().y, selectedObject->getPosition().z));
-            updateScriptPos(selectedObject);
+            //updateScriptPos(selectedObject);
             for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
                 State* selectState = new State("SCHANGEXPOS", &se);
                 selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
@@ -3690,7 +3861,7 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
             sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(selectedObject->getPosition().x, newYPos, selectedObject->getPosition().z));
-            updateScriptPos(selectedObject);
+            //updateScriptPos(selectedObject);
             for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
                 State* selectState = new State("SCHANGEYPOS", &se);
                 selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
@@ -3711,7 +3882,7 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
             sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(selectedObject->getPosition().x, selectedObject->getPosition().y, newZPos));
-            updateScriptPos(selectedObject);
+            //updateScriptPos(selectedObject);
             for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
                 State* selectState = new State("SCHANGEZPOS", &se);
                 selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
@@ -3867,7 +4038,7 @@ void ODFAEGCreator::onObjectScaleChanged(TextArea* ta) {
             sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->scale(Vec3f(selectedObject->getScale().x, selectedObject->getScale().y, newScaleZ/selectedObject->getScale().z));
-            updateScriptPos(selectedObject);
+            //updateScriptPos(selectedObject);
             for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
                 State* selectState = new State("SCHANGESCALEZ", &se);
                 selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
@@ -3933,7 +4104,7 @@ void ODFAEGCreator::onObjectMoveChanged(TextArea* ta) {
             sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->move(Vec3f(selectedObject->getTranslation().x, selectedObject->getTranslation().y, newMoveZ-selectedObject->getTranslation().z));
-            updateScriptPos(selectedObject);
+            //updateScriptPos(selectedObject);
             for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
                 State* selectState = new State("SCHANGEMOVEZ", &se);
                 selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
@@ -3945,7 +4116,7 @@ void ODFAEGCreator::onObjectMoveChanged(TextArea* ta) {
         }
     }
 }
-void ODFAEGCreator::updateScriptColor(Transformable* shape) {
+/*void ODFAEGCreator::updateScriptColor(Transformable* shape) {
     std::map<std::string, std::string>::iterator it;
     it = cppAppliContent.find(minAppliname+".cpp");
     if (it != cppAppliContent.end()) {
@@ -3983,7 +4154,7 @@ void ODFAEGCreator::updateScriptColor(Transformable* shape) {
             }
         }
     }
-}
+}*/
 void ODFAEGCreator::onObjectNameChanged(TextArea* ta) {
     selectedObject->setName(ta->getText());
 }
@@ -4027,7 +4198,7 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
                 static_cast<PonctualLight*>(selectedObject)->setColor(sf::Color(Math::clamp(color, 0, 255), static_cast<Tile*>(selectedObject)->getColor().g,static_cast<Tile*>(selectedObject)->getColor().b, static_cast<Tile*>(selectedObject)->getColor().a));
                 rectSelect.setColor(selectedObject, static_cast<Tile*>(selectedObject)->getColor());
             }
-            updateScriptColor(selectedObject);
+            //updateScriptColor(selectedObject);
             for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
                 State* selectState = new State("SCHANGERCOLOR", &se);
                 selectState->addParameter("OBJECT", rectSelect.getItems()[i]);
@@ -4067,7 +4238,7 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             if (dynamic_cast<PonctualLight*>(selectedObject)) {
                 state->addParameter("OLDVALUE", static_cast<PonctualLight*>(selectedObject)->getColor().g);
             }
-            updateScriptColor(selectedObject);
+            //updateScriptColor(selectedObject);
             state->addParameter("NEWVALUE", color);
             sg->addState(state);
             if (dynamic_cast<Shape*>(selectedObject)) {
@@ -4121,7 +4292,7 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             if (dynamic_cast<PonctualLight*>(selectedObject)) {
                 state->addParameter("OLDVALUE", static_cast<PonctualLight*>(selectedObject)->getColor().b);
             }
-            updateScriptColor(selectedObject);
+            //updateScriptColor(selectedObject);
             state->addParameter("NEWVALUE", color);
             sg->addState(state);
             if (dynamic_cast<Shape*>(selectedObject)) {
@@ -4175,7 +4346,7 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             if (dynamic_cast<PonctualLight*>(selectedObject)) {
                 state->addParameter("OLDVALUE", static_cast<PonctualLight*>(selectedObject)->getColor().a);
             }
-            updateScriptColor(selectedObject);
+            //updateScriptColor(selectedObject);
             state->addParameter("NEWVALUE", color);
             sg->addState(state);
             if (dynamic_cast<Shape*>(selectedObject)) {
@@ -4286,14 +4457,14 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
     if (dp->getSelectedItem() == "NONE") {
         if (dynamic_cast<Shape*>(selectedObject)) {
             static_cast<Shape*>(selectedObject)->setTexture(nullptr);
-            updateScriptText(static_cast<Shape*>(selectedObject), nullptr);
+            //updateScriptText(static_cast<Shape*>(selectedObject), nullptr);
         }
         if (dynamic_cast<Tile*>(selectedObject)) {
             Tile* selectedTile = static_cast<Tile*>(selectedObject);
             selectedTile->getFace(0)->getMaterial().clearTextures();
             selectedTile->getFace(0)->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, gridWidth, gridHeight));
             static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().setTexId("");
-            updateScriptText(static_cast<Tile*>(selectedObject), nullptr);
+            //updateScriptText(static_cast<Tile*>(selectedObject), nullptr);
         }
     } else {
         TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
@@ -4309,14 +4480,14 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                 if (dynamic_cast<Shape*>(selectedObject)) {
                     static_cast<Shape*>(selectedObject)->setTexture(text);
                     textRect = static_cast<Shape*>(selectedObject)->getTextureRect();
-                    updateScriptText(static_cast<Shape*>(selectedObject), text);
+                    //updateScriptText(static_cast<Shape*>(selectedObject), text);
                 }
                 if (dynamic_cast<Tile*>(selectedObject)) {
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().clearTextures();
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().addTexture(text, sf::IntRect(0, 0, text->getSize().x, text->getSize().y));
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().setTexId(alias[0]);
                     textRect = sf::IntRect(0, 0, text->getSize().x, text->getSize().y);
-                    updateScriptText(static_cast<Tile*>(selectedObject), text);
+                    //updateScriptText(static_cast<Tile*>(selectedObject), text);
                 }
                 if (dynamic_cast<ParticleSystem*>(selectedObject)) {
                     static_cast<ParticleSystem*>(selectedObject)->setTexture(*text);
@@ -4576,7 +4747,7 @@ void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
         }
     }
 }
-void ODFAEGCreator::updateScriptTextCoords(Transformable* shape) {
+/*void ODFAEGCreator::updateScriptTextCoords(Transformable* shape) {
     std::map<std::string, std::string>::iterator it;
     it = cppAppliContent.find(minAppliname+".cpp");
     if (it != cppAppliContent.end()) {
@@ -4622,7 +4793,7 @@ void ODFAEGCreator::updateScriptTextCoords(Transformable* shape) {
             }
         }
     }
-}
+}*/
 void ODFAEGCreator::onSelectedEmChanged(DropDownList* dp) {
     if (dp->getSelectedItem() == "NONE") {
         if (dynamic_cast<Entity*>(selectedObject)) {
@@ -4660,90 +4831,114 @@ void ODFAEGCreator::onCollisionBoundingBoxChanged(TextArea* ta) {
     collisionsBox.push_back(rect);
 }
 void ODFAEGCreator::onSelectedClassChanged(DropDownList* dp) {
-    dpSelectFunction->removeAllItems();
-    dpSelectPointerType->removeAllItems();
-    std::string selectedItem = dp->getSelectedItem();
-    std::vector<std::string> parts = split(selectedItem, "::");
-    Class cl = Class::getClass(parts[parts.size() - 1]);
-    std::vector<Constructor> constructors = cl.getConstructors();
-    for (unsigned int i = 0; i < constructors.size(); i++) {
-        std::string name = constructors[i].getName()+"(";
-        std::vector<std::string> argsTypes = constructors[i].getArgsTypes();
-        for (unsigned int j = 0; j < argsTypes.size(); j++) {
-            name += argsTypes[j];
-            if (j != argsTypes.size() - 1) {
-                name += ",";
+    if (dp->getSelectedItem() != "Select class") {
+        std::cout<<"selected class : "<<dp->getSelectedItem()<<std::endl;
+        dpSelectFunction->removeAllItems();
+        dpSelectPointerType->removeAllItems();
+        std::string selectedItem = dp->getSelectedItem();
+        std::vector<std::string> parts = split(selectedItem, "::");
+        Class cl = Class::getClass(parts[parts.size() - 1]);
+        std::vector<Constructor> constructors = cl.getConstructors();
+        //std::cout<<"size : "<<constructors.size()<<std::endl;
+        for (unsigned int i = 0; i < constructors.size(); i++) {
+            std::string name = constructors[i].getName()+"(";
+            std::vector<std::string> argsTypes = constructors[i].getArgsTypes();
+            for (unsigned int j = 0; j < argsTypes.size(); j++) {
+                std::cout<<"add arg type : "<<argsTypes[j]<<std::endl;
+                name += argsTypes[j];
+                if (j != argsTypes.size() - 1) {
+                    name += ",";
+                }
+            }
+            name += ")";
+            //std::cout<<"add function : "<<name<<std::endl;
+            dpSelectFunction->addItem(name, 15);
+            std::cout<<"add function : "<<i<<" : "<<name<<std::endl;
+        }
+        dpSelectPointerType->addItem("No pointer", 15);
+        if (cl.getNamespace() == "")
+            dpSelectPointerType->addItem(cl.getName(), 15);
+        else
+            dpSelectPointerType->addItem(cl.getNamespace()+"::"+cl.getName(), 15);
+        std::vector<Class> superClasses = cl.getSuperClasses();
+        while (superClasses.size() > 0) {
+            for (unsigned int i = 0; i < superClasses.size(); i++) {
+                std::string name;
+                if (superClasses[i].getNamespace() == "")
+                    name = superClasses[i].getName();
+                else
+                    name = superClasses[i].getNamespace() + "::" + superClasses[i].getName();
+
+                dpSelectPointerType->setName("POINTERTYPE");
+                dpSelectPointerType->addItem(name, 15);
+                std::vector<Class> tmpSuperClasses = superClasses[i].getSuperClasses();
+                for (unsigned int j = 0; j < tmpSuperClasses.size(); j++) {
+                    superClasses.push_back(tmpSuperClasses[j]);
+                }
+                if (superClasses.size() > 0)
+                    superClasses.erase(superClasses.begin(), superClasses.begin()+1);
             }
         }
-        name += ")";
-        dpSelectFunction->addItem(name, 15);
     }
-    dpSelectPointerType->addItem("No pointer", 15);
-    if (cl.getNamespace() == "")
-        dpSelectPointerType->addItem(cl.getName(), 15);
-    else
-        dpSelectPointerType->addItem(cl.getNamespace()+"::"+cl.getName(), 15);
-    std::vector<Class> superClasses = cl.getSuperClasses();
-    while (superClasses.size() > 0) {
-        for (unsigned int i = 0; i < superClasses.size(); i++) {
-            std::string name;
-            if (superClasses[i].getNamespace() == "")
-                name = superClasses[i].getName();
-            else
-                name = superClasses[i].getNamespace() + "::" + superClasses[i].getName();
-            dpSelectPointerType->addItem(name, 15);
-            std::vector<Class> tmpSuperClasses = superClasses[i].getSuperClasses();
-            for (unsigned int j = 0; j < tmpSuperClasses.size(); j++) {
-                superClasses.push_back(tmpSuperClasses[j]);
-            }
-        }
-    }
+    dpSelectFunction->setEventContextActivated(true);
+    dpSelectPointerType->setEventContextActivated(true);
+    bCreateObject->setEventContextActivated(true);
 }
 void ODFAEGCreator::onSelectedFunctionChanged(DropDownList* dp) {
-    rootObjectParams->deleteAllNodes();
-    pObjectsParameters->removeAll();
-    std::string selectedItem = dpSelectClass->getSelectedItem();
-    std::vector<std::string> parts = split(selectedItem, "::");
-    std::cout<<"parts : "<<parts[parts.size() - 1]<<std::endl;
-    Class cl = Class::getClass(parts[parts.size() - 1]);
-    tmpTextAreas.clear();
-    std::vector<Constructor> constructors = cl.getConstructors();
-    bool found = false;
-    Constructor* c=nullptr;
-    for (unsigned int i = 0; i < constructors.size() && !found; i++) {
-        std::string name = constructors[i].getName()+"(";
-        std::vector<std::string> argsTypes = constructors[i].getArgsTypes();
-        for (unsigned int j = 0; j < argsTypes.size(); j++) {
-            name += argsTypes[j];
-            if (j != argsTypes.size() - 1) {
-                name += ",";
+    if (dp->getSelectedItem() != "Select function" && dpSelectClass->getSelectedItem() != "Select class") {
+        rootObjectParams->deleteAllNodes();
+        pObjectsParameters->removeAll();
+        std::string selectedItem = dpSelectClass->getSelectedItem();
+        std::vector<std::string> parts = split(selectedItem, "::");
+        std::cout<<"parts : "<<parts[parts.size() - 1]<<std::endl;
+        Class cl = Class::getClass(parts[parts.size() - 1]);
+        tmpTextAreas.clear();
+        std::vector<Constructor> constructors = cl.getConstructors();
+        bool found = false;
+        Constructor* c=nullptr;
+        for (unsigned int i = 0; i < constructors.size() && !found; i++) {
+            std::string name = constructors[i].getName()+"(";
+            std::vector<std::string> argsTypes = constructors[i].getArgsTypes();
+            for (unsigned int j = 0; j < argsTypes.size(); j++) {
+                name += argsTypes[j];
+                if (j != argsTypes.size() - 1) {
+                    name += ",";
+                }
+            }
+            name += ")";
+            if (name == dp->getSelectedItem()) {
+                c = &constructors[i];
+                found = true;
             }
         }
-        name += ")";
-        if (name == dp->getSelectedItem()) {
-            c = &constructors[i];
-            found = true;
+        if (c != nullptr) {
+            FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+            std::vector<std::string> argsTypes = c->getArgsTypes();
+            for (unsigned int i = 0; i < argsTypes.size(); i++) {
+                Label* label = new Label(*wCreateNewObject, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), argsTypes[i]+" : ", 15);
+                Node* node = new Node(argsTypes[i], label, Vec2f(0, 0), Vec2f(0.25, 0.025),rootObjectParams.get());
+                label->setParent(pObjectsParameters);
+                pObjectsParameters->addChild(label);
+                TextArea* ta = new TextArea(Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "", *wCreateNewObject);
+                node->addOtherComponent(ta, Vec2f(0.75, 0.025));
+                ta->setTextSize(15);
+                ta->setParent(pObjectsParameters);
+                pObjectsParameters->addChild(ta);
+                tmpTextAreas.push_back(ta);
+            }
         }
     }
-    if (c != nullptr) {
-        FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
-        std::vector<std::string> argsTypes = c->getArgsTypes();
-        for (unsigned int i = 0; i < argsTypes.size(); i++) {
-            Label* label = new Label(*wCreateNewObject, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), argsTypes[i]+" : ", 15);
-            Node* node = new Node(argsTypes[i], label, Vec2f(0, 0), Vec2f(0.25, 0.025),rootObjectParams.get());
-            label->setParent(pObjectsParameters);
-            pObjectsParameters->addChild(label);
-            TextArea* ta = new TextArea(Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "", *wCreateNewObject);
-            node->addOtherComponent(ta, Vec2f(0.75, 0.025));
-            ta->setTextSize(15);
-            ta->setParent(pObjectsParameters);
-            pObjectsParameters->addChild(ta);
-            tmpTextAreas.push_back(ta);
-        }
-    }
+    dpSelectPointerType->setEventContextActivated(true);
     bCreateObject->setEventContextActivated(true);
 }
 void ODFAEGCreator::onDroppedDown(DropDownList* dp) {
+    if (dp == dpSelectClass) {
+        dpSelectFunction->setEventContextActivated(false);
+        dpSelectPointerType->setEventContextActivated(false);
+    }
+    if (dp = dpSelectFunction) {
+        dpSelectPointerType->setEventContextActivated(false);
+    }
     bCreateObject->setEventContextActivated(false);
 }
 void ODFAEGCreator::convertSlash(std::string& path) {

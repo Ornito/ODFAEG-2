@@ -404,6 +404,8 @@ namespace odfaeg {
                 static float getNbLayers();
                 void copy (Entity* entity);
                 virtual Entity* clone() = 0;
+                void setExternal(bool external);
+                bool isExternal();
             protected :
                 math::Vec3f shadowCenter, shadowScale, shadowRotationAxis, shadowOrigin, refractDir; /**> The center of the shadow of the entity.*/
                 float shadowRotationAngle;
@@ -423,6 +425,7 @@ namespace odfaeg {
                 float layer;
                 static float nbLayers;
                 DrawMode drawMode;
+                bool external;
         };
     }
 }

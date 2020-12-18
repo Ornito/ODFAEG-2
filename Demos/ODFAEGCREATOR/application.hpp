@@ -95,9 +95,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onSelectedClassChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onSelectedFunctionChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onDroppedDown(odfaeg::graphic::gui::DropDownList* dp);
-    void displayMessage() {
-        std::cout<<"called from dll"<<std::endl;
-    }
+    void addExternalEntity(odfaeg::graphic::Entity* entity);
     enum Fonts {
         Serif
     };
@@ -154,6 +152,5 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::vector<std::string> affectorParams;
         odfaeg::math::Vec3f viewPos;
         odfaeg::core::RuntimeCompiler rtc;
-        unsigned int nb;
 };
 #endif
