@@ -514,6 +514,8 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(dpSelectPointerType);
     Command cmdPointerTypeDroppedDown(FastDelegate<bool>(&DropDownList::isDroppedDown, dpSelectPointerType), FastDelegate<void>(&ODFAEGCreator::onDroppedDown, this, dpSelectPointerType));
     dpSelectPointerType->getListener().connect("POINTERTYPEDROPPEDDOWN", cmdPointerTypeDroppedDown);
+    Command cmdPointerTypeValuechanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectPointerType), FastDelegate<void>(&ODFAEGCreator::onSelectPointerType, this, dpSelectPointerType));
+    dpSelectPointerType->getListener().connect("POINTERTYPEVALUECHANGED", cmdPointerTypeValuechanged);
     bCreateObject = new Button(Vec3f(200, 200, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Apply",15,*wCreateNewObject);
     bCreateObject->addActionListener(this);
     getRenderComponentManager().addComponent(bCreateObject);
@@ -2068,30 +2070,29 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         }
         std::string sourceFile = cl.getSourcePath();
         //std::cout<<"source file : "<<sourceFile<<std::endl;
-        if (sourceFile.find(".cpp") != std::string::npos) {
-            int pos = sourceFile.find(".cpp");
-            std::string file = sourceFile.erase(pos, sourceFile.size() - pos);
-            std::cout<<"file : "<<file<<std::endl;
-            rtc.addSourceFile(file);
-        }
         if (sourceCode.find("#include \""+headerFile+"\"") == std::string::npos) {
             sourceCode.insert(0, "#include \""+headerFile+"\"\n");
             std::vector<odfaeg::core::Class> superClasses = cl.getSuperClasses();
             bool found = false;
-            for (unsigned int i = 0; i < superClasses.size() && !found; i++) {
-                if (superClasses[i].getName() == "Entity") {
-                    found = true;
+            while (superClasses.size() > 0 && !found) {
+                for (unsigned int i = 0; i < superClasses.size() && !found; i++) {
+                    std::cout<<"super class name : "<<superClasses[i].getName()<<std::endl;
+                    if (superClasses[i].getName() == "Entity") {
+                        std::cout<<"found entity!"<<std::endl;
+                        found = true;
+                    }
+                    std::vector<odfaeg::core::Class> tmpSuperClasses = superClasses[i].getSuperClasses();
+                    for (unsigned int j = 0; j < tmpSuperClasses.size(); j++) {
+                        superClasses.push_back(tmpSuperClasses[j]);
+                     }
+                     if (superClasses.size() > 0)  {
+                        superClasses.erase(superClasses.begin(), superClasses.begin()+1);
+                     }
                 }
-                std::vector<odfaeg::core::Class> tmpSuperClasses = superClasses[i].getSuperClasses();
-                for (unsigned int j = 0; j < tmpSuperClasses.size(); j++) {
-                    superClasses.push_back(tmpSuperClasses[i]);
-                 }
-                 if (superClasses.size() > 0)
-                    superClasses.erase(superClasses.begin(), superClasses.begin()+1);
-                 }
-                 if (found) {
-                    sourceCode.insert(0, "#define ENTITY"+taObjectName->getText());
-                 }
+            }
+            if (found) {
+                sourceCode.insert(0, "#define ENTITY"+taObjectName->getText()+"\n");
+            }
             std::string toInsert = "";
             int pos;
             if (sourceCode.find("}") != std::string::npos) {
@@ -2178,6 +2179,13 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/application");
         rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/odfaegCreatorStateExecutor");
         rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/rectangularSelection");
+        rtc.addSourceFile("Test/Scripts/item");
+        rtc.addSourceFile("Test/Scripts/hero");
+        rtc.addSourceFile("Test/Scripts/monster");
+        rtc.addSourceFile("Test/Scripts/quest");
+        rtc.addSourceFile("Test/Scripts/caracter");
+        rtc.addSourceFile("Test/Scripts/skill");
+        rtc.addSourceFile("Test/Scripts/pnj");
         rtc.compile();
         std::string errors = rtc.getCompileErrors();
         //std::cout<<"errors : "<<rtc.getCompileErrors();
@@ -2191,7 +2199,11 @@ void ODFAEGCreator::updateNb(std::string name, unsigned int nb) {
     nbs.insert(std::make_pair(name, nb));
 }
 void ODFAEGCreator::addExternalEntity(Entity* entity) {
+    std::cout<<"add entity"<<std::endl;
     entity->setExternal(true);
+    selectedObject=entity;
+    displayTransformInfos(entity);
+    displayEntityInfos(entity);
     World::addEntity(entity);
 }
 void ODFAEGCreator::actionPerformed(MenuItem* item) {
@@ -4860,6 +4872,7 @@ void ODFAEGCreator::onSelectedClassChanged(DropDownList* dp) {
         std::vector<std::string> parts = split(selectedItem, "::");
         Class cl = Class::getClass(parts[parts.size() - 1]);
         std::vector<Constructor> constructors = cl.getConstructors();
+        dpSelectFunction->addItem("Select function", 15);
         //std::cout<<"size : "<<constructors.size()<<std::endl;
         for (unsigned int i = 0; i < constructors.size(); i++) {
             std::string name = constructors[i].getName()+"(";
@@ -4874,7 +4887,7 @@ void ODFAEGCreator::onSelectedClassChanged(DropDownList* dp) {
             name += ")";
             //std::cout<<"add function : "<<name<<std::endl;
             dpSelectFunction->addItem(name, 15);
-            std::cout<<"add function : "<<i<<" : "<<name<<std::endl;
+            //std::cout<<"add function : "<<i<<" : "<<name<<std::endl;
         }
         dpSelectPointerType->addItem("No pointer", 15);
         if (cl.getNamespace() == "")
@@ -4891,6 +4904,7 @@ void ODFAEGCreator::onSelectedClassChanged(DropDownList* dp) {
                     name = superClasses[i].getNamespace() + "::" + superClasses[i].getName();
 
                 dpSelectPointerType->setName("POINTERTYPE");
+                //std::cout<<"add item : "<<name<<std::endl;
                 dpSelectPointerType->addItem(name, 15);
                 std::vector<Class> tmpSuperClasses = superClasses[i].getSuperClasses();
                 for (unsigned int j = 0; j < tmpSuperClasses.size(); j++) {
@@ -4901,8 +4915,8 @@ void ODFAEGCreator::onSelectedClassChanged(DropDownList* dp) {
             }
         }
     }
-    dpSelectFunction->setEventContextActivated(true);
-    dpSelectPointerType->setEventContextActivated(true);
+    /*dpSelectFunction->setEventContextActivated(true);
+    dpSelectPointerType->setEventContextActivated(true);*/
     bCreateObject->setEventContextActivated(true);
 }
 void ODFAEGCreator::onSelectedFunctionChanged(DropDownList* dp) {
@@ -4911,7 +4925,7 @@ void ODFAEGCreator::onSelectedFunctionChanged(DropDownList* dp) {
         pObjectsParameters->removeAll();
         std::string selectedItem = dpSelectClass->getSelectedItem();
         std::vector<std::string> parts = split(selectedItem, "::");
-        std::cout<<"parts : "<<parts[parts.size() - 1]<<std::endl;
+        //std::cout<<"parts : "<<parts[parts.size() - 1]<<std::endl;
         Class cl = Class::getClass(parts[parts.size() - 1]);
         tmpTextAreas.clear();
         std::vector<Constructor> constructors = cl.getConstructors();
@@ -4927,7 +4941,9 @@ void ODFAEGCreator::onSelectedFunctionChanged(DropDownList* dp) {
                 }
             }
             name += ")";
+            std::cout<<"name : "<<name<<std::endl;
             if (name == dp->getSelectedItem()) {
+                std::cout<<"select constructor"<<std::endl;
                 c = &constructors[i];
                 found = true;
             }
@@ -4936,6 +4952,7 @@ void ODFAEGCreator::onSelectedFunctionChanged(DropDownList* dp) {
             FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
             std::vector<std::string> argsTypes = c->getArgsTypes();
             for (unsigned int i = 0; i < argsTypes.size(); i++) {
+                //std::cout<<"add gui"<<std::endl;
                 Label* label = new Label(*wCreateNewObject, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), argsTypes[i]+" : ", 15);
                 Node* node = new Node(argsTypes[i], label, Vec2f(0, 0), Vec2f(0.25, 0.025),rootObjectParams.get());
                 label->setParent(pObjectsParameters);
@@ -4949,19 +4966,22 @@ void ODFAEGCreator::onSelectedFunctionChanged(DropDownList* dp) {
             }
         }
     }
-    dpSelectPointerType->setEventContextActivated(true);
+    //dpSelectPointerType->setEventContextActivated(true);
     bCreateObject->setEventContextActivated(true);
 }
 void ODFAEGCreator::onDroppedDown(DropDownList* dp) {
-    if (dp == dpSelectClass) {
+    /*if (dp == dpSelectClass) {
         dpSelectFunction->setEventContextActivated(false);
         dpSelectPointerType->setEventContextActivated(false);
     }
     if (dp = dpSelectFunction) {
         dpSelectPointerType->setEventContextActivated(false);
-    }
+    }*/
     bCreateObject->setEventContextActivated(false);
 }
 void ODFAEGCreator::convertSlash(std::string& path) {
     std::replace(path.begin(),path.end(), '\\', '/');
+}
+void ODFAEGCreator::onSelectPointerType(DropDownList* dp) {
+    bCreateObject->setEventContextActivated(true);
 }

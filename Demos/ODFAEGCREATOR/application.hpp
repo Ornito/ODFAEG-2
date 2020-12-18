@@ -97,6 +97,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onDroppedDown(odfaeg::graphic::gui::DropDownList* dp);
     void addExternalEntity(odfaeg::graphic::Entity* entity);
     void updateNb(std::string name, unsigned int nb);
+    void onSelectPointerType(odfaeg::graphic::gui::DropDownList* dp);
     enum Fonts {
         Serif
     };

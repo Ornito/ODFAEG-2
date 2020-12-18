@@ -41,8 +41,8 @@ namespace odfaeg {
                 return (selectedItem != nullptr) ? selectedItem->getText() : "";
             }
             void DropDownList::onItemSelected(Label* label) {
-                if (getName() == "FUNCTION")
-                    std::cout<<"function ! "<<std::endl;
+                /*if (getName() == "FUNCTION")
+                    std::cout<<"function ! "<<std::endl;*/
                 if (label != selectedItem)
                     valueChanged = true;
                 selectedItem = label;
@@ -54,12 +54,12 @@ namespace odfaeg {
                 }
             }
             bool DropDownList::isMouseOnTriangle() {
-                if (getName() == "FUNCTION") {
+                /*if (getName() == "FUNCTION") {
                     if (bp.isPointInside(mousePos)) {
                         std::cout<<"inside : "<<std::endl;
                     }
                     //std::cout<<"mouse pos : "<<mousePos<<std::endl;
-                }
+                }*/
                 return bp.isPointInside(mousePos);
             }
             void DropDownList::onTriangleClicked() {
@@ -74,8 +74,8 @@ namespace odfaeg {
                     rect.setFillColor(background);
             }
             void DropDownList::addItem(std::string t, unsigned int charSize) {
-                if (getName() == "POINTERTYPE")
-                    std::cout<<"add item : "<<t<<std::endl;
+                /*if (getName() == "POINTERTYPE")
+                    std::cout<<"add item : "<<t<<std::endl;*/
                 Label* label = new Label (getWindow(), getPosition(), math::Vec3f(getSize().x - 50, getSize().y, 0), font, t, charSize);
                 label->setPosition(math::Vec3f(getPosition().x, getPosition().y + getSize().y * nbItems, 0));
                 label->setForegroundColor(sf::Color::Black);
@@ -89,8 +89,8 @@ namespace odfaeg {
             }
             void DropDownList::removeAllItems() {
                 items.clear();
-                if (getName() == "FUNCTION")
-                    std::cout<<"size : "<<items.size()<<std::endl;
+                /*if (getName() == "FUNCTION")
+                    std::cout<<"size : "<<items.size()<<std::endl;*/
                 selectedItem = nullptr;
             }
             void DropDownList::onDraw(RenderTarget& target, RenderStates states) {
