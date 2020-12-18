@@ -82,7 +82,13 @@ int main(int argc, char* argv[]) {
    odfaeg::core::OTextArchive oaItem (ofItem);
    oaItem (vItem);
    ofItem.close();*/
-   Class cl = Class::getClass("Item");
+    Class cl = Class::getClass("Hero");
+    /*std::cout<<"class : "<<cl.getName()<<std::endl;
+    std::vector<Class> superClasses = cl.getSuperClasses();
+
+    for (unsigned int i = 0; i < superClasses.size(); i++) {
+        std::cout<<"super class : "<<superClasses[i].getName()<<std::endl;
+    }*/
     ODFAEGCreator app(sf::VideoMode(1000,700),"ODFAEG Creator");
     return app.exec();
 

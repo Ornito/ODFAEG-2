@@ -122,9 +122,10 @@ namespace odfaeg {
                  }
                  toAdd.clear();
                  for (it = commands.begin(); it != commands.end(); it++) {
+                    /*if (it->first.find("FUNCTIONCHANGED") != std::string::npos)
+                            std::cout<<"function"<<std::endl;*/
                     if (it->second.isTriggered()) {
-                        if (it->first.find("ld") != std::string::npos)
-                            std::cout<<"open dir"<<std::endl;
+
                         (it->second)();
                         if (removeListener) {
                             break;

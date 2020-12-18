@@ -41,7 +41,7 @@ namespace odfaeg {
                     }
                     ifs.close();
                 }
-                std::cout<<"command : "<<command<<std::endl;
+                std::cout<<"errors : "<<compileErrors<<std::endl;
             }
             for (unsigned int i = 0; i < libraryDirs.size(); i++) {
                 if (i == 0)

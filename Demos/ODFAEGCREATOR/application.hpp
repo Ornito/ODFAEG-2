@@ -72,14 +72,14 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onObjectMoveChanged(odfaeg::graphic::gui::TextArea* ta);
     void onObjectScaleChanged(odfaeg::graphic::gui::TextArea* ta);
     void onObjectRotationChanged(odfaeg::graphic::gui::TextArea* ta);
-    void addShape(odfaeg::graphic::Shape *shape);
-    void addTile(odfaeg::graphic::Tile *tile);
+   /* void addShape(odfaeg::graphic::Shape *shape);
+    void addTile(odfaeg::graphic::Tile *tile);*/
     bool removeShape (unsigned int id);
-    void updateScriptPos(odfaeg::graphic::Transformable* shape);
+    /*void updateScriptPos(odfaeg::graphic::Transformable* shape);
     void updateScriptColor(odfaeg::graphic::Transformable* shape);
     void updateScriptTextCoords(odfaeg::graphic::Transformable* shape);
     void updateScriptText(odfaeg::graphic::Shape* shape, const odfaeg::graphic::Texture* text);
-    void updateScriptText(odfaeg::graphic::Tile* tile, const odfaeg::graphic::Texture* text);
+    void updateScriptText(odfaeg::graphic::Tile* tile, const odfaeg::graphic::Texture* text);*/
     void onObjectNameChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedParentChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onWallTypeChanged(odfaeg::graphic::gui::TextArea* taWallType);
@@ -95,6 +95,9 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onSelectedClassChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onSelectedFunctionChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onDroppedDown(odfaeg::graphic::gui::DropDownList* dp);
+    void displayMessage() {
+        std::cout<<"called from dll"<<std::endl;
+    }
     enum Fonts {
         Serif
     };
@@ -151,5 +154,6 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::vector<std::string> affectorParams;
         odfaeg::math::Vec3f viewPos;
         odfaeg::core::RuntimeCompiler rtc;
+        unsigned int nb;
 };
 #endif

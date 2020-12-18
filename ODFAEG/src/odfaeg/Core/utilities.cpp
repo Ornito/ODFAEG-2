@@ -111,8 +111,14 @@ namespace odfaeg {
                            std::vector<std::string> parts = split(keyword, " ");
                            for (unsigned int i = 0; i < parts.size(); i++) {
                                 if (path.find(parts[i]) != std::string::npos) {
-                                    //path = std::string(ent->d_name);
-                                    files.push_back(path);
+                                    bool contains = false;
+                                    for (unsigned int j = 0; j < files.size() && !contains; j++) {
+                                        if (files[j] == path)
+                                            contains = true;
+                                    }
+                                    if (!contains) {
+                                        files.push_back(path);
+                                    }
                                 }
                            }
                            if (keyword == "*") {

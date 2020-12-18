@@ -15,7 +15,7 @@ namespace odfaeg {
         public :
             Class(std::string name, std::string filePath, std::string sourceFile);
             static std::vector<std::string> getClasses(std::string filePath);
-            static Class getClass(std::string name, std::string path="");
+            static Class getClass(std::string name, std::string nspc="", std::string path="");
             std::string getName();
             std::string getFilePath();
             std::string getSourcePath();
@@ -23,6 +23,8 @@ namespace odfaeg {
             std::vector<Class> getSuperClasses();
             std::string getNamespace();
         private :
+            static void removeSpaces(std::string &str);
+            static bool isName(std::string str, std::string str2);
             static void checkInnerClass(std::string innerClass, std::string type, std::string& fileContent, int lvl, Class& cl);
             static void checkConstructors(std::string& fileContent, Class& cl);
             static void checkSuperClasses(std::string& fileContent, Class& cl);
