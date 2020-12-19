@@ -29,6 +29,7 @@ C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/function.h
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/game.h
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/keys.h
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/listener.h
+C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/memberFunction.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/mpl.h
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/multdispvisitors.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Core/resourceCache.h

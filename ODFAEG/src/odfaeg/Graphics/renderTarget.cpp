@@ -78,7 +78,7 @@ namespace odfaeg {
             {
                 applyTexture(nullptr);
                 glCheck(glClearColor(color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f));
-                glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+                glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
             }
         }
 
@@ -520,6 +520,9 @@ namespace odfaeg {
                 glCheck(glDisable(GL_CULL_FACE));
                 glCheck(glDisable(GL_LIGHTING));
                 glCheck(glEnable(GL_DEPTH_TEST));
+                /*glCheck(glEnable(GL_STENCIL_TEST));
+                glCheck(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
+                glCheck(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));*/
                 if (enableAlphaTest) {
                     glCheck(glEnable(GL_ALPHA_TEST));
                 } else {

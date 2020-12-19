@@ -17,7 +17,10 @@ namespace odfaeg {
                 getListener().connect("CHANGESTATE", cmd);
             }
             void CheckBox::clear() {
-                rect.setFillColor(backgroundColor);
+                if (checked)
+                    rect.setFillColor(checkedColor);
+                else
+                    rect.setFillColor(backgroundColor);
             }
             void CheckBox::onDraw(RenderTarget& target, RenderStates states) {
                 rect.setPosition(getPosition());
@@ -48,10 +51,6 @@ namespace odfaeg {
             }
             void CheckBox::setChecked(bool checked) {
                 this->checked = checked;
-                if (checked)
-                    rect.setFillColor(checkedColor);
-                else
-                    rect.setFillColor(backgroundColor);
             }
             bool CheckBox::isChecked() {
                 return checked;

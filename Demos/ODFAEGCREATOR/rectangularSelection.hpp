@@ -5,14 +5,13 @@ class RectangularSelection : public odfaeg::graphic::Drawable {
 public :
     RectangularSelection();
     void setRect(int posX, int posY, int width, int height);
-    void addItem(odfaeg::graphic::Transformable* item, sf::Color color);
+    void addItem(odfaeg::graphic::Transformable* item);
     odfaeg::physic::BoundingBox getSelectionRect();
-    std::vector<std::pair<odfaeg::graphic::Transformable*, sf::Color>> getColors();
     std::vector<odfaeg::graphic::Transformable*> getItems();
-    void setColor(odfaeg::graphic::Transformable* transformable, sf::Color color);
+    void setColor(odfaeg::graphic::Transformable* transformable);
     void draw (odfaeg::graphic::RenderTarget& target, odfaeg::graphic::RenderStates states);
 private :
     odfaeg::graphic::RectangleShape selectionRect;
-    std::vector<std::pair<odfaeg::graphic::Transformable*, sf::Color>> items;
+    std::vector<odfaeg::graphic::Transformable*> items;
 };
 #endif // RECTANGULAR_SELECTION

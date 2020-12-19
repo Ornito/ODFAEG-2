@@ -13,7 +13,7 @@ using namespace odfaeg::graphic::g2d;
 using namespace odfaeg::physic;
 using namespace odfaeg::window;
 ODFAEGCreator::ODFAEGCreator(sf::VideoMode vm, std::string title) :
-Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0, 0, 3, 0)), isGuiShown (false), cursor(10), se(this), rtc("create") {
+Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 8, 4, 3, 0)), isGuiShown (false), cursor(10), se(this), rtc("create") {
     dpSelectTexture = nullptr;
     dpSelectEm = nullptr;
     sTextRect = nullptr;
@@ -191,7 +191,11 @@ void ODFAEGCreator::onInit() {
     item51 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "New object");
     item51->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item51);
+    item52 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "Modify object");
+    item52->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item52);
     menu5->addMenuItem(item51);
+    menu5->addMenuItem(item52);
     Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Z);
     Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Q);
     Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::S);
@@ -525,6 +529,34 @@ void ODFAEGCreator::onInit() {
     wCreateNewObject->setVisible(false);
     addWindow(wCreateNewObject);
     getRenderComponentManager().setEventContextActivated(false, *wCreateNewObject);
+    //Modify object.
+    wModifyObject = new RenderWindow(sf::VideoMode(400, 1000), "Modify object",sf::Style::Default,ContextSettings(0, 0, 4, 3, 0));
+    Label *lMObjectName = new Label(*wModifyObject,Vec3f(0, 0, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "Object name : ", 15);
+    getRenderComponentManager().addComponent(lMObjectName);
+    taMObjectName = new TextArea(Vec3f(200, 0, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "", *wModifyObject);
+    getRenderComponentManager().addComponent(taMObjectName);
+    Label *lMIsPointer = new Label(*wModifyObject,Vec3f(0, 50, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "Is pointer ? : ", 15);
+    getRenderComponentManager().addComponent(lMIsPointer);
+    cbIsPointer = new CheckBox(*wModifyObject,Vec3f(200, 65, 0), Vec3f(10, 10, 0));
+    getRenderComponentManager().addComponent(cbIsPointer);
+    Label* lSelectMFunction = new Label(*wModifyObject, Vec3f(0, 100, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Function : ", 15);
+    getRenderComponentManager().addComponent(lSelectMFunction);
+    dpSelectMFunction = new DropDownList(*wModifyObject, Vec3f(200, 100, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Select function : ", 15);
+    dpSelectMFunction->setPriority(-2);
+    getRenderComponentManager().addComponent(dpSelectMFunction);
+    Command cmdSelectMFunction(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectMFunction), FastDelegate<void>(&ODFAEGCreator::onSelectedMFunctionChanged, this, dpSelectMFunction));
+    dpSelectMFunction->getListener().connect("MFUNCTIONCHANGED", cmdSelectMFunction);
+    Command cmdSelectMFunctionDroppedDown(FastDelegate<bool>(&DropDownList::isDroppedDown, dpSelectMFunction), FastDelegate<void>(&ODFAEGCreator::onDroppedDown, this, dpSelectMFunction));
+    dpSelectMFunction->getListener().connect("SELECTMFUNCTIONDROPPEDDOWN", cmdSelectMFunctionDroppedDown);
+    bModifyObject = new Button(Vec3f(200, 150, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Apply",15,*wModifyObject);
+    bModifyObject->addActionListener(this);
+    getRenderComponentManager().addComponent(bModifyObject);
+    pMObjectsParameters = new Panel(*wModifyObject, Vec3f(0, 200, 0), Vec3f(400, 800, 0));
+    getRenderComponentManager().addComponent(pMObjectsParameters);
+    rootMObjectParams = std::make_unique<Node>("m object params", pMObjectsParameters, Vec2f(0.f, 200.f / 1000.f), Vec2f(1.f, 800.f / 1000.f));
+    wModifyObject->setVisible(false);
+    addWindow(wModifyObject);
+    getRenderComponentManager().setEventContextActivated(false, *wModifyObject);
     //Create panel for project files.
     pProjects = new Panel(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     rootNode = std::make_unique<Node> ("projects", pProjects, Vec2f(0.f, 0.015f), Vec2f(1.f / 6.f, 1.f));
@@ -736,6 +768,26 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
         View defaultView = window->getDefaultView();
 
         if (isGuiShown) {
+            std::vector<Entity*> tiles = World::getEntities("E_TILE");
+            glCheck(glEnable(GL_STENCIL_TEST));
+            glCheck(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilMask(0xFF);
+            glDisable(GL_ALPHA_TEST);
+            for (unsigned int i = 0; i < tiles.size(); i++) {
+                Entity* t = tiles[i]->clone();
+                static_cast<Tile*>(t)->setColor(sf::Color::Transparent);
+                window->draw(*t);
+            }
+            glCheck(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
+            glCheck(glStencilMask(0x00));
+            glDisable(GL_DEPTH_TEST);
+            for (unsigned int i = 0; i < selectionBorders.size(); i++) {
+                window->draw(*selectionBorders[i]);
+            }
+
+            glCheck(glDisable(GL_STENCIL_TEST));
+            glEnable(GL_ALPHA_TEST);
             if (tabPane->getSelectedTab() == "Collisions") {
                 window->setView(defaultView);
                 BoundingBox view = currentView.getViewVolume();
@@ -1012,16 +1064,8 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     }
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_RELEASED && event.mouseButton.button == IMouse::Right) {
         if (showRectSelect && !pScriptsFiles->isPointInside(mousePosition)) {
-            std::vector<std::pair<Transformable*, sf::Color>> colors = rectSelect.getColors();
-            for (unsigned int i = 0; i < colors.size(); i++) {
-                if (dynamic_cast<Tile*>(colors[i].first)) {
-                    static_cast<Tile*>(colors[i].first)->setColor(colors[i].second);
-                }
-                if (dynamic_cast<Shape*>(colors[i].first)) {
-                    static_cast<Shape*>(colors[i].first)->setFillColor(colors[i].second);
-                }
-            }
             rectSelect.getItems().clear();
+            selectionBorders.clear();
             BoundingBox box = rectSelect.getSelectionRect();
             Vec3f savedPos = box.getPosition();
             Vec3f pos = box.getPosition();
@@ -1032,8 +1076,18 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                 for (unsigned int i = 0; i < entities.size(); i++) {
                     if (rectSelect.getSelectionRect().intersects(entities[i]->getGlobalBounds())) {
                         if (dynamic_cast<Tile*>(entities[i])) {
-                            rectSelect.addItem(entities[i], static_cast<Tile*>(entities[i])->getColor());
-                            static_cast<Tile*>(entities[i])->setColor(sf::Color::Yellow);
+                            rectSelect.addItem(entities[i]);
+                            Entity* border = entities[i]->clone();
+                            for (unsigned int i = 0; i < border->getNbFaces(); i++) {
+                                border->getFace(i)->getMaterial().clearTextures();
+                                border->getFace(i)->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
+                                VertexArray& va = border->getFace(i)->getVertexArray();
+                                for (unsigned int j = 0; j < va.getVertexCount(); j++) {
+                                    va[j].color = sf::Color::Cyan;
+                                }
+                            }
+                            border->setScale(Vec3f(1.1f, 1.1f, 1.0f));
+                            selectionBorders.push_back(border);
                         }
                     }
                 }
@@ -1041,8 +1095,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
             for (unsigned int i = 0; i < shapes.size(); i++) {
                 if (rectSelect.getSelectionRect().intersects(shapes[i]->getGlobalBounds())) {
                     if (dynamic_cast<Shape*>(shapes[i].get())) {
-                        rectSelect.addItem(shapes[i].get(), static_cast<Shape*>(shapes[i].get())->getFillColor());
-                        static_cast<Shape*>(shapes[i].get())->setFillColor(sf::Color::Yellow);
+                        rectSelect.addItem(shapes[i].get());
                     }
                 }
             }
@@ -2280,7 +2333,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
                         while (x <= endX) {
                             Vec3f position = getGridCellPos(Vec3f(x, y, 0));
                             Tile* tile = new Tile(nullptr,position,Vec3f(gridWidth, gridHeight, 0),sf::IntRect(0, 0, gridWidth, gridHeight));
-                            rectSelect.addItem(tile, tile->getColor());
+                            rectSelect.addItem(tile);
                             if (rectSelect.getItems().size() == 1) {
                                 selectedObject = tile;
                                 displayInfos(tile);
@@ -2296,7 +2349,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
                         for (int y = rect.getPosition().y; y <  rect.getPosition().y + rect.getSize().y; y+=gridHeight) {
                             Vec3f position = getGridCellPos(Vec3f(x, y, 0));
                             Tile* tile = new Tile(nullptr,position,Vec3f(gridWidth, gridHeight, 0),sf::IntRect(0, 0, gridWidth, gridHeight));
-                            rectSelect.addItem(tile, tile->getColor());
+                            rectSelect.addItem(tile);
                             if (rectSelect.getItems().size() == 1) {
                                 selectedObject = tile;
                                 displayInfos(tile);
@@ -2326,7 +2379,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
                 for (int x = rect.getPosition().x; x < rect.getPosition().x + rect.getSize().x-gridWidth; x+=gridWidth) {
                     for (int y = rect.getPosition().y; y <  rect.getPosition().y + rect.getSize().y-gridHeight; y+=gridHeight) {
                         Decor* decor = new Decor();
-                        rectSelect.addItem(decor, sf::Color::White);
+                        rectSelect.addItem(decor);
                         if (rectSelect.getItems().size() == 1) {
                             selectedObject = decor;
                             displayInfos(decor);
@@ -2355,7 +2408,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
                 for (int x = rect.getPosition().x; x < rect.getPosition().x + rect.getSize().x-gridWidth; x+=gridWidth) {
                     for (int y = rect.getPosition().y; y <  rect.getPosition().y + rect.getSize().y-gridHeight; y+=gridHeight) {
                         Wall* wall = new Wall();
-                        rectSelect.addItem(wall, sf::Color::White);
+                        rectSelect.addItem(wall);
                         if (rectSelect.getItems().size() == 1) {
                             selectedObject = wall;
                             displayInfos(wall);
@@ -2384,7 +2437,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
                 for (int x = rect.getPosition().x; x < rect.getPosition().x + rect.getSize().x-gridWidth; x+=gridWidth) {
                     for (int y = rect.getPosition().y; y <  rect.getPosition().y + rect.getSize().y-gridHeight; y+=gridHeight) {
                         Anim* anim = new Anim();
-                        rectSelect.addItem(anim, sf::Color::White);
+                        rectSelect.addItem(anim);
                         if (rectSelect.getItems().size() == 1) {
                             selectedObject = anim;
                             displayInfos(anim);
@@ -2615,6 +2668,11 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
      if (item == item51) {
         wCreateNewObject->setVisible(true);
         getRenderComponentManager().setEventContextActivated(true, *wCreateNewObject);
+        tScriptEdit->setEventContextActivated(false);
+     }
+     if (item == item52) {
+        wModifyObject->setVisible(true);
+        getRenderComponentManager().setEventContextActivated(true, *wModifyObject);
         tScriptEdit->setEventContextActivated(false);
      }
 }
@@ -4221,15 +4279,15 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             sg->addState(state);
             if (dynamic_cast<Shape*>(selectedObject)) {
                 static_cast<Shape*>(selectedObject)->setFillColor(sf::Color(Math::clamp(color, 0, 255), static_cast<Shape*>(selectedObject)->getFillColor().g,static_cast<Shape*>(selectedObject)->getFillColor().b, static_cast<Shape*>(selectedObject)->getFillColor().a));
-                rectSelect.setColor(selectedObject, static_cast<Shape*>(selectedObject)->getFillColor());
+
             }
             if (dynamic_cast<Tile*>(selectedObject)) {
                 static_cast<Tile*>(selectedObject)->setColor(sf::Color(Math::clamp(color, 0, 255), static_cast<Tile*>(selectedObject)->getColor().g,static_cast<Tile*>(selectedObject)->getColor().b, static_cast<Tile*>(selectedObject)->getColor().a));
-                rectSelect.setColor(selectedObject, static_cast<Tile*>(selectedObject)->getColor());
+
             }
             if (dynamic_cast<PonctualLight*>(selectedObject)) {
                 static_cast<PonctualLight*>(selectedObject)->setColor(sf::Color(Math::clamp(color, 0, 255), static_cast<Tile*>(selectedObject)->getColor().g,static_cast<Tile*>(selectedObject)->getColor().b, static_cast<Tile*>(selectedObject)->getColor().a));
-                rectSelect.setColor(selectedObject, static_cast<Tile*>(selectedObject)->getColor());
+
             }
             //updateScriptColor(selectedObject);
             for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
@@ -4238,17 +4296,17 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
                 if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
                     selectState->addParameter("OLDVALUE", static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor().r);
                     static_cast<Shape*>(rectSelect.getItems()[i])->setFillColor(sf::Color(Math::clamp(color, 0, 255), static_cast<Shape*>(selectedObject)->getFillColor().g,static_cast<Shape*>(selectedObject)->getFillColor().b, static_cast<Shape*>(selectedObject)->getFillColor().a));
-                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor());
+
                 }
                 if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
                     selectState->addParameter("OLDVALUE", static_cast<Tile*>(rectSelect.getItems()[i])->getColor().r);
                     static_cast<Tile*>(rectSelect.getItems()[i])->setColor(sf::Color(Math::clamp(color, 0, 255), static_cast<Tile*>(rectSelect.getItems()[i])->getColor().g,static_cast<Tile*>(rectSelect.getItems()[i])->getColor().b, static_cast<Tile*>(rectSelect.getItems()[i])->getColor().a));
-                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<Tile*>(rectSelect.getItems()[i])->getColor());
+
                 }
                 if (dynamic_cast<PonctualLight*>(rectSelect.getItems()[i])) {
                     selectState->addParameter("OLDVALUE", static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().r);
                     static_cast<PonctualLight*>(rectSelect.getItems()[i])->setColor(sf::Color(Math::clamp(color, 0, 255), static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().g,static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().b, static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().a));
-                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor());
+
                 }
                 selectState->addParameter("NEWVALUE", color);
                 sg->addState(selectState);
@@ -4276,15 +4334,15 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             sg->addState(state);
             if (dynamic_cast<Shape*>(selectedObject)) {
                 static_cast<Shape*>(selectedObject)->setFillColor(sf::Color(static_cast<Shape*>(selectedObject)->getFillColor().r, Math::clamp(color, 0, 255),static_cast<Shape*>(selectedObject)->getFillColor().b, static_cast<Shape*>(selectedObject)->getFillColor().a));
-                rectSelect.setColor(selectedObject, static_cast<Shape*>(selectedObject)->getFillColor());
+
             }
             if (dynamic_cast<Tile*>(selectedObject)) {
                 static_cast<Tile*>(selectedObject)->setColor(sf::Color(static_cast<Tile*>(selectedObject)->getColor().r, Math::clamp(color, 0, 255),static_cast<Tile*>(selectedObject)->getColor().b, static_cast<Tile*>(selectedObject)->getColor().a));
-                rectSelect.setColor(selectedObject, static_cast<Tile*>(selectedObject)->getColor());
+
             }
             if (dynamic_cast<PonctualLight*>(selectedObject)) {
                 static_cast<PonctualLight*>(selectedObject)->setColor(sf::Color(static_cast<PonctualLight*>(selectedObject)->getColor().r, Math::clamp(color, 0, 255),static_cast<PonctualLight*>(selectedObject)->getColor().b, static_cast<PonctualLight*>(selectedObject)->getColor().a));
-                rectSelect.setColor(selectedObject, static_cast<PonctualLight*>(selectedObject)->getColor());
+
             }
             for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
                 State* selectState = new State("SCHANGEGCOLOR", &se);
@@ -4292,17 +4350,17 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
                 if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
                     selectState->addParameter("OLDVALUE", static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor().g);
                     static_cast<Shape*>(rectSelect.getItems()[i])->setFillColor(sf::Color(static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor().r, Math::clamp(color, 0, 255),static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor().b, static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor().a));
-                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor());
+
                 }
                 if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
                     selectState->addParameter("OLDVALUE", static_cast<Tile*>(rectSelect.getItems()[i])->getColor().g);
                     static_cast<Tile*>(rectSelect.getItems()[i])->setColor(sf::Color(static_cast<Tile*>(rectSelect.getItems()[i])->getColor().r, Math::clamp(color, 0, 255),static_cast<Tile*>(rectSelect.getItems()[i])->getColor().b, static_cast<Tile*>(rectSelect.getItems()[i])->getColor().a));
-                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<Tile*>(rectSelect.getItems()[i])->getColor());
+
                 }
                 if (dynamic_cast<PonctualLight*>(rectSelect.getItems()[i])) {
                     selectState->addParameter("OLDVALUE", static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().g);
                     static_cast<PonctualLight*>(rectSelect.getItems()[i])->setColor(sf::Color(static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().r, Math::clamp(color, 0, 255),static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().b, static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().a));
-                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<Tile*>(rectSelect.getItems()[i])->getColor());
+
                 }
                 selectState->addParameter("NEWVALUE", color);
                 sg->addState(selectState);
@@ -4330,15 +4388,15 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             sg->addState(state);
             if (dynamic_cast<Shape*>(selectedObject)) {
                 static_cast<Shape*>(selectedObject)->setFillColor(sf::Color(static_cast<Shape*>(selectedObject)->getFillColor().r, static_cast<Shape*>(selectedObject)->getFillColor().g, Math::clamp(color, 0, 255), static_cast<Shape*>(selectedObject)->getFillColor().a));
-                rectSelect.setColor(selectedObject, static_cast<Shape*>(selectedObject)->getFillColor());
+
             }
             if (dynamic_cast<Tile*>(selectedObject)) {
                 static_cast<Tile*>(selectedObject)->setColor(sf::Color(static_cast<Tile*>(selectedObject)->getColor().r, static_cast<Tile*>(selectedObject)->getColor().g, Math::clamp(color, 0, 255), static_cast<Tile*>(selectedObject)->getColor().a));
-                rectSelect.setColor(selectedObject, static_cast<Tile*>(selectedObject)->getColor());
+
             }
             if (dynamic_cast<PonctualLight*>(selectedObject)) {
                 static_cast<PonctualLight*>(selectedObject)->setColor(sf::Color(static_cast<PonctualLight*>(selectedObject)->getColor().r, static_cast<PonctualLight*>(selectedObject)->getColor().g, Math::clamp(color, 0, 255), static_cast<PonctualLight*>(selectedObject)->getColor().a));
-                rectSelect.setColor(selectedObject, static_cast<PonctualLight*>(selectedObject)->getColor());
+
             }
             for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
                 State* selectState = new State("SCHANGEBCOLOR", &se);
@@ -4346,17 +4404,17 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
                 if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
                     selectState->addParameter("OLDVALUE", static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor().b);
                     static_cast<Shape*>(rectSelect.getItems()[i])->setFillColor(sf::Color(static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor().r, static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor().g, Math::clamp(color, 0, 255), static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor().a));
-                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor());
+
                 }
                 if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
                     selectState->addParameter("OLDVALUE", static_cast<Tile*>(rectSelect.getItems()[i])->getColor().b);
                     static_cast<Tile*>(rectSelect.getItems()[i])->setColor(sf::Color(static_cast<Tile*>(rectSelect.getItems()[i])->getColor().r, static_cast<Tile*>(rectSelect.getItems()[i])->getColor().g, Math::clamp(color, 0, 255), static_cast<Tile*>(rectSelect.getItems()[i])->getColor().a));
-                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<Tile*>(rectSelect.getItems()[i])->getColor());
+
                 }
                 if (dynamic_cast<PonctualLight*>(rectSelect.getItems()[i])) {
                     selectState->addParameter("OLDVALUE", static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().b);
                     static_cast<PonctualLight*>(rectSelect.getItems()[i])->setColor(sf::Color(static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().r, static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().g, Math::clamp(color, 0, 255), static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().a));
-                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor());
+
                 }
                 selectState->addParameter("NEWVALUE", color);
                 sg->addState(selectState);
@@ -4384,15 +4442,15 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             sg->addState(state);
             if (dynamic_cast<Shape*>(selectedObject)) {
                 static_cast<Shape*>(selectedObject)->setFillColor(sf::Color(static_cast<Shape*>(selectedObject)->getFillColor().r, static_cast<Shape*>(selectedObject)->getFillColor().g,static_cast<Shape*>(selectedObject)->getFillColor().b, Math::clamp(color, 0, 255)));
-                rectSelect.setColor(selectedObject, static_cast<Shape*>(selectedObject)->getFillColor());
+
             }
             if (dynamic_cast<Tile*>(selectedObject)) {
                 static_cast<Tile*>(selectedObject)->setColor(sf::Color(static_cast<Tile*>(selectedObject)->getColor().r, static_cast<Tile*>(selectedObject)->getColor().g,static_cast<Tile*>(selectedObject)->getColor().b, Math::clamp(color, 0, 255)));
-                rectSelect.setColor(selectedObject, static_cast<Tile*>(selectedObject)->getColor());
+
             }
             if (dynamic_cast<PonctualLight*>(selectedObject)) {
                 static_cast<PonctualLight*>(selectedObject)->setColor(sf::Color(static_cast<PonctualLight*>(selectedObject)->getColor().r, static_cast<PonctualLight*>(selectedObject)->getColor().g,static_cast<PonctualLight*>(selectedObject)->getColor().b, Math::clamp(color, 0, 255)));
-                rectSelect.setColor(selectedObject, static_cast<PonctualLight*>(selectedObject)->getColor());
+
             }
             for (unsigned int i = 1; i < rectSelect.getItems().size(); i++) {
                 State* selectState = new State("SCHANGEACOLOR", &se);
@@ -4400,17 +4458,17 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
                 if (dynamic_cast<Shape*>(rectSelect.getItems()[i])) {
                     selectState->addParameter("OLDVALUE", static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor().a);
                     static_cast<Shape*>(rectSelect.getItems()[i])->setFillColor(sf::Color(static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor().r, static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor().g,static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor().b, Math::clamp(color, 0, 255)));
-                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<Shape*>(rectSelect.getItems()[i])->getFillColor());
+
                 }
                 if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
                     selectState->addParameter("OLDVALUE", static_cast<Tile*>(rectSelect.getItems()[i])->getColor().a);
                     static_cast<Tile*>(rectSelect.getItems()[i])->setColor(sf::Color(static_cast<Tile*>(rectSelect.getItems()[i])->getColor().r, static_cast<Tile*>(rectSelect.getItems()[i])->getColor().g,static_cast<Tile*>(rectSelect.getItems()[i])->getColor().b, Math::clamp(color, 0, 255)));
-                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<Tile*>(rectSelect.getItems()[i])->getColor());
+
                 }
                 if (dynamic_cast<PonctualLight*>(rectSelect.getItems()[i])) {
                     selectState->addParameter("OLDVALUE", static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().a);
                     static_cast<PonctualLight*>(rectSelect.getItems()[i])->setColor(sf::Color(static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().r, static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().g,static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor().b, Math::clamp(color, 0, 255)));
-                    rectSelect.setColor(rectSelect.getItems()[i], static_cast<PonctualLight*>(rectSelect.getItems()[i])->getColor());
+
                 }
                 selectState->addParameter("NEWVALUE", color);
                 sg->addState(selectState);
@@ -4969,15 +5027,16 @@ void ODFAEGCreator::onSelectedFunctionChanged(DropDownList* dp) {
     //dpSelectPointerType->setEventContextActivated(true);
     bCreateObject->setEventContextActivated(true);
 }
+void ODFAEGCreator::onSelectedMFunctionChanged(DropDownList *dp) {
+    bModifyObject->setEventContextActivated(true);
+}
 void ODFAEGCreator::onDroppedDown(DropDownList* dp) {
-    /*if (dp == dpSelectClass) {
-        dpSelectFunction->setEventContextActivated(false);
-        dpSelectPointerType->setEventContextActivated(false);
+    if (dp == dpSelectClass || dp == dpSelectFunction || dp == dpSelectPointerType) {
+        bCreateObject->setEventContextActivated(false);
     }
-    if (dp = dpSelectFunction) {
-        dpSelectPointerType->setEventContextActivated(false);
-    }*/
-    bCreateObject->setEventContextActivated(false);
+    if (dp == dpSelectMFunction) {
+        bModifyObject->setEventContextActivated(false);
+    }
 }
 void ODFAEGCreator::convertSlash(std::string& path) {
     std::replace(path.begin(),path.end(), '\\', '/');
