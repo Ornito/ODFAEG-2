@@ -103,10 +103,9 @@ namespace odfaeg
             /// \return True if creation was successful
             ///
             ////////////////////////////////////////////////////////////
-            bool create(unsigned int width, unsigned int height, unsigned int precision = 0x8058, unsigned int format = 0x1908, unsigned int type = 0x1401);
+            bool create(unsigned int width, unsigned int height);
             bool createCubeMap (unsigned int width, unsigned int height);
             bool createCubeMap(unsigned int width, unsigned int height, std::vector<sf::Image> images);
-            bool createCubeMap(unsigned int width, unsigned int height, std::vector<const Texture*> images);
             void clear();
             ////////////////////////////////////////////////////////////
             /// \brief Load the texture from a file on disk
@@ -465,6 +464,7 @@ namespace odfaeg
             ///
             ////////////////////////////////////////////////////////////
             static void bind(const Texture* texture, CoordinateType coordinateType = Normalized);
+            static std::vector<Texture*> getAllTextures();
 
             ////////////////////////////////////////////////////////////
             /// \brief Get the maximum texture size allowed
@@ -499,6 +499,7 @@ namespace odfaeg
                     onLoad(vPixels);
                 }
             }
+            void setNativeHandle(unsigned int handle, unsigned int width, unsigned int height);
             math::Matrix4f getTextureMatrix() const;
             const sf::Image& getImage() const;
             void onLoad(std::vector<sf::Uint8>& pixels);
@@ -544,7 +545,7 @@ namespace odfaeg
             sf::Uint64       m_cacheId;       ///< Unique number that identifies the texture to the render target's cache
             bool m_isCubeMap;
             std::string m_name;
-
+            static std::vector<Texture*> allTextures;
         };
     }
 } // namespace sf

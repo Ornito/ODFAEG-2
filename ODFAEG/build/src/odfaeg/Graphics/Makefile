@@ -1439,6 +1439,33 @@ projMatrix.cpp.s:
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/projMatrix.cpp.s
 .PHONY : projMatrix.cpp.s
 
+raytracingRenderComponent.obj: raytracingRenderComponent.cpp.obj
+
+.PHONY : raytracingRenderComponent.obj
+
+# target to build an object file
+raytracingRenderComponent.cpp.obj:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/raytracingRenderComponent.cpp.obj
+.PHONY : raytracingRenderComponent.cpp.obj
+
+raytracingRenderComponent.i: raytracingRenderComponent.cpp.i
+
+.PHONY : raytracingRenderComponent.i
+
+# target to preprocess a source file
+raytracingRenderComponent.cpp.i:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/raytracingRenderComponent.cpp.i
+.PHONY : raytracingRenderComponent.cpp.i
+
+raytracingRenderComponent.s: raytracingRenderComponent.cpp.s
+
+.PHONY : raytracingRenderComponent.s
+
+# target to generate assembly for a file
+raytracingRenderComponent.cpp.s:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/raytracingRenderComponent.cpp.s
+.PHONY : raytracingRenderComponent.cpp.s
+
 rectangleShape.obj: rectangleShape.cpp.obj
 
 .PHONY : rectangleShape.obj
@@ -2349,6 +2376,9 @@ help:
 	@echo ... projMatrix.obj
 	@echo ... projMatrix.i
 	@echo ... projMatrix.s
+	@echo ... raytracingRenderComponent.obj
+	@echo ... raytracingRenderComponent.i
+	@echo ... raytracingRenderComponent.s
 	@echo ... rectangleShape.obj
 	@echo ... rectangleShape.i
 	@echo ... rectangleShape.s

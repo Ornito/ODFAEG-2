@@ -9,8 +9,8 @@
 #include "odfaeg/Graphics/world.h"
 #include "odfaeg/Graphics/shadowRenderComponent.hpp"
 #include "odfaeg/Graphics/lightRenderComponent.hpp"
-#include "odfaeg/Graphics/zSortingRenderComponent.hpp"
 #include "odfaeg/Graphics/perPixelLinkedListRenderComponent.hpp"
+#include "odfaeg/Graphics/raytracingRenderComponent.hpp"
 class MyAppli : public odfaeg::core::Application {
 public :
     enum TEXTURES {
@@ -39,4 +39,5 @@ private :
     odfaeg::graphic::BigTile* heightmap;
     unsigned int fpsCounter;
     odfaeg::graphic::View view3D;
+    odfaeg::graphic::g3d::Model loader;
 };

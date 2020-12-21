@@ -337,6 +337,7 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../include/odfaeg/Core
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../include/odfaeg/Core/constructor.hpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../include/odfaeg/Core/erreur.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../include/odfaeg/Core/export.hpp
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../include/odfaeg/Core/memberFunction.hpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../include/odfaeg/config.hpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../src/odfaeg/Core/class.cpp
@@ -403,6 +404,9 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.obj: ../include/odfaeg/Cor
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.obj: ../include/odfaeg/Core/export.hpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.obj: ../include/odfaeg/config.hpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.obj: ../src/odfaeg/Core/erreur.cpp
+
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj: ../include/odfaeg/Core/memberFunction.hpp
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj: ../src/odfaeg/Core/memberFunction.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj: ../extlibs/headers/dlfcn.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj: ../include/odfaeg/Core/erreur.h

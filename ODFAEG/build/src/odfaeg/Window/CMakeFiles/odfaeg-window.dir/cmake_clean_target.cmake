@@ -1,3 +1,3 @@
 file(REMOVE_RECURSE
-  "../../../lib/libodfaeg-window-s.a"
+  "../../../lib/libodfaeg-window-s-d.a"
 )

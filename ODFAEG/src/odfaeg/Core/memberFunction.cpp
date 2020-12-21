@@ -1,5 +1,5 @@
 #include "../../../include/odfaeg/Core/memberFunction.hpp"
-namespace sorrok {
+namespace odfaeg {
     namespace core {
         MemberFunction::MemberFunction(std::string returnType, std::string name) : m_name(name), m_returnType(returnType) {
         }

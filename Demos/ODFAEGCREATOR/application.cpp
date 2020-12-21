@@ -4923,7 +4923,7 @@ void ODFAEGCreator::onCollisionBoundingBoxChanged(TextArea* ta) {
 }
 void ODFAEGCreator::onSelectedClassChanged(DropDownList* dp) {
     if (dp->getSelectedItem() != "Select class") {
-        std::cout<<"selected class : "<<dp->getSelectedItem()<<std::endl;
+        //std::cout<<"selected class : "<<dp->getSelectedItem()<<std::endl;
         dpSelectFunction->removeAllItems();
         dpSelectPointerType->removeAllItems();
         std::string selectedItem = dp->getSelectedItem();
@@ -4936,7 +4936,7 @@ void ODFAEGCreator::onSelectedClassChanged(DropDownList* dp) {
             std::string name = constructors[i].getName()+"(";
             std::vector<std::string> argsTypes = constructors[i].getArgsTypes();
             for (unsigned int j = 0; j < argsTypes.size(); j++) {
-                std::cout<<"add arg type : "<<argsTypes[j]<<std::endl;
+                //std::cout<<"add arg type : "<<argsTypes[j]<<std::endl;
                 name += argsTypes[j];
                 if (j != argsTypes.size() - 1) {
                     name += ",";

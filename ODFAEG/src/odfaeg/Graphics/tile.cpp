@@ -27,7 +27,6 @@ namespace odfaeg {
             Material material;
             material.addTexture(tile.getFaces()[0]->getMaterial().getTexture(), subRect);
             material.setTexId(tile.getFaces()[0]->getMaterial().getTexId());
-            material.setReflectionFactor(tile.getFaces()[0]->getMaterial().getReflectionFactor());
             material.setRefractionFactor(tile.getFaces()[0]->getMaterial().getRefractionFactor());
             setReflectable(tile.reflectable);
             Face* face = new Face(va, material,getTransform());

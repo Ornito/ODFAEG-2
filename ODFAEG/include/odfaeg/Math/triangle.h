@@ -43,7 +43,8 @@ namespace odfaeg {
                    Vec3f otr = ray.getOrig() - p1;
                    point.x = n.dot2(otr) / n.dot2(r);
                    point.y = -otr.cross(u).dot2(r) / n.dot2(r);
-                   point.z = -v.cross(otr).dot2(r) / n.dot2(r);
+                   point.z = v.cross(otr).dot2(r) / n.dot2(r);
+                   //std::cout<<"point : "<<point<<std::endl;
                    if (0 <= point.x
                    && 0 <= point.y && point.y <= 1
                    &&  0 <= point.z && point.z <= 1

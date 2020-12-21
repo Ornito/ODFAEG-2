@@ -338,6 +338,7 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/constructor.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/export.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/memberFunction.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/utilities.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/class.cpp
@@ -404,6 +405,9 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/export.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/erreur.cpp
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/memberFunction.hpp
+ C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/memberFunction.cpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj
  ../extlibs/headers/dlfcn.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h

@@ -21,29 +21,6 @@ namespace odfaeg {
                 processNode(scene->mRootNode, scene, emesh);
                 return emesh;
             }
-            bool Model::operator==(Entity& other) {
-                if (!dynamic_cast<Model*>(&other))
-                    return false;
-                return true;
-            }
-            bool Model::isAnimated() const {
-                return false;
-            }
-            bool Model::isModel() const {
-                return true;
-            }
-            bool Model::selectable() const {
-                return true;
-            }
-            bool Model::isLight() const {
-                return false;
-            }
-            bool Model::isShadow() const {
-                return false;
-            }
-            bool Model::isLeaf() const {
-                return false;
-            }
             void Model::processNode(aiNode *node, const aiScene *scene, Mesh* emesh)
             {
 
@@ -62,6 +39,7 @@ namespace odfaeg {
             void Model::processMesh(aiMesh *mesh, const aiScene *scene, Mesh* emesh) {
 
                 Material mat;
+                mat.clearTextures();
                 if(mesh->mMaterialIndex >= 0) {
                     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
                     std::vector<const Texture*> diffuseMaps = loadMaterialTextures(material,
@@ -78,6 +56,7 @@ namespace odfaeg {
                 std::vector<math::Vec3f> verts;
                 Face* f = new Face(sf::Triangles, emesh->getTransform());
                 f->setMaterial(mat);
+                f->getVertexArray().setEntity(emesh);
                 for(unsigned int i = 0; i < mesh->mNumFaces; i++)
                 {
                     aiFace face = mesh->mFaces[i];
@@ -117,6 +96,7 @@ namespace odfaeg {
                     mat->GetTexture(type, i, &str);
                     bool skip = false;
                     std::string path = directory + "/" + std::string (str.C_Str());
+                    std::cout<<"path : "<<path<<std::endl;
                     for(unsigned int j = 0; j < tm.getPaths().size(); j++)
                     {
                         if(tm.getPaths()[j] == path)
@@ -130,6 +110,13 @@ namespace odfaeg {
                     {   // if texture hasn't been loaded already, load it
                         tm.fromFileWithAlias(path, path);
                         const Texture* texture = tm.getResourceByAlias(path);
+                        /*sf::Image img = texture->copyToImage();
+                                for (unsigned int i = 0; i < img.getSize().x; i++) {
+                                    for (unsigned int j = 0; j < img.getSize().y; j++) {
+                                        if (img.getPixel(i, j).r > 0 || img.getPixel(i, j).g > 0 || img.getPixel(i, j).b > 0)
+                                        std::cout<<"pixel : "<<(int) img.getPixel(i, j).r<<" , "<<(int) img.getPixel(i, j).g<<" , "<<(int) img.getPixel(i, j).b<<std::endl;
+                                    }
+                                }*/
                         textures.push_back(texture);
                     }
                 }

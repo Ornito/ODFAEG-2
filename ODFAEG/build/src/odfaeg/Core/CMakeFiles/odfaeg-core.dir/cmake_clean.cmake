@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "../../../lib/libodfaeg-core-s.a"
-  "../../../lib/libodfaeg-core-s.pdb"
+  "../../../lib/libodfaeg-core-s-d.a"
+  "../../../lib/libodfaeg-core-s-d.pdb"
   "CMakeFiles/odfaeg-core.dir/__/__/__/include/odfaeg/Core/factory.cpp.obj"
   "CMakeFiles/odfaeg-core.dir/actions.cpp.obj"
   "CMakeFiles/odfaeg-core.dir/application.cpp.obj"
@@ -10,6 +10,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/odfaeg-core.dir/command.cpp.obj"
   "CMakeFiles/odfaeg-core.dir/constructor.cpp.obj"
   "CMakeFiles/odfaeg-core.dir/erreur.cpp.obj"
+  "CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj"
   "CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj"
   "CMakeFiles/odfaeg-core.dir/state.cpp.obj"
   "CMakeFiles/odfaeg-core.dir/stateGroup.cpp.obj"

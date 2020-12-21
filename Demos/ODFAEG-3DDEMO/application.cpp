@@ -21,9 +21,10 @@ MyAppli::MyAppli(Vec2f size, std::string title) :
     //getView().setPerspective(-size.x * 0.5f, size.x * 0.5f, -size.y * 0.5f, size.y * 0.5f, -1000, 1000);
     PerPixelLinkedListRenderComponent* frc = new PerPixelLinkedListRenderComponent(getRenderWindow(), 0, "E_CUBE", ContextSettings(0, 0, 4, 4, 6));
     frc->setView(view3D);
+    frc->setVisible(false);
     /*ShadowRenderComponent* src = new ShadowRenderComponent(getRenderWindow(), 1, "E_CUBE+E_3DMODEL");
     src->setView(view);*/
-    PerPixelLinkedListRenderComponent* frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(), 1, "E_BIGTILE",ContextSettings(0, 0, 4, 4, 6));
+    RaytracingRenderComponent* frc2 = new RaytracingRenderComponent(getRenderWindow(), 1, "E_BIGTILE",ContextSettings(0, 0, 4, 4, 6));
     frc2->setView(view3D);
     /*LightRenderComponent* lrc = new LightRenderComponent(getRenderWindow(), 3, "E_BIGTILE+E_CUBE+E_3DMODEL+E_PONCTUAL_LIGHT");
     lrc->setView(view);*/
@@ -122,15 +123,16 @@ void MyAppli::onInit() {
     billboard->setView(view);
     billboard->setCenter(Vec3f(0, 0, z+20));
     g2d::AmbientLight::getAmbientLight().setColor(sf::Color::White);
-    Model loader = g3d::Model();
-    Entity* model = loader.loadModel("tilesets/mesh_puddingmill/puddingmill.obj")
+    loader = g3d::Model();
+    Entity* model = loader.loadModel("tilesets/mesh_puddingmill/puddingmill.obj");
     model->move(Vec3f(0, 0, 20));
     model->setShadowCenter(Vec3f(0, 20, 0));
     World::addEntity(model);
+
     World::update();
 }
 void MyAppli::onRender(RenderComponentManager* frcm) {
-    World::drawOnComponents("E_BIGTILE+E_CUBE", 0);
+    World::drawOnComponents("E_CUBE", 0);
     //World::drawOnComponents("E_CUBE+E_3DMODEL", 1);
     World::drawOnComponents("E_BIGTILE", 1);
     //World::drawOnComponents("E_BIGTILE+E_CUBE+E_3DMODEL+E_PONCTUAL_LIGHT", 3);

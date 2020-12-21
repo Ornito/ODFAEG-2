@@ -9,6 +9,7 @@
 #include <dlfcn.h>
 #include <string>
 #include "constructor.hpp"
+#include "memberFunction.hpp"
 namespace odfaeg {
     namespace core {
         class Class {
@@ -27,10 +28,12 @@ namespace odfaeg {
             static bool isName(std::string str, std::string str2);
             static void checkInnerClass(std::string innerClass, std::string type, std::string& fileContent, int lvl, Class& cl);
             static void checkConstructors(std::string& fileContent, Class& cl);
+            static void checkMembersFunctions(std::string& fileContent, Class& cl);
             static void checkSuperClasses(std::string& fileContent, Class& cl);
             void addInnerClass(Class innerClass);
             void setNamespace(std::string namespc);
             void addConstructor(Constructor constructor);
+            void addMemberFunction(MemberFunction mf);
             void addSuperClass(Class cl);
             std::string name;
             std::string filePath;
@@ -39,7 +42,7 @@ namespace odfaeg {
             std::vector<Class> innerClasses;
             std::vector<Class> superClasses;
             std::vector<Constructor> constructors;
-            std::vector<std::string> innerClass;
+            std::vector<MemberFunction> memberFunctions;
         };
     }
 }

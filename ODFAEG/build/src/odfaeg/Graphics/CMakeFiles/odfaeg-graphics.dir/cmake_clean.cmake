@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "../../../lib/libodfaeg-graphics-s.a"
-  "../../../lib/libodfaeg-graphics-s.pdb"
+  "../../../lib/libodfaeg-graphics-s-d.a"
+  "../../../lib/libodfaeg-graphics-s-d.pdb"
   "CMakeFiles/odfaeg-graphics.dir/2D/ambientLight.cpp.obj"
   "CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.obj"
   "CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.obj"
@@ -48,6 +48,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/odfaeg-graphics.dir/model.cpp.obj"
   "CMakeFiles/odfaeg-graphics.dir/perPixelLinkedListRenderComponent.cpp.obj"
   "CMakeFiles/odfaeg-graphics.dir/projMatrix.cpp.obj"
+  "CMakeFiles/odfaeg-graphics.dir/raytracingRenderComponent.cpp.obj"
   "CMakeFiles/odfaeg-graphics.dir/rectangleShape.cpp.obj"
   "CMakeFiles/odfaeg-graphics.dir/reflectRefractRenderComponent.cpp.obj"
   "CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.obj"

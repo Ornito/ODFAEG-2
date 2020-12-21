@@ -6,9 +6,6 @@
   */
 namespace odfaeg {
     namespace graphic {
-            float Material::maxSpecularIntensity = 0.f;
-            float Material::maxSpecularPower = 0.f;
-            float Material::maxRefractionFactor = 0.f;
             unsigned int Material::nbMaterials = 0;
             std::vector<Material*> Material::materials = std::vector<Material*>();
             std::vector<Material*> Material::sameMaterials = std::vector<Material*>();
@@ -48,7 +45,8 @@ namespace odfaeg {
                 specularIntensity = 0;
                 specularPower = 0;
                 refractionFactor = 0;
-                reflectionFactor = 0;
+                refractable = false;
+                reflectable = false;
                 bumpTexture = nullptr;
                 id = 0;
                 materials.push_back(this);
@@ -67,36 +65,29 @@ namespace odfaeg {
             unsigned int Material::getId() {
                 return id;
             }
-            float Material::getMaxSpecularIntensity() {
-                return maxSpecularIntensity;
-            }
-            float Material::getMaxSpecularPower() {
-                return maxSpecularPower;
-            }
-            void Material::setMaxSpecularIntensity(float maxSpecularIntensity) {
-                Material::maxSpecularIntensity = maxSpecularIntensity;
-            }
-            void Material::setMaxSpecularPower(float maxSpecularPower) {
-                Material::maxSpecularPower = maxSpecularPower;
-            }
-            float Material::getMaxRefraction() {
-                return maxRefractionFactor;
-            }
             float Material::getSpecularIntensity() {
                 return specularIntensity;
             }
             float Material::getSpecularPower() {
                 return specularPower;
             }
+            void Material::setRefractable(bool refractable) {
+                this->refractable = refractable;
+            }
+            void Material::setReflectable(bool reflectable) {
+                this->reflectable = reflectable;
+            }
+            bool Material::isRefractable() {
+                return refractable;
+            }
+            bool Material::isReflectable() {
+                return reflectable;
+            }
             void Material::setSpecularIntensity(float specularIntensity) {
-                if (specularIntensity > maxSpecularIntensity)
-                    maxSpecularIntensity = specularIntensity;
                 this->specularIntensity = specularIntensity;
                 updateIds();
             }
             void Material::setSpecularPower(float specularPower) {
-                if (specularPower > maxSpecularPower)
-                    maxSpecularPower = specularPower;
                 this->specularPower = specularPower;
                 updateIds();
             }
@@ -108,20 +99,11 @@ namespace odfaeg {
                 return bumpTexture;
             }
             void Material::setRefractionFactor(float refractionFactor) {
-                if (refractionFactor > maxRefractionFactor)
-                    maxRefractionFactor = refractionFactor;
                 this->refractionFactor = refractionFactor;
                 updateIds();
             }
             float Material::getRefractionFactor() {
                 return refractionFactor;
-            }
-            void Material::setReflectionFactor (float reflectionFactor) {
-                this->reflectionFactor = reflectionFactor;
-                updateIds();
-            }
-            float Material::getReflectionFactor() {
-                return reflectionFactor;
             }
             int Material::getNbTextures () {
                 return texInfos.size();
@@ -173,7 +155,9 @@ namespace odfaeg {
                        && specularPower == material.specularPower
                        && bumpTexture == material.bumpTexture
                        && refractionFactor == material.refractionFactor
-                       && reflectionFactor == material.reflectionFactor;
+                       && refractable == material.refractable
+                       && reflectable == material.reflectable;
+
             }
             bool Material::operator!= (Material& material) {
                 return !useSameTextures(material) || !hasSameColor(material);
@@ -381,6 +365,15 @@ namespace odfaeg {
                 instance.setPrimitiveType(face->getVertexArray().getPrimitiveType());
                 instance.setMaterial(face->getMaterial());
                 instance.addVertexArray(face->getVertexArray(),face->getTransformMatrix());
+                /*if (face->getVertexArray().getEntity()->getType() == "E_MESH") {
+                sf::Image img = instance.getMaterial().getTexture()->copyToImage();
+                                for (unsigned int i = 0; i < img.getSize().x; i++) {
+                                    for (unsigned int j = 0; j < img.getSize().y; j++) {
+                                        if (img.getPixel(i, j).r > 0 || img.getPixel(i, j).g > 0 || img.getPixel(i, j).b > 0)
+                                        std::cout<<"pixel : "<<(int) img.getPixel(i, j).r<<" , "<<(int) img.getPixel(i, j).g<<" , "<<(int) img.getPixel(i, j).b<<std::endl;
+                                    }
+                                    }
+                                }*/
                 /*bool added = false;
                 for (unsigned int i = 0; i < instances.size() && !added; i++) {
                     if (instances[i].getMaterial() == face->getMaterial()

@@ -99,13 +99,13 @@ namespace odfaeg {
             };
             std::vector<TextureInfo*> texInfos; /**> The informations about the textures. */
             sf::Color color; /**> the color of the material. */
-            float specularIntensity, specularPower, refractionFactor, reflectionFactor;
-            static float maxSpecularIntensity, maxSpecularPower, maxRefractionFactor;
+            float specularIntensity, specularPower, refractionFactor;
             static unsigned int nbMaterials;
             unsigned int id;
             const Texture* bumpTexture;
             static std::vector<Material*> materials;
             static std::vector<Material*> sameMaterials;
+            bool reflectable, refractable;
             public :
             /**
             * \fn Material()
@@ -193,11 +193,6 @@ namespace odfaeg {
             * \brief write the material into the given archive.
             * \param ar : the archive.
             */
-            static float getMaxSpecularIntensity();
-            static float getMaxSpecularPower();
-            static void setMaxSpecularIntensity(float maxSpecularIntensity);
-            static void setMaxSpecularPower(float maxSpecularPower);
-            static float getMaxRefraction();
             float getSpecularIntensity();
             float getSpecularPower();
             void setSpecularIntensity(float specularIntensity);
@@ -206,8 +201,11 @@ namespace odfaeg {
             const Texture* getBumpTexture();
             void setRefractionFactor(float refractionFactor);
             float getRefractionFactor();
-            void setReflectionFactor (float reflectionFactor);
-            float getReflectionFactor();
+            void setReflectable(bool reflectable);
+            void setRefractable(bool refractable);
+            bool isReflectable();
+            bool isRefractable();
+
             void updateIds();
             bool contains(Material material);
             void countNbMaterials();
@@ -232,8 +230,8 @@ namespace odfaeg {
                 }
             }
             void onLoad() {
-                maxSpecularIntensity = (specularIntensity > maxSpecularIntensity) ? specularIntensity : maxSpecularIntensity;
-                maxSpecularPower = (specularPower > maxSpecularPower) ? specularPower : maxSpecularPower;
+                /*maxSpecularIntensity = (specularIntensity > maxSpecularIntensity) ? specularIntensity : maxSpecularIntensity;
+                maxSpecularPower = (specularPower > maxSpecularPower) ? specularPower : maxSpecularPower;*/
             }
             ~Material();
         };

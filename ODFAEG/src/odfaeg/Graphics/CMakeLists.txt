@@ -86,6 +86,8 @@ set(SRC_GRAPHICS
 	${SRCROOT}/shadowRenderCompoenent.cpp
 	${INCROOT}/reflectRefractRenderComponent.hpp
 	${SRCROOT}/reflectRefractRenderComponent.cpp
+	${INCROOT}/raytracingRenderComponent.hpp
+	${SRCROOT}/raytracingRenderComponent.cpp
 	${INCROOT}/animatedEntity.h	
 	${INCROOT}/model.h
 	${SRCROOT}/model.cpp

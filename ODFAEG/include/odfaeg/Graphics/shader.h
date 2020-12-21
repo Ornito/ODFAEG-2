@@ -67,7 +67,8 @@ namespace odfaeg {
             {
                 Vertex,  ///< Vertex shader
                 Fragment, ///< Fragment (pixel) shader
-                Geometry
+                Geometry,
+                Compute
             };
 
             ////////////////////////////////////////////////////////////
@@ -532,7 +533,7 @@ namespace odfaeg {
             /// \return True on success, false if any error happened
             ///
             ////////////////////////////////////////////////////////////
-            bool compile(const char* vertexShaderCode, const char* fragmentShaderCode, const char* geometryShaderCode);
+            bool compile(const char* vertexShaderCode, const char* fragmentShaderCode, const char* geometryShaderCode, const char* computeShader);
 
             ////////////////////////////////////////////////////////////
             /// \brief Bind all the textures used by the shader

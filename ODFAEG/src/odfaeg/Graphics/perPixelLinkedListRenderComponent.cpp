@@ -345,6 +345,7 @@ namespace odfaeg {
             backgroundColor = color;
         }
         void PerPixelLinkedListRenderComponent::clear() {
+
             frameBuffer.setActive();
             frameBuffer.clear(backgroundColor);
             //getWindow().setActive();
@@ -356,10 +357,12 @@ namespace odfaeg {
             glCheck(glBindTexture(GL_TEXTURE_2D, headPtrTex));
             glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, view.getSize().x, view.getSize().y, GL_RED_INTEGER,
             GL_UNSIGNED_INT, NULL));
-            glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+            glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
+
             frameBuffer.resetGLStates();
-            //getWindow().resetGLStates();*/
+
+            //getWindow().resetGLStates();
 
         }
         void PerPixelLinkedListRenderComponent::drawNextFrame() {
@@ -404,8 +407,16 @@ namespace odfaeg {
                         currentStates.blendMode = sf::BlendNone;
                         currentStates.shader = &perPixelLinkedList;
                         currentStates.texture = m_instances[i].getMaterial().getTexture();
+
+
+
+
+                        //std::cout<<"texture : "<<m_instances[i].getMaterial().getTexture()<<std::endl;
                         //std::cout<<"entity : "<<m_instances[i].getVertexArrays()[0]->getEntity()->getRootEntity()->getType()<<std::endl;
                         if (m_instances[i].getMaterial().getTexture() != nullptr) {
+
+
+
                             //std::cout<<"texture"<<std::endl;
                             math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
                             perPixelLinkedList.setParameter("textureMatrix", texMatrix);
@@ -586,13 +597,13 @@ namespace odfaeg {
             return true;
         }
         void PerPixelLinkedListRenderComponent::updateParticleSystems() {
-            for (unsigned int i = 0; i < visibleEntities.size(); i++) {
+            /*for (unsigned int i = 0; i < visibleEntities.size(); i++) {
                 if (dynamic_cast<physic::ParticleSystem*>(visibleEntities[i]) != nullptr) {
                     static_cast<physic::ParticleSystem*>(visibleEntities[i])->update();
                 }
             }
             loadEntitiesOnComponent(visibleEntities);
-            update = true;
+            update = true;*/
         }
         void PerPixelLinkedListRenderComponent::pushEvent(window::IEvent event, RenderWindow& rw) {
             if (event.type == window::IEvent::WINDOW_EVENT && event.window.type == window::IEvent::WINDOW_EVENT_RESIZED && &getWindow() == &rw && isAutoResized()) {

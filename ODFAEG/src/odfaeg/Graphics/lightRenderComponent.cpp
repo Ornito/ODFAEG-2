@@ -252,8 +252,8 @@ namespace odfaeg {
                         depthBufferGenerator.setParameter("texture", Shader::CurrentTexture);
                         depthBufferNormalGenerator.setParameter("texture", Shader::CurrentTexture);
                         specularTextureGenerator.setParameter("texture",Shader::CurrentTexture);
-                        specularTextureGenerator.setParameter("maxM", Material::getMaxSpecularIntensity());
-                        specularTextureGenerator.setParameter("maxP", Material::getMaxSpecularPower());
+                        /*specularTextureGenerator.setParameter("maxM", Material::getMaxSpecularIntensity());
+                        specularTextureGenerator.setParameter("maxP", Material::getMaxSpecularPower());*/
                         bumpTextureGenerator.setParameter("texture",Shader::CurrentTexture);
                         lightMapGenerator.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                         lightMapGenerator.setParameter("depthTexture", depthBuffer.getTexture());
@@ -526,8 +526,8 @@ namespace odfaeg {
                             normalMapGenerator.setParameter("texture", Shader::CurrentTexture);
                             depthBufferGenerator.setParameter("texture", Shader::CurrentTexture);
                             specularTextureGenerator.setParameter("texture",Shader::CurrentTexture);
-                            specularTextureGenerator.setParameter("maxM", Material::getMaxSpecularIntensity());
-                            specularTextureGenerator.setParameter("maxP", Material::getMaxSpecularPower());
+                            /*specularTextureGenerator.setParameter("maxM", Material::getMaxSpecularIntensity());
+                            specularTextureGenerator.setParameter("maxP", Material::getMaxSpecularPower());*/
                             bumpTextureGenerator.setParameter("texture",Shader::CurrentTexture);
                             lightMapGenerator.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                             lightMapGenerator.setParameter("normalMap", normalMap.getTexture());

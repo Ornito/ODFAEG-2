@@ -25,5 +25,10 @@ namespace odfaeg {
             states.transform.combine(tm.getMatrix());
             target.draw(drawable, states);
         }
+        Entity* BillBoard::clone() {
+            BillBoard* bb = new BillBoard(view, drawable);
+            Entity::copy(bb);
+            return bb;
+        }
     }
 }

@@ -104,6 +104,11 @@ namespace odfaeg {
                     target.draw (getFaces()[i]->getVertexArray(),states);
                 }
             }
+            Entity* Cube::clone() {
+                Cube* cube = new Cube(getPosition(), getSize().x, getSize().y, getSize().z,m_color);
+                Entity::copy(cube);
+                return cube;
+            }
         }
     }
 }

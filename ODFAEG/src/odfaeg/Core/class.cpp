@@ -172,6 +172,7 @@ namespace odfaeg {
                     int lvl = 0;
                     checkInnerClass(innerClass, type, fileContent, lvl,  cl);
                     checkConstructors(fileContent, cl);
+                    checkMembersFunctions(fileContent, cl);
                     //std::cout<<"file content : "<<fileContent<<std::endl;
 
                     //std::cout<<"file content : "<<fileContent<<std::endl;
@@ -261,46 +262,45 @@ namespace odfaeg {
                     parts[i] = parts[i].erase(pos);
                     nb++;
                 }
-                //std::cout<<"parts : "<<parts[i]<<" nb : "<<nb<<std::endl;
-                std::string str;
-                if(parts[i].find("(") != std::string::npos) {
-                    int pos = parts[i].find("(");
-                    //std::cout<<"pos : "<<pos<<std::endl;
-                    str = parts[i].substr(0, pos+1);
-                    //std::cout<<"sub str  :"<<str<<std::endl;
-                    while (str.size() > 1 && str.at(str.size()-2) == ' ') {
-                        str = str.erase(str.size()-2, 1);
+                /*if(parts[i].find("public") != std::string::npos || parts[i].find("private") != std::string::npos || parts[i].find("protected") != std::string::npos) {
+                    int pos = parts[i].find(":");
+                    parts[i] = parts[i].substr(pos+1);
+                }*/
 
+                std::vector<std::string> parts2 = split(parts[i], ";");
+                //std::cout<<"size : "<<parts2.size()<<std::endl;
+                for (unsigned int j = 0; j < parts2.size(); j++) {
+                    std::string str;
+                    if(parts2[j].find("(") != std::string::npos) {
+                        int pos = parts2[j].find("(");
+                        //std::cout<<"pos : "<<pos<<std::endl;
+                        str = parts2[j].substr(0, pos+1);
+                        //std::cout<<"sub str  :"<<str<<std::endl;
+                        while (str.size() > 1 && str.at(str.size()-2) == ' ') {
+                            str = str.erase(str.size()-2, 1);
+
+                        }
                     }
-                }
-                if (str == "") {
-                    str = parts[i];
-                }
-
-                //std::cout<<"str  :"<<str<<std::endl;
-                /*std::cout<<(nb == 1 && str.find("if(") == std::string::npos && str.find("else") == std::string::npos && str.find("else if(") == std::string::npos && str.find("while(") == std::string::npos && str.find("switch(") == std::string::npos
-                    && str.find("for(") == std::string::npos && str.find("do(") == std::string::npos)<<std::endl;*/
-                if (nb == 1 && str.find("if(") == std::string::npos && str.find("else") == std::string::npos && str.find("else if(") == std::string::npos && str.find("while(") == std::string::npos && str.find("switch(") == std::string::npos
-                    && str.find("for(") == std::string::npos && str.find("do(") == std::string::npos) {
-                    //std::cout<<"parts : "<<parts[i]<<" nb : "<<nb<<std::endl;
-                    if(parts[i].find("public") != std::string::npos && parts[i].find("private") != std::string::npos && parts[i].find("protected") != std::string::npos) {
-                        int pos = parts[i].find(":");
-                        parts[i] = parts[i].substr(pos+1);
+                    if (str == "") {
+                        str = parts2[j];
                     }
-                    //std::cout<<"part : "<<parts[i]<<std::endl;
 
-                    std::vector<std::string> parts2 = split(parts[i], ";");
-                    //std::cout<<"size : "<<parts2.size()<<std::endl;
-                    for (unsigned int j = 0; j < parts2.size(); j++) {
+                    //std::cout<<"str  :"<<str<<std::endl;
+                    /*std::cout<<(nb <= 1 && str.find("if(") == std::string::npos && str.find("else") == std::string::npos && str.find("else if(") == std::string::npos && str.find("while(") == std::string::npos && str.find("switch(") == std::string::npos
+                        && str.find("for(") == std::string::npos && str.find("do(") == std::string::npos)<<std::endl;*/
+                    if (nb <= 1 && str.find("if(") == std::string::npos && str.find("else") == std::string::npos && str.find("else if(") == std::string::npos && str.find("while(") == std::string::npos && str.find("switch(") == std::string::npos
+                        && str.find("for(") == std::string::npos && str.find("do(") == std::string::npos) {
+                        //std::cout<<"parts : "<<parts2[j]<<std::endl;
+
                         //std::cout<<"part 2 : "<<parts2[j]<<std::endl;
                         int index = parts2[j].find("(");
                         if (index != std::string::npos) {
                             std::string name = parts2[j].substr(0, index);
                             name.erase(0, 1);
-                            while (name.size() > 0 && name.at(0) == ' ') {
+                            while (name.size() > 0 && name.at(0) == ' ' || name.at(0) == '\n') {
                                 name = name.erase(0, 1);
                             }
-                            while (name.size() > 0 && name.at(name.size()-1) == ' ') {
+                            while (name.size() > 0 && name.at(name.size()-1) == ' ' || name.at(name.size()-1) == '\n') {
                                 name = name.erase(name.size()-1, 1);
                             }
 
@@ -348,6 +348,109 @@ namespace odfaeg {
                             }
 
                         }
+                    }
+                }
+            }
+        }
+        void Class::checkMembersFunctions(std::string& fileContent, Class& cl) {
+            std::vector<std::string> parts = split(fileContent, "}");
+            for (unsigned int i = 0; i < parts.size(); i++) {
+                unsigned int nb = 0;
+                while(parts[i].find_last_of("{") != std::string::npos) {
+                    int pos = parts[i].find_last_of("{");
+                    //std::cout<<"pos : "<<pos<<std::endl;
+                    parts[i] = parts[i].erase(pos);
+                    nb++;
+                }
+
+
+                /*if(parts[i].find("public") != std::string::npos || parts[i].find("private") != std::string::npos || parts[i].find("protected") != std::string::npos) {
+                    int pos = parts[i].find(":");
+                    parts[i] = parts[i].substr(pos+1);
+                }*/
+
+                std::vector<std::string> parts2 = split(parts[i], ";");
+                //std::cout<<"size : "<<parts2.size()<<std::endl;
+                for (unsigned int j = 0; j < parts2.size(); j++) {
+                    std::string str;
+                    if(parts2[j].find("(") != std::string::npos) {
+                        int pos = parts2[j].find("(");
+                        //std::cout<<"pos : "<<pos<<std::endl;
+                        str = parts2[j].substr(0, pos+1);
+                        //std::cout<<"sub str  :"<<str<<std::endl;
+                        while (str.size() > 1 && str.at(str.size()-2) == ' ') {
+                            str = str.erase(str.size()-2, 1);
+
+                        }
+                    }
+                    if (str == "") {
+                        str = parts2[j];
+                    }
+
+                    /*std::cout<<(nb <= 1 && str.find("if(") == std::string::npos && str.find("else") == std::string::npos && str.find("else if(") == std::string::npos && str.find("while(") == std::string::npos && str.find("switch(") == std::string::npos
+                        && str.find("for(") == std::string::npos && str.find("do(") == std::string::npos)<<std::endl;*/
+                    if (nb <= 1 && str.find("if(") == std::string::npos && str.find("else") == std::string::npos && str.find("else if(") == std::string::npos && str.find("while(") == std::string::npos && str.find("switch(") == std::string::npos
+                        && str.find("for(") == std::string::npos && str.find("do(") == std::string::npos) {
+                        //std::cout<<"parts : "<<parts2[j]<<std::endl;
+                        int index = parts2[j].find("(");
+                        if (index != std::string::npos) {
+                            std::string name = parts2[j].substr(0, index);
+                            name.erase(0, 1);
+                            while (name.size() > 0 && name.at(0) == ' ' || name.at(0) == '\n') {
+                                name = name.erase(0, 1);
+                            }
+                            while (name.size() > 0 && name.at(name.size()-1) == ' ' || name.at(name.size()-1) == '\n') {
+                                name = name.erase(name.size()-1, 1);
+                            }
+                            std::vector<std::string> parts3 = split(name, " ");
+                            if (parts3.size() > 1) {
+
+                                MemberFunction mf(parts3[0], parts3[1]);
+                                //std::cout<<parts3[0]<<" "<<parts3[1]<<std::endl;
+                                //std::cout<<"name : "<<name<<std::endl;
+                                /*std::cout<<"space removed"<<std::endl;
+                                std::cout<<"index : "<<index<<" size : "<<name.size()<<std::endl;*/
+
+                                //std::cout<<"check mb args : "<<parts2[j]<<std::endl;
+                                int pos = parts2[j].find("(");
+                                int pos2 = parts2[j].find(")");
+                                if (pos != std::string::npos && pos2 != std::string::npos) {
+                                   std::string types = parts2[j].substr(pos+1, pos2-pos-1);
+                                   //std::cout<<"types : "<<types<<std::endl;
+                                   std::vector<std::string> arguments = split(types, ",");
+                                   for (unsigned int i = 0; i < arguments.size(); i++) {
+                                        //std::cout<<"argument : "<<arguments[i]<<std::endl;
+                                        while(arguments[i].size() > 0 && arguments[i].at(0) == ' ' || arguments[i].at(0) == '\n') {
+                                            arguments[i] = arguments[i].erase(0, 1);
+                                        }
+                                        std::vector<std::string> argTypeName = split(arguments[i], " ");
+                                        std::string fullTypeName="";
+                                        if (argTypeName[0] == "const") {
+                                            fullTypeName = argTypeName[0]+" "+argTypeName[1];
+                                        } else {
+                                            fullTypeName = argTypeName[0];
+                                        }
+                                        if (fullTypeName != "") {
+                                            mf.addArgType(fullTypeName);
+                                            mf.addArgName(arguments[arguments.size()-1]);
+                                        }
+                                   }
+                                   pos = fileContent.find(name);
+                                   //std::cout<<"file content : "<<fileContent<<" pos  : "<<pos<<std::endl;
+                                   if (pos != std::string::npos) {
+                                       if (fileContent.find("{") != std::string::npos) {
+                                           pos2 = fileContent.find("}");
+                                       } else {
+                                           pos2 = fileContent.find(";");
+                                       }
+                                       //std::cout<<"pos : "<<pos<<" pos 2 "<<pos2<<std::endl;
+                                       fileContent = fileContent.erase(pos, pos2-pos+1);
+                                       cl.addMemberFunction(mf);
+                                   }
+                               }
+                            }
+                        }
+
                     }
                 }
             }
@@ -441,6 +544,13 @@ namespace odfaeg {
                 std::cout<<"arg type : "<<argsTypes[i]<<std::endl;
             }*/
             constructors.push_back(c);
+        }
+        void Class::addMemberFunction(MemberFunction mf) {
+            /*std::cout<<"add mf : "<<mf.getReturnType()<<","<<mf.getName()<<std::endl;
+            for (unsigned int i = 0; i < mf.getArgsTypes().size(); i++) {
+                std::cout<<mf.getArgsTypes()[i]<<","<<mf.getArgsNames()[i]<<std::endl;
+            }*/
+            memberFunctions.push_back(mf);
         }
         std::string Class::getName() {
             return name;

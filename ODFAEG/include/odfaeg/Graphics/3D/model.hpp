@@ -10,15 +10,8 @@ namespace odfaeg {
             class Model {
                 public :
                     Model ();
-                    bool operator==(Entity& other);
-                    bool isAnimated() const;
-                    bool isModel() const;
-                    bool selectable() const;
-                    bool isLight() const;
-                    bool isShadow() const;
-                    bool isLeaf() const;
-                private :
                     Entity* loadModel(std::string path);
+                private :
                     void processNode(aiNode *node, const aiScene *scene, Mesh* emesh);
                     void processMesh(aiMesh *mesh, const aiScene *scene, Mesh* emesh);
                     std::vector<const Texture*> loadMaterialTextures(aiMaterial *mat, aiTextureType type,

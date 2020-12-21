@@ -133,11 +133,13 @@ namespace odfaeg {
 
             // Compile the shader program
             if (type == Vertex)
-                return compile(&shader[0], NULL, NULL);
+                return compile(&shader[0], NULL, NULL, NULL);
             else if (type == Fragment)
-                return compile(NULL, &shader[0], NULL);
+                return compile(NULL, &shader[0], NULL, NULL);
+            else if (type == Geometry)
+                return compile(NULL, NULL, &shader[0], NULL);
             else
-                return compile(NULL, NULL, &shader[0]);
+                return compile(NULL,NULL,NULL,&shader[0]);
         }
 
 
@@ -161,7 +163,7 @@ namespace odfaeg {
             }
 
             // Compile the shader program
-            return compile(&vertexShader[0], &fragmentShader[0], NULL);
+            return compile(&vertexShader[0], &fragmentShader[0], NULL, NULL);
         }
 
         ////////////////////////////////////////////////////////////
@@ -192,7 +194,7 @@ namespace odfaeg {
             }
 
             // Compile the shader program
-            return compile(&vertexShader[0], &fragmentShader[0], &geometryShader[0]);
+            return compile(&vertexShader[0], &fragmentShader[0], &geometryShader[0], NULL);
         }
 
 
@@ -201,11 +203,13 @@ namespace odfaeg {
         {
             // Compile the shader program
             if (type == Vertex)
-                return compile(shader.c_str(), NULL, NULL);
+                return compile(shader.c_str(), NULL, NULL, NULL);
             else if (type == Fragment)
-                return compile(NULL, shader.c_str(), NULL);
+                return compile(NULL, shader.c_str(), NULL, NULL);
+            else if (type == Geometry)
+                return compile(NULL, NULL, shader.c_str(), NULL);
             else
-                return compile(NULL, NULL, shader.c_str());
+                return compile(NULL,NULL,NULL,shader.c_str());
         }
 
 
@@ -213,14 +217,14 @@ namespace odfaeg {
         bool Shader::loadFromMemory(const std::string& vertexShader, const std::string& fragmentShader)
         {
             // Compile the shader program
-            return compile(vertexShader.c_str(), fragmentShader.c_str(), NULL);
+            return compile(vertexShader.c_str(), fragmentShader.c_str(), NULL, NULL);
         }
 
         ////////////////////////////////////////////////////////////
         bool Shader::loadFromMemory(const std::string& vertexShader, const std::string& fragmentShader, const std::string& geometryShader)
         {
             // Compile the shader program
-            return compile(vertexShader.c_str(), fragmentShader.c_str(), geometryShader.c_str());
+            return compile(vertexShader.c_str(), fragmentShader.c_str(), geometryShader.c_str(), NULL);
         }
 
 
@@ -237,11 +241,13 @@ namespace odfaeg {
 
             // Compile the shader program
             if (type == Vertex)
-                return compile(&shader[0], NULL, NULL);
+                return compile(&shader[0], NULL, NULL, NULL);
             else if (type == Fragment)
-                return compile(NULL, &shader[0], NULL);
+                return compile(NULL, &shader[0], NULL, NULL);
+            else if (type == Geometry)
+                return compile(NULL, NULL, &shader[0], NULL);
             else
-                return compile(NULL, NULL, &shader[0]);
+                return compile(NULL, NULL, NULL, &shader[0]);
         }
 
 
@@ -265,7 +271,7 @@ namespace odfaeg {
             }
 
             // Compile the shader program
-            return compile(&vertexShader[0], &fragmentShader[0], NULL);
+            return compile(&vertexShader[0], &fragmentShader[0], NULL, NULL);
         }
         ////////////////////////////////////////////////////////////
         bool Shader::loadFromStream(InputStream& vertexShaderStream, InputStream& fragmentShaderStream, InputStream& geometryShaderStream)
@@ -294,7 +300,7 @@ namespace odfaeg {
             }
 
             // Compile the shader program
-            return compile(&vertexShader[0], &fragmentShader[0], &geometryShader[0]);
+            return compile(&vertexShader[0], &fragmentShader[0], &geometryShader[0], NULL);
         }
         ////////////////////////////////////////////////////////////
         void Shader::setParameter(const std::string& name, unsigned int x)
@@ -653,7 +659,7 @@ namespace odfaeg {
 
 
         ////////////////////////////////////////////////////////////
-        bool Shader::compile(const char* vertexShaderCode, const char* fragmentShaderCode, const char* geometryShaderCode)
+        bool Shader::compile(const char* vertexShaderCode, const char* fragmentShaderCode, const char* geometryShaderCode, const char* computeShaderCode)
         {
 
 
@@ -683,6 +689,25 @@ namespace odfaeg {
                 m_shaderProgram = glCreateProgram();
             else
                 m_shaderProgram = glCreateProgramObjectARB();
+            if (computeShaderCode) {
+                GLuint computeShaderID = glCreateShader(GL_COMPUTE_SHADER);
+                glCheck(glShaderSource(computeShaderID, 1, &computeShaderCode, NULL));
+                glCheck(glCompileShader(computeShaderID));
+                GLint success;
+                glCheck(glGetShaderiv(computeShaderID, GL_COMPILE_STATUS,&success));
+                if (success == GL_FALSE) {
+                    int infoLogLength;
+                    glCheck(glGetShaderiv(computeShaderID, GL_INFO_LOG_LENGTH, &infoLogLength));
+                    char log[infoLogLength];
+                    glCheck(glGetShaderInfoLog(computeShaderID, infoLogLength, 0, &log[0]));
+                    std::cerr << "Failed to compile compute shader:" << std::endl
+                    << log << std::endl;
+                    glCheck(glDeleteShader(computeShaderID));
+                    glCheck(glDeleteProgram(m_shaderProgram));
+                }
+                glCheck(glAttachShader(m_shaderProgram, computeShaderID));
+                glCheck(glDeleteShader(computeShaderID));
+            }
             // Create the vertex shader if needed
             if (vertexShaderCode)
             {

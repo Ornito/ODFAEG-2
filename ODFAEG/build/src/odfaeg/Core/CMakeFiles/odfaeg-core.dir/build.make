@@ -252,10 +252,24 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/constructor.cpp.s"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\constructor.cpp -o CMakeFiles\odfaeg-core.dir\constructor.cpp.s
 
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj: ../src/odfaeg/Core/memberFunction.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\memberFunction.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\memberFunction.cpp
+
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/memberFunction.cpp.i"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\memberFunction.cpp > CMakeFiles\odfaeg-core.dir\memberFunction.cpp.i
+
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/memberFunction.cpp.s"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\memberFunction.cpp -o CMakeFiles\odfaeg-core.dir\memberFunction.cpp.s
+
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj: ../src/odfaeg/Core/runtimeCompiler.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\runtimeCompiler.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\runtimeCompiler.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.i: cmake_force
@@ -282,34 +296,36 @@ odfaeg__core_OBJECTS = \
 "CMakeFiles/odfaeg-core.dir/clock.cpp.obj" \
 "CMakeFiles/odfaeg-core.dir/class.cpp.obj" \
 "CMakeFiles/odfaeg-core.dir/constructor.cpp.obj" \
+"CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj" \
 "CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj"
 
 # External object files for target odfaeg-core
 odfaeg__core_EXTERNAL_OBJECTS =
 
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/archive.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/utilities.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/command.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/__/__/__/include/odfaeg/Core/factory.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/state.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateGroup.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateStack.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/actions.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/time.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/clock.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/build.make
-lib/libodfaeg-core-s.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Linking CXX static library ..\..\..\lib\libodfaeg-core-s.a"
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/archive.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/utilities.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/command.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/__/__/__/include/odfaeg/Core/factory.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/state.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateGroup.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateStack.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/actions.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/time.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/clock.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/build.make
+lib/libodfaeg-core-s-d.a: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Linking CXX static library ..\..\..\lib\libodfaeg-core-s-d.a"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && $(CMAKE_COMMAND) -P CMakeFiles\odfaeg-core.dir\cmake_clean_target.cmake
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\odfaeg-core.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/build: lib/libodfaeg-core-s.a
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/build: lib/libodfaeg-core-s-d.a
 
 .PHONY : src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/build
 

@@ -40,13 +40,17 @@ using namespace sf;
 
 namespace
 {
+    sf::Mutex idMutex;
+    sf::Mutex maximumSizeMutex;
+
     // Thread-safe unique identifier generator,
     // is used for states cache (see RenderTarget)
     sf::Uint64 getUniqueId()
     {
+        sf::Lock lock(idMutex);
+
         static sf::Uint64 id = 1; // start at 1, zero is "no texture"
-        static sf::Mutex mutex;
-        sf::Lock lock(mutex);
+
         return id++;
     }
 }
@@ -54,6 +58,7 @@ namespace
 
 namespace odfaeg {
     namespace graphic {
+        std::vector<Texture*> Texture::allTextures = std::vector<Texture*>();
         ////////////////////////////////////////////////////////////
         Texture::Texture() :
         m_size         (0, 0),
@@ -83,7 +88,20 @@ namespace odfaeg {
         m_name(copy.m_name)
         {
             if (copy.m_texture)
-                loadFromImage(copy.copyToImage());
+            {
+                if (create(copy.getSize().x, copy.getSize().y))
+                {
+                    update(copy);
+
+                    // Force an OpenGL flush, so that the texture will appear updated
+                    // in all contexts immediately (solves problems in multi-threaded apps)
+                    glCheck(glFlush());
+                }
+                else
+                {
+                    err() << "Failed to copy texture, failed to create new texture" << std::endl;
+                }
+            }
         }
 
 
@@ -101,7 +119,7 @@ namespace odfaeg {
         }
 
         ////////////////////////////////////////////////////////////
-        bool Texture::create(unsigned int width, unsigned int height, GLenum precision, GLenum format, GLenum type)
+        bool Texture::create(unsigned int width, unsigned int height)
         {
             m_isCubeMap = false;
             // Check if texture parameters are valid before creating it
@@ -130,7 +148,6 @@ namespace odfaeg {
             m_size.y        = height;
             m_actualSize    = actualSize;
             m_pixelsFlipped = false;
-            //ensureGlContext();
 
             // Create the OpenGL texture if it doesn't exist yet
             if (!m_texture)
@@ -138,24 +155,38 @@ namespace odfaeg {
                 GLuint texture;
                 glCheck(glGenTextures(1, &texture));
                 m_texture = static_cast<unsigned int>(texture);
-                //glCheck(glBindImageTextures(0, 1, &m_texture));
             }
 
             // Make sure that the current texture binding will be preserved
-            //priv::TextureSaver save;
+            priv::TextureSaver save;
+
+
+
+            if (!m_isRepeated)
+            {
+                static bool warned = false;
+
+                if (!warned)
+                {
+                    err() << "OpenGL extension SGIS_texture_edge_clamp unavailable" << std::endl;
+                    err() << "Artifacts may occur along texture edges" << std::endl;
+                    err() << "Ensure that hardware acceleration is enabled if available" << std::endl;
+
+                    warned = true;
+                }
+            }
+
 
             // Initialize the texture
             glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));
-            glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
+            glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_actualSize.x, m_actualSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
-
             m_cacheId = getUniqueId();
-            m_type = type;
-            m_format = format;
-            m_precision = precision;
+
+            allTextures.push_back(this);
             return true;
         }
         bool Texture::createCubeMap(unsigned int width, unsigned int height) {
@@ -211,11 +242,13 @@ namespace odfaeg {
                     }
                 }*/
             }
-            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+            glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_actualSize.x, m_actualSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
+            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
+            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
+            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
             m_cacheId = getUniqueId();
+            allTextures.push_back(this);
             return true;
         }
         bool Texture::createCubeMap(unsigned int width, unsigned int height, std::vector<sf::Image> images) {
@@ -276,58 +309,11 @@ namespace odfaeg {
             glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
             glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
             m_cacheId = getUniqueId();
+            allTextures.push_back(this);
             return true;
         }
-        bool Texture::createCubeMap(unsigned int width, unsigned int height, std::vector<const Texture*> images) {
-            m_isCubeMap = true;
-            // Check if texture parameters are valid before creating it
-            if ((width == 0) || (height == 0))
-            {
-                err() << "Failed to create texture, invalid size (" << width << "x" << height << ")" << std::endl;
-                return false;
-            }
-
-            // Compute the internal texture dimensions depending on NPOT textures support
-            Vector2u actualSize(getValidSize(width), getValidSize(height));
-
-            // Check the maximum texture size
-            unsigned int maxSize = getMaximumSize();
-            if ((actualSize.x > maxSize) || (actualSize.y > maxSize))
-            {
-                err() << "Failed to create texture, its internal size is too high "
-                      << "(" << actualSize.x << "x" << actualSize.y << ", "
-                      << "maximum is " << maxSize << "x" << maxSize << ")"
-                      << std::endl;
-                return false;
-            }
-            // All the validity checks passed, we can store the new texture settings
-            m_size.x        = width;
-            m_size.y        = height;
-            m_actualSize    = actualSize;
-            m_pixelsFlipped = false;
-            if (!m_texture)
-            {
-                GLuint texture;
-                glCheck(glGenTextures(1, &texture));
-                m_texture = static_cast<unsigned int>(texture);
-                //glCheck(glBindImageTextures(0, 1, &m_texture));
-            }
-            glCheck(glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture));
-            for (unsigned int i = 0; i < 6; i++) {
-                glCheck(glCopyImageSubData(images[i]->m_texture, GL_TEXTURE_2D,0,0,0,0,m_texture,GL_TEXTURE_CUBE_MAP,0,0,0,i,width,height,1));
-                /*for (unsigned int x = 0; x < images[i].getSize().x; x++) {
-                    for (unsigned int y = 0; y < images[i].getSize().y; y++) {
-                        sf::Color pixel = images[i].getPixel(x, y);
-                        std::cout<<"pixel : "<<(int) pixel.r<<","<<(int) pixel.g<<","<<(int) pixel.b<<","<<(int) pixel.a<<std::endl;
-                    }
-                }*/
-            }
-            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-            m_cacheId = getUniqueId();
-            return true;
+        std::vector<Texture*> Texture::getAllTextures() {
+            return allTextures;
         }
         ////////////////////////////////////////////////////////////
         bool Texture::loadFromFile(const std::string& filename, const IntRect& area)
@@ -359,20 +345,16 @@ namespace odfaeg {
             // Retrieve the image size
             int width = static_cast<int>(image.getSize().x);
             int height = static_cast<int>(image.getSize().y);
-            m_area = area;
-            m_image = image;
+
             // Load the entire image if the source area is either empty or contains the whole image
             if (area.width == 0 || (area.height == 0) ||
                ((area.left <= 0) && (area.top <= 0) && (area.width >= width) && (area.height >= height)))
             {
+                //std::cout<<"width  : "<<width<<" height : "<<height<<std::endl;
                 // Load the entire image
                 if (create(image.getSize().x, image.getSize().y))
                 {
                     update(image);
-
-                    // Force an OpenGL flush, so that the texture will appear updated
-                    // in all contexts immediately (solves problems in multi-threaded apps)
-                    glCheck(glFlush());
 
                     return true;
                 }
@@ -395,17 +377,21 @@ namespace odfaeg {
                 // Create the texture and upload the pixels
                 if (create(rectangle.width, rectangle.height))
                 {
+
                     // Make sure that the current texture binding will be preserved
                     priv::TextureSaver save;
 
                     // Copy the pixels to the texture, row by row
-                    const sf::Uint8* pixels = (image.getPixelsPtr() + 4 * (rectangle.left + (width * rectangle.top)));
+                    const Uint8* pixels = image.getPixelsPtr() + 4 * (rectangle.left + (width * rectangle.top));
                     glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));
                     for (int i = 0; i < rectangle.height; ++i)
                     {
                         glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, i, rectangle.width, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixels));
                         pixels += 4 * width;
                     }
+
+                    glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+
 
                     // Force an OpenGL flush, so that the texture will appear updated
                     // in all contexts immediately (solves problems in multi-threaded apps)
@@ -418,6 +404,18 @@ namespace odfaeg {
                     return false;
                 }
             }
+            /*GLuint texture;
+            glCheck(glGenTextures(1, &texture));
+            m_texture = texture;
+            glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));
+            glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
+            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+            glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.getSize().x, image.getSize().y, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()));
+            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+            return true;*/
         }
 
 
@@ -448,6 +446,8 @@ namespace odfaeg {
                 // Texture is not padded nor flipped, we can use a direct copy
                 glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));
                 glCheck(glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, &pixels[0]));
+                for (unsigned int i = 0; i < m_size.x * m_size.y * 4; i++)
+                    std::cout<<"pixel : "<<(int) pixels[i]<<std::endl;
             }
             else
             {
@@ -507,10 +507,13 @@ namespace odfaeg {
 
                 // Make sure that the current texture binding will be preserved
                 priv::TextureSaver save;
-
+                /*for (unsigned int i = 0; i < width * height * 4; i++) {
+                    std::cout<<"update pixel : "<<(int) pixels[i]<<std::endl;
+                }*/
                 // Copy pixels from the given array to the texture
                 glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));
                 glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels));
+                glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
                 m_pixelsFlipped = false;
                 m_cacheId = getUniqueId();
             }
@@ -847,14 +850,19 @@ namespace odfaeg {
             glCheck(glFlush());
 
             return;
-            /*assert(x + texture.m_size.x <= m_size.x);
+            assert(x + texture.m_size.x <= m_size.x);
             assert(y + texture.m_size.y <= m_size.y);
 
             if (!m_texture || !texture.m_texture)
                 return;
-            update(texture.copyToImage(), x, y);*/
+            update(texture.copyToImage(), x, y);
         }
         ////////////////////////////////////////////////////////////
+        void Texture::setNativeHandle(unsigned int handle, unsigned int width, unsigned int height) {
+            m_texture = handle;
+            m_actualSize.x = width;
+            m_actualSize.y = height;
+        }
         void Texture::swap(Texture& right)
         {
             std::swap(m_size,          right.m_size);

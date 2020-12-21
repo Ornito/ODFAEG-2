@@ -35,6 +35,7 @@ namespace odfaeg {
                 }
                 void onDraw(RenderTarget &target, RenderStates states);
                 void setTexCoords (int face, sf::IntRect texRect);
+                Entity* clone();
             private:
                 sf::Color m_color;
             };

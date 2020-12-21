@@ -413,6 +413,33 @@ erreur.cpp.s:
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.s
 .PHONY : erreur.cpp.s
 
+memberFunction.obj: memberFunction.cpp.obj
+
+.PHONY : memberFunction.obj
+
+# target to build an object file
+memberFunction.cpp.obj:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj
+.PHONY : memberFunction.cpp.obj
+
+memberFunction.i: memberFunction.cpp.i
+
+.PHONY : memberFunction.i
+
+# target to preprocess a source file
+memberFunction.cpp.i:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.i
+.PHONY : memberFunction.cpp.i
+
+memberFunction.s: memberFunction.cpp.s
+
+.PHONY : memberFunction.s
+
+# target to generate assembly for a file
+memberFunction.cpp.s:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.s
+.PHONY : memberFunction.cpp.s
+
 runtimeCompiler.obj: runtimeCompiler.cpp.obj
 
 .PHONY : runtimeCompiler.obj
@@ -615,6 +642,9 @@ help:
 	@echo ... erreur.obj
 	@echo ... erreur.i
 	@echo ... erreur.s
+	@echo ... memberFunction.obj
+	@echo ... memberFunction.i
+	@echo ... memberFunction.s
 	@echo ... runtimeCompiler.obj
 	@echo ... runtimeCompiler.i
 	@echo ... runtimeCompiler.s

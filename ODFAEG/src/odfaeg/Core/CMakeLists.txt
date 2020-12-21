@@ -45,6 +45,8 @@ set(SRC
 	${SRCROOT}/class.cpp
 	${INCROOT}/constructor.hpp
 	${SRCROOT}/constructor.cpp
+	${INCROOT}/memberFunction.hpp
+	${SRCROOT}/memberFunction.cpp
 	${INCROOT}/runtimeCompiler.hpp
 	${SRCROOT}/runtimeCompiler.cpp
 	)	

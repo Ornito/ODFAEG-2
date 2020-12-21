@@ -135,6 +135,9 @@ namespace odfaeg {
                     ar(quality);
                     ar(triangles);
                 }
+                float getRadius() {
+                    return bigRadius;
+                }
                 /**
                  *\fn virtual ~PonctualLight ();
                  *\brief destructor.

@@ -39,6 +39,7 @@ namespace odfaeg {
                 return true;
             }
             void setView (View view);
+            Entity* clone();
         private :
             View view;
             TransformMatrix tm;
