@@ -31,9 +31,11 @@ namespace odfaeg {
                 bool isPointInside(math::Vec3f point);
                 void clearDrawables();
                 void setScissorDisable(bool scissor);
+                void setMoveComponents(bool moveComponents);
+                math::Vec3f getDeltas();
             private :
-                bool disableScissor;
-                math::Vec3f mousePos;
+                bool disableScissor, moveComponents;
+                math::Vec3f mousePos, deltas;
                 bool scrollX, scrollY;
                 RectangleShape rect;
                 RectangleShape vertScrollBar, horScrollBar, corner;

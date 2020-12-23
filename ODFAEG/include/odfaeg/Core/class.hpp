@@ -21,6 +21,7 @@ namespace odfaeg {
             std::string getFilePath();
             std::string getSourcePath();
             std::vector<Constructor> getConstructors();
+            std::vector<MemberFunction> getMembersFunctions();
             std::vector<Class> getSuperClasses();
             std::string getNamespace();
         private :

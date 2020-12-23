@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
     EXPORT_CLASS_GUID(EntityMesh, Entity, Mesh)
     EXPORT_CLASS_GUID(EntityParticleSystem, Entity, ParticleSystem)
     EXPORT_CLASS_GUID(ShapeRectangleShape, Shape, RectangleShape)
-    Class cl = Class::getClass("Item");
+    Class cl = Class::getClass("Hero");
     ODFAEGCreator app(sf::VideoMode(1000,700),"ODFAEG Creator");
     return app.exec();
 

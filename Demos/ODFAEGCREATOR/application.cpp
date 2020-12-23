@@ -539,21 +539,29 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(lMIsPointer);
     cbIsPointer = new CheckBox(*wModifyObject,Vec3f(200, 65, 0), Vec3f(10, 10, 0));
     getRenderComponentManager().addComponent(cbIsPointer);
-    Label* lSelectMFunction = new Label(*wModifyObject, Vec3f(0, 100, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Function : ", 15);
+    Label* lSelectMClass = new Label(*wModifyObject, Vec3f(0, 100, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Class : ", 15);
+    getRenderComponentManager().addComponent(lSelectMClass);
+    dpSelectMClass = new DropDownList(*wModifyObject, Vec3f(200, 100, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Select class : ", 15);
+    getRenderComponentManager().addComponent(dpSelectMClass);
+    Command cmdSelectMClass(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectMClass), FastDelegate<void>(&ODFAEGCreator::onSelectedMClassChanged, this, dpSelectMClass));
+    dpSelectMClass->getListener().connect("MCLASSCHANGED", cmdSelectMClass);
+    Command cmdSelectMClassDroppedDown(FastDelegate<bool>(&DropDownList::isDroppedDown, dpSelectMClass), FastDelegate<void>(&ODFAEGCreator::onDroppedDown, this, dpSelectMClass));
+    dpSelectMClass->getListener().connect("SELECTMCLASSDROPPEDDOWN", cmdSelectMClassDroppedDown);
+    Label* lSelectMFunction = new Label(*wModifyObject, Vec3f(0, 150, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Function : ", 15);
     getRenderComponentManager().addComponent(lSelectMFunction);
-    dpSelectMFunction = new DropDownList(*wModifyObject, Vec3f(200, 100, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Select function : ", 15);
+    dpSelectMFunction = new DropDownList(*wModifyObject, Vec3f(200, 150, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Select function : ", 15);
     dpSelectMFunction->setPriority(-2);
     getRenderComponentManager().addComponent(dpSelectMFunction);
     Command cmdSelectMFunction(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectMFunction), FastDelegate<void>(&ODFAEGCreator::onSelectedMFunctionChanged, this, dpSelectMFunction));
     dpSelectMFunction->getListener().connect("MFUNCTIONCHANGED", cmdSelectMFunction);
     Command cmdSelectMFunctionDroppedDown(FastDelegate<bool>(&DropDownList::isDroppedDown, dpSelectMFunction), FastDelegate<void>(&ODFAEGCreator::onDroppedDown, this, dpSelectMFunction));
     dpSelectMFunction->getListener().connect("SELECTMFUNCTIONDROPPEDDOWN", cmdSelectMFunctionDroppedDown);
-    bModifyObject = new Button(Vec3f(200, 150, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Apply",15,*wModifyObject);
+    bModifyObject = new Button(Vec3f(200, 200, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Apply",15,*wModifyObject);
     bModifyObject->addActionListener(this);
     getRenderComponentManager().addComponent(bModifyObject);
-    pMObjectsParameters = new Panel(*wModifyObject, Vec3f(0, 200, 0), Vec3f(400, 800, 0));
+    pMObjectsParameters = new Panel(*wModifyObject, Vec3f(0, 250, 0), Vec3f(400, 800, 0));
     getRenderComponentManager().addComponent(pMObjectsParameters);
-    rootMObjectParams = std::make_unique<Node>("m object params", pMObjectsParameters, Vec2f(0.f, 200.f / 1000.f), Vec2f(1.f, 800.f / 1000.f));
+    rootMObjectParams = std::make_unique<Node>("m object params", pMObjectsParameters, Vec2f(0.f, 250.f / 1000.f), Vec2f(1.f, 750.f / 1000.f));
     wModifyObject->setVisible(false);
     addWindow(wModifyObject);
     getRenderComponentManager().setEventContextActivated(false, *wModifyObject);
@@ -611,7 +619,6 @@ void ODFAEGCreator::onInit() {
     taChangeComponentExpression->setRelSize(0.7, 0.1);
     taChangeComponentExpression->setParent(pComponent);
     pComponent->addChild(taChangeComponentExpression);
-    taChangeComponentExpression->setName("TaChangeComponentExpression");
     Label* ltaSelectExp = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif),"Selectable entities types : ", 15);
     ltaSelectExp->setRelPosition(0, 0.1);
     ltaSelectExp->setRelSize(0.3, 0.1);
@@ -623,9 +630,20 @@ void ODFAEGCreator::onInit() {
     taSelectExpression->setRelSize(0.7, 0.1);
     taSelectExpression->setParent(pComponent);
     pComponent->addChild(taSelectExpression);
-
     Command cmdCEChanged(FastDelegate<bool>(&TextArea::isTextChanged, taChangeComponentExpression), FastDelegate<void>(&ODFAEGCreator::onComponentExpressionChanged, this, taChangeComponentExpression));
     taChangeComponentExpression->getListener().connect("CECHANGED", cmdCEChanged);
+    Label* lViewPerspective = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"View perspective : ",15);
+    lViewPerspective->setRelPosition(0, 0.2);
+    lViewPerspective->setRelSize(0.3, 0.2);
+    lViewPerspective->setParent(pComponent);
+    pComponent->addChild(lViewPerspective);
+    dpSelectViewPerspective = new DropDownList(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Ortho 2D",15);
+    dpSelectViewPerspective->addItem("Persp 3D", 15);
+    dpSelectViewPerspective->setRelPosition(0.3, 0.2);
+    dpSelectViewPerspective->setRelSize(0.3, 0.2);
+    dpSelectViewPerspective->setParent(pComponent);
+    pComponent->addChild(dpSelectViewPerspective);
+
     tabPane = new TabPane(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(200, 700, 0));
     tabPane->setRelPosition(0, 0);
     tabPane->setRelSize(1, 1);
@@ -644,8 +662,9 @@ void ODFAEGCreator::onInit() {
     tabPane->addTab(pTransform, "Transform", *fm.getResourceByAlias(Fonts::Serif));
     pMaterial = new Panel(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     pMaterial->setBackgroundColor(sf::Color::White);
+    pMaterial->setMoveComponents(false);
     //pMaterial->setScissorEnabled(false);
-    rootMaterialNode = std::make_unique<Node>("Material", pMaterial, Vec2f(0.f, 0.05f), Vec2f(1.f, 1.f-0.05f));
+    rootMaterialNode = std::make_unique<Node>("Material", pMaterial, Vec2f(0.f, 0.05f), Vec2f(1.f-0.05f, 1.f-0.06f));
     tabPane->addTab(pMaterial,"Material",*fm.getResourceByAlias(Fonts::Serif));
     pShadows = new Panel(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     pShadows->setBackgroundColor(sf::Color::White);
@@ -1116,8 +1135,12 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
             rectSelect.setRect(savedPos.x, savedPos.y, box.getSize().x, box.getSize().y);
         }
         if (pScriptsFiles->isPointInside(mousePosition) && sTextRect != nullptr) {
-            int x = sTextRect->getPosition().x - pScriptsFiles->getPosition().x;
-            int y = sTextRect->getPosition().y - (bChooseText->getPosition().y + bChooseText->getSize().y);
+            //std::cout<<"deltas : "<<pMaterial->getDeltas()<<std::endl;
+            int x = mousePosition.x - pScriptsFiles->getPosition().x+pMaterial->getDeltas().x;
+            int y = mousePosition.y - (bChooseText->getPosition().y + bChooseText->getSize().y+10)+pMaterial->getDeltas().y;
+
+            //std::cout<<"mouse pos : "<<mousePosition.x<<" x : "<<x<<" delta : "<<pMaterial->getDeltas().x<<std::endl;
+            std::cout<<pMaterial->getDeltas().y<<std::endl;
             tTexCoordX->setText(conversionIntString(x));
             tTexCoordY->setText(conversionIntString(y));
             tTexCoordW->setText(conversionIntString(sTextRect->getSize().x));
@@ -1437,8 +1460,10 @@ void ODFAEGCreator::onExec() {
                 Class cl = Class::getClass(classes[i]);
                 if (cl.getNamespace() == "") {
                     dpSelectClass->addItem(classes[i], 15);
+                    dpSelectMClass->addItem(classes[i], 15);
                 } else {
                     dpSelectClass->addItem(cl.getNamespace()+"::"+classes[i], 15);
+                    dpSelectMClass->addItem(classes[i], 15);
                 }
             }
         }
@@ -2082,7 +2107,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         }
     }
     if (button == bCreateObject) {
-         std::vector<std::string> parts = split(dpSelectClass->getSelectedItem(), "::");
+        std::vector<std::string> parts = split(dpSelectClass->getSelectedItem(), "::");
         Class cl = Class::getClass(parts[parts.size()-1]);
         std::string headerFile = cl.getFilePath();
         convertSlash(headerFile);
@@ -2225,6 +2250,63 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             sourceCode.insert(pos, toInsert);
         }
         //std::cout<<"source code : "<<sourceCode<<std::endl;
+        std::ofstream file("sourceCode.cpp");
+        file<<sourceCode;
+        file.close();
+        rtc.addSourceFile("sourceCode");
+        rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/application");
+        rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/odfaegCreatorStateExecutor");
+        rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/rectangularSelection");
+        rtc.addSourceFile("Test/Scripts/item");
+        rtc.addSourceFile("Test/Scripts/hero");
+        rtc.addSourceFile("Test/Scripts/monster");
+        rtc.addSourceFile("Test/Scripts/quest");
+        rtc.addSourceFile("Test/Scripts/caracter");
+        rtc.addSourceFile("Test/Scripts/skill");
+        rtc.addSourceFile("Test/Scripts/pnj");
+        rtc.compile();
+        std::string errors = rtc.getCompileErrors();
+        //std::cout<<"errors : "<<rtc.getCompileErrors();
+        rtc.run<void>("createObject", this);
+        wCreateNewObject->setVisible(false);
+        getRenderComponentManager().setEventContextActivated(false, *wCreateNewObject);
+        tScriptEdit->setEventContextActivated(true);
+    }
+    if (button == bModifyObject) {
+        std::vector<std::string> parts = split(dpSelectClass->getSelectedItem(), "::");
+        Class cl = Class::getClass(parts[parts.size()-1]);
+        std::string sourceCode, toInsert = "";
+        std::vector<std::string> argValues;
+        for (unsigned int i = 0; i < tmpTextAreas.size(); i++) {
+            argValues.push_back(tmpTextAreas[i]->getText());
+        }
+        bool fileExist = false;
+        std::ifstream ifs;
+        if (ifs) {
+            fileExist = true;
+            std::string line;
+            while (getline(ifs, line)) {
+                sourceCode += line+"\n";
+            }
+            ifs.close();
+        }
+        if(sourceCode.find("std::ofstream of"+cl.getName()+" (\""+cl.getName()+".oc\");\n") != std::string::npos) {
+            int pos = sourceCode.find("std::ofstream of"+cl.getName()+" (\""+cl.getName()+".oc\");\n")-3;
+            std::string args;
+            for (unsigned int j = 0; j < argValues.size(); j++) {
+                args += argValues[j];
+                if (j != argValues.size()-1) {
+                    args += ",";
+                }
+            }
+            std::vector<std::string> parts2 = split(dpSelectMFunction->getSelectedItem(), " ");
+            if (cbIsPointer->isChecked()) {
+                toInsert += taObjectName->getText()+"->"+parts2[1]+"("+args+");";
+            } else {
+                toInsert += taObjectName->getText()+"."+parts2[1]+"("+args+");";
+            }
+            sourceCode.insert(pos, toInsert);
+        }
         std::ofstream file("sourceCode.cpp");
         file<<sourceCode;
         file.close();
@@ -3140,7 +3222,6 @@ void ODFAEGCreator::displayEntityInfos(Entity* tile) {
     pInfos->addChild(lEmList);
     Node* lEmListNode = new Node("LabEmList", lEmList, Vec2f(0, 0), Vec2f(0.25, 0.025), rootInfosNode.get());
     dpSelectEm = new DropDownList(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif),"NONE", 15);
-    dpSelectEm->setName("DPSELECTEM");
     for (unsigned int i = 0; i < ems.size(); i++) {
         dpSelectEm->addItem(ems[i]->getName(), 15);
     }
@@ -4663,6 +4744,7 @@ void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
     }
     if (tex != nullptr) {
         if (ta == tTexCoordX) {
+            std::cout<<"tex coord changed"<<std::endl;
             if (is_number(ta->getText())) {
                 int texCoordX = conversionStringInt(ta->getText());
                 StateGroup* sg = new StateGroup("SGCHANGEXTEXCOORD");
@@ -4833,7 +4915,7 @@ void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
         if ((ta == tTexCoordX || ta == tTexCoordY || ta == tTexCoordW || ta == tTexCoordH)
             && is_number(tTexCoordX->getText()) && is_number(tTexCoordY->getText()) && is_number(tTexCoordW->getText()) && is_number(tTexCoordH->getText())) {
 
-            sTextRect->setPosition(Vec3f(conversionStringInt(tTexCoordX->getText())+pScriptsFiles->getPosition().x, conversionStringInt(tTexCoordY->getText()) + bChooseText->getPosition().y + bChooseText->getSize().y+10, 0));
+            sTextRect->setPosition(Vec3f(conversionStringInt(tTexCoordX->getText())+pScriptsFiles->getPosition().x-pMaterial->getDeltas().x, conversionStringInt(tTexCoordY->getText()) + bChooseText->getPosition().y + bChooseText->getSize().y+10-pMaterial->getDeltas().y, 0));
             sTextRect->setSize(Vec3f(conversionStringInt(tTexCoordW->getText()), conversionStringInt(tTexCoordH->getText()), 0));
         }
     }
@@ -5027,14 +5109,88 @@ void ODFAEGCreator::onSelectedFunctionChanged(DropDownList* dp) {
     //dpSelectPointerType->setEventContextActivated(true);
     bCreateObject->setEventContextActivated(true);
 }
+void ODFAEGCreator::onSelectedMClassChanged(DropDownList *dp) {
+    if (dp->getSelectedItem() != "Select class") {
+        //std::cout<<"selected class : "<<dp->getSelectedItem()<<std::endl;
+        dpSelectMFunction->removeAllItems();
+        std::string selectedItem = dp->getSelectedItem();
+        std::vector<std::string> parts = split(selectedItem, "::");
+        Class cl = Class::getClass(parts[parts.size() - 1]);
+        std::vector<MemberFunction> functions = cl.getMembersFunctions();
+        dpSelectMFunction->addItem("Select function", 15);
+        //std::cout<<"size : "<<constructors.size()<<std::endl;
+        for (unsigned int i = 0; i < functions.size(); i++) {
+            std::string name = functions[i].getReturnType()+" "+functions[i].getName()+"(";
+            std::vector<std::string> argsTypes = functions[i].getArgsTypes();
+            for (unsigned int j = 0; j < argsTypes.size(); j++) {
+                //std::cout<<"add arg type : "<<argsTypes[j]<<std::endl;
+                name += argsTypes[j];
+                if (j != argsTypes.size() - 1) {
+                    name += ",";
+                }
+            }
+            name += ")";
+            //std::cout<<"add function : "<<name<<std::endl;
+            dpSelectMFunction->addItem(name, 15);
+            //std::cout<<"add function : "<<i<<" : "<<name<<std::endl;
+        }
+    }
+}
 void ODFAEGCreator::onSelectedMFunctionChanged(DropDownList *dp) {
+    if (dp->getSelectedItem() != "Select function" && dpSelectMClass->getSelectedItem() != "Select class") {
+        rootMObjectParams->deleteAllNodes();
+        pMObjectsParameters->removeAll();
+        std::string selectedItem = dpSelectMClass->getSelectedItem();
+        std::vector<std::string> parts = split(selectedItem, "::");
+        //std::cout<<"parts : "<<parts[parts.size() - 1]<<std::endl;
+        Class cl = Class::getClass(parts[parts.size() - 1]);
+        tmpTextAreas.clear();
+        std::vector<MemberFunction> functions = cl.getMembersFunctions();
+        bool found = false;
+        MemberFunction* f=nullptr;
+        for (unsigned int i = 0; i < functions.size() && !found; i++) {
+            std::string name = functions[i].getReturnType()+" "+functions[i].getName()+"(";
+            std::vector<std::string> argsTypes = functions[i].getArgsTypes();
+            for (unsigned int j = 0; j < argsTypes.size(); j++) {
+                name += argsTypes[j];
+                if (j != argsTypes.size() - 1) {
+                    name += ",";
+                }
+            }
+            name += ")";
+            //std::cout<<"name : "<<name<<std::endl;
+            if (name == dp->getSelectedItem()) {
+                //std::cout<<"select constructor"<<std::endl;
+                f = &functions[i];
+                found = true;
+            }
+        }
+        if (f != nullptr) {
+            FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+            std::vector<std::string> argsTypes = f->getArgsTypes();
+            std::vector<std::string> argsNames = f->getArgsNames();
+            for (unsigned int i = 0; i < argsTypes.size(); i++) {
+                //std::cout<<"add gui"<<std::endl;
+                Label* label = new Label(*wModifyObject, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), argsTypes[i]+" : "+argsNames[i], 15);
+                Node* node = new Node(argsTypes[i], label, Vec2f(0, 0), Vec2f(0.25, 0.025),rootObjectParams.get());
+                label->setParent(pMObjectsParameters);
+                pMObjectsParameters->addChild(label);
+                TextArea* ta = new TextArea(Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "", *wModifyObject);
+                node->addOtherComponent(ta, Vec2f(0.75, 0.025));
+                ta->setTextSize(15);
+                ta->setParent(pMObjectsParameters);
+                pMObjectsParameters->addChild(ta);
+                tmpTextAreas.push_back(ta);
+            }
+        }
+    }
     bModifyObject->setEventContextActivated(true);
 }
 void ODFAEGCreator::onDroppedDown(DropDownList* dp) {
     if (dp == dpSelectClass || dp == dpSelectFunction || dp == dpSelectPointerType) {
         bCreateObject->setEventContextActivated(false);
     }
-    if (dp == dpSelectMFunction) {
+    if (dp == dpSelectMClass || dp == dpSelectMFunction) {
         bModifyObject->setEventContextActivated(false);
     }
 }

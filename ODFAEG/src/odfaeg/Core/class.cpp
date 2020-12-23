@@ -262,10 +262,12 @@ namespace odfaeg {
                     parts[i] = parts[i].erase(pos);
                     nb++;
                 }
-                /*if(parts[i].find("public") != std::string::npos || parts[i].find("private") != std::string::npos || parts[i].find("protected") != std::string::npos) {
+                if(parts[i].find("public") != std::string::npos || parts[i].find("private") != std::string::npos || parts[i].find("protected") != std::string::npos) {
                     int pos = parts[i].find(":");
                     parts[i] = parts[i].substr(pos+1);
-                }*/
+                    pos = fileContent.find(":");
+                    fileContent = fileContent.substr(pos);
+                }
 
                 std::vector<std::string> parts2 = split(parts[i], ";");
                 //std::cout<<"size : "<<parts2.size()<<std::endl;
@@ -342,8 +344,9 @@ namespace odfaeg {
                                        }
                                        //std::cout<<"pos : "<<pos<<" pos 2 "<<pos2<<std::endl;
                                        fileContent = fileContent.erase(pos, pos2-pos+1);
-                                       cl.addConstructor(constructor);
+
                                    }
+                                   cl.addConstructor(constructor);
                                }
                             }
 
@@ -364,10 +367,7 @@ namespace odfaeg {
                 }
 
 
-                /*if(parts[i].find("public") != std::string::npos || parts[i].find("private") != std::string::npos || parts[i].find("protected") != std::string::npos) {
-                    int pos = parts[i].find(":");
-                    parts[i] = parts[i].substr(pos+1);
-                }*/
+
 
                 std::vector<std::string> parts2 = split(parts[i], ";");
                 //std::cout<<"size : "<<parts2.size()<<std::endl;
@@ -391,10 +391,11 @@ namespace odfaeg {
                         && str.find("for(") == std::string::npos && str.find("do(") == std::string::npos)<<std::endl;*/
                     if (nb <= 1 && str.find("if(") == std::string::npos && str.find("else") == std::string::npos && str.find("else if(") == std::string::npos && str.find("while(") == std::string::npos && str.find("switch(") == std::string::npos
                         && str.find("for(") == std::string::npos && str.find("do(") == std::string::npos) {
-                        //std::cout<<"parts : "<<parts2[j]<<std::endl;
+
                         int index = parts2[j].find("(");
                         if (index != std::string::npos) {
                             std::string name = parts2[j].substr(0, index);
+
                             name.erase(0, 1);
                             while (name.size() > 0 && name.at(0) == ' ' || name.at(0) == '\n') {
                                 name = name.erase(0, 1);
@@ -415,6 +416,7 @@ namespace odfaeg {
                                 int pos = parts2[j].find("(");
                                 int pos2 = parts2[j].find(")");
                                 if (pos != std::string::npos && pos2 != std::string::npos) {
+
                                    std::string types = parts2[j].substr(pos+1, pos2-pos-1);
                                    //std::cout<<"types : "<<types<<std::endl;
                                    std::vector<std::string> arguments = split(types, ",");
@@ -443,10 +445,12 @@ namespace odfaeg {
                                        } else {
                                            pos2 = fileContent.find(";");
                                        }
+                                       // std::cout<<"parts 2 : "<<parts2[j]<<std::endl;
                                        //std::cout<<"pos : "<<pos<<" pos 2 "<<pos2<<std::endl;
                                        fileContent = fileContent.erase(pos, pos2-pos+1);
-                                       cl.addMemberFunction(mf);
+
                                    }
+                                   cl.addMemberFunction(mf);
                                }
                             }
                         }
@@ -563,6 +567,9 @@ namespace odfaeg {
         }
         std::vector<Constructor> Class::getConstructors() {
             return constructors;
+        }
+        std::vector<MemberFunction> Class::getMembersFunctions() {
+            return memberFunctions;
         }
         std::string Class::getNamespace() {
             return namespc;
