@@ -52,6 +52,8 @@ Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 8
 	rtc.addLibrary("dl.dll");
 	rtc.addRuntimeFunction("createObject");
 	rtc.addRuntimeFunction("readObjects");
+
+
 	getRenderWindow().setKeyRepeatEnabled(false);
 }
 void ODFAEGCreator::onLoad() {
@@ -1140,7 +1142,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
             int y = mousePosition.y - (bChooseText->getPosition().y + bChooseText->getSize().y+10)+pMaterial->getDeltas().y;
 
             //std::cout<<"mouse pos : "<<mousePosition.x<<" x : "<<x<<" delta : "<<pMaterial->getDeltas().x<<std::endl;
-            std::cout<<pMaterial->getDeltas().y<<std::endl;
+            //std::cout<<pMaterial->getDeltas().y<<std::endl;
             tTexCoordX->setText(conversionIntString(x));
             tTexCoordY->setText(conversionIntString(y));
             tTexCoordW->setText(conversionIntString(sTextRect->getSize().x));
@@ -1252,6 +1254,23 @@ void ODFAEGCreator::onExec() {
                 }
             }
             applis.close();
+            std::string startDir = getCurrentPath()+"\\"+appliname+"\\Scripts";
+            std::vector<std::string> scriptSourceFiles;
+            findFiles(".cpp", scriptSourceFiles, startDir);
+            for (unsigned int i = 0; i < scriptSourceFiles.size(); i++) {
+                int pos = scriptSourceFiles[i].find(".cpp");
+                std::string path = scriptSourceFiles[i].erase(pos);
+                rtc.addSourceFile(path);
+            }
+            rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/application");
+            rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/odfaegCreatorStateExecutor");
+            rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/rectangularSelection");
+            std::ifstream file("sourceCode.cpp");
+            if (file) {
+                rtc.addSourceFile("sourceCode");
+                rtc.compile();
+                rtc.run<void>("readObjects", this);
+            }
             //Load textures.
             std::ifstream ifs(appliname+"\\"+"textures.oc");
             TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
@@ -2191,7 +2210,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 if (dpSelectPointerType->getSelectedItem() != "No pointer" && dpSelectPointerType->getSelectedItem() != dpSelectClass->getSelectedItem()) {
                     std::vector<std::string> parts = split(dpSelectPointerType->getSelectedItem(), "::");
                     std::string name = parts[parts.size()-1];
-                    toInsert += "EXPORT_CLASS_GUID("+name+cl.getName()+","+dpSelectPointerType->getSelectedItem()+","+dpSelectClass->getSelectedItem()+")";
+                    toInsert += "   EXPORT_CLASS_GUID("+name+cl.getName()+","+dpSelectPointerType->getSelectedItem()+","+dpSelectClass->getSelectedItem()+")\n";
                 }
                 toInsert += "   std::ofstream of"+cl.getName()+" (\""+cl.getName()+".oc\");\n";
                 toInsert += "   odfaeg::core::OTextArchive oa"+cl.getName()+" (of"+cl.getName()+");\n";
@@ -2203,16 +2222,16 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 if (dpSelectPointerType->getSelectedItem() != "No pointer" && dpSelectPointerType->getSelectedItem() != dpSelectClass->getSelectedItem()) {
                     std::vector<std::string> parts = split(dpSelectPointerType->getSelectedItem(), "::");
                     std::string name = parts[parts.size()-1];
-                    toInsert += "EXPORT_CLASS_GUID("+name+cl.getName()+","+dpSelectPointerType->getSelectedItem()+","+dpSelectClass->getSelectedItem()+")";
+                    toInsert += "   EXPORT_CLASS_GUID("+name+cl.getName()+","+dpSelectPointerType->getSelectedItem()+","+dpSelectClass->getSelectedItem()+")\n";
                 }
                 toInsert += "   std::ifstream if"+cl.getName()+" (\""+cl.getName()+".oc\");\n";
                 toInsert += "   odfaeg::core::ITextArchive ia"+cl.getName()+" (if"+cl.getName()+");\n";
                 toInsert += "   ia"+cl.getName()+"(v"+cl.getName()+");\n";
-                toInsert += "   #ifdef ENTITY"+cl.getName()+"\n";
+                toInsert += "   #ifdef ENTITY"+taObjectName->getText()+"\n";
                 toInsert += "       for (unsigned int i = 0; i < v"+cl.getName()+".size(); i++)\n";
                 toInsert += "           c->addExternalEntity(v"+cl.getName()+"[i]);\n";
+                toInsert += "       c->updateNb(\""+cl.getName()+"\",v"+cl.getName()+".size());\n";
                 toInsert += "   #endif\n";
-                toInsert += "   c->updateNb(\""+cl.getName()+"\",v"+cl.getName()+".size());\n";
                 sourceCode.insert(pos, toInsert);
             }
         }
@@ -2253,17 +2272,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         std::ofstream file("sourceCode.cpp");
         file<<sourceCode;
         file.close();
+
         rtc.addSourceFile("sourceCode");
-        rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/application");
-        rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/odfaegCreatorStateExecutor");
-        rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/rectangularSelection");
-        rtc.addSourceFile("Test/Scripts/item");
-        rtc.addSourceFile("Test/Scripts/hero");
-        rtc.addSourceFile("Test/Scripts/monster");
-        rtc.addSourceFile("Test/Scripts/quest");
-        rtc.addSourceFile("Test/Scripts/caracter");
-        rtc.addSourceFile("Test/Scripts/skill");
-        rtc.addSourceFile("Test/Scripts/pnj");
         rtc.compile();
         std::string errors = rtc.getCompileErrors();
         //std::cout<<"errors : "<<rtc.getCompileErrors();
