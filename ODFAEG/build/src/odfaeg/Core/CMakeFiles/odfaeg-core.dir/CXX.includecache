@@ -854,8 +854,6 @@ SFML/Config.hpp
 
 ../extlibs/headers/SFML/Window/WindowStyle.hpp
 
-../extlibs/headers/dlfcn.h
-
 ../extlibs/headers/openssl/aes.h
 openssl/opensslconf.h
 -
@@ -1520,28 +1518,6 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/resourceCache.h
 export.hpp
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/export.hpp
 
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/class.hpp
-string
--
-utilities.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/utilities.h
-erreur.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
-fstream
--
-iostream
--
-windows.h
--
-dlfcn.h
--
-string
--
-constructor.hpp
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/constructor.hpp
-memberFunction.hpp
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/memberFunction.hpp
-
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/command.h
 action.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/action.h
@@ -1551,12 +1527,6 @@ command.tpp
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/command.tpp
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/command.tpp
-
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/constructor.hpp
-string
--
-vector
--
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/entitySystem.h
 condition_variable
@@ -1581,10 +1551,6 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/export.hpp
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/export.hpp
 ../config.hpp
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
-
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.cpp
-factory.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
 map
@@ -1634,12 +1600,6 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/singleton.h
 chrono
 -
 
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/memberFunction.hpp
-vector
--
-string
--
-
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/mpl.h
 type_traits
 -
@@ -1677,18 +1637,6 @@ singleton.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/singleton.h
 utilities.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/utilities.h
-
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/runtimeCompiler.hpp
-vector
--
-string
--
-fstream
--
-dlfcn.h
--
-erreur.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/serialization.h
 iostream
@@ -1732,29 +1680,11 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/stateExecutor.h
 state.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/state.h
 
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/stateGroup.h
-vector
--
-state.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/state.h
-string
--
-
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/stateParameter.h
 any.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
 string
 -
-
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/stateStack.h
-vector
--
-string
--
-erreur.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
-stateGroup.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/stateGroup.h
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/timer.h
 singleton.h
@@ -2580,53 +2510,7 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
 
-C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/actions.cpp
-../../../include/odfaeg/Core/action.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/action.h
-../../../include/odfaeg/Core/command.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/command.h
-SFML/Window.hpp
--
-chrono
--
-thread
--
-
 C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/application.cpp
 ../../../include/odfaeg/Core/application.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/application.h
-
-C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/class.cpp
-../../../include/odfaeg/Core/class.hpp
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/class.hpp
-
-C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/command.cpp
-../../../include/odfaeg/Core/command.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/command.h
-
-C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/erreur.cpp
-../../../include/odfaeg/Core/erreur.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
-
-C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/runtimeCompiler.cpp
-../../../include/odfaeg/Core/runtimeCompiler.hpp
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/runtimeCompiler.hpp
-iostream
--
-
-C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/state.cpp
-../../../include/odfaeg/Core/state.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/state.h
-../../../include/odfaeg/Core/stateExecutor.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/stateExecutor.h
-
-C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/stateGroup.cpp
-../../../include/odfaeg/Core/stateGroup.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/stateGroup.h
-
-C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Core/stateStack.cpp
-../../../include/odfaeg/Core/stateStack.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/stateStack.h
-iostream
--
 

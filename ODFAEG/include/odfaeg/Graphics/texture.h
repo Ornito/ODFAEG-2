@@ -103,7 +103,7 @@ namespace odfaeg
             /// \return True if creation was successful
             ///
             ////////////////////////////////////////////////////////////
-            bool create(unsigned int width, unsigned int height);
+            bool create(unsigned int width, unsigned int height, unsigned int precision = 0x8058, unsigned int format = 0x1908, unsigned int type = 0x1401);
             bool createCubeMap (unsigned int width, unsigned int height);
             bool createCubeMap(unsigned int width, unsigned int height, std::vector<sf::Image> images);
             void clear();

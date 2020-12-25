@@ -77,9 +77,9 @@ namespace odfaeg {
                 init();
                 running = true;
                 while (running) {
-                    for (unsigned int i = 0; i < windows.size(); i++) {
+                    /*for (unsigned int i = 0; i < windows.size(); i++) {
                         windows[i].first->setActive(false);
-                    }
+                    }*/
                     if (windows.size() != 0 && windows[0].first->isOpen()) {
                         //rendering_thread = std::thread(Application::render, this);
                         render();
@@ -123,7 +123,7 @@ namespace odfaeg {
             void render() {
                 if (windows.size() != 0 && windows[0].first->isOpen()) {
                     for (unsigned int i = 0; i < windows.size(); i++) {
-                        windows[i].first->setActive(true);
+                        //windows[i].first->setActive(true);
                         windows[i].first->clear(clearColor);
                     }
                     onRender(componentManager.get());

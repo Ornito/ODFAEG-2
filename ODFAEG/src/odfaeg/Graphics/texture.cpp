@@ -119,9 +119,8 @@ namespace odfaeg {
         }
 
         ////////////////////////////////////////////////////////////
-        bool Texture::create(unsigned int width, unsigned int height)
+        bool Texture::create(unsigned int width, unsigned int height, GLenum precision, GLenum format, GLenum type)
         {
-            m_isCubeMap = false;
             // Check if texture parameters are valid before creating it
             if ((width == 0) || (height == 0))
             {
@@ -148,6 +147,7 @@ namespace odfaeg {
             m_size.y        = height;
             m_actualSize    = actualSize;
             m_pixelsFlipped = false;
+            //ensureGlContext();
 
             // Create the OpenGL texture if it doesn't exist yet
             if (!m_texture)
@@ -155,37 +155,23 @@ namespace odfaeg {
                 GLuint texture;
                 glCheck(glGenTextures(1, &texture));
                 m_texture = static_cast<unsigned int>(texture);
+                //glCheck(glBindImageTextures(0, 1, &m_texture));
             }
 
             // Make sure that the current texture binding will be preserved
             priv::TextureSaver save;
 
-
-
-            if (!m_isRepeated)
-            {
-                static bool warned = false;
-
-                if (!warned)
-                {
-                    err() << "OpenGL extension SGIS_texture_edge_clamp unavailable" << std::endl;
-                    err() << "Artifacts may occur along texture edges" << std::endl;
-                    err() << "Ensure that hardware acceleration is enabled if available" << std::endl;
-
-                    warned = true;
-                }
-            }
-
-
             // Initialize the texture
             glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));
-            glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_actualSize.x, m_actualSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
+            glCheck(glTexImage2D(GL_TEXTURE_2D, 0, precision, m_actualSize.x, m_actualSize.y, 0, format, type, NULL));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
             m_cacheId = getUniqueId();
-
+            m_type = type;
+            m_format = format;
+            m_precision = precision;
             allTextures.push_back(this);
             return true;
         }
@@ -235,18 +221,11 @@ namespace odfaeg {
                                      GL_UNSIGNED_BYTE,
                                      nullptr)
                 );
-                /*for (unsigned int x = 0; x < images[i].getSize().x; x++) {
-                    for (unsigned int y = 0; y < images[i].getSize().y; y++) {
-                        sf::Color pixel = images[i].getPixel(x, y);
-                        std::cout<<"pixel : "<<(int) pixel.r<<","<<(int) pixel.g<<","<<(int) pixel.b<<","<<(int) pixel.a<<std::endl;
-                    }
-                }*/
             }
-            glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_actualSize.x, m_actualSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
-            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
-            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
-            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
-            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+            glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
             m_cacheId = getUniqueId();
             allTextures.push_back(this);
             return true;
@@ -297,12 +276,6 @@ namespace odfaeg {
                                      GL_UNSIGNED_BYTE,
                                      images[i].getPixelsPtr())
                 );
-                /*for (unsigned int x = 0; x < images[i].getSize().x; x++) {
-                    for (unsigned int y = 0; y < images[i].getSize().y; y++) {
-                        sf::Color pixel = images[i].getPixel(x, y);
-                        std::cout<<"pixel : "<<(int) pixel.r<<","<<(int) pixel.g<<","<<(int) pixel.b<<","<<(int) pixel.a<<std::endl;
-                    }
-                }*/
             }
             glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
             glCheck(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
@@ -404,18 +377,6 @@ namespace odfaeg {
                     return false;
                 }
             }
-            /*GLuint texture;
-            glCheck(glGenTextures(1, &texture));
-            m_texture = texture;
-            glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));
-            glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
-            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-            glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.getSize().x, image.getSize().y, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()));
-            glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-            return true;*/
         }
 
 

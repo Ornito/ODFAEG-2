@@ -292,11 +292,11 @@ namespace sorrok {
         std::this_thread::sleep_for(std::chrono::seconds(1));
         op->setVisible(false);
         op->setEventContextActivated(false);*/
-        /*frc1->setVisible(false);
+        frc1->setVisible(false);
         frc2->setVisible(false);
         //rrrc->setVisible(false);
         src->setVisible(false);
-        lrc->setVisible(false);*/
+        lrc->setVisible(false);
         getRenderComponentManager().addComponent(frc1);
         getRenderComponentManager().addComponent(frc2);
         getRenderComponentManager().addComponent(rrrc);
