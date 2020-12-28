@@ -136,7 +136,7 @@ namespace odfaeg {
         void RenderComponentManager::updateComponents() {
            std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::iterator it;
            for (it = components.begin(); it != components.end(); it++) {
-               if (it->second->isEventContextActivated()) {
+               if (it->second->isEventContextActivated() && it->second->isVisible()) {
                    it->second->processEvents();
                    it->second->recomputeSize();
                }

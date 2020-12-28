@@ -723,8 +723,8 @@ namespace odfaeg {
                     }
                     for (unsigned int i = 0; i < m_normals.size(); i++) {
                        if (m_normals[i].getAllVertices().getVertexCount() > 0) {
-                            if (m_instances[i].getMaterial().getTexture() != nullptr) {
-                                math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
+                            if (m_normals[i].getMaterial().getTexture() != nullptr) {
+                                math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
                                 depthBufferNormalGenerator.setParameter("textureMatrix", texMatrix);
                                 depthBufferNormalGenerator.setParameter("haveTexture", 1.f);
                             } else {

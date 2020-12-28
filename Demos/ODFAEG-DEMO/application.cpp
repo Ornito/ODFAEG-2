@@ -129,6 +129,7 @@ namespace sorrok {
         World::addEntityManager(theMap);
         World::setCurrentEntityManager("Map test");
         eu = new EntitiesUpdater();
+        eu->setName("EntitiesUpdater");
         World::addWorker(eu);
         au = new AnimUpdater();
         au->setInterval(sf::seconds(0.01f));
@@ -275,6 +276,7 @@ namespace sorrok {
         billboard->getParticleSystem().addAffector(affector);*/
         ps->addEmitter(refEmitter(emitter));
         psu->addParticleSystem(ps);
+        psu->setName("ParticlesSystemUpdater");
         World::addEntity(ps);
         std::cout<<"particle system"<<std::endl;
         View view = getView();
@@ -378,12 +380,7 @@ namespace sorrok {
         World::drawOnComponents("E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION+E_HERO", 2);
         World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO", 3);
         World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", 4);
-        fpsCounter++;
-        if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {
-            std::cout<<"FPS : "<<fpsCounter<<std::endl;
-            fpsCounter = 0;
-            getClock("FPS").restart();
-        }
+
     }
     void MyAppli::onDisplay(RenderWindow* window) {
         /*Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 2, 1);
@@ -496,6 +493,7 @@ namespace sorrok {
                 getView().move(d.x, d.y, d.y);
                 World::moveEntity(caracter, d.x, d.y, d.y);
                 sf::Listener::setPosition(newPos.x, newPos.y, 0);
+                //World::update("EntitiesUpdater");
             } else {
 
                 Vec3f actualPos = caracter->getCenter();
@@ -521,9 +519,16 @@ namespace sorrok {
                     if (player.isPlaying())
                         player.stop();
                 }
+                //World::update("EntitiesUpdater");
             }
         }
         World::update();
+        fpsCounter++;
+        if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {
+            std::cout<<"FPS : "<<fpsCounter<<std::endl;
+            fpsCounter = 0;
+            getClock("FPS").restart();
+        }
         //ps->update(getClock("LoopTime").getElapsedTime());
     }
 }

@@ -29,7 +29,7 @@ namespace odfaeg {
             shadowRotationAngle = 0;
             shadowRotationAxis = math::Vec3f::zAxis;
             boneIndex = 0;
-            drawMode = INSTANCED;
+            drawMode = NORMAL;
             reflectable = false;
             refractDir = math::Vec3f(0, 0, 1);
             water = false;

@@ -399,8 +399,8 @@ namespace odfaeg {
                     }
                     for (unsigned int i = 0; i < m_normals.size(); i++) {
                        if (m_normals[i].getAllVertices().getVertexCount() > 0) {
-                            if (m_instances[i].getMaterial().getTexture() != nullptr) {
-                                math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
+                            if (m_normals[i].getMaterial().getTexture() != nullptr) {
+                                math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
                                 buildShadowMapNormalShader.setParameter("textureMatrix", texMatrix);
                                 buildShadowMapNormalShader.setParameter("haveTexture", 1.f);
                                 depthGenNormalShader.setParameter("textureMatrix", texMatrix);
@@ -436,16 +436,16 @@ namespace odfaeg {
                     perPixShadowShaderNormal.setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
                     perPixShadowShaderNormal.setParameter("projectionMatrix", projMatrix);
                     perPixShadowShaderNormal.setParameter("viewMatrix", viewMatrix);
-                    states.shader = &perPixShadowShader;
+                    states.shader = &perPixShadowShaderNormal;
                     for (unsigned int i = 0; i < m_shadow_normals.size(); i++) {
                         if (m_shadow_normals[i].getAllVertices().getVertexCount() > 0) {
                             states.texture = m_shadow_normals[i].getMaterial().getTexture();
                             if (m_shadow_normals[i].getMaterial().getTexture() != nullptr) {
                                 math::Matrix4f texMatrix = m_shadow_normals[i].getMaterial().getTexture()->getTextureMatrix();
-                                perPixShadowShader.setParameter("textureMatrix", texMatrix);
-                                perPixShadowShader.setParameter("haveTexture", 1.f);
+                                perPixShadowShaderNormal.setParameter("textureMatrix", texMatrix);
+                                perPixShadowShaderNormal.setParameter("haveTexture", 1.f);
                             } else {
-                                perPixShadowShader.setParameter("haveTexture", 0.f);
+                                perPixShadowShaderNormal.setParameter("haveTexture", 0.f);
                             }
                             vb.clear();
                             vb.setPrimitiveType(m_shadow_normals[i].getAllVertices().getPrimitiveType());
@@ -600,6 +600,7 @@ namespace odfaeg {
                 batcher.clear();
                 normalBatcher.clear();
                 shadowBatcher.clear();
+                normalShadowBatcher.clear();
                 for (unsigned int i = 0; i < vEntities.size(); i++) {
                     if ( vEntities[i]->isLeaf()) {
                         Entity* entity = vEntities[i]->getRootEntity();

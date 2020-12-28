@@ -586,62 +586,154 @@ namespace odfaeg {
                 } else {
                     reflectView = View (squareSize, squareSize, 90, view.getViewport().getPosition().z, view.getViewport().getSize().z);
                 }
-                for (unsigned int n = 0; n < m_reflInstances.size(); n++) {
-                    if (m_reflInstances[n].getAllVertices().getVertexCount() > 0) {
-                        Entity* entity = m_reflInstances[n].getVertexArrays()[0]->getEntity()->getRootEntity();
-                        math::Vec3f scale(1, 1, 1);
-                        if (entity->getSize().x > squareSize) {
-                            scale.x = entity->getSize().x / squareSize;
-                        }
-                        if (entity->getSize().y > squareSize) {
-                            scale.y = entity->getSize().y / squareSize;
-                        }
-                        reflectView.setScale(scale.x, scale.y, scale.z);
-                        reflectView.setCenter(entity->getPosition()+entity->getSize()*0.5f);
-                        for (unsigned int m = 0; m < 6; m++) {
-                            math::Vec3f target = reflectView.getPosition() + dirs[m];
-                            reflectView.lookAt(target.x, target.y, target.z);
-                            /*std::vector<Entity*> visibleReflEntities = World::getEntitiesInRect(reflectView.getViewVolume(), expression);
-                            std::vector<Entity*> vEntities;
-                            for (unsigned int j = 0; j < visibleEntities.size(); j++)  {
-                                if (!visibleEntities[j]->isReflectable()) {
-                                    vEntities.push_back(visibleEntities[j]);
-                                }
+                for (unsigned int t = 0; t < 2; t++) {
+                    std::vector<Instance> instances = (t == 0) ? m_reflInstances : m_reflNormals;
+                    for (unsigned int n = 0; n < instances.size(); n++) {
+                        if (instances[n].getAllVertices().getVertexCount() > 0) {
+                            Entity* entity = instances[n].getVertexArrays()[0]->getEntity()->getRootEntity();
+                            math::Vec3f scale(1, 1, 1);
+                            if (entity->getSize().x > squareSize) {
+                                scale.x = entity->getSize().x / squareSize;
                             }
-                            rvBatcher.clear();
-                            normalRvBatcher.clear();
-                            for (unsigned int j = 0; j < vEntities.size(); j++) {
-                                for (unsigned int n = 0; n < vEntities[j]->getNbFaces(); n++) {
-                                    if (vEntities[j]->getDrawMode() == Entity::INSTANCED) {
-                                        rvBatcher.addFace(vEntities[j]->getFace(n));
-                                    } else {
-                                        normalRvBatcher.addFace(vEntities[j]->getFace(n));
+                            if (entity->getSize().y > squareSize) {
+                                scale.y = entity->getSize().y / squareSize;
+                            }
+                            reflectView.setScale(scale.x, scale.y, scale.z);
+                            reflectView.setCenter(entity->getPosition()+entity->getSize()*0.5f);
+                            for (unsigned int m = 0; m < 6; m++) {
+                                math::Vec3f target = reflectView.getPosition() + dirs[m];
+                                reflectView.lookAt(target.x, target.y, target.z);
+                                /*std::vector<Entity*> visibleReflEntities = World::getEntitiesInRect(reflectView.getViewVolume(), expression);
+                                std::vector<Entity*> vEntities;
+                                for (unsigned int j = 0; j < visibleEntities.size(); j++)  {
+                                    if (!visibleEntities[j]->isReflectable()) {
+                                        vEntities.push_back(visibleEntities[j]);
                                     }
                                 }
+                                rvBatcher.clear();
+                                normalRvBatcher.clear();
+                                for (unsigned int j = 0; j < vEntities.size(); j++) {
+                                    for (unsigned int n = 0; n < vEntities[j]->getNbFaces(); n++) {
+                                        if (vEntities[j]->getDrawMode() == Entity::INSTANCED) {
+                                            rvBatcher.addFace(vEntities[j]->getFace(n));
+                                        } else {
+                                            normalRvBatcher.addFace(vEntities[j]->getFace(n));
+                                        }
+                                    }
+                                }
+                                std::vector<Instance> rvInstances = rvBatcher.getInstances();
+                                std::vector<Instance> rvNormals = normalRvBatcher.getInstances();*/
+                                environmentMap.setView(reflectView);
+                                environmentMap.setActive();
+                                GLuint zero = 0;
+                                glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
+                                glCheck(glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero));
+                                glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0));
+                                glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf));
+                                glCheck(glBindTexture(GL_TEXTURE_2D, headPtrTex));
+                                glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, squareSize, squareSize, GL_RED_INTEGER,
+                                GL_UNSIGNED_INT, NULL));
+                                glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+                                environmentMap.resetGLStates();
+                                environmentMap.selectCubemapFace(m);
+                                viewMatrix = reflectView.getViewMatrix().getMatrix().transpose();
+                                projMatrix = reflectView.getProjMatrix().getMatrix().transpose();
+                                sLinkedList.setParameter("viewMatrix", viewMatrix);
+                                sLinkedList.setParameter("projectionMatrix", projMatrix);
+                                for (unsigned int i = 0; i < m_instances.size(); i++) {
+                                    if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                                        matrices.clear();
+                                        std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
+                                        for (unsigned int j = 0; j < tm.size(); j++) {
+                                            tm[j]->update();
+                                            std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
+                                            for (unsigned int n = 0; n < 16; n++) {
+                                                matrices.push_back(matrix[n]);
+                                            }
+                                        }
+                                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+                                        glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+                                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                                        vb.clear();
+                                        vb.setPrimitiveType(m_instances[i].getVertexArrays()[0]->getPrimitiveType());
+                                        if (m_instances[i].getVertexArrays().size() > 0) {
+                                            for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
+                                                vb.append((*m_instances[i].getVertexArrays()[0])[j]);
+                                            }
+                                            vb.update();
+                                        }
+                                        currentStates.blendMode = sf::BlendNone;
+                                        currentStates.shader = &sLinkedList;
+                                        currentStates.texture =m_instances[i].getMaterial().getTexture();
+                                        if (m_instances[i].getMaterial().getTexture() != nullptr) {
+                                            math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
+                                            sLinkedList.setParameter("textureMatrix", texMatrix);
+                                            sLinkedList.setParameter("haveTexture", 1.f);
+                                        } else {
+                                            sLinkedList.setParameter("haveTexture", 0.f);
+                                        }
+                                        environmentMap.drawInstanced(vb, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
+                                    }
+                                }
+                                viewMatrix = reflectView.getViewMatrix().getMatrix().transpose();
+                                projMatrix = reflectView.getProjMatrix().getMatrix().transpose();
+                                sLinkedListNormal.setParameter("viewMatrix", viewMatrix);
+                                sLinkedListNormal.setParameter("projectionMatrix", projMatrix);
+                                for (unsigned int i = 0; i < m_normals.size(); i++) {
+                                   if (m_normals[i].getAllVertices().getVertexCount() > 0) {
+                                        if (m_normals[i].getMaterial().getTexture() == nullptr) {
+                                            sLinkedListNormal.setParameter("haveTexture", 0.f);
+                                        } else {
+                                            math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
+                                            sLinkedListNormal.setParameter("textureMatrix", texMatrix);
+                                            sLinkedListNormal.setParameter("haveTexture", 1.f);
+                                        }
+                                        currentStates.blendMode = sf::BlendNone;
+                                        currentStates.shader = &sLinkedListNormal;
+                                        currentStates.texture = m_normals[i].getMaterial().getTexture();
+                                        vb.clear();
+                                        vb.setPrimitiveType(m_normals[i].getAllVertices().getPrimitiveType());
+                                        for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
+                                            vb.append(m_normals[i].getAllVertices()[j]);
+                                        }
+                                        vb.update();
+                                        environmentMap.drawVertexBuffer(vb, currentStates);
+                                    }
+                                }
+                                glCheck(glFinish());
+                                glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
+                                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+                                vb2.clear();
+                                vb2.setPrimitiveType(sf::Quads);
+                                Vertex v1 (sf::Vector3f(0, 0, quad.getSize().z));
+                                Vertex v2 (sf::Vector3f(quad.getSize().x,0, quad.getSize().z));
+                                Vertex v3 (sf::Vector3f(quad.getSize().x, quad.getSize().y, quad.getSize().z));
+                                Vertex v4 (sf::Vector3f(0, quad.getSize().y, quad.getSize().z));
+                                vb2.append(v1);
+                                vb2.append(v2);
+                                vb2.append(v3);
+                                vb2.append(v4);
+                                vb2.update();
+                                math::Matrix4f matrix = quad.getTransform().getMatrix().transpose();
+                                sLinkedList2.setParameter("worldMat", matrix);
+                                currentStates.shader = &sLinkedList2;
+                                currentStates.texture = nullptr;
+                                environmentMap.drawVertexBuffer(vb2, currentStates);
+                                glCheck(glFinish());
+                                glCheck(glMemoryBarrier(GL_ALL_BARRIER_BITS));
                             }
-                            std::vector<Instance> rvInstances = rvBatcher.getInstances();
-                            std::vector<Instance> rvNormals = normalRvBatcher.getInstances();*/
-                            environmentMap.setView(reflectView);
-                            environmentMap.setActive();
-                            GLuint zero = 0;
-                            glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
-                            glCheck(glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero));
-                            glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0));
-                            glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf));
-                            glCheck(glBindTexture(GL_TEXTURE_2D, headPtrTex));
-                            glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, squareSize, squareSize, GL_RED_INTEGER,
-                            GL_UNSIGNED_INT, NULL));
-                            glCheck(glBindTexture(GL_TEXTURE_2D, 0));
-                            environmentMap.resetGLStates();
-                            environmentMap.selectCubemapFace(m);
-                            viewMatrix = reflectView.getViewMatrix().getMatrix().transpose();
-                            projMatrix = reflectView.getProjMatrix().getMatrix().transpose();
-                            sLinkedList.setParameter("viewMatrix", viewMatrix);
-                            sLinkedList.setParameter("projectionMatrix", projMatrix);
-                            for (unsigned int i = 0; i < m_instances.size(); i++) {
-                                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                            environmentMap.display();
+                            viewMatrix = view.getViewMatrix().getMatrix().transpose();
+                            projMatrix = view.getProjMatrix().getMatrix().transpose();
+                            sReflectRefract.setParameter("viewMatrix", viewMatrix);
+                            sReflectRefract.setParameter("projectionMatrix", projMatrix);
+                            sReflectRefract.setParameter("cameraPos", view.getPosition().x, view.getPosition().y, view.getPosition().z);
+                            for (unsigned int i = 0; i < m_reflInstances.size(); i++) {
+                                if (m_reflInstances[i].getAllVertices().getVertexCount() > 0) {
+                                    vb.clear();
+                                    vb.setPrimitiveType(m_reflInstances[i].getVertexArrays()[0]->getPrimitiveType());
                                     matrices.clear();
-                                    std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
+                                    std::vector<TransformMatrix*> tm = m_reflInstances[i].getTransforms();
                                     for (unsigned int j = 0; j < tm.size(); j++) {
                                         tm[j]->update();
                                         std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
@@ -652,125 +744,36 @@ namespace odfaeg {
                                     glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
                                     glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
                                     glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                                    vb.clear();
-                                    vb.setPrimitiveType(m_instances[i].getVertexArrays()[0]->getPrimitiveType());
-                                    if (m_instances[i].getVertexArrays().size() > 0) {
-                                        for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
-                                            vb.append((*m_instances[i].getVertexArrays()[0])[j]);
+                                    if (m_reflInstances[i].getVertexArrays().size() > 0) {
+                                        for (unsigned int j = 0; j < m_reflInstances[i].getVertexArrays()[0]->getVertexCount(); j++) {
+                                            vb.append((*m_reflInstances[i].getVertexArrays()[0])[j]);
                                         }
                                         vb.update();
                                     }
                                     currentStates.blendMode = sf::BlendNone;
-                                    currentStates.shader = &sLinkedList;
-                                    currentStates.texture =m_instances[i].getMaterial().getTexture();
-                                    if (m_instances[i].getMaterial().getTexture() != nullptr) {
-                                        math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
-                                        sLinkedList.setParameter("textureMatrix", texMatrix);
-                                        sLinkedList.setParameter("haveTexture", 1.f);
-                                    } else {
-                                        sLinkedList.setParameter("haveTexture", 0.f);
-                                    }
-                                    environmentMap.drawInstanced(vb, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
+                                    currentStates.shader = &sReflectRefract;
+                                    currentStates.texture = &environmentMap.getTexture();
+                                    reflectRefractTex.drawInstanced(vb, m_reflInstances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_reflInstances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
                                 }
                             }
-                            viewMatrix = reflectView.getViewMatrix().getMatrix().transpose();
-                            projMatrix = reflectView.getProjMatrix().getMatrix().transpose();
-                            sLinkedListNormal.setParameter("viewMatrix", viewMatrix);
-                            sLinkedListNormal.setParameter("projectionMatrix", projMatrix);
-                            for (unsigned int i = 0; i < m_normals.size(); i++) {
-                               if (m_normals[i].getAllVertices().getVertexCount() > 0) {
-                                    if (m_normals[i].getMaterial().getTexture() == nullptr) {
-                                        sLinkedListNormal.setParameter("haveTexture", 0.f);
-                                    } else {
-                                        math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
-                                        sLinkedListNormal.setParameter("textureMatrix", texMatrix);
-                                        sLinkedListNormal.setParameter("haveTexture", 1.f);
-                                    }
-                                    currentStates.blendMode = sf::BlendNone;
-                                    currentStates.shader = &sLinkedListNormal;
-                                    currentStates.texture = m_normals[i].getMaterial().getTexture();
+                            viewMatrix = view.getViewMatrix().getMatrix().transpose();
+                            projMatrix = view.getProjMatrix().getMatrix().transpose();
+                            sReflectRefractNormal.setParameter("viewMatrix", viewMatrix);
+                            sReflectRefractNormal.setParameter("projectionMatrix", projMatrix);
+                            sReflectRefractNormal.setParameter("cameraPos", view.getPosition().x, view.getPosition().y, view.getPosition().z);
+                            for (unsigned int i = 0; i < m_reflNormals.size(); i++) {
+                                if (m_reflNormals[i].getAllVertices().getVertexCount() > 0) {
                                     vb.clear();
-                                    vb.setPrimitiveType(m_normals[i].getAllVertices().getPrimitiveType());
-                                    for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
-                                        vb.append(m_normals[i].getAllVertices()[j]);
+                                    vb.setPrimitiveType(m_reflNormals[i].getAllVertices().getPrimitiveType());
+                                    for (unsigned int j = 0; j < m_reflNormals[i].getAllVertices().getVertexCount(); j++) {
+                                        vb.append(m_reflNormals[i].getAllVertices()[j]);
                                     }
                                     vb.update();
-                                    environmentMap.drawVertexBuffer(vb, currentStates);
+                                    currentStates.blendMode = sf::BlendNone;
+                                    currentStates.shader = &sReflectRefractNormal;
+                                    currentStates.texture = &environmentMap.getTexture();
+                                    reflectRefractTex.drawVertexBuffer(vb, currentStates);
                                 }
-                            }
-                            glCheck(glFinish());
-                            glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
-                            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-                            vb2.clear();
-                            vb2.setPrimitiveType(sf::Quads);
-                            Vertex v1 (sf::Vector3f(0, 0, quad.getSize().z));
-                            Vertex v2 (sf::Vector3f(quad.getSize().x,0, quad.getSize().z));
-                            Vertex v3 (sf::Vector3f(quad.getSize().x, quad.getSize().y, quad.getSize().z));
-                            Vertex v4 (sf::Vector3f(0, quad.getSize().y, quad.getSize().z));
-                            vb2.append(v1);
-                            vb2.append(v2);
-                            vb2.append(v3);
-                            vb2.append(v4);
-                            vb2.update();
-                            math::Matrix4f matrix = quad.getTransform().getMatrix().transpose();
-                            sLinkedList2.setParameter("worldMat", matrix);
-                            currentStates.shader = &sLinkedList2;
-                            currentStates.texture = nullptr;
-                            environmentMap.drawVertexBuffer(vb2, currentStates);
-                            glCheck(glFinish());
-                            glCheck(glMemoryBarrier(GL_ALL_BARRIER_BITS));
-                        }
-                        environmentMap.display();
-                        viewMatrix = view.getViewMatrix().getMatrix().transpose();
-                        projMatrix = view.getProjMatrix().getMatrix().transpose();
-                        sReflectRefract.setParameter("viewMatrix", viewMatrix);
-                        sReflectRefract.setParameter("projectionMatrix", projMatrix);
-                        sReflectRefract.setParameter("cameraPos", view.getPosition().x, view.getPosition().y, view.getPosition().z);
-                        for (unsigned int i = 0; i < m_reflInstances.size(); i++) {
-                            if (m_reflInstances[i].getAllVertices().getVertexCount() > 0) {
-                                vb.clear();
-                                vb.setPrimitiveType(m_reflInstances[i].getVertexArrays()[0]->getPrimitiveType());
-                                matrices.clear();
-                                std::vector<TransformMatrix*> tm = m_reflInstances[i].getTransforms();
-                                for (unsigned int j = 0; j < tm.size(); j++) {
-                                    tm[j]->update();
-                                    std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
-                                    for (unsigned int n = 0; n < 16; n++) {
-                                        matrices.push_back(matrix[n]);
-                                    }
-                                }
-                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
-                                glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
-                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                                if (m_reflInstances[i].getVertexArrays().size() > 0) {
-                                    for (unsigned int j = 0; j < m_reflInstances[i].getVertexArrays()[0]->getVertexCount(); j++) {
-                                        vb.append((*m_reflInstances[i].getVertexArrays()[0])[j]);
-                                    }
-                                    vb.update();
-                                }
-                                currentStates.blendMode = sf::BlendNone;
-                                currentStates.shader = &sReflectRefract;
-                                currentStates.texture = &environmentMap.getTexture();
-                                reflectRefractTex.drawInstanced(vb, m_reflInstances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_reflInstances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
-                            }
-                        }
-                        viewMatrix = view.getViewMatrix().getMatrix().transpose();
-                        projMatrix = view.getProjMatrix().getMatrix().transpose();
-                        sReflectRefractNormal.setParameter("viewMatrix", viewMatrix);
-                        sReflectRefractNormal.setParameter("projectionMatrix", projMatrix);
-                        sReflectRefractNormal.setParameter("cameraPos", view.getPosition().x, view.getPosition().y, view.getPosition().z);
-                        for (unsigned int i = 0; i < m_reflNormals.size(); i++) {
-                            if (m_reflNormals[i].getAllVertices().getVertexCount() > 0) {
-                                vb.clear();
-                                vb.setPrimitiveType(m_reflNormals[i].getAllVertices().getPrimitiveType());
-                                for (unsigned int j = 0; j < m_reflNormals[i].getAllVertices().getVertexCount(); j++) {
-                                    vb.append(m_reflNormals[i].getAllVertices()[j]);
-                                }
-                                vb.update();
-                                currentStates.blendMode = sf::BlendNone;
-                                currentStates.shader = &sReflectRefractNormal;
-                                currentStates.texture = &environmentMap.getTexture();
-                                reflectRefractTex.drawVertexBuffer(vb, currentStates);
                             }
                         }
                     }

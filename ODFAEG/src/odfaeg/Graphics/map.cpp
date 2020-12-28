@@ -1216,8 +1216,6 @@ namespace odfaeg {
                         if (visibleEntitiesType[i] != nullptr && found) {
                             BoneAnimation* ba = dynamic_cast<BoneAnimation*>(visibleEntitiesType[i]->getRootEntity());
                             if (ba != nullptr) {
-                                /*if (visibleEntitiesType[i]->getRootEntity()->getType() == "E_HERO")
-                                    std::cout<<"bones indexes : "<<visibleEntitiesType[i]->getBoneIndex()<<std::endl;*/
                                 if (ba->getBoneIndex() == visibleEntitiesType[i]->getBoneIndex()) {
                                     entities.push_back(visibleEntitiesType[i]);
                                 }
