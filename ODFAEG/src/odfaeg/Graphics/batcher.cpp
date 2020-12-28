@@ -26,7 +26,7 @@ namespace odfaeg {
                 return texId;
             }
             bool Material::TextureInfo::operator== (TextureInfo& info) {
-                return texture == info.texture && rect.left == info.rect.left && rect.top == info.rect.top && rect.width == info.rect.width && rect.height == info.rect.height;
+                return texture == info.texture /*&& rect.left == info.rect.left && rect.top == info.rect.top && rect.width == info.rect.width && rect.height == info.rect.height*/;
             }
             bool Material::TextureInfo::operator!= (TextureInfo& info) {
                 return !(*this == info);
