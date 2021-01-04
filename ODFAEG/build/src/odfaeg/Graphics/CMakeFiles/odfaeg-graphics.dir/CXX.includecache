@@ -1310,9 +1310,7 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
 
-C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/batcher.cpp
-../../../include/odfaeg/Graphics/batcher.h
-C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/batcher.h
+C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/entity.cpp
 ../../../include/odfaeg/Graphics/entity.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/entity.h
 

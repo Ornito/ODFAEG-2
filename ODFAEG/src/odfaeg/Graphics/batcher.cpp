@@ -49,6 +49,7 @@ namespace odfaeg {
                 reflectable = false;
                 bumpTexture = nullptr;
                 id = 0;
+                instanceId = 0;
                 materials.push_back(this);
             }
             bool Material::contains(Material material) {
@@ -156,8 +157,12 @@ namespace odfaeg {
                        && bumpTexture == material.bumpTexture
                        && refractionFactor == material.refractionFactor
                        && refractable == material.refractable
-                       && reflectable == material.reflectable;
+                       && reflectable == material.reflectable
+                       && instanceId == material.instanceId;
 
+            }
+            void Material::setInstanceId (unsigned int instanceId) {
+                this->instanceId = instanceId;
             }
             bool Material::operator!= (Material& material) {
                 return !useSameTextures(material) || !hasSameColor(material);

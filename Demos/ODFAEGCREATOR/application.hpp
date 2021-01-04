@@ -100,26 +100,27 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onSelectPointerType(odfaeg::graphic::gui::DropDownList* dp);
     void onSelectedMClassChanged(odfaeg::graphic::gui::DropDownList *dp);
     void onSelectedMFunctionChanged(odfaeg::graphic::gui::DropDownList* dp);
+    void onViewPerspectiveChanged(odfaeg::graphic::gui::DropDownList* dp);
     enum Fonts {
         Serif
     };
     private :
         void convertSlash(std::string& path);
         odfaeg::math::Vec3f getGridCellPos(odfaeg::math::Vec3f pos);
-        const float speed = 10.f;
-        odfaeg::graphic::gui::CheckBox *cbIsPointer;
+        float speed, sensivity;
+        odfaeg::graphic::gui::CheckBox *cbIsPointer, *cbIs3DTerrain;
         odfaeg::graphic::gui::MenuBar* menuBar;
         odfaeg::graphic::gui::Menu *menu1, *menu2, *menu3, *menu4, *menu5;
         odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item14, *item15, *item16, *item17, *item18, *item19, *item21, *item22, *item23, *item31, *item32, *item33,
-        *item34, *item35, *item36, *item37, *item38, *item39, *item310, *item311, *item41, *item42, *item43, *item44, *item45, *item51, *item52;
+        *item34, *item35, *item36, *item37, *item38, *item39, *item310, *item311, *item41, *item42, *item43, *item44, *item45, *item46, *item51, *item52;
         odfaeg::core::ResourceCache<> cache;
         odfaeg::graphic::gui::FileDialog* fdTexturePath, *fdProjectPath;
         odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent, *wNewEntitiesUpdater, *wNewAnimUpdater, *wNewEmitter, *wNewParticleSystemUpdater, *wCreateNewWindow, *wCreateNewObject, *wModifyObject,
-        *wNewScript;
+        *wGenerateTerrain;
         odfaeg::graphic::gui::TextArea* ta, *taComponentExpression, *taComponentLayer, *taEntitiesUpdaterName, *taComponentName, *taAnimUpdaterName, *taPSName, *taEmissionRate,
         *taMinLifeTime, *taMaxLifeTime, *taRCPosX, *taRCPosY, *taRCPosZ, *taRCSizeX, *taRCSizeY, *taRCSizeZ, *taDeflX, *taDeflY, *taDeflZ, *taDeflAngle,
         *taRotMin, *taRotMax, *taTexIndexMin, *taTexIndexMax, *taScaleMinX, *taScaleMinY, *taScaleMinZ, *taScaleMaxX, *taScaleMaxY, *taScaleMaxZ, *taColor1, *taColor2,
-        *taParticleSystemUpdaterName, *taScriptName;
+        *taParticleSystemUpdaterName, *taTileWidth, *taTileHeight, *taZoneXPos, *taZoneYPos, *taZoneZPos, *taZoneWidth, *taZoneHeight, *taZoneDepth;
         odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent, *dpSelectAU, *dpSelectPPType, *dpSelectPSU, *dpSelectClass, *dpSelectFunction, *dpSelectMClass,
         *dpSelectMFunction, *dpSelectPointerType, *dpSelectViewPerspective, *dpScriptBaseClass;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
@@ -146,7 +147,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage, *lParent;
         odfaeg::graphic::gui::TabPane* tabPane;
         odfaeg::graphic::gui::Button* bChooseText, *bAddTexRect, *bCreateComponent, *bCreateScene, *bCreateEntitiesUpdater, *bCreateAppli, *bCreateAnimUpdater, *bCreateEmitter, *bCreateParticleSystemUpdater, *bCreateWindow, *bCreateObject, *bModifyObject,
-        *bCreateNewScript;
+        *bGenerateTerrain;
         odfaeg::graphic::Shape* sTextRect;
         odfaeg::core::StateStack stateStack;
         ODFAEGCreatorStateExecutor se;
@@ -154,7 +155,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::vector<odfaeg::graphic::ConvexShape> cellsPassableShapes;
         std::vector<odfaeg::graphic::RectangleShape> collisionsBox;
         odfaeg::graphic::Map* theMap;
-        int gridWidth, gridHeight;
+        int gridWidth, gridHeight, oldX, oldY;
         RectangularSelection rectSelect;
         std::vector<std::string> emitterParams;
         std::vector<std::string> affectorParams;

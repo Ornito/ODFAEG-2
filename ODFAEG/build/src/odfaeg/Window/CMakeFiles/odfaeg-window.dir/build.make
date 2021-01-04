@@ -347,33 +347,33 @@ odfaeg__window_OBJECTS = \
 # External object files for target odfaeg-window
 odfaeg__window_EXTERNAL_OBJECTS =
 
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/context.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextFactory.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextImpl.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextSettings.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/glResource.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iKeyboard.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iMouse.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/window.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowFactory.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowImpl.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlContextImpl.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlKeyboard.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlMouse.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlWindowImpl.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglContext.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglExtensions.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Keyboard.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Mouse.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Window.cpp.obj
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/build.make
-lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Linking CXX static library ..\..\..\lib\libodfaeg-window-s.a"
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/context.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextFactory.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextImpl.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextSettings.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/glResource.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iKeyboard.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iMouse.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/window.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowFactory.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowImpl.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlContextImpl.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlKeyboard.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlMouse.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlWindowImpl.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglContext.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglExtensions.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Keyboard.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Mouse.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Window.cpp.obj
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/build.make
+lib/libodfaeg-window-s-d.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Linking CXX static library ..\..\..\lib\libodfaeg-window-s-d.a"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && $(CMAKE_COMMAND) -P CMakeFiles\odfaeg-window.dir\cmake_clean_target.cmake
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\odfaeg-window.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/build: lib/libodfaeg-window-s.a
+src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/build: lib/libodfaeg-window-s-d.a
 
 .PHONY : src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/build
 

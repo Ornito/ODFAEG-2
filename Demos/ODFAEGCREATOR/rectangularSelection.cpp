@@ -8,9 +8,10 @@ RectangularSelection::RectangularSelection() {
     selectionRect.setFillColor(sf::Color::Transparent);
     selectionRect.setOutlineColor(sf::Color::Red);
 }
-void RectangularSelection::setRect(int posX, int posY, int width, int height) {
-    selectionRect.setSize(Vec3f(width, height, 0));
-    selectionRect.setPosition(Vec3f(posX, posY, 0));
+void RectangularSelection::setRect(int posX, int posY, int posZ, int width, int height, int depth) {
+    selectionRect.setSize(Vec3f(width, height, depth));
+    selectionRect.setPosition(Vec3f(posX, posY, posZ));
+    //std::cout<<"select rect size : "<<selectionRect.getSize()<<std::endl;
 }
 void RectangularSelection::addItem(Transformable* item) {
     bool contains = false;
@@ -22,7 +23,7 @@ void RectangularSelection::addItem(Transformable* item) {
         items.push_back(item);
 }
 BoundingBox RectangularSelection::getSelectionRect() {
-    BoundingBox rect(selectionRect.getPosition().x, selectionRect.getPosition().y, 0, selectionRect.getSize().x, selectionRect.getSize().y, 0);
+    BoundingBox rect(selectionRect.getPosition().x, selectionRect.getPosition().y, selectionRect.getPosition().z, selectionRect.getSize().x, selectionRect.getSize().y, selectionRect.getSize().z);
     return rect;
 }
 std::vector<Transformable*> RectangularSelection::getItems() {

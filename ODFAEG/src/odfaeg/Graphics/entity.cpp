@@ -42,7 +42,7 @@ namespace odfaeg {
             entity->setSize(getSize());
             entity->setOrigin(getOrigin());
             entity->setRotation(getRotation());
-            entity->parent = (parent == nullptr) ? nullptr : parent->clone();
+            entity->parent = parent;
             entity->entityState = entityState;
             entity->alreadySerialized = false;
             entity->collisionVolume = (collisionVolume == nullptr) ? nullptr : getCollisionVolume()->clone();

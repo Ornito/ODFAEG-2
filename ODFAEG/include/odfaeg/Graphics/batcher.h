@@ -97,11 +97,12 @@ namespace odfaeg {
                     //std::cout<<"mat tex id : "<<texId<<std::endl;
                 }
             };
+            void setInstanceId(unsigned int instanceId);
             std::vector<TextureInfo*> texInfos; /**> The informations about the textures. */
             sf::Color color; /**> the color of the material. */
             float specularIntensity, specularPower, refractionFactor;
             static unsigned int nbMaterials;
-            unsigned int id;
+            unsigned int id, instanceId;
             const Texture* bumpTexture;
             static std::vector<Material*> materials;
             static std::vector<Material*> sameMaterials;

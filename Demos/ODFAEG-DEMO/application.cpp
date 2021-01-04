@@ -147,6 +147,7 @@ namespace sorrok {
         tiles[0]->getFaces()[0]->getMaterial().setTexId("WATER");
         tiles[0]->setReflectable(true);
         tiles[0]->setWater(true);
+        tiles[0]->setDrawMode(Entity::INSTANCED);
         walls[0]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[1]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[2]->getFaces()[0]->getMaterial().setTexId("WALLS");

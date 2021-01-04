@@ -4,7 +4,7 @@
 class RectangularSelection : public odfaeg::graphic::Drawable {
 public :
     RectangularSelection();
-    void setRect(int posX, int posY, int width, int height);
+    void setRect(int posX, int posY, int posZ, int width, int height, int depth);
     void addItem(odfaeg::graphic::Transformable* item);
     odfaeg::physic::BoundingBox getSelectionRect();
     std::vector<odfaeg::graphic::Transformable*> getItems();
