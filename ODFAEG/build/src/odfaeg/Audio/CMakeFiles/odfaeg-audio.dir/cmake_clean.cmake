@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "../../../lib/libodfaeg-audio-s-d.a"
-  "../../../lib/libodfaeg-audio-s-d.pdb"
+  "../../../lib/libodfaeg-audio-s.a"
+  "../../../lib/libodfaeg-audio-s.pdb"
   "CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj"
   "CMakeFiles/odfaeg-audio.dir/player.cpp.obj"
   "CMakeFiles/odfaeg-audio.dir/stream.cpp.obj"

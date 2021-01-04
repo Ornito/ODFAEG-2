@@ -1186,6 +1186,7 @@ namespace odfaeg {
                                     exclude = true;
                             }
                             if (!exclude) {
+                                //std::cout<<"add entity : "<<visibleEntities[i][j]<<std::endl;
                                 BoneAnimation* ba = dynamic_cast<BoneAnimation*>(visibleEntities[i][j]->getRootEntity());
                                 if (ba != nullptr) {
                                     if (ba->getBoneIndex() == visibleEntities[i][j]->getBoneIndex()) {
@@ -1198,6 +1199,7 @@ namespace odfaeg {
                         }
                     }
                 }
+                //std::cout<<"return entities"<<std::endl;
                 return entities;
             }
             vector<string> types = core::split(type, "+");

@@ -853,24 +853,28 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
         View defaultView = window->getDefaultView();
 
         if (isGuiShown) {
-            std::vector<Entity*> tiles = World::getEntities("E_TILE");
+            std::cout<<"get visible tiles : "<<std::endl;
+            std::vector<Entity*> tiles = World::getVisibleEntities("*");
+            std::cout<<"tiles size : "<<tiles.size()<<std::endl;
             glCheck(glEnable(GL_STENCIL_TEST));
             glCheck(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
             glStencilFunc(GL_ALWAYS, 1, 0xFF);
             glStencilMask(0xFF);
             glDisable(GL_ALPHA_TEST);
+            std::cout<<"draw tiles"<<std::endl;
             for (unsigned int i = 0; i < tiles.size(); i++) {
                 Entity* t = tiles[i]->clone();
                 static_cast<Tile*>(t)->setColor(sf::Color::Transparent);
                 window->draw(*t);
+                delete t;
             }
+            std::cout<<"draw borders"<<std::endl;
             glCheck(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
             glCheck(glStencilMask(0x00));
-            glDisable(GL_DEPTH_TEST);
             for (unsigned int i = 0; i < selectionBorders.size(); i++) {
                 window->draw(*selectionBorders[i]);
             }
-
+            std::cout<<"borders drawn"<<std::endl;
             glCheck(glDisable(GL_STENCIL_TEST));
             glEnable(GL_ALPHA_TEST);
             if (tabPane->getSelectedTab() == "Collisions") {
@@ -1190,6 +1194,9 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_RELEASED && event.mouseButton.button == IMouse::Right) {
         if (showRectSelect && !pScriptsFiles->isPointInside(mousePosition)) {
             rectSelect.getItems().clear();
+            for (unsigned int i = 0; i < selectionBorders.size(); i++) {
+                delete selectionBorders[i];
+            }
             selectionBorders.clear();
             BoundingBox box = rectSelect.getSelectionRect();
             Vec3f savedPos = box.getPosition();
@@ -1197,27 +1204,39 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
             pos = getRenderWindow().mapPixelToCoords(Vec3f(pos.x, getRenderWindow().getSize().y-pos.y, 0))+getRenderWindow().getView().getSize()*0.5f;
             rectSelect.setRect(pos.x, pos.y, pos.z, box.getSize().x, box.getSize().y, box.getSize().z);
             if (World::getCurrentEntityManager() != nullptr) {
+                //std::cout<<"select get visible entities"<<std::endl;
                 std::vector<Entity*> entities = World::getVisibleEntities(taSelectExpression->getText());
+                //std::cout<<"visible entities selected get : "<<entities.size()<<std::endl;
                 for (unsigned int i = 0; i < entities.size(); i++) {
                     //std::cout<<"type : "<<entities[i]->getType()<<std::endl<<"select pos : "<<rectSelect.getSelectionRect().getPosition()<<"select size : "<<rectSelect.getSelectionRect().getSize()<<"globalbounds pos : "<<entities[i]->getGlobalBounds().getPosition()<<"globalbounds size : "<<entities[i]->getGlobalBounds().getSize()<<std::endl;
                     if (rectSelect.getSelectionRect().intersects(entities[i]->getGlobalBounds())) {
                         if (dynamic_cast<Tile*>(entities[i])) {
-                            std::cout<<"add tile : "<<i<<std::endl;
+                            //std::cout<<"add tile : "<<i<<std::endl;
                             rectSelect.addItem(entities[i]);
                             Entity* border = entities[i]->clone();
-                            for (unsigned int i = 0; i < border->getNbFaces(); i++) {
-                                border->getFace(i)->getMaterial().clearTextures();
-                                border->getFace(i)->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
-                                VertexArray& va = border->getFace(i)->getVertexArray();
+                            //std::cout<<"add border"<<std::endl;
+                            for (unsigned int f = 0; f < border->getNbFaces(); f++) {
+                                //std::cout<<"clear textures"<<std::endl;
+                                if (border->getFace(f)->getMaterial().getTexture() != nullptr) {
+                                    border->getFace(f)->getMaterial().clearTextures();
+                                    //std::cout<<"add texture"<<std::endl;
+                                    border->getFace(f)->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
+                                }
+                                //std::cout<<"get va"<<std::endl;
+                                VertexArray& va = border->getFace(f)->getVertexArray();
+                                //std::cout<<"change color"<<std::endl;
                                 for (unsigned int j = 0; j < va.getVertexCount(); j++) {
                                     va[j].color = sf::Color::Cyan;
                                 }
+                                //std::cout<<"color changed"<<std::endl;
                             }
                             border->setScale(Vec3f(1.1f, 1.1f, 1.0f));
                             selectionBorders.push_back(border);
+                            //std::cout<<"border added"<<std::endl;
                         }
                     }
                 }
+                //std::cout<<"visible entities selected"<<std::endl;
             }
             for (unsigned int i = 0; i < shapes.size(); i++) {
                 if (rectSelect.getSelectionRect().intersects(shapes[i]->getGlobalBounds())) {
@@ -4779,6 +4798,7 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                     //updateScriptText(static_cast<Shape*>(selectedObject), text);
                 }
                 if (dynamic_cast<Tile*>(selectedObject)) {
+                    std::cout<<"add texture"<<std::endl;
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().clearTextures();
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().addTexture(text, sf::IntRect(0, 0, text->getSize().x, text->getSize().y));
                     static_cast<Tile*>(selectedObject)->getFace(0)->getMaterial().setTexId(alias[0]);
@@ -4838,6 +4858,7 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                 static_cast<Shape*>(rectSelect.getItems()[i])->setTexture(text);
             }
             if (dynamic_cast<Tile*>(rectSelect.getItems()[i])) {
+                std::cout<<"add texture"<<std::endl;
                 static_cast<Tile*>(rectSelect.getItems()[i])->getFace(0)->getMaterial().clearTextures();
                 static_cast<Tile*>(rectSelect.getItems()[i])->getFace(0)->getMaterial().addTexture(text, sf::IntRect(0, 0, text->getSize().x, text->getSize().y));
             }

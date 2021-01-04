@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "../../../lib/libodfaeg-network-s-d.a"
-  "../../../lib/libodfaeg-network-s-d.pdb"
+  "../../../lib/libodfaeg-network-s.a"
+  "../../../lib/libodfaeg-network-s.pdb"
   "CMakeFiles/odfaeg-network.dir/aes.cpp.obj"
   "CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.obj"
   "CMakeFiles/odfaeg-network.dir/client.cpp.obj"
