@@ -54,7 +54,7 @@ namespace odfaeg
             *  \return true if the window::IEvent is in the events stack, false otherwise.
             */
             Command (const Command& other);
-            bool containsEvent (window::IEvent &event);
+            //bool containsEvent (window::IEvent &event);
             /** \fn bool isTriggered()
             *   \brief return true if the command is triggered.
             *   \return true if command is triggered, false otherwise.
@@ -68,17 +68,17 @@ namespace odfaeg
             /** \fn void clearEventsStack ()
             *   \brief clear all the window::IEvents in the events stack.
             */
-            static void clearEventsStack ();
+            void clearEventsStack ();
             /** \fn void pushEvent (window::IEvent& event)
             *   \brief store all the incoming window::IEvents which are triggered.
             *   \param the triggered window::IEvent.
             */
-            static void pushEvent (window::IEvent& event);
+            void pushEvent (window::IEvent& event);
             /** \fn void getEvents()
             *   \brief return all sfml events which are generated since the last event loop.
             *   \return the sfml event which are generated since the last loop.
             */
-            static std::vector<window::IEvent> getEvents();
+            //static std::vector<window::IEvent> getEvents();
 
             /** \fn void operator()()
             *   \brief call the slot function linked to command.
@@ -88,7 +88,7 @@ namespace odfaeg
             * \brief remove an window::IEvent from the stack.
             *  \param window::IEvent event : the sfml event to remove from the stack.
             */
-            static void removeEvent(window::IEvent& event);
+            void removeEvent(window::IEvent& event);
             template <typename... A>
             void setSigParams(A&&... args);
             template <typename... A>
@@ -122,7 +122,7 @@ namespace odfaeg
             /** < the trigger mapped to the command.*/
             std::unique_ptr<FastDelegate<bool>> trigger;
             /** < the SFML events generated.*/
-            static std::vector<window::IEvent> events;
+            //static std::vector<window::IEvent> events;
             std::string name;
 
         };

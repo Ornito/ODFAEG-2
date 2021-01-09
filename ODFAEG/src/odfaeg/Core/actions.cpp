@@ -160,7 +160,7 @@ namespace odfaeg {
                 /*else if (type == JOYSTICK_BUTTON_HELD_DOWN)
                     return sf::Joystick::isButtonPressed(startEvent.joystickButton.button);*/
 
-                vector<window::IEvent> events = Command::getEvents();
+                //vector<window::IEvent> events = Command::getEvents();
                 for (unsigned int i = 0; i < events.size(); i++) {
                     /*if (type == KEY_HELD_DOWN || type == MOUSE_BUTTON_HELD_DOWN) {
                         if (!is_not)
@@ -256,6 +256,30 @@ namespace odfaeg {
                 rightChild = std::make_unique<Action>(*other.rightChild);
             }
             return *this;
+        }
+        void Action::pushEvent(window::IEvent& event) {
+            std::vector<window::IEvent>::iterator it;
+            bool containsEvent = false;
+            for (it = events.begin(); it != events.end(); it++)
+            {
+                if (Command::equalEvent(event, *it))
+                    containsEvent = true;
+            }
+            if (!containsEvent) {
+                events.push_back(event);
+            }
+        }
+        void Action::clearEvents() {
+            events.clear();
+        }
+        void Action::removeEvent(window::IEvent& event) {
+            std::vector<window::IEvent>::iterator it;
+            for (it = events.begin(); it != events.end();) {
+                if (Command::equalEvent(*it, event))
+                    it = events.erase(it);
+                else
+                    it++;
+            }
         }
     }
 }

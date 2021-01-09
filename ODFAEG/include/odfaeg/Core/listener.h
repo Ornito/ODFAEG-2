@@ -97,7 +97,7 @@ namespace odfaeg {
                  std::map<std::string, Command>::iterator it;
                  for (it = commands.begin(); it != commands.end(); it++) {
                     if(it->second.containsBufferEvent(event)) {
-                        Command::pushEvent(event);
+                        it->second.pushEvent(event);
                     }
                     Action* action = it->second.getAction();
                     if(action != nullptr) {
@@ -123,8 +123,8 @@ namespace odfaeg {
                  }
                  toAdd.clear();
                  for (it = commands.begin(); it != commands.end(); it++) {
-                    if (name == "TANAMELISTENER" && it->first == "CTEXTENTERED")
-                        it->second.setName("TANAMECTEXTENTERED");
+                    /*if (name == "TANAMELISTENER" && it->first == "CTEXTENTERED")
+                        it->second.setName("TANAMECTEXTENTERED");*/
                     if (it->second.isTriggered()) {
 
                         (it->second)();
@@ -132,6 +132,7 @@ namespace odfaeg {
                             break;
                         }
                     }
+                    it->second.clearEventsStack();
                     /*Action* action = it->second.getAction();
                     if (action != nullptr) {
                         std::vector<window::IEvent> events;

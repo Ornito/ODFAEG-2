@@ -2,7 +2,7 @@
 namespace odfaeg {
     namespace core {
         std::string Command::sname = "";
-        std::vector<window::IEvent> Command::events = std::vector<window::IEvent> ();
+        //std::vector<window::IEvent> Command::events = std::vector<window::IEvent> ();
 
         Command::Command (Action action, FastDelegate<void> slot) : slot(slot)
         {
@@ -26,7 +26,7 @@ namespace odfaeg {
                trigger = std::make_unique<FastDelegate<bool>>(*other.trigger);
             name = other.name;
         }
-        bool Command::containsEvent (window::IEvent &event)
+        /*bool Command::containsEvent (window::IEvent &event)
         {
             std::vector<window::IEvent>::iterator it;
             for (it = events.begin(); it != events.end(); it++)
@@ -35,7 +35,7 @@ namespace odfaeg {
                     return true;
             }
             return false;
-        }
+        }*/
 
         bool Command::isTriggered()
         {
@@ -62,16 +62,21 @@ namespace odfaeg {
 
         void Command::clearEventsStack ()
         {
-            if (sname == "EXTERNAL")
+            if (action != nullptr)
+                action->clearEvents();
+            /*if (sname == "EXTERNAL")
                 std::cout<<"clear event stack"<<std::endl;
-            events.clear();
+            events.clear();*/
+
         }
 
         void Command::pushEvent (window::IEvent& event)
         {
+            if (action != nullptr)
+                action->pushEvent(event);
             /*if (sname == "EXTERNAL")
                 std::cout<<"push event"<<std::endl;*/
-            std::vector<window::IEvent>::iterator it;
+            /*std::vector<window::IEvent>::iterator it;
             bool containsEvent = false;
             for (it = events.begin(); it != events.end(); it++)
             {
@@ -80,15 +85,15 @@ namespace odfaeg {
             }
             if (!containsEvent) {
                 events.push_back(event);
-            }
+            }*/
         }
         Action* Command::getAction() {
             return action.get();
         }
-        std::vector<window::IEvent> Command::getEvents()
+        /*std::vector<window::IEvent> Command::getEvents()
         {
             return events;
-        }
+        }*/
 
 
         void Command::operator()()
@@ -97,13 +102,15 @@ namespace odfaeg {
         }
 
         void Command::removeEvent(window::IEvent& event) {
-            std::vector<window::IEvent>::iterator it;
+            /*std::vector<window::IEvent>::iterator it;
             for (it = events.begin(); it != events.end();) {
                 if (equalEvent(*it, event))
                     it = events.erase(it);
                 else
                     it++;
-            }
+            }*/
+            if (action != nullptr)
+                action->removeEvent(event);
         }
         bool Command::equalEvent (window::IEvent event, window::IEvent other) {
             if (event.type != other.type) {

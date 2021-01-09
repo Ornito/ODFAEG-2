@@ -133,9 +133,9 @@ namespace odfaeg {
                        listener->processEvents();
                     }
                     componentManager->updateComponents();
-                    if (name == "EXTERNAL")
+                    /*if (name == "EXTERNAL")
                         std::cout<<"appli clear event stack"<<std::endl;
-                    Command::clearEventsStack();
+                    Command::clearEventsStack();*/
                     componentManager->drawRenderComponents();
                     onDisplay(windows[0].first);
                     componentManager->drawGuiComponents();
