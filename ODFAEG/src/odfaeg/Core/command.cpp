@@ -1,6 +1,7 @@
 #include "../../../include/odfaeg/Core/command.h"
 namespace odfaeg {
     namespace core {
+        std::string Command::sname = "";
         std::vector<window::IEvent> Command::events = std::vector<window::IEvent> ();
 
         Command::Command (Action action, FastDelegate<void> slot) : slot(slot)
@@ -38,6 +39,8 @@ namespace odfaeg {
 
         bool Command::isTriggered()
         {
+            if (name == "TANAMECTEXTENTERED")
+                action->name = "ANAMECTEXTENTERED";
             if (trigger == nullptr && action != nullptr)
             {
                 return action->isTriggered();
@@ -59,11 +62,15 @@ namespace odfaeg {
 
         void Command::clearEventsStack ()
         {
+            if (sname == "EXTERNAL")
+                std::cout<<"clear event stack"<<std::endl;
             events.clear();
         }
 
         void Command::pushEvent (window::IEvent& event)
         {
+            /*if (sname == "EXTERNAL")
+                std::cout<<"push event"<<std::endl;*/
             std::vector<window::IEvent>::iterator it;
             bool containsEvent = false;
             for (it = events.begin(); it != events.end(); it++)

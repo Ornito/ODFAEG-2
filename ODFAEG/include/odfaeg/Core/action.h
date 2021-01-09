@@ -32,6 +32,7 @@ namespace odfaeg {
           */
         class ODFAEG_CORE_API Action {
             public :
+            std::string name;
             /** \enum EVENT_TYPE
             *   \brief the types of the events witch are linked to actions.
             *   COMBINED_WITH_OR, COMBINED_WITH_X_OR AND COMBINED_WITH_AND define a combination of actions.

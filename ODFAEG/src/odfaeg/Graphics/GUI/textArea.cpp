@@ -166,6 +166,9 @@ namespace odfaeg {
                 }
             }
             void TextArea::onTextEntered(char caracter) {
+                if (getName() == "TANAME") {
+                    getListener().name = "TANAMELISTENER";
+                }
                 if (tmp_text.getSize() > 0 && currentIndex-1 >= 0 && caracter == 8) {
                     currentIndex--;
                     tmp_text.erase(currentIndex, 1);

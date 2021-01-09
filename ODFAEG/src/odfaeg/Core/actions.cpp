@@ -169,6 +169,8 @@ namespace odfaeg {
                             return !Command::equalEvent(events[i], startEvent);
                     } else {*/
                         /*Sometimes the event stored to startEvent is deleted*/
+                        /*if (name == "ANAMECTEXTENTERED" && events[i].type == window::IEvent::EventType::TEXT_INPUT_EVENT)
+                            std::cout<<"text input event ta name"<<std::endl;*/
                         if (!is_not && Command::equalEvent(events[i], startEvent) && !pressed) {
                             if (events[i].type == window::IEvent::KEYBOARD_EVENT && events[i].keyboard.type == window::IEvent::KEY_EVENT_PRESSED
                                 && startEvent.type == window::IEvent::KEYBOARD_EVENT && startEvent.keyboard.type == window::IEvent::KEY_EVENT_PRESSED

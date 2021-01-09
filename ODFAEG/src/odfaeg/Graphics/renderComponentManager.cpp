@@ -141,7 +141,7 @@ namespace odfaeg {
                    it->second->recomputeSize();
                }
            }
-           core::Command::clearEventsStack();
+           //core::Command::clearEventsStack();
         }
         RenderComponentManager::~RenderComponentManager() {
            /*std::multimap<int, Component*, std::greater<int>>::iterator it;

@@ -853,28 +853,30 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
         View defaultView = window->getDefaultView();
 
         if (isGuiShown) {
-            std::cout<<"get visible tiles : "<<std::endl;
-            std::vector<Entity*> tiles = World::getVisibleEntities("*");
-            std::cout<<"tiles size : "<<tiles.size()<<std::endl;
+            //std::cout<<"get visible tiles : "<<std::endl;
+            std::vector<Transformable*> tiles = rectSelect.getItems();
+            //std::cout<<"tiles size : "<<tiles.size()<<std::endl;
             glCheck(glEnable(GL_STENCIL_TEST));
             glCheck(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
             glStencilFunc(GL_ALWAYS, 1, 0xFF);
             glStencilMask(0xFF);
             glDisable(GL_ALPHA_TEST);
-            std::cout<<"draw tiles"<<std::endl;
+            //std::cout<<"draw tiles"<<std::endl;
             for (unsigned int i = 0; i < tiles.size(); i++) {
-                Entity* t = tiles[i]->clone();
-                static_cast<Tile*>(t)->setColor(sf::Color::Transparent);
-                window->draw(*t);
-                delete t;
+                if (dynamic_cast<Entity*>(tiles[i])) {
+                    Entity* t = static_cast<Entity*>(tiles[i])->clone();
+                    static_cast<Tile*>(t)->setColor(sf::Color::Transparent);
+                    window->draw(*t);
+                    delete t;
+                }
             }
-            std::cout<<"draw borders"<<std::endl;
+            //std::cout<<"draw borders"<<std::endl;
             glCheck(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
             glCheck(glStencilMask(0x00));
             for (unsigned int i = 0; i < selectionBorders.size(); i++) {
                 window->draw(*selectionBorders[i]);
             }
-            std::cout<<"borders drawn"<<std::endl;
+            //std::cout<<"borders drawn"<<std::endl;
             glCheck(glDisable(GL_STENCIL_TEST));
             glEnable(GL_ALPHA_TEST);
             if (tabPane->getSelectedTab() == "Collisions") {
@@ -915,7 +917,7 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
                 }
                 window->setView(currentView);
                 for (unsigned int i = 0; i < collisionsBox.size(); i++) {
-                    std::cout<<"draw collision rect!"<<std::endl;
+                    //std::cout<<"draw collision rect!"<<std::endl;
                     window->draw(collisionsBox[i]);
                 }
             }
@@ -2472,7 +2474,9 @@ void ODFAEGCreator::updateNb(std::string name, unsigned int nb) {
     nbs.insert(std::make_pair(name, nb));
 }
 void ODFAEGCreator::addExternalEntity(Entity* entity) {
-    std::cout<<"add entity"<<std::endl;
+    //std::cout<<"add entity"<<std::endl;
+    Command::sname = "EXTERNAL";
+    name = "EXTERNAL";
     entity->setExternal(true);
     selectedObject=entity;
     displayTransformInfos(entity);
@@ -3337,6 +3341,7 @@ void ODFAEGCreator::displayEntityInfos(Entity* tile) {
     taName = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",getRenderWindow());
     taName->setTextSize(15);
     taName->setParent(pInfos);
+    taName->setName("TANAME");
     nameNode->addOtherComponent(taName, Vec2f(0.75, 0.025));
     pInfos->addChild(taName);
     Command cmdName (FastDelegate<bool>(&TextArea::isTextChanged, taName), FastDelegate<void>(&ODFAEGCreator::onObjectNameChanged, this,taName));

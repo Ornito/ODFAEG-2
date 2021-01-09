@@ -30,6 +30,7 @@ namespace odfaeg {
             * \fn Listener()
             * \brief constructor.
             */
+             std::string name;
              Listener() : removeListener(false) {
              }
              /**
@@ -122,8 +123,8 @@ namespace odfaeg {
                  }
                  toAdd.clear();
                  for (it = commands.begin(); it != commands.end(); it++) {
-                    /*if (it->first.find("FUNCTIONCHANGED") != std::string::npos)
-                            std::cout<<"function"<<std::endl;*/
+                    if (name == "TANAMELISTENER" && it->first == "CTEXTENTERED")
+                        it->second.setName("TANAMECTEXTENTERED");
                     if (it->second.isTriggered()) {
 
                         (it->second)();

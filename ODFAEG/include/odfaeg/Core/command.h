@@ -105,6 +105,7 @@ namespace odfaeg
             Command& operator= (const Command& other);
             static bool equalEvent (window::IEvent event, window::IEvent other);
             void setName(std::string name);
+            static std::string sname;
         private :
 
             /** \fn bool equalEvent (window::IEvent event, window::IEvent other)
@@ -123,6 +124,7 @@ namespace odfaeg
             /** < the SFML events generated.*/
             static std::vector<window::IEvent> events;
             std::string name;
+
         };
     }
 }

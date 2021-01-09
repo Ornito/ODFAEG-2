@@ -27,6 +27,7 @@ namespace odfaeg {
         */
         class ODFAEG_API_EXPORT Application {
         public :
+            std::string name;
             /** \fn Application(sf::VideoMode, std::string title, int nbComponents, bool depthDepth, sf::Uint32 style, sf::ContetSettings settings)
             *   \brief create a graphic odfaeg application.
             *   \param sf::VideoMode : the video mode. (the size of the window)
@@ -132,6 +133,9 @@ namespace odfaeg {
                        listener->processEvents();
                     }
                     componentManager->updateComponents();
+                    if (name == "EXTERNAL")
+                        std::cout<<"appli clear event stack"<<std::endl;
+                    Command::clearEventsStack();
                     componentManager->drawRenderComponents();
                     onDisplay(windows[0].first);
                     componentManager->drawGuiComponents();
