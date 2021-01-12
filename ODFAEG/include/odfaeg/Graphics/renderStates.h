@@ -54,7 +54,7 @@
 ////////////////////////////////////////////////////////////
 #ifndef ODFAEG_RENDER_STATES_HPP
 #define ODFAEG_RENDER_STATES_HPP
-#include "transformMatrix.h"
+#include "../Math/transformMatrix.h"
 #include <SFML/Graphics/BlendMode.hpp>
 #include "texture.h"
 #include "shader.h"

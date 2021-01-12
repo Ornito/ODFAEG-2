@@ -1,7 +1,7 @@
 #include "../../../include/odfaeg/Graphics/perPixelLinkedListRenderComponent.hpp"
 #include "glCheck.h"
 #include "../../../include/odfaeg/Physics/particuleSystem.h"
-#include "../../../include/odfaeg/Core/application.h"
+#include "../../../include/odfaeg/Graphics/application.h"
 namespace odfaeg {
     namespace graphic {
         PerPixelLinkedListRenderComponent::PerPixelLinkedListRenderComponent(RenderWindow& window, int layer, std::string expression, window::ContextSettings settings) :

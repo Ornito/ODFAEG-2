@@ -8,6 +8,7 @@ src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj
  ../extlibs/headers/SFML/System/InputStream.hpp
  ../extlibs/headers/SFML/System/NonCopyable.hpp
  ../extlibs/headers/SFML/System/Time.hpp
+ ../extlibs/headers/sndfile.h
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Audio/SoundFile.cpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Audio/SoundFile.hpp
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/player.cpp.obj
@@ -101,6 +102,7 @@ src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.obj
  ../extlibs/headers/SFML/System/Vector2.inl
  ../extlibs/headers/SFML/System/Vector3.hpp
  ../extlibs/headers/SFML/System/Vector3.inl
+ ../extlibs/headers/sndfile.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Audio/stream.h
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Audio/SoundFile.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Audio/stream.cpp

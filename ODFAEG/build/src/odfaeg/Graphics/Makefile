@@ -872,6 +872,33 @@ animation.cpp.s:
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/animation.cpp.s
 .PHONY : animation.cpp.s
 
+application.obj: application.cpp.obj
+
+.PHONY : application.obj
+
+# target to build an object file
+application.cpp.obj:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/application.cpp.obj
+.PHONY : application.cpp.obj
+
+application.i: application.cpp.i
+
+.PHONY : application.i
+
+# target to preprocess a source file
+application.cpp.i:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/application.cpp.i
+.PHONY : application.cpp.i
+
+application.s: application.cpp.s
+
+.PHONY : application.s
+
+# target to generate assembly for a file
+application.cpp.s:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/application.cpp.s
+.PHONY : application.cpp.s
+
 baseChangementMatrix.obj: baseChangementMatrix.cpp.obj
 
 .PHONY : baseChangementMatrix.obj
@@ -1979,33 +2006,6 @@ tile.cpp.s:
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/tile.cpp.s
 .PHONY : tile.cpp.s
 
-transformMatrix.obj: transformMatrix.cpp.obj
-
-.PHONY : transformMatrix.obj
-
-# target to build an object file
-transformMatrix.cpp.obj:
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.obj
-.PHONY : transformMatrix.cpp.obj
-
-transformMatrix.i: transformMatrix.cpp.i
-
-.PHONY : transformMatrix.i
-
-# target to preprocess a source file
-transformMatrix.cpp.i:
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.i
-.PHONY : transformMatrix.cpp.i
-
-transformMatrix.s: transformMatrix.cpp.s
-
-.PHONY : transformMatrix.s
-
-# target to generate assembly for a file
-transformMatrix.cpp.s:
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Graphics\CMakeFiles\odfaeg-graphics.dir\build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.s
-.PHONY : transformMatrix.cpp.s
-
 vbo.obj: vbo.cpp.obj
 
 .PHONY : vbo.obj
@@ -2313,6 +2313,9 @@ help:
 	@echo ... animation.obj
 	@echo ... animation.i
 	@echo ... animation.s
+	@echo ... application.obj
+	@echo ... application.i
+	@echo ... application.s
 	@echo ... baseChangementMatrix.obj
 	@echo ... baseChangementMatrix.i
 	@echo ... baseChangementMatrix.s
@@ -2436,9 +2439,6 @@ help:
 	@echo ... tile.obj
 	@echo ... tile.i
 	@echo ... tile.s
-	@echo ... transformMatrix.obj
-	@echo ... transformMatrix.i
-	@echo ... transformMatrix.s
 	@echo ... vbo.obj
 	@echo ... vbo.i
 	@echo ... vbo.s

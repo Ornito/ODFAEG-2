@@ -386,6 +386,33 @@ ray.cpp.s:
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Math\CMakeFiles\odfaeg-math.dir\build.make src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/ray.cpp.s
 .PHONY : ray.cpp.s
 
+transformMatrix.obj: transformMatrix.cpp.obj
+
+.PHONY : transformMatrix.obj
+
+# target to build an object file
+transformMatrix.cpp.obj:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Math\CMakeFiles\odfaeg-math.dir\build.make src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/transformMatrix.cpp.obj
+.PHONY : transformMatrix.cpp.obj
+
+transformMatrix.i: transformMatrix.cpp.i
+
+.PHONY : transformMatrix.i
+
+# target to preprocess a source file
+transformMatrix.cpp.i:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Math\CMakeFiles\odfaeg-math.dir\build.make src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/transformMatrix.cpp.i
+.PHONY : transformMatrix.cpp.i
+
+transformMatrix.s: transformMatrix.cpp.s
+
+.PHONY : transformMatrix.s
+
+# target to generate assembly for a file
+transformMatrix.cpp.s:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Math\CMakeFiles\odfaeg-math.dir\build.make src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/transformMatrix.cpp.s
+.PHONY : transformMatrix.cpp.s
+
 vec2.obj: vec2.cpp.obj
 
 .PHONY : vec2.obj
@@ -477,6 +504,9 @@ help:
 	@echo ... ray.obj
 	@echo ... ray.i
 	@echo ... ray.s
+	@echo ... transformMatrix.obj
+	@echo ... transformMatrix.i
+	@echo ... transformMatrix.s
 	@echo ... vec2.obj
 	@echo ... vec2.i
 	@echo ... vec2.s

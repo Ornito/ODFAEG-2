@@ -37,7 +37,7 @@
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Vector3.hpp>
-#include "transformMatrix.h"
+#include "../Math/transformMatrix.h"
 #include <map>
 #include <string>
 #include "../../../include/odfaeg/Graphics/export.hpp"

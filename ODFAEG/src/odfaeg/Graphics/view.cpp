@@ -1,6 +1,5 @@
 #include "../../../include/odfaeg/Graphics/view.h"
 
-#include "../../../include/odfaeg/Graphics/entity.h"
 #include <SFML/OpenGL.hpp>
 namespace odfaeg {
     namespace graphic {

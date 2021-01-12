@@ -48,7 +48,7 @@ namespace odfaeg {
                     if (odfaeg::core::Application::app != nullptr)
                         particleSystems[i]->update(odfaeg::core::Application::app->getClock("LoopTime").getElapsedTime());
                 }
-                World::changeVisibleEntity(nullptr, nullptr);
+                //World::changeVisibleEntity(nullptr, nullptr);
             }
         private :
             std::vector<physic::ParticleSystem*> particleSystems;

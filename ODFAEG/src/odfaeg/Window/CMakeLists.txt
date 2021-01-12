@@ -4,6 +4,12 @@ set(INCROOT ${PROJECT_SOURCE_DIR}/include/odfaeg/Window)
 set(SRCROOT ${PROJECT_SOURCE_DIR}/src/odfaeg/Window)
 
 set(SRC_WINDOW
+	${INCROOT}/action.h
+	${SRCROOT}/actions.cpp
+	${INCROOT}/command.h
+	${INCROOT}/command.tpp
+	${INCROOT}/listener.h
+	${SRCROOT}/command.cpp
 	${INCROOT}/context.hpp
 	${INCROOT}/contextFactory.hpp
 	${INCROOT}/contextImpl.hpp

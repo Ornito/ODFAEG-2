@@ -1,6 +1,6 @@
 #include "../../../../include/odfaeg/Graphics/2D/ponctualLight.h"
 
-#include "../../../../include/odfaeg/Graphics/transformMatrix.h"
+#include "../../../../include/odfaeg/Math/transformMatrix.h"
 #include "../../../../include/odfaeg/Physics/boundingPolyhedron.h"
 namespace odfaeg {
     namespace graphic {

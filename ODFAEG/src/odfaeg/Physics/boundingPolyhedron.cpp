@@ -3,7 +3,7 @@
 #include "../../../include/odfaeg/Physics/boundingEllipsoid.h"
 #include "../../../include/odfaeg/Physics/boundingBox.h"
 #include "../../../include/odfaeg/Physics/orientedBoundingBox.h"
-#include "../../../include/odfaeg/Graphics/transformMatrix.h"
+#include "../../../include/odfaeg/Math/transformMatrix.h"
 namespace odfaeg {
     namespace physic {
         BoundingPolyhedron::BoundingPolyhedron() {

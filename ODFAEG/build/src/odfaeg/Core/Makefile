@@ -197,60 +197,6 @@ __/__/__/include/odfaeg/Core/factory.cpp.s:
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/__/__/__/include/odfaeg/Core/factory.cpp.s
 .PHONY : __/__/__/include/odfaeg/Core/factory.cpp.s
 
-actions.obj: actions.cpp.obj
-
-.PHONY : actions.obj
-
-# target to build an object file
-actions.cpp.obj:
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/actions.cpp.obj
-.PHONY : actions.cpp.obj
-
-actions.i: actions.cpp.i
-
-.PHONY : actions.i
-
-# target to preprocess a source file
-actions.cpp.i:
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/actions.cpp.i
-.PHONY : actions.cpp.i
-
-actions.s: actions.cpp.s
-
-.PHONY : actions.s
-
-# target to generate assembly for a file
-actions.cpp.s:
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/actions.cpp.s
-.PHONY : actions.cpp.s
-
-application.obj: application.cpp.obj
-
-.PHONY : application.obj
-
-# target to build an object file
-application.cpp.obj:
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.obj
-.PHONY : application.cpp.obj
-
-application.i: application.cpp.i
-
-.PHONY : application.i
-
-# target to preprocess a source file
-application.cpp.i:
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.i
-.PHONY : application.cpp.i
-
-application.s: application.cpp.s
-
-.PHONY : application.s
-
-# target to generate assembly for a file
-application.cpp.s:
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.s
-.PHONY : application.cpp.s
-
 archive.obj: archive.cpp.obj
 
 .PHONY : archive.obj
@@ -331,33 +277,6 @@ clock.s: clock.cpp.s
 clock.cpp.s:
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/clock.cpp.s
 .PHONY : clock.cpp.s
-
-command.obj: command.cpp.obj
-
-.PHONY : command.obj
-
-# target to build an object file
-command.cpp.obj:
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/command.cpp.obj
-.PHONY : command.cpp.obj
-
-command.i: command.cpp.i
-
-.PHONY : command.i
-
-# target to preprocess a source file
-command.cpp.i:
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/command.cpp.i
-.PHONY : command.cpp.i
-
-command.s: command.cpp.s
-
-.PHONY : command.s
-
-# target to generate assembly for a file
-command.cpp.s:
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Core\CMakeFiles\odfaeg-core.dir\build.make src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/command.cpp.s
-.PHONY : command.cpp.s
 
 constructor.obj: constructor.cpp.obj
 
@@ -618,12 +537,6 @@ help:
 	@echo ... __/__/__/include/odfaeg/Core/factory.obj
 	@echo ... __/__/__/include/odfaeg/Core/factory.i
 	@echo ... __/__/__/include/odfaeg/Core/factory.s
-	@echo ... actions.obj
-	@echo ... actions.i
-	@echo ... actions.s
-	@echo ... application.obj
-	@echo ... application.i
-	@echo ... application.s
 	@echo ... archive.obj
 	@echo ... archive.i
 	@echo ... archive.s
@@ -633,9 +546,6 @@ help:
 	@echo ... clock.obj
 	@echo ... clock.i
 	@echo ... clock.s
-	@echo ... command.obj
-	@echo ... command.i
-	@echo ... command.s
 	@echo ... constructor.obj
 	@echo ... constructor.i
 	@echo ... constructor.s

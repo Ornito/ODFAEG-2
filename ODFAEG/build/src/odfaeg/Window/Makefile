@@ -413,6 +413,60 @@ Windows/win32Window.cpp.s:
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Window.cpp.s
 .PHONY : Windows/win32Window.cpp.s
 
+actions.obj: actions.cpp.obj
+
+.PHONY : actions.obj
+
+# target to build an object file
+actions.cpp.obj:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/actions.cpp.obj
+.PHONY : actions.cpp.obj
+
+actions.i: actions.cpp.i
+
+.PHONY : actions.i
+
+# target to preprocess a source file
+actions.cpp.i:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/actions.cpp.i
+.PHONY : actions.cpp.i
+
+actions.s: actions.cpp.s
+
+.PHONY : actions.s
+
+# target to generate assembly for a file
+actions.cpp.s:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/actions.cpp.s
+.PHONY : actions.cpp.s
+
+command.obj: command.cpp.obj
+
+.PHONY : command.obj
+
+# target to build an object file
+command.cpp.obj:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/command.cpp.obj
+.PHONY : command.cpp.obj
+
+command.i: command.cpp.i
+
+.PHONY : command.i
+
+# target to preprocess a source file
+command.cpp.i:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/command.cpp.i
+.PHONY : command.cpp.i
+
+command.s: command.cpp.s
+
+.PHONY : command.s
+
+# target to generate assembly for a file
+command.cpp.s:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/command.cpp.s
+.PHONY : command.cpp.s
+
 context.obj: context.cpp.obj
 
 .PHONY : context.obj
@@ -723,6 +777,12 @@ help:
 	@echo ... Windows/win32Window.obj
 	@echo ... Windows/win32Window.i
 	@echo ... Windows/win32Window.s
+	@echo ... actions.obj
+	@echo ... actions.i
+	@echo ... actions.s
+	@echo ... command.obj
+	@echo ... command.i
+	@echo ... command.s
 	@echo ... context.obj
 	@echo ... context.i
 	@echo ... context.s

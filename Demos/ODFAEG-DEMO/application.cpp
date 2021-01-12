@@ -73,7 +73,7 @@ namespace sorrok {
         //std::cout<<mouse.x<<" "<<mouse.y<<std::endl;
         point.clear();
         point.append(Vertex(sf::Vector3f(finalPos.x, finalPos.y, finalPos.y), sf::Color(255, 0, 0)));
-        std::vector<Vec2f> path = World::getPath(caracter, finalPos);
+        std::vector<Vec2f> path = getWorld()->getPath(caracter, finalPos);
         if (path.size() > 0) {
             caracter->setPath(path);
             caracter->setIsMovingFromKeyboard(false);
@@ -126,16 +126,16 @@ namespace sorrok {
         BaseChangementMatrix bm;
         bm.set2DIsoMatrix();
         theMap->setBaseChangementMatrix(bm);
-        World::addEntityManager(theMap);
-        World::setCurrentEntityManager("Map test");
+        getWorld()->addEntityManager(theMap);
+        getWorld()->setCurrentEntityManager("Map test");
         eu = new EntitiesUpdater();
         eu->setName("EntitiesUpdater");
-        World::addWorker(eu);
+        getWorld()->addWorker(eu);
         au = new AnimUpdater();
         au->setInterval(sf::seconds(0.01f));
-        World::addTimer(au);
+        getWorld()->addTimer(au);
         psu = new ParticleSystemUpdater();
-        World::addWorker(psu);
+        getWorld()->addWorker(psu);
         tiles.push_back(new Tile(tm.getResourceByAlias("WATER"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
         //tiles.push_back(new Tile(tm.getResourceByAlias("GRASS"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 0, 100, 100)));
@@ -208,7 +208,7 @@ namespace sorrok {
             std::cout<<"not read serialisation file"<<std::endl;
             BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
             std::cout<<"generate map"<<std::endl;
-            World::generate_map(tiles, walls, Vec2f(100, 50), mapZone, false);
+            getWorld()->generate_map(tiles, walls, Vec2f(100, 50), mapZone, false);
             std::cout<<"map generated"<<std::endl;
             Tile* thouse = new Tile(tm.getResourceByAlias("HOUSE"), Vec3f(0, 0, 0), Vec3f(250, 300, 0), sf::IntRect(0, 0, 250, 300));
             thouse->setLayer(1);
@@ -223,7 +223,7 @@ namespace sorrok {
             thouse->getFaces()[0]->getMaterial().setSpecularPower(10);
             thouse->getFaces()[0]->getMaterial().setSpecularIntensity(100);
             std::cout<<"add house"<<std::endl;
-            World::addEntity(decor);
+            getWorld()->addEntity(decor);
             Anim* fire = new Anim(0.1f, Vec3f(0, 0, 0), Vec3f(100, 100, 0), 0);
             Tile* tf1 = new Tile(tm.getResourceByAlias("FIRE1"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
             tf1->setLayer(1);
@@ -253,12 +253,12 @@ namespace sorrok {
             fire->setShadowScale(Vec3f(1, -1, 1));
             fire->setShadowCenter(Vec3f(0, 350, -150));
             std::cout<<"add fire"<<std::endl;
-            World::addEntity(fire);
+            getWorld()->addEntity(fire);
             au->addAnim(fire);
             w = new g2d::Wall(walls[3],&g2d::AmbientLight::getAmbientLight());
             w->setPosition(Vec3f(0, 130, 130 + w->getSize().y * 0.5f));
             w->setLayer(1);
-            World::addEntity(w);
+            getWorld()->addEntity(w);
         //}
         ps->setTexture(*tm.getResourceByAlias("PARTICLE"));
         for (unsigned int i = 0; i < 10; i++) {
@@ -278,7 +278,7 @@ namespace sorrok {
         ps->addEmitter(refEmitter(emitter));
         psu->addParticleSystem(ps);
         psu->setName("ParticlesSystemUpdater");
-        World::addEntity(ps);
+        getWorld()->addEntity(ps);
         std::cout<<"particle system"<<std::endl;
         View view = getView();
         //view.rotate(0, 0, 20);
@@ -343,13 +343,13 @@ namespace sorrok {
         //std::cout<<bb2->getPosition()<<" "<<bb2->getSize()<<std::endl;
         g2d::PonctualLight* light1 = new g2d::PonctualLight(Vec3f(-50, 420, 420), 100, 50, 0, 255, sf::Color::Yellow, 16);
         light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 0, 255, sf::Color::Yellow, 16);
-        World::addEntity(light1);
-        World::addEntity(light2);
+        getWorld()->addEntity(light1);
+        getWorld()->addEntity(light2);
         //getView().move(d.x * 0.5f, d.y * 0.5f, 0);
-        World::addEntity(caracter);
+        getWorld()->addEntity(caracter);
 
         //World::computeIntersectionsWithWalls();
-        World::update();
+        getWorld()->update();
         Action a1 (Action::EVENT_TYPE::KEY_PRESSED_ONCE, IKeyboard::Key::Z);
         Action a2 (Action::EVENT_TYPE::KEY_PRESSED_ONCE, IKeyboard::Key::Q);
         Action a3 (Action::EVENT_TYPE::KEY_PRESSED_ONCE, IKeyboard::Key::S);
@@ -376,11 +376,11 @@ namespace sorrok {
     }
     void MyAppli::onRender(RenderComponentManager *cm) {
         // draw everything here...
-        World::drawOnComponents("E_BIGTILE", 0);
-        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PARTICLES", 1);
-        World::drawOnComponents("E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION+E_HERO", 2);
-        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO", 3);
-        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", 4);
+        getWorld()->drawOnComponents("E_BIGTILE", 0);
+        getWorld()->drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PARTICLES", 1);
+        getWorld()->drawOnComponents("E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION+E_HERO", 2);
+        getWorld()->drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO", 3);
+        getWorld()->drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", 4);
 
     }
     void MyAppli::onDisplay(RenderWindow* window) {
@@ -438,7 +438,7 @@ namespace sorrok {
             /*eu->stop();
             au->stop();*/
             pfire.stop();
-            std::vector<Entity*> entities = World::getEntities("E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION");
+            std::vector<Entity*> entities = getWorld()->getEntities("E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION");
             std::ofstream ofs("FichierDeSerialisation");
             OTextArchive oa(ofs);
             oa(entities);
@@ -479,7 +479,7 @@ namespace sorrok {
                 Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
                 Vec3f newPos = actualPos +  Vec3f(caracter->getDir().x, caracter->getDir().y, 0) * caracter->getSpeed() * t;
                 Ray r (actualPos, newPos);
-                if (World::collide(caracter, r)) {
+                if (getWorld()->collide(caracter, r)) {
                     newPos = actualPos;
                 }
                 for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
@@ -492,7 +492,7 @@ namespace sorrok {
                 }
                 Vec3f d = newPos - getView().getPosition();
                 getView().move(d.x, d.y, d.y);
-                World::moveEntity(caracter, d.x, d.y, d.y);
+                getWorld()->moveEntity(caracter, d.x, d.y, d.y);
                 sf::Listener::setPosition(newPos.x, newPos.y, 0);
                 //World::update("EntitiesUpdater");
             } else {
@@ -501,7 +501,7 @@ namespace sorrok {
                 Vec2f pos = Computer::getPosOnPathFromTime(actualPos, caracter->getPath(),t,caracter->getSpeed());
                 Vec2f d = pos - actualPos;
                 Vec2f dir = d.normalize();
-                World::moveEntity(caracter, d.x, d.y, d.y);
+                getWorld()->moveEntity(caracter, d.x, d.y, d.y);
                 if (dir != caracter->getDir())
                     caracter->setDir(dir);
                 for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
@@ -523,7 +523,7 @@ namespace sorrok {
                 //World::update("EntitiesUpdater");
             }
         }
-        World::update();
+        getWorld()->update();
         fpsCounter++;
         if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {
             std::cout<<"FPS : "<<fpsCounter<<std::endl;

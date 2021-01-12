@@ -1,6 +1,6 @@
 #ifndef ODFAEGCREATOR
 #define ODFAEGCREATOR
-#include "odfaeg/Core/application.h"
+#include "odfaeg/Graphics/application.h"
 #include "odfaeg/Core/stateStack.h"
 #include "odfaeg/Graphics/GUI/menubar.hpp"
 #include "odfaeg/Graphics/GUI/menuItem.hpp"

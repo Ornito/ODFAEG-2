@@ -6,6 +6,7 @@
 #include "../../../include/odfaeg/Core/singleton.h"
 #include "../../../include/odfaeg/Graphics/tGround.h"
 #include "../../../include/odfaeg/Graphics/boneAnimation.hpp"
+#include "../../../include/odfaeg/Graphics/application.h"
 namespace odfaeg {
     namespace graphic {
     using namespace std;
@@ -670,7 +671,7 @@ namespace odfaeg {
                     std::cout<<"ponctual light"<<std::endl;
                     sf:sleep(sf::seconds(1));
             }*/
-            if (entity->isLeaf()) {
+            //if (entity->isLeaf()) {
                 for (unsigned int j = 0; j < entity->getFaces().size(); j++) {
                      if (entity->getFaces()[j]->getMaterial().getTexture() != nullptr) {
                          increaseComptImg(entity->getFaces()[j]->getMaterial().getTexture());
@@ -682,7 +683,7 @@ namespace odfaeg {
                         frcm->getRenderComponent(c)->loadShaders();
                     }
                 }*/
-            }
+            //}
             /*std::vector<Entity*> tiles;
             getChildren(entity, tiles, "*");
             if (tiles.size() != 0) {
@@ -817,7 +818,7 @@ namespace odfaeg {
                     visibleParentEntities.clear();
                     vEntitiesByType.clear();
                     visibleEntities.clear();
-                    visibleEntities.resize(Entity::getNbEntityTypes());
+                    visibleEntities.resize(Entity::getNbEntitiesTypes());
                     for (unsigned int i = 0; i < visibleEntities.size(); i++) {
                         visibleEntities[i].resize(Entity::getNbEntities(), nullptr);
                     }
@@ -838,8 +839,9 @@ namespace odfaeg {
                                     for (unsigned int n = 0; n < cell->getNbEntitiesInside(); n++) {
                                        Entity* entity = cell->getEntityInside(n);
                                        physic::BoundingBox& bounds = entity->getGlobalBounds();
+                                       //std::cout<<"add entities on component : "<<entity->getType()<<","<<entity->getRootTypeInt()<<","<<entity->getId()<<std::endl;
                                        if (bx.intersects(bounds) || bx.isInside(bounds) && visibleEntities[entity->getRootTypeInt()][entity->getId()] == nullptr) {
-                                           //std::cout<<"add entities on component"<<std::endl;
+
                                            visibleEntities[entity->getRootTypeInt()][entity->getId()] = entity;
                                        }
 

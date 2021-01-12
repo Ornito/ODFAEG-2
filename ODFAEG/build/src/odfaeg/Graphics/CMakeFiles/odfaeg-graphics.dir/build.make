@@ -56,10 +56,24 @@ include src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/progress.make
 # Include the compile flags for this target's objects.
 include src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/application.cpp.obj: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/application.cpp.obj: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/includes_CXX.rsp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/application.cpp.obj: ../src/odfaeg/Graphics/application.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/application.cpp.obj"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-graphics.dir\application.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Graphics\application.cpp
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/application.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-graphics.dir/application.cpp.i"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Graphics\application.cpp > CMakeFiles\odfaeg-graphics.dir\application.cpp.i
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/application.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-graphics.dir/application.cpp.s"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Graphics\application.cpp -o CMakeFiles\odfaeg-graphics.dir\application.cpp.s
+
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.obj: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.obj: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/includes_CXX.rsp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.obj: ../src/odfaeg/Graphics/lightRenderComponent.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-graphics.dir\lightRenderComponent.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Graphics\lightRenderComponent.cpp
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.i: cmake_force
@@ -73,7 +87,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.s: c
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/baseChangementMatrix.cpp.obj: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/baseChangementMatrix.cpp.obj: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/includes_CXX.rsp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/baseChangementMatrix.cpp.obj: ../src/odfaeg/Graphics/baseChangementMatrix.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/baseChangementMatrix.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/baseChangementMatrix.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-graphics.dir\baseChangementMatrix.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Graphics\baseChangementMatrix.cpp
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/baseChangementMatrix.cpp.i: cmake_force
@@ -83,20 +97,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/baseChangementMatrix.cpp.i: c
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/baseChangementMatrix.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-graphics.dir/baseChangementMatrix.cpp.s"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Graphics\baseChangementMatrix.cpp -o CMakeFiles\odfaeg-graphics.dir\baseChangementMatrix.cpp.s
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.obj: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.obj: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/includes_CXX.rsp
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.obj: ../src/odfaeg/Graphics/transformMatrix.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-graphics.dir\transformMatrix.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Graphics\transformMatrix.cpp
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Graphics\transformMatrix.cpp > CMakeFiles\odfaeg-graphics.dir\transformMatrix.cpp.i
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Graphics && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Graphics\transformMatrix.cpp -o CMakeFiles\odfaeg-graphics.dir\transformMatrix.cpp.s
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/viewMatrix.cpp.obj: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/viewMatrix.cpp.obj: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/includes_CXX.rsp
@@ -1122,9 +1122,9 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.s: cmake_for
 
 # Object files for target odfaeg-graphics
 odfaeg__graphics_OBJECTS = \
+"CMakeFiles/odfaeg-graphics.dir/application.cpp.obj" \
 "CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.obj" \
 "CMakeFiles/odfaeg-graphics.dir/baseChangementMatrix.cpp.obj" \
-"CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.obj" \
 "CMakeFiles/odfaeg-graphics.dir/viewMatrix.cpp.obj" \
 "CMakeFiles/odfaeg-graphics.dir/projMatrix.cpp.obj" \
 "CMakeFiles/odfaeg-graphics.dir/viewport.cpp.obj" \
@@ -1202,9 +1202,9 @@ odfaeg__graphics_OBJECTS = \
 # External object files for target odfaeg-graphics
 odfaeg__graphics_EXTERNAL_OBJECTS =
 
+lib/libodfaeg-graphics-s.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/application.cpp.obj
 lib/libodfaeg-graphics-s.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.obj
 lib/libodfaeg-graphics-s.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/baseChangementMatrix.cpp.obj
-lib/libodfaeg-graphics-s.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.obj
 lib/libodfaeg-graphics-s.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/viewMatrix.cpp.obj
 lib/libodfaeg-graphics-s.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/projMatrix.cpp.obj
 lib/libodfaeg-graphics-s.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/viewport.cpp.obj

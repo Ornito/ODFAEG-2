@@ -3,14 +3,14 @@ include(${PROJECT_SOURCE_DIR}/cmake/Macros.cmake)
 set(INCROOT ${PROJECT_SOURCE_DIR}/include/odfaeg/Graphics)
 set(SRCROOT ${PROJECT_SOURCE_DIR}/src/odfaeg/Graphics)
 
-set(SRC_GRAPHICS	
+set(SRC_GRAPHICS
+	${INCROOT}/application.h
+	${SRCROOT}/application.cpp	
 	${INCROOT}/lightRenderComponent.hpp
 	${SRCROOT}/lightRenderComponent.cpp
 	${INCROOT}/baseChangementMatrix.h
-	${SRCROOT}/baseChangementMatrix.cpp
-	${INCROOT}/transformMatrix.h	
-	${INCROOT}/export.hpp
-	${SRCROOT}/transformMatrix.cpp
+	${SRCROOT}/baseChangementMatrix.cpp		
+	${INCROOT}/export.hpp	
 	${INCROOT}/viewMatrix.h
 	${SRCROOT}/viewMatrix.cpp
 	${INCROOT}/projMatrix.h

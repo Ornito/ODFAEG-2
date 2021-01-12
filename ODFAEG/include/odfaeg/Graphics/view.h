@@ -4,7 +4,7 @@
 #include "../Math/vec4.h"
 #include "projMatrix.h"
 #include "viewMatrix.h"
-#include "transformMatrix.h"
+//#include "../Math/transformMatrix.h"
 #include "viewportMatrix.h"
 #include "../Physics/boundingBox.h"
 /**
@@ -13,7 +13,7 @@
   */
 namespace odfaeg {
     namespace graphic {
-    class Entity;
+
         /**
           * \file view.h
           * \class View

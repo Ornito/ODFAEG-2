@@ -1,6 +1,6 @@
 #include "../../../include/odfaeg/Network/srkserveur.h"
 #include "../../../include/odfaeg/Network/network.h"
-#include "../../../include/odfaeg/Core/application.h"
+#include "../../../include/odfaeg/Graphics/application.h"
 namespace odfaeg {
     namespace network {
         using namespace sf;

@@ -50,6 +50,7 @@ namespace odfaeg {
                 *  \return the number of entities which exist.
                 */
                 static int getNbEntities ();
+                static int getNbEntitiesTypes();
                 //Get teh type of the entity.
                 /**
                 *  \fn std::string getType() const;
@@ -307,12 +308,13 @@ namespace odfaeg {
                 *   \return std::vector<Face*> the faces of the entity.
                 */
                 std::vector<Face*> getFaces() const;
-                static int getNbEntityTypes();
+                //static int getNbEntityTypes();
                 /** \fn void vtserialize(Archive & ar)
                 *   \brief serialize the entity into an archive.
                 *   \param Archive : the archive onwhich to serialize the entities.
                 */
                 void updateTransform();
+                void setTypeInt(int iType);
                 template <typename Archive>
                 void vtserialize(Archive & ar) {
                     Transformable::serialize(ar);

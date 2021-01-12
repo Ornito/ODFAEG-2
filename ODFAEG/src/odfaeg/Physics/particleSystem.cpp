@@ -28,6 +28,7 @@
 
 #include "../../../include/odfaeg/Graphics/renderWindow.h"
 #include "../../../include/odfaeg/Graphics/texture.h"
+#include "../../../include/odfaeg/Math/transformMatrix.h"
 #include <algorithm>
 #include <array>
 #include <cmath>

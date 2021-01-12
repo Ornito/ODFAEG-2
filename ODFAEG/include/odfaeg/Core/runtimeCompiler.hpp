@@ -3,7 +3,8 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include <dlfcn.h>
+//#include <dlfcn.h>
+#include <windows.h>
 #include "erreur.h"
 namespace odfaeg {
     namespace core {
@@ -13,8 +14,17 @@ namespace odfaeg {
             void compile();
             template<typename R, typename... A>
             R run(std::string fName, A... a) {
-                std::string path = "./"+funcName+".so";
+                std::string path = "./"+funcName+".dll";
                 if (!isDllOpened) {
+                    flib = LoadLibrary(path.c_str());
+                    if (!flib) {
+                        throw Erreur(10, "Failed to open dynamic library!", 3);
+                    }
+                    isDllOpened = true;
+                }
+                typedef R(*func)(A...);
+                func pfunc = (func) GetProcAddress(flib, fName.c_str());
+                /*if (!isDllOpened) {
                     flib = dlopen(path.c_str(), RTLD_LAZY);
                     if (!flib) {
                         throw Erreur(10, "Failed to open dynamic library!", 3);
@@ -25,7 +35,7 @@ namespace odfaeg {
                 func pfunc = (func) dlsym(flib, fName.c_str());
                 if (!pfunc) {
                     throw Erreur(10, "Failed to load the function!", 3);
-                }
+                }*/
 
                 return pfunc(a...);
             }
@@ -38,7 +48,7 @@ namespace odfaeg {
             void addRuntimeFunction (std::string f);
             std::string getCompileErrors();
             private :
-            void* flib;
+            HINSTANCE flib;
             bool isDllOpened;
             std::string funcName;
             std::string compileErrors;

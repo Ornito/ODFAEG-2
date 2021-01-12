@@ -31,10 +31,14 @@ namespace odfaeg {
                     std::vector<std::unique_ptr<core::Timer>> aus; /**> holds every timers.*/
                     std::vector<std::unique_ptr<EntityManager>> ems; /**> holds every entity managers*/
                 };
-                static EntityManager* getCurrentEntityManager() {
+                World() {
+                    /*nbEntities = 0;
+                    nbEntitiesTypes = 0;*/
+                }
+                EntityManager* getCurrentEntityManager() {
                     return currentEntityManager;
                 }
-                static std::vector<EntityManager*> getEntityManagers() {
+                std::vector<EntityManager*> getEntityManagers() {
                     std::vector<EntityManager*> ems;
                     for (unsigned int i = 0; i < cache.ems.size(); i++) {
                         ems.push_back(cache.ems[i].get());
@@ -46,7 +50,7 @@ namespace odfaeg {
                 *    \brief get all the cells (containing the entities) of the entity manager.
                 *    \return all the cells of the entity manager.
                 */
-                static std::vector<graphic::CellMap*> getCasesMap() {
+                std::vector<graphic::CellMap*> getCasesMap() {
                     if (currentEntityManager != nullptr)
                         return currentEntityManager->getCasesMap();
                     return std::vector<graphic::CellMap*>();
@@ -56,17 +60,37 @@ namespace odfaeg {
                 *    \brief add an entity into the engine.
                 *    \param E* entity : tne entity to add.
                 */
-                static bool addEntity (Entity* entity) {
-                    if (currentEntityManager != nullptr)
+                /*void make_ids(Entity* entity) {
+                    std::vector<Entity*> children = entity->getChildren();
+                    for (unsigned int i = 0; i < children.size(); i++) {
+                        make_ids(children[i]);
+                    }
+                    if (entity->getId() == -1) {
+                        entity->setId(nbEntities);
+                    }
+                    nbEntities++;
+                    int iType = getIntOfType(entity->getType());
+                    if (iType == -1) {
+                        types.insert(std::make_pair(nbEntitiesTypes, entity->getType()));
+                        entity->setTypeInt(nbEntitiesTypes);
+                        nbEntitiesTypes++;
+                    } else {
+                        entity->setTypeInt(iType);
+                    }
+                }*/
+                bool addEntity (Entity* entity) {
+                    if (currentEntityManager != nullptr) {
+                        //make_ids(entity);
                         return currentEntityManager->addEntity(entity);
+                    }
                     return false;
                 }
-                static bool removeEntity(Entity* entity) {
+                bool removeEntity(Entity* entity) {
                     if (currentEntityManager != nullptr)
                         return currentEntityManager->removeEntity(entity);
                     return false;
                 }
-                static bool deleteEntity(Entity* entity) {
+                bool deleteEntity(Entity* entity) {
                     if (currentEntityManager != nullptr)
                         return currentEntityManager->deleteEntity(entity);
                     return false;
@@ -75,7 +99,7 @@ namespace odfaeg {
                 *   \fn E& getShadowMap()
                 *   \return the shadow map.
                 */
-                static graphic::Entity* getShadowMap(std::string expression, int n...) {
+                graphic::Entity* getShadowMap(std::string expression, int n...) {
                     if (currentEntityManager != nullptr) {
                         va_list args;
                         va_list copy;
@@ -92,7 +116,7 @@ namespace odfaeg {
                 *  \param std::string expression : the types of lights to draw on the light map.
                 *  \param int n... : the layers of the component which have entities which can intersect with the light.
                 */
-                static graphic::Entity* getLightMap(std::string expression, int n...) {
+                graphic::Entity* getLightMap(std::string expression, int n...) {
                     if (currentEntityManager != nullptr) {
                         va_list args;
                         va_start(args, n);
@@ -100,7 +124,7 @@ namespace odfaeg {
                     }
                     return nullptr;
                 }
-                static graphic::Entity* getReflectionMap(std::string expression, int n...) {
+                graphic::Entity* getReflectionMap(std::string expression, int n...) {
                     if (currentEntityManager != nullptr) {
                         va_list args;
                         va_start(args, n);
@@ -113,7 +137,7 @@ namespace odfaeg {
                 *   \param the types of the entities to get.
                 *   \return the visible entities of the given types.
                 */
-                static std::vector<graphic::Entity*> getVisibleEntities (std::string expression) {
+                std::vector<graphic::Entity*> getVisibleEntities (std::string expression) {
                     if (currentEntityManager != nullptr)
                         return currentEntityManager->getVisibleEntities(expression);
                     return std::vector<Entity*>();
@@ -122,12 +146,12 @@ namespace odfaeg {
                 *   \brief check if the animation is contained in the visible animated entities list of the entity manager.
                 *   \param the animation to check with.
                 */
-                static bool containsVisibleEntity(Entity *ae) {
+                bool containsVisibleEntity(Entity *ae) {
                     if (currentEntityManager != nullptr)
                         return currentEntityManager->containsVisibleEntity(ae);
                     return false;
                 }
-                static bool containsVisibleParentEntity(Entity *ae) {
+                bool containsVisibleParentEntity(Entity *ae) {
                     if (currentEntityManager != nullptr)
                         return currentEntityManager->containsVisibleParentEntity(ae);
                     return false;
@@ -140,7 +164,7 @@ namespace odfaeg {
                 *   \param float y : the translation on y.
                 *   \param float z : the translation on z.
                 */
-                static void moveEntity(Entity* entity, float x, float y, float z){
+                void moveEntity(Entity* entity, float x, float y, float z){
                     if (currentEntityManager != nullptr) {
                        currentEntityManager->moveEntity(entity, x, y, z);
                     }
@@ -149,19 +173,19 @@ namespace odfaeg {
                 *   \brief check if the entity collides with another entity of the entity manager.
                 *   \param E* entity : the entity to check with.
                 */
-                static bool collide(Entity* entity) {
+                bool collide(Entity* entity) {
                     if (currentEntityManager != nullptr) {
                         return currentEntityManager->collide(entity);
                     }
                     return false;
                 }
-                static bool collide(Entity* entity, math::Vec3f position) {
+                bool collide(Entity* entity, math::Vec3f position) {
                     if (currentEntityManager != nullptr) {
                         return currentEntityManager->collide(entity, position);
                     }
                     return false;
                 }
-                static bool collide(Entity* entity, math::Ray ray) {
+                bool collide(Entity* entity, math::Ray ray) {
                     if (currentEntityManager != nullptr) {
                         return currentEntityManager->collide(entity, ray);
                     }
@@ -174,7 +198,7 @@ namespace odfaeg {
                 *  \param std::vector<E*> tWalls : the tiles of the wall to generate.
                 *  \param BoundingBox zone : the zone of the map to generate.
                 */
-                static void generate_map(std::vector<Tile*> tGround, std::vector<Tile*> tWall, math::Vec2f tileSize, physic::BoundingBox zone, bool terrain3D) {
+                void generate_map(std::vector<Tile*> tGround, std::vector<Tile*> tWall, math::Vec2f tileSize, physic::BoundingBox zone, bool terrain3D) {
 
                     if (currentEntityManager != nullptr) {
                         currentEntityManager->generate_map(tGround, tWall, tileSize, zone, terrain3D);
@@ -186,7 +210,7 @@ namespace odfaeg {
                 *   \param int layer : the layer of the component.
                 *   \param sf::BlendMode mode : the blend mode.
                 */
-                static void drawOnComponents(std::string expression, int layer, sf::BlendMode mode = sf::BlendAlpha) {
+                void drawOnComponents(std::string expression, int layer, sf::BlendMode mode = sf::BlendAlpha) {
                     if (currentEntityManager != nullptr) {
                         currentEntityManager->drawOnComponents(expression, layer, mode);
                     }
@@ -197,7 +221,7 @@ namespace odfaeg {
                 *   \param int layer : the layer of the component.
                 *   \param RenderStates states : the render states.
                 */
-                static void drawOnComponents(Drawable &drawable, int layer, RenderStates states = graphic::RenderStates::Default) {
+                void drawOnComponents(Drawable &drawable, int layer, RenderStates states = graphic::RenderStates::Default) {
                     if (currentEntityManager != nullptr) {
                         currentEntityManager->drawOnComponents(drawable, layer, states);
                     }
@@ -207,13 +231,13 @@ namespace odfaeg {
                 *   \param the types of the entities to get.
                 *   \return the entities to get.
                 */
-                static std::vector<Entity*> getEntities(std::string expression) {
+                std::vector<Entity*> getEntities(std::string expression) {
                     if (currentEntityManager != nullptr) {
                         return currentEntityManager->getEntities(expression);
                     }
                     return std::vector<Entity*>();
                 }
-                static std::vector<Entity*> getChildrenEntities(std::string expression) {
+                std::vector<Entity*> getChildrenEntities(std::string expression) {
                     if (currentEntityManager != nullptr) {
                         return currentEntityManager->getChildrenEntities(expression);
                     }
@@ -225,7 +249,7 @@ namespace odfaeg {
                 *   \param math::Vec3f finalPos : the position.
                 *   \return the path.
                 */
-                static std::vector<math::Vec2f> getPath(Entity* entity, math::Vec2f finalPos) {
+                std::vector<math::Vec2f> getPath(Entity* entity, math::Vec2f finalPos) {
                     std::vector<math::Vec2f> positions;
                     if (currentEntityManager != nullptr) {
                         if (getGridCellAt(finalPos) != nullptr) {
@@ -318,39 +342,39 @@ namespace odfaeg {
                 *   \param math::Vec3f pos : the position.
                 *   \return the cell.
                 */
-                static graphic::CellMap* getGridCellAt(math::Vec3f pos) {
+                graphic::CellMap* getGridCellAt(math::Vec3f pos) {
                     if (currentEntityManager != nullptr) {
                         return currentEntityManager->getGridCellAt(pos);
                     }
                     return nullptr;
                 }
-                static void changeVisibleEntity(Entity* toRemove, graphic::Entity* toAdd) {
+                void changeVisibleEntity(Entity* toRemove, graphic::Entity* toAdd) {
                     if (currentEntityManager != nullptr) {
                         currentEntityManager->changeVisibleEntity(toRemove, toAdd);
                     }
                 }
-                static void updateTimers() {
+                void updateTimers() {
                     for (unsigned int i = 0; i < cache.aus.size(); i++) {
                         cache.aus[i]->update();
                     }
                 }
-                static graphic::BaseChangementMatrix getBaseChangementMatrix() {
+                graphic::BaseChangementMatrix getBaseChangementMatrix() {
                     if (currentEntityManager != nullptr) {
                         return currentEntityManager->getBaseChangementMatrix();
                     }
                     return graphic::BaseChangementMatrix();
                 }
-                static void addWorker(core::EntitySystem *eu) {
+                void addWorker(core::EntitySystem *eu) {
                     std::unique_ptr<core::EntitySystem> ptr;
                     ptr.reset(eu);
                     cache.eus.push_back(std::move(ptr));
                 }
-                static void addTimer(core::Timer *au) {
+                void addTimer(core::Timer *au) {
                     std::unique_ptr<core::Timer> ptr;
                     ptr.reset(au);
                     cache.aus.push_back(std::move(ptr));
                 }
-                static core::Timer* getTimer(std::string name) {
+                core::Timer* getTimer(std::string name) {
                     for (unsigned int i = 0; i < cache.aus.size(); i++) {
                         if (cache.aus[i]->getName() == name) {
                             return cache.aus[i].get();
@@ -358,14 +382,14 @@ namespace odfaeg {
                     }
                     return nullptr;
                 }
-                static std::vector<core::Timer*> getTimers() {
+                std::vector<core::Timer*> getTimers() {
                     std::vector<core::Timer*> timers;
                     for (unsigned int i = 0; i < cache.aus.size(); i++) {
                         timers.push_back(cache.aus[i].get());
                     }
                     return timers;
                 }
-                static core::EntitySystem* getWorker(std::string name) {
+                core::EntitySystem* getWorker(std::string name) {
                     for (unsigned int i = 0; i < cache.eus.size(); i++) {
                         if (cache.eus[i]->getName() == name) {
                             return cache.eus[i].get();
@@ -373,14 +397,14 @@ namespace odfaeg {
                     }
                     return nullptr;
                 }
-                static std::vector<core::EntitySystem*> getWorkers() {
+                std::vector<core::EntitySystem*> getWorkers() {
                     std::vector<core::EntitySystem*> workers;
                     for (unsigned int i = 0; i < cache.eus.size(); i++) {
                         workers.push_back(cache.eus[i].get());
                     }
                     return workers;
                 }
-                static void update(std::string name="*") {
+                void update(std::string name="*") {
                     if (name == "*") {
                         for (unsigned int i = 0; i < cache.eus.size(); i++) {
                             cache.eus[i]->update();
@@ -393,24 +417,24 @@ namespace odfaeg {
                         }
                     }
                 }
-                static void addEntityManager(graphic::EntityManager* holder) {
+                void addEntityManager(graphic::EntityManager* holder) {
                     std::unique_ptr<EntityManager> ptr;
                     ptr.reset(holder);
                     cache.ems.push_back(std::move(ptr));
                 }
-                static void checkVisibleEntities() {
+                void checkVisibleEntities() {
                     if (currentEntityManager != nullptr) {
                         //std::cout<<"check visible entities"<<std::endl;
                         currentEntityManager->checkVisibleEntities();
                     }
                 }
-                static std::vector<Entity*> getEntitiesInRect(physic::BoundingBox rect, std::string expression) {
+                std::vector<Entity*> getEntitiesInRect(physic::BoundingBox rect, std::string expression) {
                     if (currentEntityManager != nullptr) {
                         return currentEntityManager->getEntitiesInBox(rect, expression);
                     }
                     return std::vector<Entity*>();
                 }
-                static void removeEntityManager (std::string emName) {
+                void removeEntityManager (std::string emName) {
                     std::vector<std::unique_ptr<EntityManager>>::iterator it;
                     for (it = cache.ems.begin(); it != cache.ems.end();) {
                         std::string otherName = (*it)->getName();
@@ -423,7 +447,7 @@ namespace odfaeg {
                         }
                     }
                 }
-                static void setCurrentEntityManager (std::string mapName) {
+                void setCurrentEntityManager (std::string mapName) {
 
                     std::vector<std::unique_ptr<EntityManager>>::iterator it;
                     for (it = cache.ems.begin(); it != cache.ems.end(); it++) {
@@ -434,31 +458,47 @@ namespace odfaeg {
                         }
                     }
                 }
-                static Entity* getEntity(int id) {
+                Entity* getEntity(int id) {
                     if (currentEntityManager != nullptr) {
                         return currentEntityManager->getEntity(id);
                     }
                     return nullptr;
                 }
-                static Entity* getEntity(std::string name) {
+                Entity* getEntity(std::string name) {
                     if (currentEntityManager != nullptr) {
                         return currentEntityManager->getEntity(name);
                     }
                     return nullptr;
                 }
-                static math::Vec3f getCoordinatesAt(math::Vec3f point) {
+                math::Vec3f getCoordinatesAt(math::Vec3f point) {
                     if (currentEntityManager != nullptr) {
                         return currentEntityManager->getCoordinatesAt(point);
                     }
                 }
-                static void updateParticle() {
+                void updateParticle() {
                     if (currentEntityManager != nullptr) {
                         currentEntityManager->updateParticles();
                     }
                 }
+                /*int getIntOfType(std::string sType) {
+                    std::map<int, std::string>::iterator it;
+                    for (it = types.begin(); it != types.end(); ++it) {
+                        if (it->second == sType)
+                            return it->first;
+                    }
+                    return -1;
+                }
+                unsigned int getNbEntities() {
+                    return nbEntities;
+                }
+                unsigned int getNbEntitiesTypes() {
+                    return nbEntitiesTypes;
+                }*/
             private :
-                static Cache cache;
-                static graphic::EntityManager* currentEntityManager; /**> holds the current entity manager.*/
+                Cache cache;
+                graphic::EntityManager* currentEntityManager; /**> holds the current entity manager.*/
+                /*std::map<int, std::string> types;
+                unsigned int nbEntities, nbEntitiesTypes;*/
         };
     }
 }

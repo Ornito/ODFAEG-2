@@ -56,10 +56,38 @@ include src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/progress.make
 # Include the compile flags for this target's objects.
 include src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 
+src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/actions.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
+src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/actions.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
+src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/actions.cpp.obj: ../src/odfaeg/Window/actions.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/actions.cpp.obj"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\actions.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\actions.cpp
+
+src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/actions.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-window.dir/actions.cpp.i"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\actions.cpp > CMakeFiles\odfaeg-window.dir\actions.cpp.i
+
+src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/actions.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-window.dir/actions.cpp.s"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\actions.cpp -o CMakeFiles\odfaeg-window.dir\actions.cpp.s
+
+src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/command.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
+src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/command.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
+src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/command.cpp.obj: ../src/odfaeg/Window/command.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/command.cpp.obj"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\command.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\command.cpp
+
+src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/command.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-window.dir/command.cpp.i"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\command.cpp > CMakeFiles\odfaeg-window.dir\command.cpp.i
+
+src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/command.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-window.dir/command.cpp.s"
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\command.cpp -o CMakeFiles\odfaeg-window.dir\command.cpp.s
+
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/context.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/context.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/context.cpp.obj: ../src/odfaeg/Window/context.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/context.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/context.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\context.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\context.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/context.cpp.i: cmake_force
@@ -73,7 +101,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/context.cpp.s: cmake_force
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextFactory.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextFactory.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextFactory.cpp.obj: ../src/odfaeg/Window/contextFactory.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextFactory.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextFactory.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\contextFactory.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\contextFactory.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextFactory.cpp.i: cmake_force
@@ -87,7 +115,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextFactory.cpp.s: cmake_force
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextImpl.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextImpl.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextImpl.cpp.obj: ../src/odfaeg/Window/contextImpl.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextImpl.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextImpl.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\contextImpl.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\contextImpl.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextImpl.cpp.i: cmake_force
@@ -101,7 +129,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextImpl.cpp.s: cmake_force
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextSettings.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextSettings.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextSettings.cpp.obj: ../src/odfaeg/Window/contextSettings.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextSettings.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextSettings.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\contextSettings.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\contextSettings.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextSettings.cpp.i: cmake_force
@@ -115,7 +143,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextSettings.cpp.s: cmake_forc
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/glResource.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/glResource.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/glResource.cpp.obj: ../src/odfaeg/Window/glResource.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/glResource.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/glResource.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\glResource.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\glResource.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/glResource.cpp.i: cmake_force
@@ -129,7 +157,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/glResource.cpp.s: cmake_force
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iKeyboard.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iKeyboard.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iKeyboard.cpp.obj: ../src/odfaeg/Window/iKeyboard.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iKeyboard.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iKeyboard.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\iKeyboard.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\iKeyboard.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iKeyboard.cpp.i: cmake_force
@@ -143,7 +171,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iKeyboard.cpp.s: cmake_force
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iMouse.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iMouse.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iMouse.cpp.obj: ../src/odfaeg/Window/iMouse.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iMouse.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iMouse.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\iMouse.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\iMouse.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iMouse.cpp.i: cmake_force
@@ -157,7 +185,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iMouse.cpp.s: cmake_force
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/window.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/window.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/window.cpp.obj: ../src/odfaeg/Window/window.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/window.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/window.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\window.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\window.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/window.cpp.i: cmake_force
@@ -171,7 +199,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/window.cpp.s: cmake_force
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowFactory.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowFactory.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowFactory.cpp.obj: ../src/odfaeg/Window/windowFactory.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowFactory.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowFactory.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\windowFactory.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\windowFactory.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowFactory.cpp.i: cmake_force
@@ -185,7 +213,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowFactory.cpp.s: cmake_force
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowImpl.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowImpl.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowImpl.cpp.obj: ../src/odfaeg/Window/windowImpl.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowImpl.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowImpl.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\windowImpl.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\windowImpl.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowImpl.cpp.i: cmake_force
@@ -199,7 +227,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowImpl.cpp.s: cmake_force
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlContextImpl.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlContextImpl.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlContextImpl.cpp.obj: ../src/odfaeg/Window/SFML/sfmlContextImpl.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlContextImpl.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlContextImpl.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\SFML\sfmlContextImpl.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\SFML\sfmlContextImpl.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlContextImpl.cpp.i: cmake_force
@@ -213,7 +241,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlContextImpl.cpp.s: cmake
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlKeyboard.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlKeyboard.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlKeyboard.cpp.obj: ../src/odfaeg/Window/SFML/sfmlKeyboard.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlKeyboard.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlKeyboard.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\SFML\sfmlKeyboard.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\SFML\sfmlKeyboard.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlKeyboard.cpp.i: cmake_force
@@ -227,7 +255,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlKeyboard.cpp.s: cmake_fo
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlMouse.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlMouse.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlMouse.cpp.obj: ../src/odfaeg/Window/SFML/sfmlMouse.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlMouse.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlMouse.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\SFML\sfmlMouse.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\SFML\sfmlMouse.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlMouse.cpp.i: cmake_force
@@ -241,7 +269,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlMouse.cpp.s: cmake_force
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlWindowImpl.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlWindowImpl.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlWindowImpl.cpp.obj: ../src/odfaeg/Window/SFML/sfmlWindowImpl.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlWindowImpl.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlWindowImpl.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\SFML\sfmlWindowImpl.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\SFML\sfmlWindowImpl.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlWindowImpl.cpp.i: cmake_force
@@ -255,7 +283,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlWindowImpl.cpp.s: cmake_
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglContext.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglContext.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglContext.cpp.obj: ../src/odfaeg/Window/Windows/wglContext.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglContext.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglContext.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\Windows\wglContext.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\Windows\wglContext.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglContext.cpp.i: cmake_force
@@ -269,7 +297,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglContext.cpp.s: cmake_f
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglExtensions.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglExtensions.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglExtensions.cpp.obj: ../src/odfaeg/Window/Windows/wglExtensions.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglExtensions.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglExtensions.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\Windows\wglExtensions.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\Windows\wglExtensions.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglExtensions.cpp.i: cmake_force
@@ -283,7 +311,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/wglExtensions.cpp.s: cmak
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Keyboard.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Keyboard.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Keyboard.cpp.obj: ../src/odfaeg/Window/Windows/win32Keyboard.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Keyboard.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Keyboard.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\Windows\win32Keyboard.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\Windows\win32Keyboard.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Keyboard.cpp.i: cmake_force
@@ -297,7 +325,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Keyboard.cpp.s: cmak
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Mouse.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Mouse.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Mouse.cpp.obj: ../src/odfaeg/Window/Windows/win32Mouse.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Mouse.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Mouse.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\Windows\win32Mouse.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\Windows\win32Mouse.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Mouse.cpp.i: cmake_force
@@ -311,7 +339,7 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Mouse.cpp.s: cmake_f
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Window.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/flags.make
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Window.cpp.obj: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/includes_CXX.rsp
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Window.cpp.obj: ../src/odfaeg/Window/Windows/win32Window.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Window.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Window.cpp.obj"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-window.dir\Windows\win32Window.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Window\Windows\win32Window.cpp
 
 src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Window.cpp.i: cmake_force
@@ -324,6 +352,8 @@ src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Window.cpp.s: cmake_
 
 # Object files for target odfaeg-window
 odfaeg__window_OBJECTS = \
+"CMakeFiles/odfaeg-window.dir/actions.cpp.obj" \
+"CMakeFiles/odfaeg-window.dir/command.cpp.obj" \
 "CMakeFiles/odfaeg-window.dir/context.cpp.obj" \
 "CMakeFiles/odfaeg-window.dir/contextFactory.cpp.obj" \
 "CMakeFiles/odfaeg-window.dir/contextImpl.cpp.obj" \
@@ -347,6 +377,8 @@ odfaeg__window_OBJECTS = \
 # External object files for target odfaeg-window
 odfaeg__window_EXTERNAL_OBJECTS =
 
+lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/actions.cpp.obj
+lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/command.cpp.obj
 lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/context.cpp.obj
 lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextFactory.cpp.obj
 lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/contextImpl.cpp.obj
@@ -368,7 +400,7 @@ lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows
 lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/Windows/win32Window.cpp.obj
 lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/build.make
 lib/libodfaeg-window-s.a: src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Linking CXX static library ..\..\..\lib\libodfaeg-window-s.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Linking CXX static library ..\..\..\lib\libodfaeg-window-s.a"
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && $(CMAKE_COMMAND) -P CMakeFiles\odfaeg-window.dir\cmake_clean_target.cmake
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Window && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\odfaeg-window.dir\link.txt --verbose=$(VERBOSE)
 

@@ -9,22 +9,15 @@ set(SRC
 	${INCROOT}/erreur.h
 	${INCROOT}/export.hpp
 	${SRCROOT}/erreur.cpp	
-	${INCROOT}/resourceManager.h	
-	${INCROOT}/application.h
-	${SRCROOT}/application.cpp
+	${INCROOT}/resourceManager.h		
 	${INCROOT}/any.h
 	${INCROOT}/resourceCache.h
 	${INCROOT}/utilities.h
 	${SRCROOT}/utilities.cpp	
-	${INCROOT}/action.h
-	${INCROOT}/command.h
-	${INCROOT}/command.tpp
-	${SRCROOT}/command.cpp
 	${INCROOT}/factory.h
 	${INCROOT}/factory.cpp
 	${INCROOT}/entitySystem.h
-	${INCROOT}/timer.h	
-	${INCROOT}/listener.h	
+	${INCROOT}/timer.h		
 	${INCROOT}/state.h
 	${SRCROOT}/state.cpp
 	${INCROOT}/stateGroup.h
@@ -33,8 +26,7 @@ set(SRC
 	${SRCROOT}/stateStack.cpp
 	${INCROOT}/stateParameter.h
 	${INCROOT}/stateParameterBase.h
-	${INCROOT}/stateExecutor.h
-	${SRCROOT}/actions.cpp	
+	${INCROOT}/stateExecutor.h		
 	${INCROOT}/archive.h	
 	${INCROOT}/time.h
 	${SRCROOT}/time.cpp

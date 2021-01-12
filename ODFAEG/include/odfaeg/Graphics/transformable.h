@@ -1,7 +1,7 @@
 #ifndef ODFAEG_TRANSFORMABLE_HPP
 #define ODFAEG_TRANSFORMABLE_HPP
 
-#include "transformMatrix.h"
+#include "../Math/transformMatrix.h"
 #include "../Physics/boundingBox.h"
 /**
   *\namespace odfaeg
@@ -19,7 +19,7 @@ namespace odfaeg {
           *
           * each object inherits from this class.
           */
-        class ODFAEG_GRAPHICS_API Transformable {
+        class Transformable {
         public :
             /**
             * \fn BoundingBox getLocalBounds() const

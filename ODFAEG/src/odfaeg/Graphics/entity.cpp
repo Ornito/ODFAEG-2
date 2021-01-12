@@ -18,7 +18,10 @@ namespace odfaeg {
                 std::map<int, std::string>::iterator it = types->find(iType);
                 type = *it;
             }
+            /*type.first = -1;
+            type.second = sType;*/
             id = nbEntities;
+            //id = -1;
             getTransform().setEntityId(id);
             nbEntities++;
             alreadySerialized = false;
@@ -35,6 +38,9 @@ namespace odfaeg {
             water = false;
             layer = 0;
             external = false;
+        }
+        void Entity::setTypeInt (int iType) {
+            type.first = iType;
         }
         void Entity::copy(Entity* entity) {
             //std::cout<<"copy entity!"<<std::endl;
@@ -302,7 +308,7 @@ namespace odfaeg {
             math::Vec3f Entity::getShadowOrigin() {
                 return shadowOrigin;
             }
-            int Entity::getNbEntityTypes () {
+            int Entity::getNbEntitiesTypes () {
                 return nbEntitiesTypes;
             }
             void Entity::setBoneIndex(unsigned int boneIndex) {

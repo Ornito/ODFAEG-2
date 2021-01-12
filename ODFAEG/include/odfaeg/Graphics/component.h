@@ -1,7 +1,7 @@
 #ifndef ODFAEG_COMPONENT_HPP
 #include "drawable.h"
 #include "transformable.h"
-#include "../Core/listener.h"
+#include "../Window/listener.h"
 #include "renderWindow.h"
 namespace odfaeg {
     namespace graphic {

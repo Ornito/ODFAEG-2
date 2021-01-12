@@ -1,7 +1,7 @@
 #include "../../../include/odfaeg/Network/client.h"
 #include "../../../include/odfaeg/Network/network.h"
 #include "../../../include/odfaeg/Network/cliEncryptedPacket.hpp"
-#include "../../../include/odfaeg/Core/application.h"
+#include "../../../include/odfaeg/Graphics/application.h"
 namespace odfaeg {
     namespace network {
         using namespace sf;

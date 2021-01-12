@@ -9,6 +9,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/odfaeg-math.dir/matrix3.cpp.obj"
   "CMakeFiles/odfaeg-math.dir/matrix4.cpp.obj"
   "CMakeFiles/odfaeg-math.dir/ray.cpp.obj"
+  "CMakeFiles/odfaeg-math.dir/transformMatrix.cpp.obj"
   "CMakeFiles/odfaeg-math.dir/vec2.cpp.obj"
   "CMakeFiles/odfaeg-math.dir/vec4.cpp.obj"
 )

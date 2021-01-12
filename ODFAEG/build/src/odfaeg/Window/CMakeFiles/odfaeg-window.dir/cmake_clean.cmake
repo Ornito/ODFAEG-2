@@ -10,6 +10,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/odfaeg-window.dir/Windows/win32Keyboard.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/Windows/win32Mouse.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/Windows/win32Window.cpp.obj"
+  "CMakeFiles/odfaeg-window.dir/actions.cpp.obj"
+  "CMakeFiles/odfaeg-window.dir/command.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/context.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/contextFactory.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/contextImpl.cpp.obj"

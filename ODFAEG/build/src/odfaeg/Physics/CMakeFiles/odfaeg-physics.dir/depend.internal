@@ -100,15 +100,14 @@ src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/boundingBox.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/singleton.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/utilities.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/variant.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/export.hpp
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/transformMatrix.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/bigInt.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/computer.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/export.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/maths.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix3.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix4.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/plane.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/ray.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/transformMatrix.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/triangle.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec2f.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec4.h
@@ -207,15 +206,14 @@ src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/boundingEllipsoid.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/singleton.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/utilities.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/variant.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/export.hpp
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/transformMatrix.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/bigInt.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/computer.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/export.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/maths.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix3.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix4.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/plane.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/ray.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/transformMatrix.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/triangle.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec2f.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec4.h
@@ -314,15 +312,14 @@ src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/boundingPolyhedron.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/singleton.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/utilities.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/variant.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/export.hpp
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/transformMatrix.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/bigInt.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/computer.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/export.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/maths.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix3.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix4.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/plane.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/ray.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/transformMatrix.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/triangle.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec2f.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec4.h
@@ -421,15 +418,14 @@ src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/boundingSphere.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/singleton.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/utilities.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/variant.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/export.hpp
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/transformMatrix.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/bigInt.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/computer.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/export.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/maths.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix3.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix4.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/plane.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/ray.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/transformMatrix.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/triangle.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec2f.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec4.h
@@ -480,7 +476,6 @@ src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/collisionResultSet.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/singleton.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/utilities.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/variant.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/bigInt.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/export.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/maths.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec2f.h
@@ -575,12 +570,11 @@ src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/emitter.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/singleton.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/utilities.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/variant.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/transformMatrix.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/bigInt.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/distribution.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/maths.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix3.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix4.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/transformMatrix.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec2f.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec4.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/emissionInterface.h
@@ -674,15 +668,14 @@ src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/orientedBoundingBox.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/singleton.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/utilities.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/variant.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/export.hpp
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/transformMatrix.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/bigInt.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/computer.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/export.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/maths.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix3.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix4.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/plane.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/ray.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/transformMatrix.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/triangle.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec2f.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec4.h
@@ -814,7 +807,6 @@ src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/particleSystem.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/shader.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/texture.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/tile.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/transformMatrix.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/transformable.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/vbo.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/vertex.h
@@ -823,7 +815,6 @@ src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/particleSystem.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/view.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/viewMatrix.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Graphics/viewportMatrix.h
- C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/bigInt.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/computer.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/distribution.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/maths.h
@@ -832,6 +823,7 @@ src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/particleSystem.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix4.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/plane.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/ray.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/transformMatrix.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec2f.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec4.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/affector.h

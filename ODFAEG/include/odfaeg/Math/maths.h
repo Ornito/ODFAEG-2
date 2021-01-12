@@ -14,7 +14,6 @@
 #include "export.hpp"
 #include <random>
 #include <ctime>
-#include "bigInt.hpp"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -22,6 +21,7 @@
 namespace odfaeg {
     namespace math {
         class Vec3f;
+        class BigInt;
         /**
           * \file math.h
           * \class Math

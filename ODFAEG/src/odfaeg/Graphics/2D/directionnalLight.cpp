@@ -2,7 +2,7 @@
 #include "../../../../include/odfaeg/Graphics/2D/directionnalLight.h"
 #include "../../../../include/odfaeg/Math/ray.h"
 #include "../../../../include/odfaeg/Math/computer.h"
-#include "../../../../include/odfaeg/Graphics/transformMatrix.h"
+#include "../../../../include/odfaeg/Math/transformMatrix.h"
 #include "../../../../include/odfaeg/Physics/boundingPolyhedron.h"
 namespace odfaeg {
     namespace graphic {

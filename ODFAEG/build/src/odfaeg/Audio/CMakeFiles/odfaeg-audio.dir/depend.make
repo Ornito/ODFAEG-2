@@ -7,6 +7,7 @@ src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj: ../extlibs/heade
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj: ../extlibs/headers/SFML/System/InputStream.hpp
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj: ../extlibs/headers/SFML/System/NonCopyable.hpp
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj: ../extlibs/headers/SFML/System/Time.hpp
+src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj: ../extlibs/headers/sndfile.h
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj: ../src/odfaeg/Audio/SoundFile.cpp
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj: ../src/odfaeg/Audio/SoundFile.hpp
 
@@ -100,6 +101,7 @@ src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.obj: ../extlibs/headers/
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.obj: ../extlibs/headers/SFML/System/Vector2.inl
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.obj: ../extlibs/headers/SFML/System/Vector3.hpp
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.obj: ../extlibs/headers/SFML/System/Vector3.inl
+src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.obj: ../extlibs/headers/sndfile.h
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.obj: ../include/odfaeg/Audio/stream.h
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.obj: ../src/odfaeg/Audio/SoundFile.hpp
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.obj: ../src/odfaeg/Audio/stream.cpp
