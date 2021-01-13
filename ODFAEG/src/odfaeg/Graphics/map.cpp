@@ -815,8 +815,8 @@ namespace odfaeg {
                         view = frcm->getWindow().getView().getViewVolume();
                     else
                         view = frcm->getRenderComponent(c)->getView().getViewVolume();
-                    visibleParentEntities.clear();
-                    vEntitiesByType.clear();
+                    /*visibleParentEntities.clear();
+                    vEntitiesByType.clear();*/
                     visibleEntities.clear();
                     visibleEntities.resize(core::Application::app->getNbEntitiesTypes());
                     for (unsigned int i = 0; i < visibleEntities.size(); i++) {

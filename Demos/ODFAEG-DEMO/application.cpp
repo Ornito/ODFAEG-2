@@ -160,14 +160,14 @@ namespace sorrok {
         walls[3]->setLayer(1);
         walls[4]->setLayer(1);
         walls[5]->setLayer(1);
-        /*std::ifstream ifs("FichierDeSerialisation");
+        std::ifstream ifs("FichierDeSerialisation");
         if(ifs) {
             std::cout<<"read serialisation file"<<std::endl;
             ITextArchive ia(ifs);
             std::vector<Entity*> entities;
             ia(entities);
             for (unsigned int i = 0; i < entities.size(); i++) {
-                World::addEntity(entities[i]);
+                getWorld()->addEntity(entities[i]);
                 if (entities[i]->getType() == "E_BIGTILE") {
                     for (unsigned int j = 0; j < entities[i]->getChildren().size(); j++) {
                         std::string texId =  entities[i]->getChildren()[j]->getFaces()[0]->getMaterial().getTexId();
@@ -183,7 +183,7 @@ namespace sorrok {
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
-                    World::getGridCellAt(Vec3f(entities[i]->getCenter().x, entities[i]->getCenter().y, 0))->setPassable(false);
+                    getWorld()->getGridCellAt(Vec3f(entities[i]->getCenter().x, entities[i]->getCenter().y, 0))->setPassable(false);
                 } else if (entities[i]->getType() == "E_DECOR") {
                     std::string texId =  entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().getTexId();
                     sf::IntRect texRect = entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().getTexRect();
@@ -204,7 +204,7 @@ namespace sorrok {
                 }
             }
             ifs.close();
-        } else {*/
+        } else {
             std::cout<<"not read serialisation file"<<std::endl;
             BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
             std::cout<<"generate map"<<std::endl;
@@ -259,7 +259,7 @@ namespace sorrok {
             w->setPosition(Vec3f(0, 130, 130 + w->getSize().y * 0.5f));
             w->setLayer(1);
             getWorld()->addEntity(w);
-        //}
+        }
         ps->setTexture(*tm.getResourceByAlias("PARTICLE"));
         for (unsigned int i = 0; i < 10; i++) {
             ps->addTextureRect(sf::IntRect(i*10, 0, 10, 10));

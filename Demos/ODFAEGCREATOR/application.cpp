@@ -1325,11 +1325,6 @@ void ODFAEGCreator::onExec() {
         fdTexturePath->setEventContextActivated(false);
         tScriptEdit->setEventContextActivated(true);
     }
-    if (dpSelectTexture != nullptr && dpSelectTexture->isDroppedDown()) {
-        bChooseText->setEventContextActivated(false);
-    } else if (dpSelectTexture != nullptr && !dpSelectTexture->isDroppedDown()) {
-        bChooseText->setEventContextActivated(true);
-    }
     std::string projectPath = fdProjectPath->getPathChosen();
     if (projectPath != "" && projectPath.find(".poc") != std::string::npos) {
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
@@ -3157,6 +3152,8 @@ void ODFAEGCreator::displayInfos (Shape* shape) {
     }
     Command cmdTxtChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectTexture), FastDelegate<void>(&ODFAEGCreator::onSelectedTextureChanged, this, dpSelectTexture));
     dpSelectTexture->getListener().connect("TextureChanged", cmdTxtChanged);
+    Command cmdTxtDroppedDown (FastDelegate<bool>(&DropDownList::isDroppedDown, dpSelectTexture), FastDelegate<void>(&ODFAEGCreator::onSelectedTextureDroppedDown, this, dpSelectTexture));
+    dpSelectTexture->getListener().connect("TextureDroppedDown", cmdTxtDroppedDown);
     selectTextNode->addOtherComponent(dpSelectTexture,Vec2f(0.75f, 0.025f));
     pMaterial->addChild(dpSelectTexture);
     bChooseText = new Button(Vec3f(0, 0, 0), Vec3f(100, 100, 0), fm.getResourceByAlias(Fonts::Serif),"New texture", 15, getRenderWindow());
@@ -3749,6 +3746,8 @@ void ODFAEGCreator::displayInfos(ParticleSystem* ps) {
     }
     Command cmdTxtChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectTexture), FastDelegate<void>(&ODFAEGCreator::onSelectedTextureChanged, this, dpSelectTexture));
     dpSelectTexture->getListener().connect("TextureChanged", cmdTxtChanged);
+    Command cmdTxtDroppedDown (FastDelegate<bool>(&DropDownList::isDroppedDown, dpSelectTexture), FastDelegate<void>(&ODFAEGCreator::onSelectedTextureDroppedDown, this, dpSelectTexture));
+    dpSelectTexture->getListener().connect("TextureDroppedDown", cmdTxtDroppedDown);
     selectTextNode->addOtherComponent(dpSelectTexture,Vec2f(0.75f, 0.025f));
     pMaterial->addChild(dpSelectTexture);
     bChooseText = new Button(Vec3f(0, 0, 0), Vec3f(100, 100, 0), fm.getResourceByAlias(Fonts::Serif),"New texture", 15, getRenderWindow());
@@ -3967,6 +3966,8 @@ void ODFAEGCreator::displayInfos (Tile* tile) {
     }
     Command cmdTxtChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectTexture), FastDelegate<void>(&ODFAEGCreator::onSelectedTextureChanged, this, dpSelectTexture));
     dpSelectTexture->getListener().connect("TextureChanged", cmdTxtChanged);
+    Command cmdTxtDroppedDown (FastDelegate<bool>(&DropDownList::isDroppedDown, dpSelectTexture), FastDelegate<void>(&ODFAEGCreator::onSelectedTextureDroppedDown, this, dpSelectTexture));
+    dpSelectTexture->getListener().connect("TextureDroppedDown", cmdTxtDroppedDown);
     selectTextNode->addOtherComponent(dpSelectTexture,Vec2f(0.75f, 0.025f));
     pMaterial->addChild(dpSelectTexture);
     bChooseText = new Button(Vec3f(0, 0, 0), Vec3f(100, 100, 0), fm.getResourceByAlias(Fonts::Serif),"New texture", 15, getRenderWindow());
@@ -5135,6 +5136,9 @@ void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
             sTextRect->setSize(Vec3f(conversionStringInt(tTexCoordW->getText()), conversionStringInt(tTexCoordH->getText()), 0));
         }
     }
+    bChooseText->setEventContextActivated(true);
+    if (bAddTexRect != nullptr)
+        bAddTexRect->setEventContextActivated(true);
 }
 /*void ODFAEGCreator::updateScriptTextCoords(Transformable* shape) {
     std::map<std::string, std::string>::iterator it;
@@ -5437,4 +5441,9 @@ void ODFAEGCreator::onViewPerspectiveChanged(DropDownList* dp) {
             }
         }
     }
+}
+void ODFAEGCreator::onSelectedTextureDroppedDown(DropDownList* dp) {
+    bChooseText->setEventContextActivated(false);
+    if (bAddTexRect != nullptr)
+        bChooseText->setEventContextActivated(false);
 }
