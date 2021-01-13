@@ -342,7 +342,7 @@ namespace sorrok {
         caracter->setShadowCenter(Vec3f(0, 280, -140));
         //std::cout<<bb2->getPosition()<<" "<<bb2->getSize()<<std::endl;
         g2d::PonctualLight* light1 = new g2d::PonctualLight(Vec3f(-50, 420, 420), 100, 50, 0, 255, sf::Color::Yellow, 16);
-        light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 0, 255, sf::Color::Yellow, 16);
+        g2d::PonctualLight* light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 0, 255, sf::Color::Yellow, 16);
         getWorld()->addEntity(light1);
         getWorld()->addEntity(light2);
         //getView().move(d.x * 0.5f, d.y * 0.5f, 0);

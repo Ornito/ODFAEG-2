@@ -50,7 +50,7 @@ namespace sorrok {
         std::vector<odfaeg::graphic::Tile*> tiles;
         std::vector<odfaeg::graphic::Tile*> walls;
         odfaeg::graphic::Map* theMap;
-        odfaeg::graphic::g2d::PonctualLight* light2;
+        //odfaeg::graphic::g2d::PonctualLight* light2;
         odfaeg::graphic::Shader shader;
         odfaeg::core::ResourceCache<> cache;
         unsigned int fpsCounter;

@@ -2262,7 +2262,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         int nb = 0;
         std::map<std::string, unsigned int>::iterator it = nbs.find(cl.getName());
         if (it != nbs.end()) {
-            nb - it->second;
+            nb = it->second+1;
+            it->second = nb;
         } else {
             updateNb(cl.getName(), nb);
         }
@@ -2290,35 +2291,16 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             sourceCode += "    void readObjects (ODFAEGCreator* c);\n";
             sourceCode += "}\n";
             sourceCode += "void createObject(ODFAEGCreator *c) {\n";
+            sourceCode += "    odfaeg::core::Application::app = c;\n";
             sourceCode += "}\n";
             sourceCode += "void readObjects (ODFAEGCreator *c) {\n";
+            sourceCode += "    odfaeg::core::Application::app = c;\n";
             sourceCode += "}\n";
         }
         std::string sourceFile = cl.getSourcePath();
         //std::cout<<"source file : "<<sourceFile<<std::endl;
         if (sourceCode.find("#include \""+headerFile+"\"") == std::string::npos) {
             sourceCode.insert(0, "#include \""+headerFile+"\"\n");
-            std::vector<odfaeg::core::Class> superClasses = cl.getSuperClasses();
-            bool found = false;
-            while (superClasses.size() > 0 && !found) {
-                for (unsigned int i = 0; i < superClasses.size() && !found; i++) {
-                    std::cout<<"super class name : "<<superClasses[i].getName()<<std::endl;
-                    if (superClasses[i].getName() == "Entity") {
-                        std::cout<<"found entity!"<<std::endl;
-                        found = true;
-                    }
-                    std::vector<odfaeg::core::Class> tmpSuperClasses = superClasses[i].getSuperClasses();
-                    for (unsigned int j = 0; j < tmpSuperClasses.size(); j++) {
-                        superClasses.push_back(tmpSuperClasses[j]);
-                     }
-                     if (superClasses.size() > 0)  {
-                        superClasses.erase(superClasses.begin(), superClasses.begin()+1);
-                     }
-                }
-            }
-            if (found) {
-                sourceCode.insert(0, "#define ENTITY"+taObjectName->getText()+"\n");
-            }
             std::string toInsert = "";
             int pos;
             if (sourceCode.find("}") != std::string::npos) {
@@ -2334,8 +2316,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 }
                 sourceCode.insert(pos, toInsert);
                 toInsert = "";
-                std::string toFind = "void createObject(ODFAEGCreator *c) {";
-                pos = sourceCode.find(toFind)+toFind.size()+1;
+                std::string toFind = "void createObject(ODFAEGCreator *c) {\n    odfaeg::core::Application::app = c;\n";
+                pos = sourceCode.find(toFind)+toFind.size();
                 if (dpSelectPointerType->getSelectedItem() != "No pointer" && dpSelectPointerType->getSelectedItem() != dpSelectClass->getSelectedItem()) {
                     std::vector<std::string> parts = split(dpSelectPointerType->getSelectedItem(), "::");
                     std::string name = parts[parts.size()-1];
@@ -2346,8 +2328,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 toInsert += "   oa"+cl.getName()+"(v"+cl.getName()+");\n";
                 sourceCode.insert(pos, toInsert);
                 toInsert = "";
-                toFind = "void readObjects (ODFAEGCreator *c) {";
-                pos = sourceCode.find(toFind)+toFind.size()+1;
+                toFind = "void readObjects (ODFAEGCreator *c) {\n    odfaeg::core::Application::app = c;\n";
+                pos = sourceCode.find(toFind)+toFind.size();
                 if (dpSelectPointerType->getSelectedItem() != "No pointer" && dpSelectPointerType->getSelectedItem() != dpSelectClass->getSelectedItem()) {
                     std::vector<std::string> parts = split(dpSelectPointerType->getSelectedItem(), "::");
                     std::string name = parts[parts.size()-1];
@@ -2364,7 +2346,27 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 sourceCode.insert(pos, toInsert);
             }
         }
-
+        std::vector<odfaeg::core::Class> superClasses = cl.getSuperClasses();
+        bool found = false;
+        while (superClasses.size() > 0 && !found) {
+            for (unsigned int i = 0; i < superClasses.size() && !found; i++) {
+                std::cout<<"super class name : "<<superClasses[i].getName()<<std::endl;
+                if (superClasses[i].getName() == "Entity") {
+                    std::cout<<"found entity!"<<std::endl;
+                    found = true;
+                }
+                std::vector<odfaeg::core::Class> tmpSuperClasses = superClasses[i].getSuperClasses();
+                for (unsigned int j = 0; j < tmpSuperClasses.size(); j++) {
+                    superClasses.push_back(tmpSuperClasses[j]);
+                 }
+                 if (superClasses.size() > 0)  {
+                    superClasses.erase(superClasses.begin(), superClasses.begin()+1);
+                 }
+            }
+        }
+        if (found) {
+            sourceCode.insert(0, "#define ENTITY"+taObjectName->getText()+"\n");
+        }
         std::vector<std::string> argValues;
         for (unsigned int i = 0; i < tmpTextAreas.size(); i++) {
             argValues.push_back(tmpTextAreas[i]->getText());
@@ -3387,7 +3389,7 @@ void ODFAEGCreator::displayEntityInfos(Entity* tile) {
     Node* selectParentNode = new Node("SelectParent",lSelectParent,Vec2f(0, 0),Vec2f(0.25, 0.025),rootInfosNode.get());
     dpSelectParent = new DropDownList(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"NONE", 15);
     std::vector<Entity*> parents = getWorld()->getEntities("*");
-    std::cout<<"parent size : "<<parents.size()<<std::endl;
+    //std::cout<<"parent size : "<<parents.size()<<std::endl;
     for (unsigned int i = 0; i < parents.size(); i++) {
         if (!parents[i]->isLeaf()) {
             dpSelectParent->addItem(parents[i]->getName(), 15);
@@ -4740,7 +4742,11 @@ void ODFAEGCreator::onSelectedParentChanged(DropDownList* dp) {
         if (entity != nullptr && dynamic_cast<Entity*>(selectedObject)) {
 
             if (!entity->isAnimated()) {
+                getWorld()->removeEntity(static_cast<Entity*>(selectedObject));
+                getWorld()->removeEntity(static_cast<Entity*>(entity));
                 static_cast<Entity*>(selectedObject)->setParent(entity);
+                entity->addChild(static_cast<Entity*>(selectedObject));
+                getWorld()->addEntity(entity);
             } else {
                 if (dynamic_cast<Anim*>(entity)) {
                     getWorld()->removeEntity(static_cast<Entity*>(selectedObject));

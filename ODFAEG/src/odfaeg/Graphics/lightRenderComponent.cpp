@@ -779,6 +779,7 @@ namespace odfaeg {
                                 math::Matrix4f m = m_light_instances[i].getTransforms()[j]->getMatrix().transpose();
                                 lightMapGenerator.setParameter("worldMatrix", m);
                                 EntityLight* el = static_cast<EntityLight*> (m_light_instances[i].getVertexArrays()[j]->getEntity());
+                                //std::cout<<"add light : "<<el<<std::endl;
                                 math::Vec3f center = getWindow().mapCoordsToPixel(el->getLightCenter(), view);
                                 center.w = el->getSize().x * 0.5f;
                                 lightMapGenerator.setParameter("lightPos", center.x, center.y, center.z, center.w);

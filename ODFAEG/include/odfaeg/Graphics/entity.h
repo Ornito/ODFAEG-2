@@ -49,8 +49,8 @@ namespace odfaeg {
                 *  \brief get the number of entities which exist.
                 *  \return the number of entities which exist.
                 */
-                static int getNbEntities ();
-                static int getNbEntitiesTypes();
+                /*static int getNbEntities ();
+                static int getNbEntitiesTypes();*/
                 //Get teh type of the entity.
                 /**
                 *  \fn std::string getType() const;
@@ -73,7 +73,7 @@ namespace odfaeg {
                 *  \param the type's id.
                 *  \return  int type : the type's name of the given type's id.
                 */
-                static std::string getTypeOfInt (int type);
+                //static std::string getTypeOfInt (int type);
                 /**
                 *  \fn int getIntOfType (std::string type)
                 *  \brief get the type's id of the given type's name.
@@ -82,7 +82,7 @@ namespace odfaeg {
                 *  \return the type's id.
                 */
                 //Get the id corresponding to the given type.
-                static int getIntOfType (std::string type);
+                //static int getIntOfType (std::string type);
                 /**
                 *  \fn int getRadius()
                 *  \brief get the radius of the entity.
@@ -101,13 +101,13 @@ namespace odfaeg {
                 /** \fn std::string std::map<int, std::string>
                 *   \param get the list of the id's and associated type's names.
                 */
-                static std::map<int, std::string>* initTypes () {
+                /*static std::map<int, std::string>* initTypes () {
                     if (types == nullptr) {
                         static std::map<int, std::string> *t = new std::map<int, std::string> ();
                         return t;
                     }
                     return types;
-                }
+                }*/
                 //Return the id of the entity.
                 /** \fn int getId()
                 *   \brief get the id of the entity.
@@ -314,7 +314,7 @@ namespace odfaeg {
                 *   \param Archive : the archive onwhich to serialize the entities.
                 */
                 void updateTransform();
-                void setTypeInt(int iType);
+                //void setTypeInt(int iType);
                 template <typename Archive>
                 void vtserialize(Archive & ar) {
                     Transformable::serialize(ar);
@@ -352,8 +352,8 @@ namespace odfaeg {
                 /** \fn void onLoad()
                 *   \brief load the entities.
                 */
-                void onLoad() {
-                    types = initTypes();
+                void onLoad();/* {
+                    /*types = initTypes();
                     int iType = getIntOfType(getType());
                     if (iType == -1) {
                         type = std::pair<int, std::string> (nbEntitiesTypes, getType());
@@ -361,7 +361,8 @@ namespace odfaeg {
                         nbEntitiesTypes++;
                     }
                     nbEntities++;
-                }
+
+                }*/
                 Entity* getRoot() {
                     if (parent != nullptr)
                         return parent->getRoot();
@@ -412,12 +413,12 @@ namespace odfaeg {
                 math::Vec3f shadowCenter, shadowScale, shadowRotationAxis, shadowOrigin, refractDir; /**> The center of the shadow of the entity.*/
                 float shadowRotationAngle;
                 std::vector<std::unique_ptr<Face>> faces; /**> the faces of the entity.*/
-                static std::map<int, std::string> *types; /** A list of the type's id and name's of the entities. */
+                //static std::map<int, std::string> *types; /** A list of the type's id and name's of the entities. */
                 std::pair<int, std::string> type; /** The type's id and the type's name of the entity.*/
                 std::vector<std::unique_ptr<Entity>> children; /** the children of the entities. */
                 Entity* parent; /** the parent of the entity. */
                 int id; /** the id of the entity.*/
-                static int nbEntities, nbEntitiesTypes; /** the number of entities and the number of entities types.*/
+                //static int nbEntities, nbEntitiesTypes; /** the number of entities and the number of entities types.*/
                 core::State entityState; /** the states of the entity.*/
                 std::unique_ptr<physic::BoundingVolume> collisionVolume; /** the collision volume of the entity*/
                 Entity(const Entity& entity) = delete; /**> an entity if not copiable.*/

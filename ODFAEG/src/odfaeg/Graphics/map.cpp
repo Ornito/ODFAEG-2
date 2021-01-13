@@ -668,8 +668,8 @@ namespace odfaeg {
                 }
             }
             /*if (entity->getType() == "E_PONCTUAL_LIGHT") {
-                    std::cout<<"ponctual light"<<std::endl;
-                    sf:sleep(sf::seconds(1));
+                    std::cout<<"ponctual light : "<<entity<<std::endl;
+
             }*/
             //if (entity->isLeaf()) {
                 for (unsigned int j = 0; j < entity->getFaces().size(); j++) {
@@ -818,9 +818,9 @@ namespace odfaeg {
                     visibleParentEntities.clear();
                     vEntitiesByType.clear();
                     visibleEntities.clear();
-                    visibleEntities.resize(Entity::getNbEntitiesTypes());
+                    visibleEntities.resize(core::Application::app->getNbEntitiesTypes());
                     for (unsigned int i = 0; i < visibleEntities.size(); i++) {
-                        visibleEntities[i].resize(Entity::getNbEntities(), nullptr);
+                        visibleEntities[i].resize(core::Application::app->getNbEntities(), nullptr);
                     }
                     int x = view.getPosition().x;
                     int y = view.getPosition().y;
@@ -839,9 +839,11 @@ namespace odfaeg {
                                     for (unsigned int n = 0; n < cell->getNbEntitiesInside(); n++) {
                                        Entity* entity = cell->getEntityInside(n);
                                        physic::BoundingBox& bounds = entity->getGlobalBounds();
-                                       //std::cout<<"add entities on component : "<<entity->getType()<<","<<entity->getRootTypeInt()<<","<<entity->getId()<<std::endl;
-                                       if (bx.intersects(bounds) || bx.isInside(bounds) && visibleEntities[entity->getRootTypeInt()][entity->getId()] == nullptr) {
 
+                                       if (bx.intersects(bounds) || bx.isInside(bounds) && visibleEntities[entity->getRootTypeInt()][entity->getId()] == nullptr) {
+                                           /*if (entity->getType() == "E_PONCTUAL_LIGHT")
+                                                std::cout<<"add light : "<<entity<<std::endl;*/
+                                           //std::cout<<"add entities on component : "<<entity->getType()<<","<<entity->getRootTypeInt()<<","<<entity->getId()<<","<<visibleEntities.size()<<","<<visibleEntities[entity->getRootTypeInt()].size()<<std::endl;
                                            visibleEntities[entity->getRootTypeInt()][entity->getId()] = entity;
                                        }
 
@@ -1206,7 +1208,7 @@ namespace odfaeg {
             }
             vector<string> types = core::split(type, "+");
             for (unsigned int t = 0; t < types.size(); t++) {
-                unsigned int type = Entity::getIntOfType(types[t]);
+                unsigned int type = core::Application::app->getIntOfType(types[t]);
                 //std::cout<<"type : "<<type<<std::endl;
                 if (type < visibleEntities.size()) {
                     vector<Entity*> visibleEntitiesType = visibleEntities[type];
@@ -1224,6 +1226,8 @@ namespace odfaeg {
                                     entities.push_back(visibleEntitiesType[i]);
                                 }
                             } else {
+                                /*if (visibleEntitiesType[i]->getType() == "E_PONCTUAL_LIGHT")
+                                    std::cout<<"add light : "<<visibleEntitiesType[i]<<std::endl;*/
                                 entities.push_back(visibleEntitiesType[i]);
                             }
                         }

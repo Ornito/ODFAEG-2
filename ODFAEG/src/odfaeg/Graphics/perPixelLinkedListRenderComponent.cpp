@@ -578,7 +578,9 @@ namespace odfaeg {
 
             //std::cout<<"load tile"<<std::endl;
             for (unsigned int i = 0; i < vEntities.size(); i++) {
+                //std::cout<<"type : "<<vEntities[i]->getType()<<std::endl;
                 if ( vEntities[i]->isLeaf()) {
+                    //std::cout<<"leaf type : "<<vEntities[i]->getType()<<std::endl;
                     for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
                          if (vEntities[i]->getDrawMode() == Entity::INSTANCED) {
                             //std::cout<<"draw instanced"<<std::endl;

@@ -48,6 +48,7 @@ namespace odfaeg {
                 addClock(timeClock, "TimeClock");
                 listener = std::make_unique<Listener>();
                 eventContextActivated = true;
+                nbEntities = nbEntitiesTypes = 0;
             }
             /** \fn Application()
             *   \brief create a console odfaeg application.
@@ -60,6 +61,36 @@ namespace odfaeg {
                 sf::Clock timeClock;
                 addClock(timeClock, "TimeClock");
                 eventContextActivated = true;
+            }
+            int getIntOfType(std::string sType) {
+                std::map<int, std::string>::iterator it;
+                for (it = types.begin(); it != types.end(); ++it) {
+                    if (it->second == sType)
+                        return it->first;
+                }
+                return -1;
+            }
+            int getUniqueId() {
+                nbEntities++;
+                return nbEntities;
+            }
+            std::pair<int, std::string> updateTypes(std::string sType) {
+                int iType = getIntOfType(sType);
+                if (iType == -1) {
+                    std::pair<int, std::string> type = std::pair<int, std::string> (nbEntitiesTypes, sType);
+                    types.insert(type);
+                    nbEntitiesTypes++;
+                    return type;
+                } else {
+                    std::map<int, std::string>::iterator it = types.find(iType);
+                    return *it;
+                }
+            }
+            unsigned int getNbEntities() {
+                return nbEntities;
+            }
+            unsigned int getNbEntitiesTypes() {
+                return nbEntitiesTypes;
             }
             void addWindow(graphic::RenderWindow* window, bool holdWindow = true) {
                 if (windows.size() != 0) {
@@ -305,6 +336,8 @@ namespace odfaeg {
             std::thread rendering_thread;
             std::recursive_mutex rec_mutex;
             graphic::World world;
+            unsigned int nbEntities, nbEntitiesTypes;
+            std::map<int, std::string> types;
         };
     }
 }
