@@ -48,7 +48,7 @@ namespace odfaeg {
                 addClock(timeClock, "TimeClock");
                 listener = std::make_unique<Listener>();
                 eventContextActivated = true;
-                nbEntities = nbEntitiesTypes = 0;
+                nbEntities = nbEntitiesTypes = nbComponents = 0;
             }
             /** \fn Application()
             *   \brief create a console odfaeg application.
@@ -61,6 +61,7 @@ namespace odfaeg {
                 sf::Clock timeClock;
                 addClock(timeClock, "TimeClock");
                 eventContextActivated = true;
+                nbEntities = nbEntitiesTypes = nbComponents = 0;
             }
             int getIntOfType(std::string sType) {
                 std::map<int, std::string>::iterator it;
@@ -73,6 +74,10 @@ namespace odfaeg {
             int getUniqueId() {
                 nbEntities++;
                 return nbEntities;
+            }
+            int getComponentId() {
+                nbComponents++;
+                return nbComponents;
             }
             std::pair<int, std::string> updateTypes(std::string sType) {
                 int iType = getIntOfType(sType);
@@ -336,7 +341,7 @@ namespace odfaeg {
             std::thread rendering_thread;
             std::recursive_mutex rec_mutex;
             graphic::World world;
-            unsigned int nbEntities, nbEntitiesTypes;
+            unsigned int nbEntities, nbEntitiesTypes, nbComponents;
             std::map<int, std::string> types;
         };
     }

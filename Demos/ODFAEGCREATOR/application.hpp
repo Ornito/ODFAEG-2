@@ -101,6 +101,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onSelectedMClassChanged(odfaeg::graphic::gui::DropDownList *dp);
     void onSelectedMFunctionChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onViewPerspectiveChanged(odfaeg::graphic::gui::DropDownList* dp);
+    std::map<std::string, std::vector<odfaeg::graphic::Entity*>>& getExternals();
     enum Fonts {
         Serif
     };
@@ -163,5 +164,6 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::core::RuntimeCompiler rtc;
         std::map<std::string, unsigned int> nbs;
         std::vector<odfaeg::graphic::Entity*> selectionBorders;
+        std::map<std::string, std::vector<odfaeg::graphic::Entity*>> externals;
 };
 #endif

@@ -8,7 +8,7 @@ using namespace odfaeg::core;
 int main(int argc, char* argv[]) {
     EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
     EXPORT_CLASS_GUID(EntityTile, Entity, Tile)
-    EXPORT_CLASS_GUID(EntityTile, Entity, BigTile)
+    EXPORT_CLASS_GUID(EntityBigTile, Entity, BigTile)
     EXPORT_CLASS_GUID(EntityWall, Entity, g2d::Wall)
     EXPORT_CLASS_GUID(EntityDecor, Entity, g2d::Decor)
     EXPORT_CLASS_GUID(EntityAnimation, Entity, Anim)

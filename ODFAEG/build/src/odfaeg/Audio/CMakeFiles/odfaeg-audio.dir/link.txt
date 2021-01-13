@@ -1,2 +1,2 @@
-C:\PROGRA~2\CODEBL~1\MinGW\bin\ar.exe qc ..\..\..\lib\libodfaeg-audio-s.a  CMakeFiles/odfaeg-audio.dir/player.cpp.obj CMakeFiles/odfaeg-audio.dir/stream.cpp.obj CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj
-C:\PROGRA~2\CODEBL~1\MinGW\bin\ranlib.exe ..\..\..\lib\libodfaeg-audio-s.a
+C:\PROGRA~2\CODEBL~1\MinGW\bin\ar.exe qc ..\..\..\lib\libodfaeg-audio-s-d.a  CMakeFiles/odfaeg-audio.dir/player.cpp.obj CMakeFiles/odfaeg-audio.dir/stream.cpp.obj CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj
+C:\PROGRA~2\CODEBL~1\MinGW\bin\ranlib.exe ..\..\..\lib\libodfaeg-audio-s-d.a

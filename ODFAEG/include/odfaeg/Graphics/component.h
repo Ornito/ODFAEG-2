@@ -7,18 +7,8 @@ namespace odfaeg {
     namespace graphic {
         class Component : public Drawable, public Transformable {
         public :
-            Component(RenderWindow& window, math::Vec3f position, math::Vec3f size, math::Vec3f origin, unsigned int priority=0)
-            : Transformable(position, size, origin),
-            listener(),
-            priority(priority),
-            window(window) {
-                activateEventContext = true;
-                visible = true;
-                id = nbComponents;
-                nbComponents++;
-                autoResize = false;
-                relPosition = false;
-            }
+            Component(RenderWindow& window, math::Vec3f position, math::Vec3f size, math::Vec3f origin, unsigned int priority=0);
+
             /** \fn set the relative position relative to the top-left of the parent's component.
             * if the component haven't any parent, the parent is the window.
             * \param x : the relative position for x axis : 1 = 100%, 0 = 0%.
@@ -103,7 +93,7 @@ namespace odfaeg {
             bool activateEventContext;
             bool visible;
             int id;
-            static int nbComponents;
+            //static int nbComponents;
             unsigned int priority;
             float relPosX, relPosY, relSizeX, relSizeY;
             bool autoResize, relPosition;
