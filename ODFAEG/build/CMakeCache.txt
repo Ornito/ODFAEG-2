@@ -28,7 +28,7 @@ CMAKE_AR:FILEPATH=C:/Program Files (x86)/CodeBlocks/MinGW/bin/ar.exe
 CMAKE_ARCHITECTURE:STRING=i386
 
 //Choose the type of build (Debug or Release)
-CMAKE_BUILD_TYPE:STRING=Debug
+CMAKE_BUILD_TYPE:STRING=Release
 
 //Enable/Disable color output during build.
 CMAKE_COLOR_MAKEFILE:BOOL=ON

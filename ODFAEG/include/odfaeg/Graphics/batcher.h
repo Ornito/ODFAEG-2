@@ -101,11 +101,11 @@ namespace odfaeg {
             std::vector<TextureInfo*> texInfos; /**> The informations about the textures. */
             sf::Color color; /**> the color of the material. */
             float specularIntensity, specularPower, refractionFactor;
-            static unsigned int nbMaterials;
+            //static unsigned int nbMaterials;
             unsigned int id, instanceId;
             const Texture* bumpTexture;
-            static std::vector<Material*> materials;
-            static std::vector<Material*> sameMaterials;
+            /*static std::vector<Material*> materials;
+            static std::vector<Material*> sameMaterials;*/
             bool reflectable, refractable;
             public :
             /**
@@ -114,7 +114,7 @@ namespace odfaeg {
             */
             Material();
             unsigned int getId();
-            static unsigned int getNbMaterials();
+            //static unsigned int getNbMaterials();
             /**
             * \fn int getNbTextures ()
             * \brief return the number of textures.

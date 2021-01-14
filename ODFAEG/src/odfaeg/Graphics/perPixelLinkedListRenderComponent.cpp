@@ -430,7 +430,7 @@ namespace odfaeg {
                 }
                 for (unsigned int i = 0; i < m_normals.size(); i++) {
                    if (m_normals[i].getAllVertices().getVertexCount() > 0) {
-                        //std::cout<<"draw normal"<<std::endl;
+                        //std::cout<<"next frame draw normal"<<std::endl;
                         if (m_normals[i].getMaterial().getTexture() == nullptr) {
                             perPixelLinkedList2.setParameter("haveTexture", 0.f);
                         } else {
@@ -586,7 +586,7 @@ namespace odfaeg {
                             //std::cout<<"draw instanced"<<std::endl;
                             batcher.addFace( vEntities[i]->getFace(j));
                          } else {
-                            //std::cout<<"draw normal"<<std::endl;
+                            //std::cout<<"add normal"<<std::endl;
                             normalBatcher.addFace(vEntities[i]->getFace(j));
                          }
                     }

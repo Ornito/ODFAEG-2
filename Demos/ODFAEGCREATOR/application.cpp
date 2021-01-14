@@ -1,6 +1,6 @@
 #include "application.hpp"
-#include "odfaeg/Core/action.h"
-#include "odfaeg/Core/command.h"
+#include "odfaeg/Window/action.h"
+#include "odfaeg/Window/command.h"
 #include <sys/stat.h>
 #include <stdlib.h>
 #include "odfaeg/Core/utilities.h"
@@ -1298,6 +1298,49 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     oldY = IMouse::getPosition(getRenderWindow()).y;
 }
 void ODFAEGCreator::onExec() {
+    std::map<std::string, std::vector<Entity*>>::iterator it;
+    std::map<std::string, std::vector<Entity*>>::iterator it2;
+    for (it = toAdd.begin(); it != toAdd.end(); it++) {
+        it2 = externals.find(it->first);
+        if (it2 == externals.end()) {
+            externals.insert(std::make_pair(it->first, std::vector<Entity*>()));
+            it2 = externals.find(it->first);
+        }
+        for (unsigned int i = 0; i < it->second.size(); i++) {
+            //std::cout<<"clone entity"<<std::endl;
+            Entity* entity = it->second[i]->clone();
+            /*for (unsigned int j = 0; j < entity->getChildren().size(); j++) {
+                std::cout<<"parent : "<<entity->getChildren()[j]->getParent()<<","<<entity<<std::endl;
+            }*/
+            entity->setExternal(true);
+            getWorld()->addEntity(entity);
+            std::vector<Entity*> entities=getWorld()->getChildrenEntities(entity->getType());
+            TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
+            for (unsigned int e = 0; e < entities.size(); e++) {
+                std::cout<<"type : "<<entities[e]->getType()<<std::endl;
+                for (unsigned int f = 0; f < entities[e]->getNbFaces(); f++) {
+                    Face* face = entities[e]->getFace(f);
+                    std::string alias = face->getMaterial().getTexId();
+                    std::cout<<"alias : "<<alias<<std::endl;
+                    if (alias != "") {
+                        face->getMaterial().clearTextures();
+                        face->getMaterial().addTexture(tm.getResourceByAlias(alias), face->getMaterial().getTexRect());
+                    } else {
+                        face->getMaterial().clearTextures();
+                        face->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
+                    }
+                }
+            }
+            it2->second.push_back(entity);
+            if (i == it->second.size()-1) {
+                selectedObject=entity;
+                displayTransformInfos(entity);
+                displayEntityInfos(entity);
+            }
+            delete it->second[i];
+        }
+    }
+    toAdd.clear();
     std::string path = fdTexturePath->getPathChosen();
     if (path != "") {
         unsigned int lastSlash;
@@ -2389,9 +2432,9 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 toInsert += "   odfaeg::core::ITextArchive ia"+cl.getName()+" (if"+cl.getName()+");\n";
                 toInsert += "   ia"+cl.getName()+"(v"+cl.getName()+");\n";
                 if (found) {
-                    toInsert += "   c->getExternals().insert(std::make_pair(\""+cl.getName()+"\",v"+cl.getName()+"));\n";
+                    //toInsert += "   c->getExternals().insert(std::make_pair(\""+cl.getName()+"\",v"+cl.getName()+"));\n";
                     toInsert += "   for (unsigned int i = 0; i < v"+cl.getName()+".size(); i++)\n";
-                    toInsert += "       c->addExternalEntity(v"+cl.getName()+"[i]);\n";
+                    toInsert += "       c->addExternalEntity(v"+cl.getName()+"[i],\""+cl.getName()+"\");\n";
                     toInsert += "   c->updateNb(\""+cl.getName()+"\",v"+cl.getName()+".size());\n";
                 }
                 sourceCode.insert(pos, toInsert);
@@ -2432,8 +2475,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 } else {
                     toInsert += "       "+dpSelectPointerType->getSelectedItem()+" *"+taObjectName->getText()+" = new "+dpSelectClass->getSelectedItem()+" ("+args+");\n";
                 }
-                toInsert += "       it"+cl.getName()+"->second.push_back("+taObjectName->getText()+");\n";
-                toInsert += "       c->addExternalEntity("+taObjectName->getText()+");\n";
+                //toInsert += "       it"+cl.getName()+"->second.push_back("+taObjectName->getText()+");\n";
+                toInsert += "       c->addExternalEntity("+taObjectName->getText()+",\""+cl.getName()+"\");\n";
                 toInsert += "   }\n";
                 it->second += 1;
             } else {
@@ -2526,15 +2569,21 @@ void ODFAEGCreator::actionPerformed(Button* button) {
 void ODFAEGCreator::updateNb(std::string name, unsigned int nb) {
     nbs.insert(std::make_pair(name, nb));
 }
-void ODFAEGCreator::addExternalEntity(Entity* entity) {
-    //std::cout<<"add entity"<<std::endl;
+void ODFAEGCreator::addExternalEntity(Entity* entity, std::string type) {
+    //std::cout<<"add entity : "<<entity<<std::endl;
     /*Command::sname = "EXTERNAL";
     name = "EXTERNAL";*/
-    entity->setExternal(true);
+    /*entity->setExternal(true);
     selectedObject=entity;
     displayTransformInfos(entity);
     displayEntityInfos(entity);
-    getWorld()->addEntity(entity);
+    getWorld()->addEntity(entity);*/
+    std::map<std::string, std::vector<Entity*>>::iterator it = toAdd.find(type);
+    if (it == toAdd.end()) {
+        toAdd.insert(std::make_pair(type, std::vector<Entity*>()));
+        it = toAdd.find(type);
+    }
+    it->second.push_back(entity);
 }
 std::map<std::string, std::vector<Entity*>>& ODFAEGCreator::getExternals() {
     return externals;

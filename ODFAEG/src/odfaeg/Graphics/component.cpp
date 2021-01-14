@@ -10,6 +10,7 @@ namespace odfaeg {
         window(window) {
             activateEventContext = true;
             visible = true;
+            id = -1;
             if (core::Application::app != nullptr)
                 id = core::Application::app->getComponentId()-1;
             /*id = nbComponents;

@@ -48,7 +48,7 @@ namespace odfaeg {
                 addClock(timeClock, "TimeClock");
                 listener = std::make_unique<Listener>();
                 eventContextActivated = true;
-                nbEntities = nbEntitiesTypes = nbComponents = 0;
+                nbEntities = nbEntitiesTypes = nbComponents = nbMaterials = 0;
             }
             /** \fn Application()
             *   \brief create a console odfaeg application.
@@ -61,7 +61,19 @@ namespace odfaeg {
                 sf::Clock timeClock;
                 addClock(timeClock, "TimeClock");
                 eventContextActivated = true;
-                nbEntities = nbEntitiesTypes = nbComponents = 0;
+                nbEntities = nbEntitiesTypes = nbComponents = nbMaterials = 0;
+            }
+            unsigned int getNbMaterials() {
+                return nbMaterials;
+            }
+            void setNbMaterials(unsigned int nbMaterials) {
+                this->nbMaterials = nbMaterials;
+            }
+            std::vector<graphic::Material*>& getMaterials() {
+                return materials;
+            }
+            std::vector<graphic::Material*>& getSameMaterials() {
+                return sameMaterials;
             }
             int getIntOfType(std::string sType) {
                 std::map<int, std::string>::iterator it;
@@ -341,7 +353,9 @@ namespace odfaeg {
             std::thread rendering_thread;
             std::recursive_mutex rec_mutex;
             graphic::World world;
-            unsigned int nbEntities, nbEntitiesTypes, nbComponents;
+            unsigned int nbEntities, nbEntitiesTypes, nbComponents, nbMaterials;
+            std::vector<graphic::Material*> materials;
+            std::vector<graphic::Material*> sameMaterials;
             std::map<int, std::string> types;
         };
     }

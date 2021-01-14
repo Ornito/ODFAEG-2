@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "../../../lib/libodfaeg-math-s-d.a"
-  "../../../lib/libodfaeg-math-s-d.pdb"
+  "../../../lib/libodfaeg-math-s.a"
+  "../../../lib/libodfaeg-math-s.pdb"
   "CMakeFiles/odfaeg-math.dir/bigInt.cpp.obj"
   "CMakeFiles/odfaeg-math.dir/computer.cpp.obj"
   "CMakeFiles/odfaeg-math.dir/distribution.cpp.obj"

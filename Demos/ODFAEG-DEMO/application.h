@@ -23,7 +23,7 @@
 #include "odfaeg/Graphics/2D/ponctualLight.h"
 #include "odfaeg/Graphics/2D/wall.h"
 #include "odfaeg/Graphics/tGround.h"
-#include "odfaeg/Core/command.h"
+#include "odfaeg/Window/command.h"
 #include "odfaeg/Graphics/entitiesUpdater.h"
 #include "odfaeg/Graphics/animationUpdater.h"
 #include "odfaeg/Graphics/particleSystemUpdater.hpp"

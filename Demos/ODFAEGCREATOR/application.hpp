@@ -95,7 +95,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onSelectedClassChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onSelectedFunctionChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onDroppedDown(odfaeg::graphic::gui::DropDownList* dp);
-    void addExternalEntity(odfaeg::graphic::Entity* entity);
+    void addExternalEntity(odfaeg::graphic::Entity* entity, std::string type);
     void updateNb(std::string name, unsigned int nb);
     void onSelectPointerType(odfaeg::graphic::gui::DropDownList* dp);
     void onSelectedMClassChanged(odfaeg::graphic::gui::DropDownList *dp);
@@ -166,5 +166,6 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::map<std::string, unsigned int> nbs;
         std::vector<odfaeg::graphic::Entity*> selectionBorders;
         std::map<std::string, std::vector<odfaeg::graphic::Entity*>> externals;
+        std::map<std::string, std::vector<odfaeg::graphic::Entity*>> toAdd;
 };
 #endif

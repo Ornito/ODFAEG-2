@@ -22,6 +22,7 @@ namespace odfaeg {
             /*type.first = -1;
             type.second = sType;
             id = nbEntities;*/
+            id = -1;
             if (core::Application::app != nullptr) {
                 id = core::Application::app->getUniqueId()-1;
                 type = core::Application::app->updateTypes(sType);
@@ -58,7 +59,8 @@ namespace odfaeg {
             entity->setSize(getSize());
             entity->setOrigin(getOrigin());
             entity->setRotation(getRotation());
-            entity->parent = parent;
+            //entity->parent = parent;
+            //std::cout<<"parent : "<<parent<<",this : "<<this<<std::endl;
             entity->entityState = entityState;
             entity->alreadySerialized = false;
             entity->collisionVolume = (collisionVolume == nullptr) ? nullptr : getCollisionVolume()->clone();
@@ -72,12 +74,15 @@ namespace odfaeg {
             entity->water = water;
             entity->layer = layer;
             entity->type = type;
+            //std::cout<<"clone id : "<<entity->getId()<<std::endl;
             for (unsigned int i = 0; i < faces.size(); i++) {
                 entity->addFace(new Face(faces[i]->getVertexArray(), faces[i]->getMaterial(), entity->getTransform()));
                 entity->getFace(i)->getVertexArray().setEntity(entity);
             }
             for (unsigned int i = 0; i < children.size(); i++) {
-                entity->addChild(children[i]->clone());
+                Entity* child = children[i]->clone();
+                child->setParent(entity);
+                entity->addChild(child);
             }
         }
         void Entity::setExternal(bool external) {

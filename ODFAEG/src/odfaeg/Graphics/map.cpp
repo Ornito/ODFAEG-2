@@ -677,6 +677,7 @@ namespace odfaeg {
                          increaseComptImg(entity->getFaces()[j]->getMaterial().getTexture());
                      }
                 }
+                //std::cout<<"add entity parent : "<<entity->getParent()<<", this : "<<entity<<std::endl;
                 return gridMap->addEntity(entity);
                 /*for (unsigned int c = 0; c < frcm->getNbComponents(); c++) {
                     if(frcm->getRenderComponent(c) != nullptr) {
@@ -1176,6 +1177,7 @@ namespace odfaeg {
         }
 
         vector<Entity*> Map::getVisibleEntities (std::string type) {
+            //std::cout<<"get visible entities"<<std::endl;
             std::vector<Entity*> entities;
             if (type.size() > 0 && type.at(0) == '*') {
                 if (type.find("-") != string::npos)
@@ -1211,23 +1213,32 @@ namespace odfaeg {
                 unsigned int type = core::Application::app->getIntOfType(types[t]);
                 //std::cout<<"type : "<<type<<std::endl;
                 if (type < visibleEntities.size()) {
+                    //std::cout<<"get visibles entities type"<<std::endl;
                     vector<Entity*> visibleEntitiesType = visibleEntities[type];
                     for (unsigned int i = 0; i < visibleEntitiesType.size(); i++) {
                         bool found = false;
                         for (unsigned int j = 0; j < types.size(); j++) {
+                            //std::cout<<"check types : "<<std::endl;
                             if (visibleEntitiesType[i] != nullptr && visibleEntitiesType[i]->getRootType() == types[j]) {
                                 found = true;
+                                //std::cout<<"found : "<<visibleEntitiesType[i]->getType()<<std::endl;
                             }
+                            //std::cout<<"end check type : "<<std::endl;
                         }
                         if (visibleEntitiesType[i] != nullptr && found) {
+                            //std::cout<<"checked entity : "<<visibleEntitiesType[i]->getRootEntity()<<std::endl;
                             BoneAnimation* ba = dynamic_cast<BoneAnimation*>(visibleEntitiesType[i]->getRootEntity());
+                            //std::cout<<"entity checked : "<<ba<<std::endl;
                             if (ba != nullptr) {
+                                //std::cout<<"add entity bone animation : "<<ba->getBoneIndex()<<","<<visibleEntitiesType[i]->getBoneIndex()<<std::endl;
                                 if (ba->getBoneIndex() == visibleEntitiesType[i]->getBoneIndex()) {
+                                    //std::cout<<"add entity"<<std::endl;
                                     entities.push_back(visibleEntitiesType[i]);
                                 }
                             } else {
-                                /*if (visibleEntitiesType[i]->getType() == "E_PONCTUAL_LIGHT")
-                                    std::cout<<"add light : "<<visibleEntitiesType[i]<<std::endl;*/
+
+                                /*if (visibleEntitiesType[i]->getType() == "E_PNJ")
+                                    std::cout<<"add pnj"<<std::endl;*/
                                 entities.push_back(visibleEntitiesType[i]);
                             }
                         }

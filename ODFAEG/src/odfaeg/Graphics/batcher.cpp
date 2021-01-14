@@ -1,14 +1,15 @@
 #include "../../../include/odfaeg/Graphics/batcher.h"
 #include "../../../include/odfaeg/Graphics/entity.h"
+#include "../../../include/odfaeg/Graphics/application.h"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
   */
 namespace odfaeg {
     namespace graphic {
-            unsigned int Material::nbMaterials = 0;
+            /*unsigned int Material::nbMaterials = 0;
             std::vector<Material*> Material::materials = std::vector<Material*>();
-            std::vector<Material*> Material::sameMaterials = std::vector<Material*>();
+            std::vector<Material*> Material::sameMaterials = std::vector<Material*>();*/
             Material::TextureInfo::TextureInfo() {
                 texture = nullptr;
                 texId = "";
@@ -50,19 +51,24 @@ namespace odfaeg {
                 bumpTexture = nullptr;
                 id = 0;
                 instanceId = 0;
-                materials.push_back(this);
+                if (core::Application::app != nullptr)
+                    core::Application::app->getMaterials().push_back(this);
+                //materials.push_back(this);
             }
             bool Material::contains(Material material) {
-                for (unsigned int i = 0; i < sameMaterials.size(); i++) {
-                    if (*sameMaterials[i] == material) {
-                        return true;
+                if (core::Application::app != nullptr) {
+                    std::vector<Material*>& sameMaterials = core::Application::app->getSameMaterials();
+                    for (unsigned int i = 0; i < sameMaterials.size(); i++) {
+                        if (*sameMaterials[i] == material) {
+                            return true;
+                        }
                     }
                 }
                 return false;
             }
-            unsigned int Material::getNbMaterials() {
+            /*unsigned int Material::getNbMaterials() {
                 return nbMaterials;
-            }
+            }*/
             unsigned int Material::getId() {
                 return id;
             }
@@ -168,32 +174,44 @@ namespace odfaeg {
                 return !useSameTextures(material) || !hasSameColor(material);
             }
             void Material::countNbMaterials() {
-                nbMaterials = 0;
-                sameMaterials.clear();
-                for (unsigned int i = 0; i < materials.size(); i++) {
-                    if (!contains(*materials[i])) {
-                        nbMaterials++;
-                        sameMaterials.push_back(materials[i]);
+                unsigned int nbMaterials = 0;
+                if (core::Application::app != nullptr) {
+                    std::vector<Material*>& sameMaterials = core::Application::app->getSameMaterials();
+                    std::vector<Material*>& materials = core::Application::app->getMaterials();
+                    sameMaterials.clear();
+                    for (unsigned int i = 0; i < materials.size(); i++) {
+                        if (!contains(*materials[i])) {
+                            nbMaterials++;
+                            sameMaterials.push_back(materials[i]);
+                        }
                     }
+                    core::Application::app->setNbMaterials(nbMaterials);
                 }
             }
             void Material::updateIds() {
                countNbMaterials();
-               for (unsigned int i = 0; i < sameMaterials.size(); i++) {
-                   for (unsigned int j = 0; j < materials.size(); j++) {
-                        if (*sameMaterials[i] == *materials[j]) {
-                            materials[j]->id = i;
-                        }
+               if (core::Application::app != nullptr) {
+                   std::vector<Material*>& sameMaterials = core::Application::app->getSameMaterials();
+                   std::vector<Material*>& materials = core::Application::app->getMaterials();
+                   for (unsigned int i = 0; i < sameMaterials.size(); i++) {
+                       for (unsigned int j = 0; j < materials.size(); j++) {
+                            if (*sameMaterials[i] == *materials[j]) {
+                                materials[j]->id = i;
+                            }
+                       }
                    }
                }
             }
             Material::~Material() {
                 std::vector<Material*>::iterator it;
-                for (it = materials.begin(); it != materials.end();) {
-                    if (*it == this)
-                        it = materials.erase(it);
-                    else
-                        it++;
+                if (core::Application::app != nullptr) {
+                    std::vector<Material*>& materials = core::Application::app->getMaterials();
+                    for (it = materials.begin(); it != materials.end();) {
+                        if (*it == this)
+                            it = materials.erase(it);
+                        else
+                            it++;
+                    }
                 }
                 //updateIds();
             }
@@ -366,7 +384,7 @@ namespace odfaeg {
                 nbLayers = 0;
             }
             void Batcher::addFace(Face* face) {
-                Instance& instance = instances[face->getVertexArray().getPrimitiveType() * Material::getNbMaterials() + face->getMaterial().getId()];
+                Instance& instance = instances[face->getVertexArray().getPrimitiveType() * core::Application::app->getNbMaterials() + face->getMaterial().getId()];
                 instance.setPrimitiveType(face->getVertexArray().getPrimitiveType());
                 instance.setMaterial(face->getMaterial());
                 instance.addVertexArray(face->getVertexArray(),face->getTransformMatrix());
@@ -412,7 +430,7 @@ namespace odfaeg {
                 }*/
             }
             void Batcher::addShadowFace(Face* face, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix) {
-                Instance& instance = instances[face->getVertexArray().getPrimitiveType() * Material::getNbMaterials() + face->getMaterial().getId()];
+                Instance& instance = instances[face->getVertexArray().getPrimitiveType() * core::Application::app->getNbMaterials() + face->getMaterial().getId()];
                 instance.setPrimitiveType(face->getVertexArray().getPrimitiveType());
                 instance.setMaterial(face->getMaterial());
                 instance.addVertexShadowArray(face->getVertexArray(),face->getTransformMatrix(), viewMatrix, shadowProjMatrix);
@@ -449,7 +467,7 @@ namespace odfaeg {
             }
             void Batcher::clear() {
                 instances.clear();
-                instances.resize(nbPrimitiveTypes * Material::getNbMaterials());
+                instances.resize(nbPrimitiveTypes * core::Application::app->getNbMaterials());
                 nbLayers = 0;
                 //tmpZPos.clear();
             }
