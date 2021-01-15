@@ -343,6 +343,7 @@ namespace odfaeg {
                     //std::cout<<"shadow rotation axis : "<<shadowRotationAxis<<std::endl;
                     ar(boneIndex);
                     //std::cout<<"bone index : "<<boneIndex<<std::endl;
+                    ar(externalObjectName);
                     if (ar.isInputArchive())
                         onLoad();
                     alreadySerialized = true;
@@ -409,6 +410,8 @@ namespace odfaeg {
                 virtual Entity* clone() = 0;
                 void setExternal(bool external);
                 bool isExternal();
+                void setExternalObjectName(std::string externalObjectName);
+                std::string getExternalObjectName();
             protected :
                 math::Vec3f shadowCenter, shadowScale, shadowRotationAxis, shadowOrigin, refractDir; /**> The center of the shadow of the entity.*/
                 float shadowRotationAngle;
@@ -429,6 +432,7 @@ namespace odfaeg {
                 static float nbLayers;
                 DrawMode drawMode;
                 bool external;
+                std::string externalObjectName;
         };
     }
 }

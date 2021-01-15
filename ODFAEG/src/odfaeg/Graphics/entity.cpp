@@ -59,7 +59,7 @@ namespace odfaeg {
             entity->setSize(getSize());
             entity->setOrigin(getOrigin());
             entity->setRotation(getRotation());
-            //entity->parent = parent;
+            entity->parent = parent;
             //std::cout<<"parent : "<<parent<<",this : "<<this<<std::endl;
             entity->entityState = entityState;
             entity->alreadySerialized = false;
@@ -74,6 +74,7 @@ namespace odfaeg {
             entity->water = water;
             entity->layer = layer;
             entity->type = type;
+            entity->externalObjectName = externalObjectName;
             //std::cout<<"clone id : "<<entity->getId()<<std::endl;
             for (unsigned int i = 0; i < faces.size(); i++) {
                 entity->addFace(new Face(faces[i]->getVertexArray(), faces[i]->getMaterial(), entity->getTransform()));
@@ -84,6 +85,12 @@ namespace odfaeg {
                 child->setParent(entity);
                 entity->addChild(child);
             }
+        }
+        void Entity::setExternalObjectName(std::string externalObjectName) {
+            this->externalObjectName = externalObjectName;
+        }
+        std::string Entity::getExternalObjectName() {
+            return externalObjectName;
         }
         void Entity::setExternal(bool external) {
             this->external = external;
