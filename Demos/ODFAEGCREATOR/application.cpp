@@ -2650,7 +2650,18 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                     }
                 }
             }
+            std::ofstream file("sourceCode.cpp");
+            file<<sourceCode;
+            file.close();
+            rtc.addSourceFile("sourceCode");
+            rtc.compile();
+            std::string errors = rtc.getCompileErrors();
+            //std::cout<<"errors : "<<rtc.getCompileErrors();
+            rtc.run<void>("createObject", this, false);
         }
+        wDeleteObject->setVisible(false);
+        getRenderComponentManager().setEventContextActivated(false, *wDeleteObject);
+        tScriptEdit->setEventContextActivated(true);
     }
     if (button == bGenerateTerrain) {
         std::vector<Tile*> tiles;
