@@ -399,8 +399,13 @@ namespace odfaeg {
                         glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                         if (m_instances[i].getVertexArrays().size() > 0) {
-                            for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
-                                vb.append((*m_instances[i].getVertexArrays()[0])[j]);
+                            Entity* entity = m_instances[i].getVertexArrays()[0]->getEntity();
+                            for (unsigned int j = 0; j < m_instances[i].getVertexArrays().size(); j++) {
+                                if (entity == m_instances[i].getVertexArrays()[j]->getEntity()) {
+                                    for (unsigned int k = 0; k < m_instances[i].getVertexArrays()[j]->getVertexCount(); k++) {
+                                        vb.append((*m_instances[i].getVertexArrays()[j])[k]);
+                                    }
+                                }
                             }
                             vb.update();
                         }
