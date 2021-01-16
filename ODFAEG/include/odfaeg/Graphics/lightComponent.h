@@ -121,13 +121,15 @@ namespace odfaeg {
                 }
             }
             virtual void pushEvent(window::IEvent event, RenderWindow &rw) {
-                getListener().pushEvent(event);
-                if (event.type == odfaeg::window::IEvent::WINDOW_EVENT && event.window.type == odfaeg::window::IEvent::WINDOW_EVENT_RESIZED) {
-                    if (isRelPosition()) {
-                        setAutoResized(true);
+                if (isEventContextActivated()) {
+                    getListener().pushEvent(event);
+                    if (event.type == odfaeg::window::IEvent::WINDOW_EVENT && event.window.type == odfaeg::window::IEvent::WINDOW_EVENT_RESIZED) {
+                        if (isRelPosition()) {
+                            setAutoResized(true);
+                        }
                     }
+                    onEventPushed(event, rw);
                 }
-                onEventPushed(event, rw);
                 for (unsigned int i = 0; i < children.size(); i++) {
                     children[i]->pushEvent(event, rw);
                 }
@@ -137,9 +139,9 @@ namespace odfaeg {
                     /*if (getName() == "TaChangeComponentExpression")
                         std::cout<<"process ta change component expression event"<<std::endl;*/
                     getListener().processEvents();
-                    for (unsigned int i = 0; i < children.size(); i++) {
-                        children[i]->processEvents();
-                    }
+                }
+                for (unsigned int i = 0; i < children.size(); i++) {
+                    children[i]->processEvents();
                 }
             }
             virtual void removeAll() {

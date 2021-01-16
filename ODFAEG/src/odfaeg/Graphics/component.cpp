@@ -20,6 +20,7 @@ namespace odfaeg {
         }
         void Component::setEventContextActivated(bool activateEventContext) {
             this->activateEventContext = activateEventContext;
+            listener.clearEventsStack();
             onEventContextActivated(activateEventContext);
         }
         bool Component::isEventContextActivated() {

@@ -191,6 +191,7 @@ namespace odfaeg {
             }
             void setEventContextActivated(bool eventContextActivated) {
                 this->eventContextActivated = eventContextActivated;
+                listener->clearEventsStack();
             }
             bool isEventContextActivated() {
                 return eventContextActivated;
