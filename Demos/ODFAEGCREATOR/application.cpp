@@ -2454,8 +2454,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         for (unsigned int i = 0; i < tmpTextAreas.size(); i++) {
             argValues.push_back(tmpTextAreas[i]->getText());
         }
-        if(sourceCode.find("std::ofstream of"+cl.getName()+" (\""+cl.getName()+".oc\");\n") != std::string::npos) {
-            int pos = sourceCode.find("std::ofstream of"+cl.getName()+" (\""+cl.getName()+".oc\");\n")-3;
+        if(sourceCode.find("if(save) {\n") != std::string::npos) {
+            int pos = sourceCode.find("if(save) {\n")-3;
 
 
             std::string args;
@@ -2556,8 +2556,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             }
             ifs.close();
         }
-        if(sourceCode.find("std::ofstream of"+cl.getName()+" (\""+cl.getName()+".oc\");\n") != std::string::npos) {
-            int pos = sourceCode.find("std::ofstream of"+cl.getName()+" (\""+cl.getName()+".oc\");\n")-3;
+        if(sourceCode.find("if(save) {\n") != std::string::npos) {
+            int pos = sourceCode.find("if(save) {\n")-3;
             std::string args;
             for (unsigned int j = 0; j < argValues.size(); j++) {
                 args += argValues[j];
