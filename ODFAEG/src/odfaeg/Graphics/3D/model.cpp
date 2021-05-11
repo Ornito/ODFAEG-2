@@ -96,7 +96,6 @@ namespace odfaeg {
                     mat->GetTexture(type, i, &str);
                     bool skip = false;
                     std::string path = directory + "/" + std::string (str.C_Str());
-                    std::cout<<"path : "<<path<<std::endl;
                     for(unsigned int j = 0; j < tm.getPaths().size(); j++)
                     {
                         if(tm.getPaths()[j] == path)
@@ -110,13 +109,6 @@ namespace odfaeg {
                     {   // if texture hasn't been loaded already, load it
                         tm.fromFileWithAlias(path, path);
                         const Texture* texture = tm.getResourceByAlias(path);
-                        /*sf::Image img = texture->copyToImage();
-                                for (unsigned int i = 0; i < img.getSize().x; i++) {
-                                    for (unsigned int j = 0; j < img.getSize().y; j++) {
-                                        if (img.getPixel(i, j).r > 0 || img.getPixel(i, j).g > 0 || img.getPixel(i, j).b > 0)
-                                        std::cout<<"pixel : "<<(int) img.getPixel(i, j).r<<" , "<<(int) img.getPixel(i, j).g<<" , "<<(int) img.getPixel(i, j).b<<std::endl;
-                                    }
-                                }*/
                         textures.push_back(texture);
                     }
                 }

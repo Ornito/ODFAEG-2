@@ -11,10 +11,10 @@ namespace odfaeg {
         }
         Tile::Tile (const Tile& tile) : Entity (tile.getPosition(), tile.getSize(), tile.getSize() * 0.5f, "E_TILE"){
             VertexArray va(sf::Quads, 4, this);
-            Vertex v1(sf::Vector3f(0, 0, 0), sf::Color::Red);
-            Vertex v2(sf::Vector3f(tile.getSize().x, 0, 0), sf::Color::White);
-            Vertex v3(sf::Vector3f(tile.getSize().x, tile.getSize().y, 0), sf::Color::Blue);
-            Vertex v4(sf::Vector3f(0, tile.getSize().y, 0), sf::Color::Green);
+            Vertex v1(sf::Vector3f(0, 0, 0), const_cast<Tile&>(tile).getColor());
+            Vertex v2(sf::Vector3f(tile.getSize().x, 0, 0), const_cast<Tile&>(tile).getColor());
+            Vertex v3(sf::Vector3f(tile.getSize().x, tile.getSize().y, 0), const_cast<Tile&>(tile).getColor());
+            Vertex v4(sf::Vector3f(0, tile.getSize().y, 0), const_cast<Tile&>(tile).getColor());
             sf::IntRect subRect = tile.getFaces()[0]->getMaterial().getTexRect();
             v1.texCoords = sf::Vector2f(subRect.left, subRect.top);
             v2.texCoords = sf::Vector2f(subRect.left + subRect.width, subRect.top);
@@ -44,10 +44,10 @@ namespace odfaeg {
         : Entity (position, size, size * 0.5f, "E_TILE") {
             //std::cout<<"add vertex array"<<std::endl;
             VertexArray va(sf::Quads, 4, this);
-            Vertex v1(sf::Vector3f(0, 0, 0), sf::Color::Red);
-            Vertex v2(sf::Vector3f(size.x, 0, 0), sf::Color::Green);
-            Vertex v3(sf::Vector3f(size.x, size.y, 0), sf::Color::Blue);
-            Vertex v4(sf::Vector3f(0, size.y, 0), sf::Color::White);
+            Vertex v1(sf::Vector3f(0, 0, 0), color);
+            Vertex v2(sf::Vector3f(size.x, 0, 0), color);
+            Vertex v3(sf::Vector3f(size.x, size.y, 0), color);
+            Vertex v4(sf::Vector3f(0, size.y, 0), color);
             v1.texCoords = sf::Vector2f(subRect.left, subRect.top);
             v2.texCoords = sf::Vector2f(subRect.left + subRect.width, subRect.top);
             v3.texCoords = sf::Vector2f(subRect.left + subRect.width, subRect.top + subRect.height);

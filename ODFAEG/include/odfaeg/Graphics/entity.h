@@ -344,6 +344,9 @@ namespace odfaeg {
                     ar(boneIndex);
                     //std::cout<<"bone index : "<<boneIndex<<std::endl;
                     ar(externalObjectName);
+                    ar(layer);
+                    ar(reflectable);
+                    ar(water);
                     if (ar.isInputArchive())
                         onLoad();
                     alreadySerialized = true;
