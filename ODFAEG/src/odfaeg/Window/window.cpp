@@ -258,6 +258,11 @@ namespace odfaeg {
         IWindow* Window::getImpl() const {
             return m_window;
         }
+        #ifdef VULKAN
+        VkSettup& Window::getVkSettup() {
+            return m_window->getVkSettup();
+        }
+        #endif // VULKAN
         Window::~Window()
         {
             close();

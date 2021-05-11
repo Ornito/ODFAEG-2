@@ -4,7 +4,7 @@ namespace odfaeg {
     namespace math {
         using namespace std;
         using namespace sf;
-		
+
         const Vec3f Vec3f::xAxis(1.f, 0.f, 0.f);
         const Vec3f Vec3f::yAxis(0.f, 1.f, 0.f);
         const Vec3f Vec3f::zAxis(0.f, 0.f, 1.f);

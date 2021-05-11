@@ -170,9 +170,9 @@ namespace odfaeg {
                     for (unsigned int n = 0; n < va.getVertexCount(); n++) {
                         iva[n] = va[n];
                     }
-                    if(scene != nullptr) {
+                    /*if(scene != nullptr) {
                         scene->updateVertices(iva);
-                    }
+                    }*/
                     interpolatedFrame->getFaces()[i]->setMaterial(currentFrame->getFaces()[i]->getMaterial());
                     interpolatedFrame->getFaces()[i]->setTransformMatrix(currentFrame->getFaces()[i]->getTransformMatrix());
                 }
@@ -204,8 +204,8 @@ namespace odfaeg {
                             }
                             interpolatedFrame->getFace(i)->setMaterial(currentFrame->getFace(i)->getMaterial());
                             interpolatedFrame->getFace(i)->setTransformMatrix(currentFrame->getFace(i)->getTransformMatrix());
-                            if (scene != nullptr)
-                                scene->updateVertices(iva);
+                            /*if (scene != nullptr)
+                                scene->updateVertices(iva);*/
                         }
                     }
                 }

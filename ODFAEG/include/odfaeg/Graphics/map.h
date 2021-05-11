@@ -423,11 +423,11 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         std::vector<Entity*> visibleParentEntities; /**> The parent entities of the visible entities.*/
         std::vector<Entity*> lights, shadows; /**> The lights and the shadows.*/
         RenderComponentManager* frcm; /**> The component manager.*/
-        std::unique_ptr<RenderTexture> shadowMap, lightMap, stencilBuffer, normalMap, backDepthBuffer, refractionMap; /**> The shadow map, the light map and the normal map.*/
-        Texture textShadow, textLight; /**> The texture of the shadows and the lights.*/
+        /*std::unique_ptr<RenderTexture> shadowMap, lightMap, stencilBuffer, normalMap, backDepthBuffer, refractionMap;*/ /**> The shadow map, the light map and the normal map.*/
+        /*Texture textShadow, textLight;*/ /**> The texture of the shadows and the lights.*/
         std::unique_ptr<Tile> shadowTile, lightTile, stencilBufferTile, normalMapTile, refractionTile; /**> The shadow, light and normal map tiles.*/
-        std::unique_ptr<Shader> perPixLightingShader, perPixShadowShader, perPixShadowShader2, buildShadowMapShader,
-        buildNormalMapShader, depthBufferGenShader, buildRefractionMapShader; /**> The shaders used to generate the lightmap and the final normal map.*/
+        /*std::unique_ptr<Shader> perPixLightingShader, perPixShadowShader, perPixShadowShader2, buildShadowMapShader,
+        buildNormalMapShader, depthBufferGenShader, buildRefractionMapShader;*/ /**> The shaders used to generate the lightmap and the final normal map.*/
         bool updateComponents;
         float diagSize;
         int cellWidth, cellHeight;

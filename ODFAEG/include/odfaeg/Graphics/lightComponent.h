@@ -1,9 +1,11 @@
 #ifndef ODFAEG_LIGHT_COMPONENT
 #define ODFAEG_LIGHT_COMPONENT
 #include "component.h"
+#ifndef VULKAN
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
 #include "glCheck.h"
+#endif
 namespace odfaeg {
     namespace graphic {
         class LightComponent : public Component {

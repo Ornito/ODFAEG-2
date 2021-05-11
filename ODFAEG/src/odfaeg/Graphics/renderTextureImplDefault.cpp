@@ -26,6 +26,7 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include "renderTextureImplDefault.h"
+#ifndef VULKAN
 #include "glCheck.h"
 #include "textureSaver.h"
 #include <SFML/System/Err.hpp>
@@ -80,4 +81,4 @@ namespace odfaeg {
     } // namespace priv
 
 } // namespace sf
-
+#endif

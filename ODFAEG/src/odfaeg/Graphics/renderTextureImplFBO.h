@@ -24,11 +24,12 @@
 
 #ifndef ODFAEG_RENDER_TEXTURE_IMPL_FBO_HPP
 #define ODFAEG_RENDER_TEXTURE_IMPL_FBO_HPP
-
+#include "renderTextureImpl.h"
+#ifndef VULKAN
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "renderTextureImpl.h"
+
 namespace odfaeg {
     namespace graphic {
         namespace priv
@@ -98,6 +99,6 @@ namespace odfaeg {
 
 } // namespace sf
 
-
+#endif
 
 #endif // SFML_RENDERTEXTUREIMPLFBO_HPP

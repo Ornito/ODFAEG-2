@@ -7,6 +7,7 @@
 #include <SFML/Window/Cursor.hpp>
 #include <SFML/Window/WindowHandle.hpp>
 #include <SFML/System/Vector2.hpp>
+#include "vkSettup.hpp"
 namespace odfaeg {
     namespace window {
         class IWindow {
@@ -190,6 +191,9 @@ namespace odfaeg {
             virtual void setVerticalSyncEnabled(bool enabled) {}
             virtual void display() {}
             virtual const ContextSettings& getSettings() const { return ContextSettings(0, 0, 0, 0, 0); }
+            #ifdef VULKAN
+            virtual VkSettup& getVkSettup() = 0;
+            #endif
         };
     }
 }

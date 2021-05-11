@@ -255,7 +255,7 @@ FREETYPE_LIBRARY_DEBUG:FILEPATH=FREETYPE_LIBRARY_DEBUG-NOTFOUND
 FREETYPE_LIBRARY_RELEASE:FILEPATH=C:/Users/Laurent/Windows/ODFAEG/extlibs/libs-mingw/x86/libfreetype.a
 
 //Path to a library.
-LIB_EAY:FILEPATH=C:/Users/Laurent/Windows/ODFAEG/extlibs/libs-mingw/x86/libcrypto.a
+LIB_EAY:FILEPATH=C:/Users/Laurent/Windows/ODFAEG/extlibs/libs-mingw/x86/libcrypto.dll.a
 
 //Value Computed by CMake
 ODFAEG_BINARY_DIR:STATIC=C:/Users/Laurent/Windows/ODFAEG/build
@@ -280,7 +280,7 @@ OPENSSL_INCLUDE_DIR:PATH=C:/Users/Laurent/Windows/ODFAEG/extlibs/headers
 SFML_INCLUDE_DIR:PATH=C:/Users/Laurent/Windows/ODFAEG/extlibs/headers
 
 //Path to a library.
-SSL_EAY:FILEPATH=C:/Users/Laurent/Windows/ODFAEG/extlibs/libs-mingw/x86/libssl.a
+SSL_EAY:FILEPATH=C:/Users/Laurent/Windows/ODFAEG/extlibs/libs-mingw/x86/libssl.dll.a
 
 //Dependencies for the target
 odfaeg-audio_LIB_DEPENDS:STATIC=general;odfaeg-core;
@@ -292,7 +292,7 @@ odfaeg-graphics_LIB_DEPENDS:STATIC=general;odfaeg-core;general;odfaeg-math;gener
 odfaeg-math_LIB_DEPENDS:STATIC=general;odfaeg-core;
 
 //Dependencies for the target
-odfaeg-network_LIB_DEPENDS:STATIC=general;odfaeg-core;general;C:/Users/Laurent/Windows/ODFAEG/extlibs/libs-mingw/x86/libssl.a;general;C:/Users/Laurent/Windows/ODFAEG/extlibs/libs-mingw/x86/libcrypto.a;
+odfaeg-network_LIB_DEPENDS:STATIC=general;odfaeg-core;general;C:/Users/Laurent/Windows/ODFAEG/extlibs/libs-mingw/x86/libssl.dll.a;general;C:/Users/Laurent/Windows/ODFAEG/extlibs/libs-mingw/x86/libcrypto.dll.a;
 
 //Dependencies for the target
 odfaeg-physics_LIB_DEPENDS:STATIC=general;odfaeg-core;general;odfaeg-math;
@@ -466,7 +466,7 @@ CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Details about finding Freetype
 FIND_PACKAGE_MESSAGE_DETAILS_Freetype:INTERNAL=[C:/Users/Laurent/Windows/ODFAEG/extlibs/libs-mingw/x86/libfreetype.a][C:/Users/Laurent/Windows/ODFAEG/extlibs/headers/freetype2;C:/Strawberry/c/include/freetype2][v2.7.1()]
 //Details about finding OpenSSL
-FIND_PACKAGE_MESSAGE_DETAILS_OpenSSL:INTERNAL=[C:/Users/Laurent/Windows/ODFAEG/extlibs/libs-mingw/x86/libcrypto.a][C:/Users/Laurent/Windows/ODFAEG/extlibs/headers][c ][v1.1.1i(1)]
+FIND_PACKAGE_MESSAGE_DETAILS_OpenSSL:INTERNAL=[C:/Users/Laurent/Windows/ODFAEG/extlibs/libs-mingw/x86/libcrypto.dll.a][C:/Users/Laurent/Windows/ODFAEG/extlibs/headers][c ][v1.1.1i(1)]
 //ADVANCED property for variable: FREETYPE_INCLUDE_DIR_freetype2
 FREETYPE_INCLUDE_DIR_freetype2-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: FREETYPE_INCLUDE_DIR_ft2build

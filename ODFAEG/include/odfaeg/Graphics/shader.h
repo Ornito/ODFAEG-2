@@ -41,16 +41,144 @@
 #include <map>
 #include <string>
 #include "../../../include/odfaeg/Graphics/export.hpp"
+#include "../Window/vkSettup.hpp"
+#ifndef VULKAN
 #include "../../../include/odfaeg/Window/iGlResource.hpp"
-
+#else
+#include <vulkan/vulkan.hpp>
+#endif // VULKAN
 namespace sf
 {
 class InputStream;
 }
+
 namespace odfaeg {
     namespace graphic {
         class Texture;
+        #ifdef VULKAN
+        class ODFAEG_API_EXPORT Shader : sf::NonCopyable {
+        public :
+            ////////////////////////////////////////////////////////////
+            /// \brief Special type/value that can be passed to setParameter,
+            ///        and that represents the texture of the object being drawn
+            ///
+            ////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////
+            /// \brief Default constructor
+            ///
+            /// This constructor creates an invalid shader.
+            ///
+            ////////////////////////////////////////////////////////////
+            Shader();
+            ////////////////////////////////////////////////////////////
+            /// \brief Destructor
+            ///
+            ////////////////////////////////////////////////////////////
+            ~Shader();
+            ////////////////////////////////////////////////////////////
+            /// \brief Load both the vertex and fragment shaders from files
+            ///
+            /// This function loads both the vertex and the fragment
+            /// shaders. If one of them fails to load, the shader is left
+            /// empty (the valid shader is unloaded).
+            /// The sources must be text files containing valid shaders
+            /// in GLSL language. GLSL is a C-like language dedicated to
+            /// OpenGL shaders; you'll probably need to read a good documentation
+            /// for it before writing your own shaders.
+            ///
+            /// \param vertexShaderFilename   Path of the vertex shader file to load
+            /// \param fragmentShaderFilename Path of the fragment shader file to load
+            ///
+            /// \return True if loading succeeded, false if it failed
+            ///
+            /// \see loadFromMemory, loadFromStream
+            ///
+            ////////////////////////////////////////////////////////////
+            bool loadFromFile(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename);
+            ////////////////////////////////////////////////////////////
+            /// \brief Load either the vertex or fragment shader from a source code in memory
+            ///
+            /// This function loads a single shader, either vertex or
+            /// fragment, identified by the second argument.
+            /// The source code must be a valid shader in GLSL language.
+            /// GLSL is a C-like language dedicated to OpenGL shaders;
+            /// you'll probably need to read a good documentation for
+            /// it before writing your own shaders.
+            ///
+            /// \param shader String containing the source code of the shader
+            /// \param type   Type of shader (vertex or fragment)
+            ///
+            /// \return True if loading succeeded, false if it failed
+            ///
+            /// \see loadFromFile, loadFromStream
+            ///
+            ////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////
+            bool loadFromMemory(const std::string& vertexShader, const std::string& fragmentShader);
+            ////////////////////////////////////////////////////////////
+            /// \brief Load either the vertex or fragment shader from a custom stream
+            ///
+            /// This function loads a single shader, either vertex or
+            /// fragment, identified by the second argument.
+            /// The source code must be a valid shader in GLSL language.
+            /// GLSL is a C-like language dedicated to OpenGL shaders;
+            /// you'll probably need to read a good documentation for it
+            /// before writing your own shaders.
+            ///
+            /// \param stream Source stream to read from
+            /// \param type   Type of shader (vertex or fragment)
+            ///
+            /// \return True if loading succeeded, false if it failed
+            ///
+            /// \see loadFromFile, loadFromMemory
+            ///
+            bool loadFromStream(sf::InputStream& vertexShaderStream, sf::InputStream& fragmentShaderStream);
+            ////////////////////////////////////////////////////////////
+            /// \brief Bind a vertex attribute of the shader.
+            /// The vertex attribute value's location is defined in the C code with the function glVertexAttributePointer.
+            /// \a name is the name of the vertex attribute to bind in the shader.
+            /// The corresponding attribute in the shader must be a float
+            /// (float GLSL type).
+            /// \a location is the location of the vertex attribute.
+            /// this value must always be less than GL_MAX_VERTEX_ATTRIBS.
+            /// The maximum vertex attrib is limited by your graphics hardware.
+            /// Example:
+            /// \code
+            /// attribute vec3 vertex_position; // this is the variable in the shader
+            /// \endcode
+            /// \code
+            /// shader.bindAtribute(0, "vertex_position");
+            /// \endcode
+            ///
+            /// \param name Name of the vertex attribute in the shader
+            /// \param location  Location of the attribute in the vertex.
+            ///
+            void createShaderModules();
+            void cleanupShaderModules();
+            VkShaderModule getVertexShaderModule();
+            VkShaderModule getFragmentShaderModule();
+            void setVkSettup (window::VkSettup* vkSettup);
+        private :
 
+            ////////////////////////////////////////////////////////////
+            /// \brief Compile the shader(s) and create the program
+            ///
+            /// If one of the arguments is NULL, the corresponding shader
+            /// is not created.
+            ///
+            /// \param vertexShaderCode   Source code of the vertex shader
+            /// \param fragmentShaderCode Source code of the fragment shader
+            ///
+            /// \return True on success, false if any error happened
+            ///
+            ////////////////////////////////////////////////////////////
+            bool compile(const char* vertexShaderCode, const char* fragmentShaderCode);
+            VkShaderModule vertexShaderModule, fragmentShaderModule;
+            std::vector<uint32_t> spvVertexShaderCode;
+            std::vector<uint32_t> spvFragmentShaderCode;
+            window::VkSettup* vkSettup;
+        };
+        #else
         ////////////////////////////////////////////////////////////
         /// \brief Shader class (vertex and fragment)
         ///
@@ -571,6 +699,7 @@ namespace odfaeg {
             ParamTable   m_params;             ///< Parameters location cache
             VertexAttribTable m_vertexAttribs; ///< Vertex attributes location cache.
         };
+        #endif
     }
 
 } // namespace sf

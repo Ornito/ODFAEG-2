@@ -1,13 +1,17 @@
 #ifndef ODFAEG_PERPIXEL_LINKEDLIST_RENDER_COMPONENT_HPP
 #define ODFAEG_PERPIXEL_LINKEDLIST_RENDER_COMPONENT_HPP
+#ifndef VULKAN
 #include "GL/glew.h"
 #include <SFML/OpenGL.hpp>
+#endif // VULKAN
 #include "heavyComponent.h"
 #include "renderTexture.h"
 #include "sprite.h"
 #include "rectangleShape.h"
 namespace odfaeg {
     namespace graphic {
+        #ifdef VULKAN
+        #else
         /*struct ListNode {
           math::Vec3f color;
           GLfloat depth;
@@ -100,6 +104,7 @@ namespace odfaeg {
             std::vector<float> matrices;
             int layer;
         };
+        #endif
     }
 }
 #endif // ODFAEG_PERPIXEL_LINKEDLIST_RENDER_COMPONENT_HPP

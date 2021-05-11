@@ -156,6 +156,7 @@ src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.obj: ../
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.obj: ../src/odfaeg/Network/cliEncryptedPacket.cpp
 
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/GL/glew.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/GLFW/glfw3.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/SFML/Config.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/SFML/Graphics.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -243,6 +244,7 @@ src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/head
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/SFML/Window/Window.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/SFML/Window/WindowHandle.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/SFML/Window/WindowStyle.hpp
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/dlfcn.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/openssl/aes.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/openssl/asn1.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/openssl/asn1err.h
@@ -307,6 +309,24 @@ src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/head
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/openssl/x509.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/openssl/x509_vfy.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/openssl/x509err.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vk_platform.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan.hpp
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_android.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_beta.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_core.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_directfb.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_fuchsia.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_ggp.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_ios.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_macos.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_metal.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_vi.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_wayland.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_win32.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_xcb.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_xlib.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../include/odfaeg/Core/any.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../include/odfaeg/Core/archive.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../include/odfaeg/Core/entitySystem.h
@@ -400,6 +420,8 @@ src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../include/odfa
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../include/odfaeg/Window/iMouse.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../include/odfaeg/Window/iWindow.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../include/odfaeg/Window/listener.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../include/odfaeg/Window/vkDebug.hpp
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../include/odfaeg/Window/vkSettup.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../include/odfaeg/Window/window.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../include/odfaeg/Window/windowFactory.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.obj: ../include/odfaeg/config.hpp
@@ -525,6 +547,7 @@ src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/encryptedPacket.cpp.obj: ../inc
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/encryptedPacket.cpp.obj: ../src/odfaeg/Network/encryptedPacket.cpp
 
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/GL/glew.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/GLFW/glfw3.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/SFML/Config.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/SFML/Graphics.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -612,6 +635,7 @@ src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/hea
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/SFML/Window/Window.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/SFML/Window/WindowHandle.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/SFML/Window/WindowStyle.hpp
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/dlfcn.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/openssl/aes.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/openssl/asn1.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/openssl/asn1err.h
@@ -676,6 +700,24 @@ src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/hea
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/openssl/x509.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/openssl/x509_vfy.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/openssl/x509err.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vk_platform.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan.hpp
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_android.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_beta.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_core.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_directfb.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_fuchsia.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_ggp.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_ios.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_macos.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_metal.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_vi.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_wayland.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_win32.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_xcb.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_xlib.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../include/odfaeg/Core/any.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../include/odfaeg/Core/archive.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../include/odfaeg/Core/entitySystem.h
@@ -769,6 +811,8 @@ src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../include/odf
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../include/odfaeg/Window/iMouse.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../include/odfaeg/Window/iWindow.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../include/odfaeg/Window/listener.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../include/odfaeg/Window/vkDebug.hpp
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../include/odfaeg/Window/vkSettup.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../include/odfaeg/Window/window.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../include/odfaeg/Window/windowFactory.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.obj: ../include/odfaeg/config.hpp
@@ -846,6 +890,7 @@ src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/rsa.cpp.obj: ../include/odfaeg/
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/rsa.cpp.obj: ../src/odfaeg/Network/rsa.cpp
 
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/GL/glew.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/GLFW/glfw3.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/SFML/Config.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/SFML/Graphics.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -933,6 +978,7 @@ src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/SFML/Window/Window.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/SFML/Window/WindowHandle.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/SFML/Window/WindowStyle.hpp
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/dlfcn.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/openssl/aes.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/openssl/asn1.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/openssl/asn1err.h
@@ -997,6 +1043,24 @@ src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/openssl/x509.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/openssl/x509_vfy.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/openssl/x509err.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vk_platform.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan.hpp
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_android.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_beta.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_core.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_directfb.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_fuchsia.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_ggp.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_ios.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_macos.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_metal.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_vi.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_wayland.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_win32.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_xcb.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_xlib.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../include/odfaeg/Core/any.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../include/odfaeg/Core/archive.h
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../include/odfaeg/Core/entitySystem.h
@@ -1090,6 +1154,8 @@ src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../include/
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../include/odfaeg/Window/iMouse.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../include/odfaeg/Window/iWindow.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../include/odfaeg/Window/listener.h
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../include/odfaeg/Window/vkDebug.hpp
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../include/odfaeg/Window/vkSettup.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../include/odfaeg/Window/window.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../include/odfaeg/Window/windowFactory.hpp
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj: ../include/odfaeg/config.hpp

@@ -190,8 +190,10 @@ namespace odfaeg {
             }
             void Panel::onDraw(RenderTarget& target, RenderStates states) {
                 if (disableScissor) {
+                    #ifndef VULKAN
                     glCheck(glEnable(GL_SCISSOR_TEST));
                     glCheck(glScissor(getPosition().x, getWindow().getSize().y - (getPosition().y + getSize().y), getSize().x, getSize().y));
+                    #endif
                 }
                 rect.setPosition(getPosition());
                 rect.setSize(getSize());
@@ -217,7 +219,9 @@ namespace odfaeg {
                     target.draw(horScrollBar, states);
                 }
                 if (disableScissor) {
+                    #ifndef VULKAN
                     glCheck(glDisable(GL_SCISSOR_TEST));
+                    #endif
                 }
             }
             void Panel::setBorderThickness(float thickness) {

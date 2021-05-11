@@ -41,6 +41,39 @@
 namespace odfaeg
 {
     namespace graphic {
+        #ifdef VULKAN
+        class RenderWindow : public window::Window, public RenderTarget {
+        public :
+            RenderWindow();
+            RenderWindow(sf::VideoMode mode, const sf::String& title, sf::Uint32 style = sf::Style::Default, const window::ContextSettings& settings = window::ContextSettings());
+            explicit RenderWindow(sf::WindowHandle handle, const window::ContextSettings& settings = window::ContextSettings());
+            virtual sf::Vector2u getSize() const;
+            virtual ~RenderWindow();
+        protected:
+
+            ////////////////////////////////////////////////////////////
+            /// \brief Function called after the window has been created
+            ///
+            /// This function is called so that derived classes can
+            /// perform their own specific initialization as soon as
+            /// the window is created.
+            ///
+            ////////////////////////////////////////////////////////////
+            virtual void onCreate();
+
+            ////////////////////////////////////////////////////////////
+            /// \brief Function called after the window has been resized
+            ///
+            /// This function is called so that derived classes can
+            /// perform custom actions when the size of the window changes.
+            ///
+            ////////////////////////////////////////////////////////////
+            virtual void onResize();
+        private :
+            void createFramebuffers();
+            void cleanup();
+        };
+        #else
           ////////////////////////////////////////////////////////////
         /// \brief Window that can serve as a target for 2D drawing
         ///
@@ -162,6 +195,7 @@ namespace odfaeg
             ////////////////////////////////////////////////////////////
             bool activate(bool active);
         };
+        #endif
     }
 
 } // namespace odfaeg

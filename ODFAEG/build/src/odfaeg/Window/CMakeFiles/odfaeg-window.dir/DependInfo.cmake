@@ -4,6 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Window/GLFW/vkGLFWWindow.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/GLFW/vkGLFWWindow.cpp.obj"
   "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Window/SFML/sfmlContextImpl.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlContextImpl.cpp.obj"
   "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Window/SFML/sfmlKeyboard.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlKeyboard.cpp.obj"
   "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Window/SFML/sfmlMouse.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/SFML/sfmlMouse.cpp.obj"
@@ -22,6 +23,8 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Window/glResource.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/glResource.cpp.obj"
   "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Window/iKeyboard.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iKeyboard.cpp.obj"
   "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Window/iMouse.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iMouse.cpp.obj"
+  "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Window/vkDebug.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/vkDebug.cpp.obj"
+  "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Window/vkSettup.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/vkSettup.cpp.obj"
   "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Window/window.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/window.cpp.obj"
   "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Window/windowFactory.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowFactory.cpp.obj"
   "C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Window/windowImpl.cpp" "C:/Users/Laurent/Windows/ODFAEG/build/src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/windowImpl.cpp.obj"

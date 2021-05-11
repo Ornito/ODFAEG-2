@@ -25,10 +25,13 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#ifndef VULKAN
 #include "GL/glew.h"
+#include "glCheck.h"
+#endif
 #include "../../../include/odfaeg/Graphics/texture.h"
 #include "../../../include/odfaeg/Window/window.hpp"
-#include "glCheck.h"
+
 #include "textureSaver.h"
 #include <SFML/System/Mutex.hpp>
 #include <SFML/System/Lock.hpp>
@@ -58,6 +61,24 @@ namespace
 
 namespace odfaeg {
     namespace graphic {
+        #ifdef VULKAN
+        bool Texture::loadFromImage(const sf::Image& image, const sf::IntRect& area) {
+        }
+        bool Texture::create(unsigned int width, unsigned int height) {
+        }
+        sf::Vector2u Texture::getSize() const {
+        }
+        void Texture::update(const sf::Uint8* pixels, unsigned int width, unsigned int height, unsigned int x, unsigned int y) {
+        }
+        void Texture::update(const Texture& texture) {
+        }
+        void Texture::setSmooth(bool smooth) {
+        }
+        void Texture::swap(Texture& texture) {
+        }
+        unsigned int Texture::getMaximumSize() {
+        }
+        #else // VULKAN
         std::vector<Texture*> Texture::allTextures = std::vector<Texture*>();
         ////////////////////////////////////////////////////////////
         Texture::Texture() :
@@ -835,5 +856,6 @@ namespace odfaeg {
             m_cacheId = getUniqueId();
             right.m_cacheId = getUniqueId();
         }
+        #endif
     }
 } // namespace sf

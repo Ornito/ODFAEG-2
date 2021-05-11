@@ -34,12 +34,15 @@
 ////////////////////////////////////////////////////////////
 #include "texture.h"
 #include "renderTarget.h"
+#ifndef VULKAN
 #include "../../../include/odfaeg/Window/context.hpp"
 #include "../../../include/odfaeg/Window/iGlResource.hpp"
+#endif
 class RenderTextureImpl;
 namespace odfaeg {
     namespace graphic {
-
+        #ifdef VULKAN
+        #else
         namespace priv {
             class RenderTextureImpl;
         }
@@ -208,6 +211,7 @@ namespace odfaeg {
             window::ContextSettings  m_settings;
             unsigned int m_atomicBuffer, m_linkedListBuffer, m_headPtrTex, m_clearBuff;
         };
+        #endif
     }
 
 } // namespace sf

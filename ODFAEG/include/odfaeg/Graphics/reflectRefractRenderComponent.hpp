@@ -11,6 +11,8 @@
 #include "3D/cube.h"
 namespace odfaeg {
     namespace graphic {
+        #ifdef VULKAN
+        #else
         class ReflectRefractRenderComponent : public HeavyComponent {
         public :
             ReflectRefractRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings);
@@ -89,6 +91,7 @@ namespace odfaeg {
             std::vector<float> matrices;
             math::Vec3f dirs[6];
         };
+        #endif
     }
 }
 #endif // ODFAEG_REFLECT_REFRACT_RENDER_COMPONENT

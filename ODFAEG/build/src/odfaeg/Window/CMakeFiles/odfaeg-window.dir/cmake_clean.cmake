@@ -1,6 +1,7 @@
 file(REMOVE_RECURSE
   "../../../lib/libodfaeg-window-s.a"
   "../../../lib/libodfaeg-window-s.pdb"
+  "CMakeFiles/odfaeg-window.dir/GLFW/vkGLFWWindow.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/SFML/sfmlContextImpl.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/SFML/sfmlKeyboard.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/SFML/sfmlMouse.cpp.obj"
@@ -19,6 +20,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/odfaeg-window.dir/glResource.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/iKeyboard.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/iMouse.cpp.obj"
+  "CMakeFiles/odfaeg-window.dir/vkDebug.cpp.obj"
+  "CMakeFiles/odfaeg-window.dir/vkSettup.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/window.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/windowFactory.cpp.obj"
   "CMakeFiles/odfaeg-window.dir/windowImpl.cpp.obj"

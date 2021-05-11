@@ -1,12 +1,17 @@
 #include "../../../include/odfaeg/Graphics/renderTarget.h"
+#include "../../../include/odfaeg/Graphics/drawable.h"
 //#include "../../../include/odfaeg/Graphics/glExtensions.hpp"
+#ifndef VULKAN
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
 #include "glCheck.h"
-#include "../../../include/odfaeg/Graphics/drawable.h"
 #include "GlDebug.hpp"
+#endif
 namespace
 {
+    #ifdef VULKAN
+
+    #else
     // Convert an sf::BlendMode::Factor constant to the corresponding OpenGL constant.
     sf::Uint32 factorToGlConstant(sf::BlendMode::Factor blendFactor)
     {
@@ -37,10 +42,315 @@ namespace
             case sf::BlendMode::Subtract:        return GL_FUNC_SUBTRACT_EXT;
         }
     }
+    #endif // VULKAN
 }
 namespace odfaeg {
     namespace graphic {
         using namespace sf;
+        #ifdef VULKAN
+        RenderTarget::RenderTarget(window::VkSettup& vkSettup) : vkSettup(vkSettup),
+        m_defaultView(), m_view() {
+        }
+        RenderTarget::~RenderTarget() {
+            cleanup();
+            vkDestroyRenderPass(vkSettup.getDevice(), renderPass, nullptr);
+        }
+        void RenderTarget::initialize() {
+            m_defaultView = View (static_cast<float>(getSize().x), static_cast<float>(getSize().y), -static_cast<float>(getSize().y) - 200, static_cast<float>(getSize().y)+200);
+            m_defaultView.reset(physic::BoundingBox(0, 0, -static_cast<float>(getSize().y) - 200,static_cast<float>(getSize().x), static_cast<float>(getSize().y),static_cast<float>(getSize().y)+200));
+            m_view = m_defaultView;
+            const std::string defaultVertexShader = R"(#version 450
+                                                        vec2 positions[3] = vec2[](
+                                                            vec2(0.0, -0.5),
+                                                            vec2(0.5, 0.5),
+                                                            vec2(-0.5, 0.5)
+                                                        );
+                                                        void main() {
+                                                            gl_Position = vec4(positions[gl_VertexIndex], 0.0, 1.0);
+                                                        })";
+            const std::string defaultFragmentShader = R"(#version 450
+                                                          #extension GL_ARB_separate_shader_objects : enable
+
+                                                          layout(location = 0) out vec4 outColor;
+
+                                                          void main() {
+                                                              outColor = vec4(1.0, 0.0, 0.0, 1.0);
+                                                          })";
+             defaultShader.setVkSettup(&vkSettup);
+             if (!defaultShader.loadFromMemory(defaultVertexShader, defaultFragmentShader)) {
+                  throw core::Erreur (0, "Failed to load default shader", 1);
+             }
+        }
+        void RenderTarget::clear(const sf::Color& color) {
+            cleanup();
+            clearColor = color;
+        }
+        void RenderTarget::clearDepth() {
+        }
+        void RenderTarget::setView(View view)
+        {
+            m_view = view;
+        }
+        View& RenderTarget::getView() {
+            return m_view;
+        }
+        View& RenderTarget::getDefaultView() {
+            return m_defaultView;
+        }
+         math::Vec3f RenderTarget::mapPixelToCoords(const math::Vec3f& point)
+        {
+            return mapPixelToCoords(point, getView());
+        }
+
+
+        math::Vec3f RenderTarget::mapPixelToCoords(const math::Vec3f& point, View& view)
+        {
+            ViewportMatrix vpm;
+            vpm.setViewport(math::Vec3f(view.getViewport().getPosition().x, view.getViewport().getPosition().y, 0)
+                                        ,math::Vec3f(view.getViewport().getWidth(), view.getViewport().getHeight(), 1));
+            math::Vec3f coords = vpm.toNormalizedCoordinates(point);
+            coords = view.getProjMatrix().unProject(coords);
+            coords = coords.normalizeToVec3();
+            coords = view.getViewMatrix().inverseTransform(coords);
+            return coords;
+        }
+
+        math::Vec3f RenderTarget::mapCoordsToPixel(const math::Vec3f& point)
+        {
+            return mapCoordsToPixel(point, getView());
+        }
+
+
+        math::Vec3f RenderTarget::mapCoordsToPixel(const math::Vec3f& point, View& view) {
+            ViewportMatrix vpm;
+            vpm.setViewport(math::Vec3f(view.getViewport().getPosition().x, view.getViewport().getPosition().y, 0),
+            math::Vec3f(view.getViewport().getWidth(), view.getViewport().getHeight(), 1));
+            math::Vec3f coords = view.getViewMatrix().transform(point);
+            coords = view.getProjMatrix().project(coords);
+            coords = coords.normalizeToVec3();
+            coords = vpm.toViewportCoordinates(coords);
+            return coords;
+        }
+        void RenderTarget::draw(Drawable& drawable, RenderStates states)
+        {
+            drawable.draw(*this, states);
+        }
+        void RenderTarget::draw(const Vertex* vertices, unsigned int vertexCount, sf::PrimitiveType type,
+                      RenderStates states) {
+             createGraphicPipeline(vertices, vertexCount, type, states);
+             createCommandPool();
+             createCommandBuffers();
+        }
+        void RenderTarget::createRenderPass() {
+            VkAttachmentDescription colorAttachment{};
+            colorAttachment.format =    vkSettup.getSwapchainImageFormat();
+            colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+            colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+            colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+            colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+            colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+            colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+            VkAttachmentReference colorAttachmentRef{};
+            colorAttachmentRef.attachment = 0;
+            colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+            VkSubpassDescription subpass{};
+            subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+            subpass.colorAttachmentCount = 1;
+            subpass.pColorAttachments = &colorAttachmentRef;
+
+            VkRenderPassCreateInfo renderPassInfo{};
+            renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+            renderPassInfo.attachmentCount = 1;
+            renderPassInfo.pAttachments = &colorAttachment;
+            renderPassInfo.subpassCount = 1;
+            renderPassInfo.pSubpasses = &subpass;
+            VkSubpassDependency dependency{};
+            dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+            dependency.dstSubpass = 0;
+            dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+            dependency.srcAccessMask = 0;
+            dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+            dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+            renderPassInfo.dependencyCount = 1;
+            renderPassInfo.pDependencies = &dependency;
+            if (vkCreateRenderPass(vkSettup.getDevice(), &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
+                throw core::Erreur(0, "failed to create render pass!", 1);
+            }
+
+        }
+        void RenderTarget::createGraphicPipeline(const Vertex* vertices, unsigned int vertexCount, sf::PrimitiveType type,
+                      RenderStates states = RenderStates::Default) {
+            defaultShader.createShaderModules();
+            VkShaderModule vertShaderModule = defaultShader.getVertexShaderModule();
+            VkShaderModule fragShaderModule = defaultShader.getFragmentShaderModule();
+            VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
+            vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+            vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+            vertShaderStageInfo.module = vertShaderModule;
+            vertShaderStageInfo.pName = "main";
+
+            VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
+            fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+            fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+            fragShaderStageInfo.module = fragShaderModule;
+            fragShaderStageInfo.pName = "main";
+
+            VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragShaderStageInfo};
+
+            VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+            vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+            vertexInputInfo.vertexBindingDescriptionCount = 0;
+            vertexInputInfo.vertexAttributeDescriptionCount = 0;
+
+            VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
+            inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+            inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+            inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+            VkViewport viewport{};
+            viewport.x = 0.0f;
+            viewport.y = 0.0f;
+            viewport.width = vkSettup.getSwapchainExtends().width;
+            viewport.height = vkSettup.getSwapchainExtends().height;
+            viewport.minDepth = 0.0f;
+            viewport.maxDepth = 1.0f;
+
+            VkRect2D scissor{};
+            scissor.offset = {0, 0};
+            scissor.extent = vkSettup.getSwapchainExtends();
+
+            VkPipelineViewportStateCreateInfo viewportState{};
+            viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+            viewportState.viewportCount = 1;
+            viewportState.pViewports = &viewport;
+            viewportState.scissorCount = 1;
+            viewportState.pScissors = &scissor;
+
+            VkPipelineRasterizationStateCreateInfo rasterizer{};
+            rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+            rasterizer.depthClampEnable = VK_FALSE;
+            rasterizer.rasterizerDiscardEnable = VK_FALSE;
+            rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+            rasterizer.lineWidth = 1.0f;
+            rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+            rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+            rasterizer.depthBiasEnable = VK_FALSE;
+
+            VkPipelineMultisampleStateCreateInfo multisampling{};
+            multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+            multisampling.sampleShadingEnable = VK_FALSE;
+            multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+            VkPipelineColorBlendAttachmentState colorBlendAttachment{};
+            colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+            colorBlendAttachment.blendEnable = VK_FALSE;
+
+            VkPipelineColorBlendStateCreateInfo colorBlending{};
+            colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+            colorBlending.logicOpEnable = VK_FALSE;
+            colorBlending.logicOp = VK_LOGIC_OP_COPY;
+            colorBlending.attachmentCount = 1;
+            colorBlending.pAttachments = &colorBlendAttachment;
+            colorBlending.blendConstants[0] = 0.0f;
+            colorBlending.blendConstants[1] = 0.0f;
+            colorBlending.blendConstants[2] = 0.0f;
+            colorBlending.blendConstants[3] = 0.0f;
+
+            VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+            pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+            pipelineLayoutInfo.setLayoutCount = 0;
+            pipelineLayoutInfo.pushConstantRangeCount = 0;
+
+            if (vkCreatePipelineLayout(vkSettup.getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+                throw core::Erreur(0, "failed to create pipeline layout!", 1);
+            }
+            VkGraphicsPipelineCreateInfo pipelineInfo{};
+            pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+            pipelineInfo.stageCount = 2;
+            pipelineInfo.pStages = shaderStages;
+            pipelineInfo.pVertexInputState = &vertexInputInfo;
+            pipelineInfo.pInputAssemblyState = &inputAssembly;
+            pipelineInfo.pViewportState = &viewportState;
+            pipelineInfo.pRasterizationState = &rasterizer;
+            pipelineInfo.pMultisampleState = &multisampling;
+            pipelineInfo.pColorBlendState = &colorBlending;
+            pipelineInfo.layout = pipelineLayout;
+            pipelineInfo.renderPass = renderPass;
+            pipelineInfo.subpass = 0;
+            pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+            if (vkCreateGraphicsPipelines(vkSettup.getDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+                throw core::Erreur(0, "failed to create graphics pipeline!", 1);
+            }
+            defaultShader.cleanupShaderModules();
+        }
+        void RenderTarget::createCommandPool() {
+            window::VkSettup::QueueFamilyIndices queueFamilyIndices = vkSettup.findQueueFamilies(vkSettup.getPhysicalDevice());
+
+            VkCommandPoolCreateInfo poolInfo{};
+            poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+            poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
+            poolInfo.flags = 0; // Optionel
+            if (vkCreateCommandPool(vkSettup.getDevice(), &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
+                throw core::Erreur(0, "échec de la création d'une command pool!", 1);
+            }
+        }
+        void RenderTarget::createCommandBuffers() {
+            commandBuffers.resize(swapChainFramebuffers.size());
+
+            VkCommandBufferAllocateInfo allocInfo{};
+            allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+            allocInfo.commandPool = commandPool;
+            allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+            allocInfo.commandBufferCount = (uint32_t) commandBuffers.size();
+
+            if (vkAllocateCommandBuffers(vkSettup.getDevice(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+                throw core::Erreur(0, "failed to allocate command buffers!", 1);
+            }
+
+            for (size_t i = 0; i < commandBuffers.size(); i++) {
+                VkCommandBufferBeginInfo beginInfo{};
+                beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+                if (vkBeginCommandBuffer(commandBuffers[i], &beginInfo) != VK_SUCCESS) {
+                    throw core::Erreur(0, "failed to begin recording command buffer!", 1);
+                }
+
+                VkRenderPassBeginInfo renderPassInfo{};
+                renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+                renderPassInfo.renderPass = renderPass;
+                renderPassInfo.framebuffer = swapChainFramebuffers[i];
+                renderPassInfo.renderArea.offset = {0, 0};
+                renderPassInfo.renderArea.extent = vkSettup.getSwapchainExtends();
+
+                VkClearValue clrColor = {clearColor.r / 255.f,clearColor.g / 255.f, clearColor.b / 255.f, clearColor.a / 255.f};
+                renderPassInfo.clearValueCount = 1;
+                renderPassInfo.pClearValues = &clrColor;
+
+                vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+                    vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+
+                    vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+
+                vkCmdEndRenderPass(commandBuffers[i]);
+
+                if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {
+                    throw core::Erreur(0, "failed to record command buffer!", 1);
+                }
+
+            }
+            vkSettup.setCommandBuffers(commandBuffers);
+        }
+        void RenderTarget::cleanup() {
+            vkDestroyCommandPool(vkSettup.getDevice(), commandPool, nullptr);
+            vkDestroyPipeline(vkSettup.getDevice(), graphicsPipeline, nullptr);
+            vkDestroyPipelineLayout(vkSettup.getDevice(), pipelineLayout, nullptr);
+        }
+        #else
         ////////////////////////////////////////////////////////////
         RenderTarget::RenderTarget() :
         m_defaultView(), m_view(), m_cache()
@@ -134,6 +444,9 @@ namespace odfaeg {
             math::Vec3f(view.getViewport().getWidth(), view.getViewport().getHeight(), 1));
             math::Vec3f coords = view.getViewMatrix().transform(point);
             coords = view.getProjMatrix().project(coords);
+            if (coords.w == 0) {
+                coords.w = view.getSize().z * 0.5;
+            }
             coords = coords.normalizeToVec3();
             coords = vpm.toViewportCoordinates(coords);
             return coords;
@@ -653,6 +966,7 @@ namespace odfaeg {
             this->enableCubeMap = enableCubeMap;
             m_cache.glStatesSet = false;
         }
+        #endif
     }
 }
 

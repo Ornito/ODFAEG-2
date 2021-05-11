@@ -1,32 +1,42 @@
 #ifndef ODFAEG_GRAPHIC_RAYTRACING_RENDER_COMPONENT
 #define ODFAEG_GRAPHIC_RAYTRACING_RENDER_COMPONENT
-#include "GL/glew.h"
-#include <SFML/OpenGL.hpp>
+
 #include "heavyComponent.h"
 #include "renderTexture.h"
 #include "sprite.h"
 #include "rectangleShape.h"
 #include "2D/ambientLight.h"
 #include "2D/ponctualLight.h"
+#include "../config.hpp"
+#ifndef VULKAN
+#include "GL/glew.h"
+#include <SFML/OpenGL.hpp>
+#endif
 namespace odfaeg {
     namespace graphic {
+        #ifdef VULKAN
+        #else
         class RaytracingRenderComponent : public HeavyComponent {
         public :
             struct Triangle {
-                sf::Vector3f positions[3];
+                math::Matrix4f transform;
+                math::Matrix4f textureMatrix;
+                math::Vec3f positions[3];
                 math::Vec3f colours[3];
-                sf::Vector2f texCoords[3];
-                sf::Vector3f normal;
-                unsigned int textureIndex;
-                unsigned int refractReflect;
+                math::Vec3f texCoords[3];
+                math::Vec3f normal;
+                uint32_t textureIndex;
+                uint32_t refractReflect;
                 float ratio;
-                odfaeg::math::Matrix4f transform;
-                odfaeg::math::Matrix4f textureMatrix;
+                float padding;
             };
             struct Light {
-                sf::Vector3f center;
+                math::Vec3f center;
                 math::Vec3f color;
                 float radius;
+            };
+            struct Samplers {
+                GLuint64 tex[200];
             };
             RaytracingRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings);
                  /**
@@ -99,7 +109,8 @@ namespace odfaeg {
             sf::Color backgroundColor; /**> The background color.*/
             odfaeg::graphic::RenderTexture frameBuffer;
             Sprite frameBufferSprite;
-            unsigned int frameBufferTex, trianglesSSBO, lightsSSBO, clearBuf;
+            unsigned int frameBufferTex, trianglesSSBO, lightsSSBO, clearBuf, ubo;
+            unsigned int atomicBuffer, linkedListBuffer, headPtrTex, clearBuf2;
             odfaeg::graphic::Shader rayComputeShader, quadShader;
             std::vector<Triangle> triangles;
             std::vector<Light> lights;
@@ -110,6 +121,7 @@ namespace odfaeg {
             View view;
             Texture external;
         };
+        #endif
     }
 }
 #endif // ODFAEG_GRAPHIC_RAYTRACING_RENDER_COMPONENT

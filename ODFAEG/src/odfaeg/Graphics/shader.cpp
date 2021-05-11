@@ -28,17 +28,23 @@
 ////////////////////////////////////////////////////////////
 #include "../../../include/odfaeg/Graphics/shader.h"
 #include "../../../include/odfaeg/Graphics/texture.h"
-#include "glCheck.h"
 #include <SFML/System/InputStream.hpp>
 #include <SFML/System/Err.hpp>
 #include <fstream>
 #include <vector>
+#ifndef VULKAN
+#include "glCheck.h"
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
+#else
+#include <shaderc/shaderc.hpp>
+#include "../../../include/odfaeg/Window/vkSettup.hpp"
+#endif // VULKAN
 using namespace sf;
 
 namespace
 {
+    #ifndef VULKAN
     // Retrieve the maximum number of texture units available
     GLint getMaxTextureUnits()
     {
@@ -46,6 +52,7 @@ namespace
         glCheck(glGetIntegerv(GL_MAX_TEXTURE_COORDS_ARB, &maxUnits));
         return maxUnits;
     }
+    #endif
 
     // Read the contents of a file into an array of char
     bool getFileContents(const std::string& filename, std::vector<char>& buffer)
@@ -90,6 +97,120 @@ namespace
 
 namespace odfaeg {
     namespace graphic {
+        #ifdef VULKAN
+        Shader::Shader() {
+            vkSettup = nullptr;
+        }
+        void Shader::setVkSettup (window::VkSettup* vkSettup) {
+            this->vkSettup = vkSettup;
+        }
+        ////////////////////////////////////////////////////////////
+        bool Shader::loadFromFile(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename)
+        {
+            // Read the vertex shader file
+            std::vector<char> vertexShader;
+            if (!getFileContents(vertexShaderFilename, vertexShader))
+            {
+                err() << "Failed to open vertex shader file \"" << vertexShaderFilename << "\"" << std::endl;
+                return false;
+            }
+
+            // Read the fragment shader file
+            std::vector<char> fragmentShader;
+            if (!getFileContents(fragmentShaderFilename, fragmentShader))
+            {
+                err() << "Failed to open fragment shader file \"" << fragmentShaderFilename << "\"" << std::endl;
+                return false;
+            }
+
+            // Compile the shader program
+            return compile(&vertexShader[0], &fragmentShader[0]);
+        }
+        ////////////////////////////////////////////////////////////
+        bool Shader::loadFromMemory(const std::string& vertexShader, const std::string& fragmentShader)
+        {
+            // Compile the shader program
+            return compile(vertexShader.c_str(), fragmentShader.c_str());
+        }
+        ////////////////////////////////////////////////////////////
+        bool Shader::loadFromStream(InputStream& vertexShaderStream, InputStream& fragmentShaderStream)
+        {
+            // Read the vertex shader code from the stream
+            std::vector<char> vertexShader;
+            if (!getStreamContents(vertexShaderStream, vertexShader))
+            {
+                err() << "Failed to read vertex shader from stream" << std::endl;
+                return false;
+            }
+
+            // Read the fragment shader code from the stream
+            std::vector<char> fragmentShader;
+            if (!getStreamContents(fragmentShaderStream, fragmentShader))
+            {
+                err() << "Failed to read fragment shader from stream" << std::endl;
+                return false;
+            }
+
+            // Compile the shader program
+            return compile(&vertexShader[0], &fragmentShader[0]);
+        }
+        ////////////////////////////////////////////////////////////
+        bool Shader::compile(const char* vertexShaderCode, const char* fragmentShaderCode) {
+            shaderc::Compiler compiler;
+            shaderc::CompileOptions options;
+            options.SetOptimizationLevel(shaderc_optimization_level_size);
+            shaderc::SpvCompilationResult module =
+            compiler.CompileGlslToSpv(vertexShaderCode, shaderc_glsl_vertex_shader, "shader_src", options);
+            if (module.GetCompilationStatus() != shaderc_compilation_status_success) {
+                std::cerr << "Failed to compile vertex shader :  "<<module.GetErrorMessage();
+                return false;
+            } else {
+                spvVertexShaderCode = {module.cbegin(), module.cend()};
+            }
+            module = compiler.CompileGlslToSpv(fragmentShaderCode, shaderc_glsl_fragment_shader, "shader_src", options);
+            if (module.GetCompilationStatus() != shaderc_compilation_status_success) {
+                std::cerr << "Failed to compile fragment shader :  "<<module.GetErrorMessage();
+                return false;
+            } else {
+                spvFragmentShaderCode = {module.cbegin(), module.cend()};
+            }
+            return true;
+        }
+        void Shader::createShaderModules() {
+            if (vkSettup == nullptr) {
+                throw core::Erreur (0, "No vulkan setup set!", 1);
+            }
+            VkShaderModuleCreateInfo createVSInfo{};
+            createVSInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+            createVSInfo.codeSize = spvVertexShaderCode.size();
+            createVSInfo.pCode = spvVertexShaderCode.data();
+            if (vkCreateShaderModule(vkSettup->getDevice(), &createVSInfo, nullptr, &vertexShaderModule) != VK_SUCCESS) {
+                throw core::Erreur (0, "Failed to create vertex shader module", 1);
+            }
+            VkShaderModuleCreateInfo createFSInfo{};
+            createFSInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+            createFSInfo.codeSize = spvFragmentShaderCode.size();
+            createFSInfo.pCode = spvFragmentShaderCode.data();
+            if (vkCreateShaderModule(vkSettup->getDevice(), &createFSInfo, nullptr, &fragmentShaderModule) != VK_SUCCESS) {
+                throw core::Erreur (0, "Failed to create fragment shader module", 1);
+            }
+        }
+        void Shader::cleanupShaderModules() {
+            if (vkSettup == nullptr) {
+                throw core::Erreur (0, "No vulkan setup set!", 1);
+            }
+            vkDestroyShaderModule(vkSettup->getDevice(), vertexShaderModule, nullptr);
+            vkDestroyShaderModule(vkSettup->getDevice(), fragmentShaderModule, nullptr);
+        }
+        VkShaderModule Shader::getVertexShaderModule() {
+            return vertexShaderModule;
+        }
+        VkShaderModule Shader::getFragmentShaderModule() {
+            return fragmentShaderModule;
+        }
+        Shader::~Shader() {
+        }
+        #else // VULKAN
         ////////////////////////////////////////////////////////////
         Shader::CurrentTextureType Shader::CurrentTexture;
         unsigned int Shader::shading_language_version_major = 0;
@@ -990,5 +1111,6 @@ namespace odfaeg {
                 return glslversion[1] - '0';
             return 0;
         }
+        #endif
     }
 } // namespace sf

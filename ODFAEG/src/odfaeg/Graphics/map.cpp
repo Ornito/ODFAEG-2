@@ -1350,7 +1350,7 @@ namespace odfaeg {
             }
         }
         void Map::generateStencilBuffer(std::string expression, int n, va_list args) {
-            if (Shader::isAvailable()) {
+            /*if (Shader::isAvailable()) {
                 std::vector<Entity*> entities;
                 View view = frcm->getWindow().getView();
                 physic::BoundingBox viewArea = view.getViewVolume();
@@ -1391,7 +1391,7 @@ namespace odfaeg {
                                 /*forward = entities[k]->getCenter() - view.getPosition();
                                 target = view.getPosition() + forward;
                                 view.lookAt(target.x, target.y, target.z);*/
-                                if (entities[k]->getFaces().size() > 0) {
+                                /*if (entities[k]->getFaces().size() > 0) {
                                     if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
                                         buildShadowMapShader->setParameter("haveTexture", 1.f);
                                     } else {
@@ -1422,11 +1422,11 @@ namespace odfaeg {
                 va_end(args);
                 stencilBuffer->display();
                 stencilBufferTile->setPosition(position);
-            }
+            }*/
         }
 
         Entity& Map::getShadowTile(std::string expression, int n, va_list args) {
-            std::vector<Entity*> entities;
+            /*std::vector<Entity*> entities;
             View view = frcm->getWindow().getView();
             physic::BoundingBox viewArea = view.getViewVolume();
             math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
@@ -1505,7 +1505,7 @@ namespace odfaeg {
             }
             va_end(args);
             shadowTile->setPosition(position);
-            return *shadowTile;
+            return *shadowTile;*/
         }
         Entity& Map::getLightTile (std::string expression, int n, va_list args) {
            /* std::vector<Entity*> lights = getVisibleEntities(expression);
@@ -1568,8 +1568,8 @@ namespace odfaeg {
                 }
             }
             va_end(args);
-            lightTile->setPosition(position);*/
-            return *lightTile;
+            lightTile->setPosition(position);
+            return *lightTile;*/
         }
         Entity& Map::getRefractionTile (std::string expression, int n, va_list args) {
             /*std::vector<Entity*> entities = getVisibleEntities(expression);
@@ -1628,8 +1628,8 @@ namespace odfaeg {
                 }
             }
             refractionMap->display();
-            refractionTile->setPosition(position);*/
-            return *refractionTile;
+            refractionTile->setPosition(position);
+            return *refractionTile;*/
         }
         BaseChangementMatrix Map::getBaseChangementMatrix() {
             return gridMap->getBaseChangementMatrix();

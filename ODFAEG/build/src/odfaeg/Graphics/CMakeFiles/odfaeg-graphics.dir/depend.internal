@@ -96,6 +96,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ambientLight.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/2D/ambientLight.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -170,6 +171,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/entitySystem.h
@@ -238,9 +258,12 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/2D/decor.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -315,6 +338,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -375,9 +417,12 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/2D/directionnalLight.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ponctualLight.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -452,6 +497,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ponctualLight.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -512,9 +576,12 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ponctualLight.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/2D/ponctualLight.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/wall.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -589,6 +656,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/wall.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/entitySystem.h
@@ -658,9 +744,12 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/wall.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/2D/wall.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -735,6 +824,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -791,9 +899,12 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/3D/cube.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/model.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -897,6 +1008,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/model.cpp.obj
  ../extlibs/headers/assimp/vector2.inl
  ../extlibs/headers/assimp/vector3.h
  ../extlibs/headers/assimp/vector3.inl
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -954,10 +1084,13 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/model.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/3D/model.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -1033,6 +1166,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -1101,12 +1253,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/button.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -1182,6 +1337,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -1247,12 +1421,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/checkBox.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/checkBox.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -1328,6 +1505,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -1398,12 +1594,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/dropDownList.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -1479,6 +1678,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -1552,12 +1770,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/filedialog.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -1633,6 +1854,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -1698,12 +1938,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/icon.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -1779,6 +2022,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -1846,12 +2108,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/label.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -1927,6 +2192,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -1996,12 +2280,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/menu.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -2077,6 +2364,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -2145,12 +2451,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/menuItem.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -2226,6 +2535,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -2296,12 +2624,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/menubar.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -2377,6 +2708,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -2441,12 +2791,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/node.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -2522,6 +2875,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -2591,12 +2963,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/optionPane.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -2672,6 +3047,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -2738,12 +3132,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/panel.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -2819,6 +3216,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -2887,12 +3303,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/passwordField.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -2968,6 +3387,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -3035,12 +3473,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/progressBar.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -3116,6 +3557,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -3186,12 +3646,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/tabPane.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -3267,6 +3730,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -3332,12 +3814,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GUI/table.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -3413,6 +3898,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -3483,6 +3987,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
@@ -3493,6 +3999,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GlDebug.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GlDebug.cpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GlDebug.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/animation.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -3567,6 +4074,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/animation.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -3631,10 +4157,13 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/animation.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/animation.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/application.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -3722,6 +4251,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/application.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
  ../extlibs/headers/openssl/aes.h
  ../extlibs/headers/openssl/asn1.h
  ../extlibs/headers/openssl/asn1err.h
@@ -3786,6 +4316,24 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/application.cpp.obj
  ../extlibs/headers/openssl/x509.h
  ../extlibs/headers/openssl/x509_vfy.h
  ../extlibs/headers/openssl/x509err.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/entitySystem.h
@@ -3878,6 +4426,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/application.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
@@ -3929,6 +4479,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/baseChangementMatrix.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/baseChangementMatrix.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/batcher.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -4016,6 +4567,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/batcher.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
  ../extlibs/headers/openssl/aes.h
  ../extlibs/headers/openssl/asn1.h
  ../extlibs/headers/openssl/asn1err.h
@@ -4080,6 +4632,24 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/batcher.cpp.obj
  ../extlibs/headers/openssl/x509.h
  ../extlibs/headers/openssl/x509_vfy.h
  ../extlibs/headers/openssl/x509err.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/entitySystem.h
@@ -4172,11 +4742,14 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/batcher.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/batcher.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/billBoard.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -4251,6 +4824,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/billBoard.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  ../include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
@@ -4323,9 +4915,12 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/billBoard.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/billBoard.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/boneAnimation.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -4400,6 +4995,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/boneAnimation.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -4460,9 +5074,12 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/boneAnimation.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/boneAnimation.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cellMap.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -4537,6 +5154,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cellMap.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -4595,9 +5231,12 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cellMap.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/cellMap.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/circleShape.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -4672,6 +5311,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/circleShape.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -4716,10 +5374,13 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/circleShape.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/circleShape.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/component.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -4807,6 +5468,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/component.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
  ../extlibs/headers/openssl/aes.h
  ../extlibs/headers/openssl/asn1.h
  ../extlibs/headers/openssl/asn1err.h
@@ -4871,6 +5533,24 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/component.cpp.obj
  ../extlibs/headers/openssl/x509.h
  ../extlibs/headers/openssl/x509_vfy.h
  ../extlibs/headers/openssl/x509err.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/entitySystem.h
@@ -4963,11 +5643,14 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/component.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/component.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/convexShape.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -5042,6 +5725,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/convexShape.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -5087,12 +5789,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/convexShape.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/convexShape.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/drawable.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/entity.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -5180,6 +5885,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/entity.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
  ../extlibs/headers/openssl/aes.h
  ../extlibs/headers/openssl/asn1.h
  ../extlibs/headers/openssl/asn1err.h
@@ -5244,6 +5950,24 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/entity.cpp.obj
  ../extlibs/headers/openssl/x509.h
  ../extlibs/headers/openssl/x509_vfy.h
  ../extlibs/headers/openssl/x509err.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/entitySystem.h
@@ -5336,6 +6060,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/entity.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
@@ -5493,6 +6219,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/glLoader.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/glLoader.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/gridMap.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -5567,6 +6294,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/gridMap.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -5628,10 +6374,13 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/gridMap.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/gridMap.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -5706,6 +6455,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -5793,6 +6561,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
@@ -5801,6 +6571,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/lightRenderComponent.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -5888,6 +6659,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
  ../extlibs/headers/openssl/aes.h
  ../extlibs/headers/openssl/asn1.h
  ../extlibs/headers/openssl/asn1err.h
@@ -5952,6 +6724,24 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.obj
  ../extlibs/headers/openssl/x509.h
  ../extlibs/headers/openssl/x509_vfy.h
  ../extlibs/headers/openssl/x509err.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/entitySystem.h
@@ -6060,11 +6850,14 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/map.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/mesh.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -6139,6 +6932,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/mesh.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -6196,9 +7008,12 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/mesh.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/mesh.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/model.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -6273,6 +7088,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/model.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -6330,9 +7164,12 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/model.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/model.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/perPixelLinkedListRenderComponent.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -6420,6 +7257,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/perPixelLinkedListRenderCompo
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
  ../extlibs/headers/openssl/aes.h
  ../extlibs/headers/openssl/asn1.h
  ../extlibs/headers/openssl/asn1err.h
@@ -6484,6 +7322,24 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/perPixelLinkedListRenderCompo
  ../extlibs/headers/openssl/x509.h
  ../extlibs/headers/openssl/x509_vfy.h
  ../extlibs/headers/openssl/x509err.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  ../include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
@@ -6587,6 +7443,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/perPixelLinkedListRenderCompo
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
@@ -6648,6 +7506,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/projMatrix.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/projMatrix.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/raytracingRenderComponent.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -6723,6 +7582,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/raytracingRenderComponent.cpp
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -6800,6 +7678,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/raytracingRenderComponent.cpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
@@ -6807,6 +7687,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/raytracingRenderComponent.cpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/glCheck.h
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/raytracingRenderComponent.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/rectangleShape.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -6881,6 +7762,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/rectangleShape.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -6925,9 +7825,12 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/rectangleShape.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/rectangleShape.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/reflectRefractRenderComponent.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -7003,6 +7906,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/reflectRefractRenderComponent
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/entitySystem.h
@@ -7087,6 +8009,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/reflectRefractRenderComponent
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
@@ -7095,6 +8019,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/reflectRefractRenderComponent
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/reflectRefractRenderComponent.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -7170,6 +8095,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.ob
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -7250,11 +8194,14 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.ob
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/renderComponentManager.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderStates.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -7329,6 +8276,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderStates.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -7361,10 +8327,13 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderStates.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/renderStates.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderTarget.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -7440,6 +8409,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderTarget.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -7488,12 +8476,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderTarget.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GlDebug.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/glCheck.h
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/renderTarget.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderTexture.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -7569,6 +8560,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderTexture.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/export.hpp
@@ -7619,6 +8629,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderTexture.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GlDebug.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/glCheck.h
@@ -7654,6 +8666,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderTextureImpl.cpp.obj
  ../extlibs/headers/SFML/System/Vector3.hpp
  ../extlibs/headers/SFML/System/Vector3.inl
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/contextSettings.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/renderTextureImpl.cpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/renderTextureImpl.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderTextureImplDefault.cpp.obj
@@ -7694,6 +8707,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderTextureImplDefault.cpp.
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/textureSaver.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderTextureImplFBO.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -7769,6 +8783,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderTextureImplFBO.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -7817,6 +8850,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderTextureImplFBO.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GlDebug.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/glCheck.h
@@ -7824,6 +8859,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderTextureImplFBO.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/renderTextureImplFBO.cpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/renderTextureImplFBO.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderWindow.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -7899,6 +8935,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderWindow.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -7950,6 +9005,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderWindow.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iEvent.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
@@ -7958,6 +9015,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderWindow.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/renderWindow.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shader.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -8033,6 +9091,30 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shader.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/shaderc/env.h
+ ../extlibs/headers/shaderc/shaderc.h
+ ../extlibs/headers/shaderc/shaderc.hpp
+ ../extlibs/headers/shaderc/status.h
+ ../extlibs/headers/shaderc/visibility.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -8064,11 +9146,14 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shader.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GlDebug.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/glCheck.h
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/shader.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadowRenderCompoenent.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -8144,6 +9229,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadowRenderCompoenent.cpp.ob
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -8232,6 +9336,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadowRenderCompoenent.cpp.ob
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
@@ -8239,6 +9345,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadowRenderCompoenent.cpp.ob
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/glCheck.h
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/shadowRenderCompoenent.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shape.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -8313,6 +9420,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shape.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -8364,9 +9490,12 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shape.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/shape.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/sprite.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -8441,6 +9570,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/sprite.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -8492,9 +9640,12 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/sprite.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/sprite.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/tGround.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -8569,6 +9720,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/tGround.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -8628,9 +9798,12 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/tGround.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/tGround.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/text.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -8705,6 +9878,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/text.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -8756,10 +9948,13 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/text.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/text.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/texture.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics/Color.hpp
  ../extlibs/headers/SFML/Graphics/Export.hpp
@@ -8797,6 +9992,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/texture.cpp.obj
  ../extlibs/headers/SFML/Window/GlResource.hpp
  ../extlibs/headers/SFML/Window/VideoMode.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/export.hpp
@@ -8828,6 +10042,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/texture.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iEvent.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
@@ -8844,6 +10060,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/textureSaver.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/textureSaver.cpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/textureSaver.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/tile.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -8918,6 +10135,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/tile.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
@@ -8976,6 +10212,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/tile.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/tile.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/vbo.cpp.obj
@@ -9037,6 +10275,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/vertex.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/vertex.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/vertexArray.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -9112,6 +10351,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/vertexArray.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -9160,12 +10418,15 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/vertexArray.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GlDebug.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/glCheck.h
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/vertexArray.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/vertexBuffer.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -9241,6 +10502,25 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/vertexBuffer.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/erreur.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/factory.h
@@ -9289,6 +10569,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/vertexBuffer.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/glResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iContext.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/GlDebug.hpp
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/glCheck.h
@@ -9455,6 +10737,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/viewport.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Graphics/viewport.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.obj
  ../extlibs/headers/GL/glew.h
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -9542,6 +10825,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
  ../extlibs/headers/openssl/aes.h
  ../extlibs/headers/openssl/asn1.h
  ../extlibs/headers/openssl/asn1err.h
@@ -9606,6 +10890,24 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.obj
  ../extlibs/headers/openssl/x509.h
  ../extlibs/headers/openssl/x509_vfy.h
  ../extlibs/headers/openssl/x509err.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/entitySystem.h
@@ -9712,6 +11014,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iMouse.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/listener.h
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp

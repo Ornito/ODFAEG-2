@@ -16,6 +16,8 @@
   */
 namespace odfaeg {
     namespace graphic {
+        #ifdef VULKAN
+        #else
         /**
           * \file OITRenderComponent.h
           * \class OITRenderComponent
@@ -67,6 +69,7 @@ namespace odfaeg {
                 VertexBuffer vb, vb2;
                 std::vector<float> matrices, matrices2;
          };
+         #endif
     }
 }
 #endif

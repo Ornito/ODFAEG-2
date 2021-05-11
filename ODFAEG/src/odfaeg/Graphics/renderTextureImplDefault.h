@@ -29,6 +29,7 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include "renderTextureImpl.h"
+#ifndef VULKAN
 namespace odfaeg
 {
     namespace graphic {
@@ -89,7 +90,7 @@ namespace odfaeg
 
 } // namespace priv
 
-
+#endif
 
 
 

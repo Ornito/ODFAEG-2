@@ -164,7 +164,7 @@ namespace odfaeg {
             return fDet;
         }
         //Inverse une matrice.
-        Matrix3f Matrix3f::inverse () throw (std::exception&) {
+        Matrix3f Matrix3f::inverse () {
             Matrix3f store (m11, m12, m13, m21, m22, m23, m31, m32, m33);
             float det = getDet();
             if (Math::abs(det) < 0.f)

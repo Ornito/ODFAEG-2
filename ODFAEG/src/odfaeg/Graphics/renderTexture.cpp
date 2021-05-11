@@ -25,17 +25,23 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include "GL/glew.h"
-#include "renderTextureImplFBO.h"
-#include "renderTextureImplDefault.h"
+
+
 #include "../../../include/odfaeg/Graphics/renderTexture.h"
+#ifndef VULKAN
+#include "GL/glew.h"
 #include <SFML/OpenGL.hpp>
 #include "glCheck.h"
+#include "renderTextureImplFBO.h"
+#include "renderTextureImplDefault.h"
+#endif
 
 namespace odfaeg
 {
     namespace graphic {
         using namespace sf;
+        #ifdef VULKAN
+        #else
         ////////////////////////////////////////////////////////////
         RenderTexture::RenderTexture() :
         m_impl(NULL),
@@ -202,5 +208,6 @@ namespace odfaeg
             if(m_impl && m_texture.isCubemap())
                 m_impl->selectCubemapFace(cubemapFace, m_texture.getNativeHandle());
         }
+        #endif // VULKAN
     }
 }

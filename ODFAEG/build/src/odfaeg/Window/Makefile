@@ -170,6 +170,33 @@ odfaeg-window/fast:
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/build
 .PHONY : odfaeg-window/fast
 
+GLFW/vkGLFWWindow.obj: GLFW/vkGLFWWindow.cpp.obj
+
+.PHONY : GLFW/vkGLFWWindow.obj
+
+# target to build an object file
+GLFW/vkGLFWWindow.cpp.obj:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/GLFW/vkGLFWWindow.cpp.obj
+.PHONY : GLFW/vkGLFWWindow.cpp.obj
+
+GLFW/vkGLFWWindow.i: GLFW/vkGLFWWindow.cpp.i
+
+.PHONY : GLFW/vkGLFWWindow.i
+
+# target to preprocess a source file
+GLFW/vkGLFWWindow.cpp.i:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/GLFW/vkGLFWWindow.cpp.i
+.PHONY : GLFW/vkGLFWWindow.cpp.i
+
+GLFW/vkGLFWWindow.s: GLFW/vkGLFWWindow.cpp.s
+
+.PHONY : GLFW/vkGLFWWindow.s
+
+# target to generate assembly for a file
+GLFW/vkGLFWWindow.cpp.s:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/GLFW/vkGLFWWindow.cpp.s
+.PHONY : GLFW/vkGLFWWindow.cpp.s
+
 SFML/sfmlContextImpl.obj: SFML/sfmlContextImpl.cpp.obj
 
 .PHONY : SFML/sfmlContextImpl.obj
@@ -656,6 +683,60 @@ iMouse.cpp.s:
 	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/iMouse.cpp.s
 .PHONY : iMouse.cpp.s
 
+vkDebug.obj: vkDebug.cpp.obj
+
+.PHONY : vkDebug.obj
+
+# target to build an object file
+vkDebug.cpp.obj:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/vkDebug.cpp.obj
+.PHONY : vkDebug.cpp.obj
+
+vkDebug.i: vkDebug.cpp.i
+
+.PHONY : vkDebug.i
+
+# target to preprocess a source file
+vkDebug.cpp.i:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/vkDebug.cpp.i
+.PHONY : vkDebug.cpp.i
+
+vkDebug.s: vkDebug.cpp.s
+
+.PHONY : vkDebug.s
+
+# target to generate assembly for a file
+vkDebug.cpp.s:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/vkDebug.cpp.s
+.PHONY : vkDebug.cpp.s
+
+vkSettup.obj: vkSettup.cpp.obj
+
+.PHONY : vkSettup.obj
+
+# target to build an object file
+vkSettup.cpp.obj:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/vkSettup.cpp.obj
+.PHONY : vkSettup.cpp.obj
+
+vkSettup.i: vkSettup.cpp.i
+
+.PHONY : vkSettup.i
+
+# target to preprocess a source file
+vkSettup.cpp.i:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/vkSettup.cpp.i
+.PHONY : vkSettup.cpp.i
+
+vkSettup.s: vkSettup.cpp.s
+
+.PHONY : vkSettup.s
+
+# target to generate assembly for a file
+vkSettup.cpp.s:
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build && $(MAKE) -f src\odfaeg\Window\CMakeFiles\odfaeg-window.dir\build.make src/odfaeg/Window/CMakeFiles/odfaeg-window.dir/vkSettup.cpp.s
+.PHONY : vkSettup.cpp.s
+
 window.obj: window.cpp.obj
 
 .PHONY : window.obj
@@ -750,6 +831,9 @@ help:
 	@echo ... rebuild_cache
 	@echo ... list_install_components
 	@echo ... install/strip
+	@echo ... GLFW/vkGLFWWindow.obj
+	@echo ... GLFW/vkGLFWWindow.i
+	@echo ... GLFW/vkGLFWWindow.s
 	@echo ... SFML/sfmlContextImpl.obj
 	@echo ... SFML/sfmlContextImpl.i
 	@echo ... SFML/sfmlContextImpl.s
@@ -804,6 +888,12 @@ help:
 	@echo ... iMouse.obj
 	@echo ... iMouse.i
 	@echo ... iMouse.s
+	@echo ... vkDebug.obj
+	@echo ... vkDebug.i
+	@echo ... vkDebug.s
+	@echo ... vkSettup.obj
+	@echo ... vkSettup.i
+	@echo ... vkSettup.s
 	@echo ... window.obj
 	@echo ... window.i
 	@echo ... window.s

@@ -223,6 +223,7 @@ C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/contextFactory.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/contextImpl.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/contextSettings.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/export.hpp
+C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/GLFW/vkGLFWWindow.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/glResource.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/iContext.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/iEvent.hpp
@@ -241,6 +242,8 @@ C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/SFML/sfmlContextImpl.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/SFML/sfmlKeyboard.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/SFML/sfmlMouse.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/SFML/sfmlWindowImpl.hpp
+C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/vkDebug.hpp
+C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/vkSettup.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/window.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/windowFactory.hpp
 C:/Program Files (x86)/ODFAEG/./include/odfaeg/Window/windowImpl.hpp

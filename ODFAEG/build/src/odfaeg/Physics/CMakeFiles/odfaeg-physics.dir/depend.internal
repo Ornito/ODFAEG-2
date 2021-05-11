@@ -701,6 +701,7 @@ src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/particle.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/particule.h
  C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Physics/particle.cpp
 src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/particleSystem.cpp.obj
+ ../extlibs/headers/GLFW/glfw3.h
  ../extlibs/headers/SFML/Config.hpp
  ../extlibs/headers/SFML/Graphics.hpp
  ../extlibs/headers/SFML/Graphics/BlendMode.hpp
@@ -775,6 +776,25 @@ src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/particleSystem.cpp.obj
  ../extlibs/headers/SFML/Window/Window.hpp
  ../extlibs/headers/SFML/Window/WindowHandle.hpp
  ../extlibs/headers/SFML/Window/WindowStyle.hpp
+ ../extlibs/headers/dlfcn.h
+ ../extlibs/headers/vulkan/vk_platform.h
+ ../extlibs/headers/vulkan/vulkan.h
+ ../extlibs/headers/vulkan/vulkan.hpp
+ ../extlibs/headers/vulkan/vulkan_android.h
+ ../extlibs/headers/vulkan/vulkan_beta.h
+ ../extlibs/headers/vulkan/vulkan_core.h
+ ../extlibs/headers/vulkan/vulkan_directfb.h
+ ../extlibs/headers/vulkan/vulkan_fuchsia.h
+ ../extlibs/headers/vulkan/vulkan_ggp.h
+ ../extlibs/headers/vulkan/vulkan_ios.h
+ ../extlibs/headers/vulkan/vulkan_macos.h
+ ../extlibs/headers/vulkan/vulkan_metal.h
+ ../extlibs/headers/vulkan/vulkan_vi.h
+ ../extlibs/headers/vulkan/vulkan_wayland.h
+ ../extlibs/headers/vulkan/vulkan_win32.h
+ ../extlibs/headers/vulkan/vulkan_xcb.h
+ ../extlibs/headers/vulkan/vulkan_xlib.h
+ ../extlibs/headers/vulkan/vulkan_xlib_xrandr.h
  ../include/odfaeg/config.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/any.h
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Core/archive.h
@@ -848,6 +868,8 @@ src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/particleSystem.cpp.obj
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iEvent.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iGlResource.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkDebug.hpp
+ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/vkSettup.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/window.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/windowFactory.hpp
  C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp

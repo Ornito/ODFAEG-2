@@ -1,11 +1,15 @@
 #include "../../../include/odfaeg/Graphics/shadowRenderComponent.hpp"
+#ifndef VULKAN
 #include <SFML/OpenGL.hpp>
 #include "glCheck.h"
+#endif
 #include <memory.h>
 using namespace sf;
 using namespace std;
 namespace odfaeg {
     namespace graphic {
+        #ifdef VULKAN
+        #else
         ShadowRenderComponent::ShadowRenderComponent (RenderWindow& window, int layer, std::string expression,window::ContextSettings settings) :
             HeavyComponent(window, math::Vec3f(window.getView().getPosition().x, window.getView().getPosition().y, layer),
                           math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0),
@@ -677,5 +681,6 @@ namespace odfaeg {
                 glDeleteBuffers(1, &vboWorldMatrices);
                 glDeleteBuffers(1, &vboShadowProjMatrices);
             }
+            #endif // VULKAN
         }
     }

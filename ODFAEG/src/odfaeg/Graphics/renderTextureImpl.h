@@ -28,6 +28,8 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#include "../../../include/odfaeg/config.hpp"
+#ifndef VULKAN
 #include <SFML/System/NonCopyable.hpp>
 #include "../../../include/odfaeg/Window/contextSettings.hpp"
 namespace odfaeg
@@ -77,7 +79,7 @@ namespace odfaeg
     } // namespace priv
 
 } // namespace sf
-
+#endif
 
 
 #endif // SFML_RENDERTEXTUREIMPL_HPP

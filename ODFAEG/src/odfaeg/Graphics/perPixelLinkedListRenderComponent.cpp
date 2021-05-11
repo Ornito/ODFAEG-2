@@ -1,9 +1,13 @@
 #include "../../../include/odfaeg/Graphics/perPixelLinkedListRenderComponent.hpp"
-#include "glCheck.h"
 #include "../../../include/odfaeg/Physics/particuleSystem.h"
 #include "../../../include/odfaeg/Graphics/application.h"
+#ifndef VULKAN
+#include "glCheck.h"
+#endif
 namespace odfaeg {
     namespace graphic {
+        #ifdef VULKAN
+        #else
         PerPixelLinkedListRenderComponent::PerPixelLinkedListRenderComponent(RenderWindow& window, int layer, std::string expression, window::ContextSettings settings) :
             HeavyComponent(window, math::Vec3f(window.getView().getPosition().x, window.getView().getPosition().y, layer),
                           math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0),
@@ -630,5 +634,6 @@ namespace odfaeg {
             glDeleteTextures(1, &headPtrTex);
             glDeleteBuffers(1, &vboWorldMatrices);
         }
+        #endif // VULKAN
     }
 }

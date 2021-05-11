@@ -1,12 +1,17 @@
-#include "GL/glew.h"
-#include <SFML/OpenGL.hpp>
+
 #include "../../../include/odfaeg/Graphics/vertexBuffer.hpp"
 #include "../../../include/odfaeg/Graphics/renderTarget.h"
+#ifndef VULKAN
+#include "GL/glew.h"
+#include <SFML/OpenGL.hpp>
 #include "glCheck.h"
+#endif
 #include <string.h>
 namespace odfaeg {
     namespace graphic {
         using namespace sf;
+        #ifdef VULKAN
+        #else
         ////////////////////////////////////////////////////////////
         VertexBuffer::VertexBuffer() :
         m_vertices     (),
@@ -700,6 +705,7 @@ namespace odfaeg {
                 glCheck(glDeleteBuffers(1, &vbo));
             }
         }
+        #endif // VULKAN
     }
 } // namespace sf3
 

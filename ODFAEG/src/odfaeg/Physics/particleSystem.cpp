@@ -262,8 +262,8 @@ namespace odfaeg
         {
 
             // Clear vertex array (keeps memory allocated)
-            if (scene != nullptr)
-                scene->removeVertices(mVertices);
+            /*if (scene != nullptr)
+                scene->removeVertices(mVertices);*/
             mVertices.clear();
             mVertices.setEntity(const_cast<ParticleSystem*>(this));
             // Fill vertex array
@@ -292,8 +292,8 @@ namespace odfaeg
                 getFaces()[0]->setVertexArray(mVertices);
                 tm.reset3D();
             }
-            if (scene != nullptr)
-                scene->addVertices(mVertices, const_cast<ParticleSystem*>(this)->getTransform().getTransformId());
+            /*if (scene != nullptr)
+                scene->addVertices(mVertices, const_cast<ParticleSystem*>(this)->getTransform().getTransformId());*/
         }
 
         void ParticleSystem::computeQuads() const

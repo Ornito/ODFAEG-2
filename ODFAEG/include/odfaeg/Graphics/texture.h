@@ -35,7 +35,9 @@
 #include "../Core/archive.h"
 #include "../Math/matrix4.h"
 #include <SFML/Graphics/Image.hpp>
+#ifndef VULKAN
 #include "../../../include/odfaeg/Window/iGlResource.hpp"
+#endif
 namespace sf {
     class InputStream;
     class Image;
@@ -49,8 +51,24 @@ namespace odfaeg
     namespace graphic {
         class RenderTarget;
         class RenderTexture;
-
-
+        #ifdef VULKAN
+        class Texture {
+            public :
+            bool loadFromImage(const sf::Image& image, const sf::IntRect& area = sf::IntRect());
+            bool create(unsigned int width, unsigned int height);
+            sf::Vector2u getSize() const;
+            void update(const sf::Uint8* pixels, unsigned int width, unsigned int height, unsigned int x, unsigned int y);
+            void setSmooth(bool smooth);
+            void update(const Texture& texture);
+            void swap(Texture& texture);
+            static unsigned int getMaximumSize();
+        private :
+            friend class Text;
+            friend class RenderTexture;
+            friend class RenderTarget;
+            sf::Uint64 m_cacheId;
+        };
+        #else
         ////////////////////////////////////////////////////////////
         /// \brief Image living on the graphics card that can be used for drawing
         ///
@@ -547,6 +565,7 @@ namespace odfaeg
             std::string m_name;
             static std::vector<Texture*> allTextures;
         };
+        #endif
     }
 } // namespace sf
 #endif // SFML_TEXTURE_HPP

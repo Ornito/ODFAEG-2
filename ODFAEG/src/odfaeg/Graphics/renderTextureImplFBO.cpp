@@ -26,6 +26,7 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include "renderTextureImplFBO.h"
+#ifndef VULKAN
 #include "../../../include/odfaeg/Graphics/renderTarget.h"
 #include "../../../include/odfaeg/Graphics/texture.h"
 #include "glCheck.h"
@@ -192,3 +193,4 @@ namespace odfaeg {
     } // namespace priv
 
 } // namespace sf
+#endif

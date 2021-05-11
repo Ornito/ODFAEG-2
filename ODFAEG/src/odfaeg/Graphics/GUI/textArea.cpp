@@ -127,18 +127,24 @@ namespace odfaeg {
                 rect.setSize(getSize());
 
                 target.draw(rect);
+                #ifndef VULKAN
                 GLboolean sctest;
                 glCheck(glGetBooleanv(GL_SCISSOR_TEST, &sctest));
                 GLint values[4];
                 glCheck(glGetIntegerv(GL_SCISSOR_BOX, values));
                 glCheck(glEnable(GL_SCISSOR_TEST));
                 glCheck(glScissor(getPosition().x, getWindow().getSize().y - (getPosition().y + getSize().y), getSize().x, getSize().y));
+                #endif
                 target.draw(text);
                 //Il faut restaurer les paramètres d'avant si un scissor test a été défini avant de dessiner la TextArea.
                 if (sctest == false) {
+                    #ifndef VULKAN
                     glCheck(glDisable(GL_SCISSOR_TEST));
+                    #endif
                 } else {
+                    #ifndef VULKAN
                     glCheck(glScissor(values[0], values[1], values[2], values[3]));
+                    #endif
                 }
                 if(haveFocus)
                     target.draw(va);

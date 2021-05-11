@@ -106,7 +106,7 @@ namespace odfaeg {
                 * \brief return the inverse of the matrix, throw an exception if the matrix isn't inversible.
                 * \return the inversed matrix.
                 */
-                Matrix2f inverse () throw (std::exception&);
+                Matrix2f inverse ();
                 /**
                 * \fn float getDet() const
                 * \brief return the value of the determiant of the matrix.

@@ -40,9 +40,14 @@ int main (int argv, char* argc[]) {
             std::cout<<"pixel : "<<(int) pixel.r<<","<<(int) pixel.g<<","<<(int) pixel.b<<std::endl;
         }
     }*/
-    /*Triangle triangle(Vec3f(0, -50, 50), Vec3f(100, -50, 50), Vec3f(50, 50, 50));
-    Ray ray(Vec3f(0, 0, 0), Vec3f(0, 0, 100));
-    std::cout<<triangle.intersects(ray)<<std::endl;*/
+    /*Triangle triangle(Vec3f(107, 270, 0.999918), Vec3f(140, 279, 0.999918), Vec3f(114, 279, 0.9999));
+
+    Ray ray(Vec3f(120, 277, 0), Vec3f(120, 277, 1000));
+    Vec3f i1, i2;
+    if (triangle.intersectsWhere(ray, i1, i2))
+        std::cout<<i1<<std::endl;
+    while (true);*/
+
     MyAppli appli(Vec2f(800, 600), "test");
     return appli.exec();
 }

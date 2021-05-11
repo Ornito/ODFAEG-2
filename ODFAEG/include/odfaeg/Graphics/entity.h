@@ -250,7 +250,7 @@ namespace odfaeg {
                 *   \param std::string name : the name of the attribute of the entity.
                 *   \return StateParameter& : the attribute of the entity.
                 */
-                const core::StateParameter& getAttribute (const std::string name) throw (core::Erreur) {
+                const core::StateParameter& getAttribute (const std::string name) {
                        return entityState.getParameter(name);
                 }
                 /** \fn void changeAttribute (const std::string name)

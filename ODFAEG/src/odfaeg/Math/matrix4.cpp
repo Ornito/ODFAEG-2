@@ -182,7 +182,7 @@ namespace odfaeg {
             * (m21 * det24 - m22 * det14 + m24 * det12) - m14
             * (m21 * det23 - m22 * det13 + m23 * det12);
         }
-        Matrix4f Matrix4f::inverse () throw (std::exception&) {
+        Matrix4f Matrix4f::inverse () {
             Matrix4f store;
             float fa1 = m11 * m22 - m12 * m21;
             float fa2 = m11 * m23 - m13 * m21;

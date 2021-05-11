@@ -28,7 +28,7 @@ namespace odfaeg {
             * \brief constructor.
             * \param name : the name of the entity manager.
             */
-            EntityManager(std::string name) : name(name), nbSceneVertices(0), nbTransforms(0) {
+            EntityManager(std::string name) : name(name)/*, nbSceneVertices(0), nbTransforms(0)*/ {
 
             }
             /**
@@ -82,7 +82,7 @@ namespace odfaeg {
             * \brief virtual function to redefine to add an entity into the manager.
             * \param Entity* entity : the entity to add.
             */
-            void addVertices(VertexArray& va, unsigned int transformId) {
+            /*void addVertices(VertexArray& va, unsigned int transformId) {
                 for (unsigned int j = 0; j < va.getVertexCount(); j++) {
                     sceneVertices.append(va[j]);
                     sceneVertices.addIndex(nbSceneVertices);
@@ -110,7 +110,7 @@ namespace odfaeg {
                     sceneVertices.remove(va);
                 }
                 nbSceneVertices -= va.getVertexCount();
-            }
+            }*/
             virtual bool addEntity(Entity *entity) = 0;
             virtual bool containsVisibleEntity(Entity* ae) = 0;
             /**
@@ -189,18 +189,18 @@ namespace odfaeg {
             void setName(std::string name) {
                 this->name = name;
             }
-            std::vector<TransformMatrix*> getTransforms() {
+            /*std::vector<TransformMatrix*> getTransforms() {
                 return transformMatrices;
             }
             VertexBuffer& getSceneVertices() {
                 return sceneVertices;
-            }
+            }*/
             private :
             std::string name;
-            VertexBuffer sceneVertices;
+            /*VertexBuffer sceneVertices;
             std::vector<VertexArray*> allVertices;
             std::vector<TransformMatrix*> transformMatrices;
-            unsigned int nbSceneVertices, nbTransforms;
+            unsigned int nbSceneVertices, nbTransforms;*/
         };
     }
 }

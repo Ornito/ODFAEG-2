@@ -1,8 +1,13 @@
 #include "../../../include/odfaeg/Graphics/raytracingRenderComponent.hpp"
+#ifndef VULKAN
 #include "glCheck.h"
+#endif
 #include "../../../include/odfaeg/Math/triangle.h"
+
 namespace odfaeg {
     namespace graphic {
+        #ifdef VULKAN
+        #else
         RaytracingRenderComponent::RaytracingRenderComponent(RenderWindow& window, int layer, std::string expression, window::ContextSettings settings) : HeavyComponent(window, math::Vec3f(window.getView().getPosition().x, window.getView().getPosition().y, layer),
                           math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0),
                           math::Vec3f(window.getView().getSize().x + window.getView().getSize().x * 0.5f, window.getView().getPosition().y + window.getView().getSize().y * 0.5f, layer)),
@@ -15,15 +20,35 @@ namespace odfaeg {
                 frameBufferSprite = Sprite(frameBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
                 frameBuffer.setView(view);
                 sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
+                GLuint maxNodes = 20 * window.getView().getSize().x * window.getView().getSize().y;
+                GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
+                glCheck(glGenBuffers(1, &atomicBuffer));
+                glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
+                glCheck(glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW));
+                glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0));
+                glCheck(glGenBuffers(1, &linkedListBuffer));
+                glCheck(glBindBuffer(GL_SHADER_STORAGE_BUFFER, linkedListBuffer));
+                glCheck(glBufferData(GL_SHADER_STORAGE_BUFFER, maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW));
+                glCheck(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0));
+                glCheck(glGenTextures(1, &headPtrTex));
+                glCheck(glBindTexture(GL_TEXTURE_2D, headPtrTex));
+                glCheck(glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, window.getView().getSize().x, window.getView().getSize().y));
+                glCheck(glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI));
+                glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+                std::vector<GLuint> headPtrClearBuf(window.getView().getSize().x*window.getView().getSize().y, 0xffffffff);
+                glCheck(glGenBuffers(1, &clearBuf2));
+                glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf2));
+                glCheck(glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint),
+                &headPtrClearBuf[0], GL_STATIC_COPY));
+                glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
                 glCheck(glGenTextures(1, &frameBufferTex));
                 glCheck(glBindTexture(GL_TEXTURE_2D, frameBufferTex));
+                glCheck(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, window.getView().getSize().x, window.getView().getSize().y));
                 glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
                 glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
                 glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
                 glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-                glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, window.getSize().x, window.getSize().y, 0, GL_RGBA, GL_FLOAT,
-                 NULL));
-                glCheck(glBindImageTexture(0, frameBufferTex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F));
+                glCheck(glBindImageTexture(1, frameBufferTex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F));
                 glCheck(glBindTexture(GL_TEXTURE_2D, 0));
                 std::vector<GLfloat> texClearBuf(window.getView().getSize().x*window.getView().getSize().y*4, 0);
                 glCheck(glGenBuffers(1, &clearBuf));
@@ -55,31 +80,94 @@ namespace odfaeg {
                                                             frontColor = color;
                                                         })";
                 std::string quadFragmentShader = R"(#version 460
+                                                    #define MAX_FRAGMENTS 20
+                                                        struct NodeType {
+                                                          vec4 color;
+                                                          float depth;
+                                                          uint next;
+                                                        };
+                                                        layout(binding = 0, r32ui) uniform uimage2D headPointers;
+                                                        layout(binding = 0, std430) buffer linkedLists {
+                                                           NodeType nodes[];
+                                                        };
                                                         uniform sampler2D texture;
                                                         in vec4 frontColor;
                                                         in vec2 fTexCoords;
+                                                        layout(origin_upper_left) in vec4 gl_FragCoord;
                                                         layout (location = 0) out vec4 fcolor;
                                                         void main() {
-                                                            vec4 texel = texture2D(texture, fTexCoords.xy) * frontColor;
-                                                            fcolor = texel;
+                                                            /*vec4 texel = texture2D(texture, fTexCoords.xy) * frontColor;
+                                                            fcolor = texel;*/
+                                                            NodeType frags[MAX_FRAGMENTS];
+                                                            int count = 0;
+                                                            uint n = imageLoad(headPointers, ivec2(gl_FragCoord.xy)).r;
+                                                            while( n != 0xffffffffu && count < MAX_FRAGMENTS) {
+                                                                 frags[count] = nodes[n];
+                                                                 n = frags[count].next;
+                                                                 count++;
+                                                            }
+                                                            //merge sort
+                                                            int i, j1, j2, k;
+                                                            int a, b, c;
+                                                            int step = 1;
+                                                            NodeType leftArray[MAX_FRAGMENTS/2]; //for merge sort
+                                                            while (step <= count)
+                                                            {
+                                                                i = 0;
+                                                                while (i < count - step)
+                                                                {
+                                                                    ////////////////////////////////////////////////////////////////////////
+                                                                    //merge(step, i, i + step, min(i + step + step, count));
+                                                                    a = i;
+                                                                    b = i + step;
+                                                                    c = (i + step + step) >= count ? count : (i + step + step);
+                                                                    for (k = 0; k < step; k++)
+                                                                      leftArray[k] = frags[a + k];
+                                                                      j1 = 0;
+                                                                      j2 = 0;
+                                                                      for (k = a; k < c; k++)
+                                                                      {
+                                                                          if (b + j1 >= c || (j2 < step && leftArray[j2].depth > frags[b + j1].depth))
+                                                                              frags[k] = leftArray[j2++];
+                                                                          else
+                                                                              frags[k] = frags[b + j1++];
+                                                                      }
+                                                                      ////////////////////////////////////////////////////////////////////////
+                                                                      i += 2 * step;
+                                                                  }
+                                                                  step *= 2;
+                                                              }
+                                                              vec4 color = vec4(0, 0, 0, 0);
+                                                              for( int i = count - 1; i >= 0; i--)
+                                                              {
+                                                                color.rgb = frags[i].color.rgb * frags[i].color.a + color.rgb * (1 - frags[i].color.a);
+                                                                color.a = frags[i].color.a + color.a * (1 - frags[i].color.a);
+
+                                                              }
+                                                              fcolor = color;
                                                         }
                                                     )";
                 std::string raytracingShaderCode = R"(#version 460
-                                                      #extension GL_ARB_bindless_texture : enable
                                                       #define MAX_FRAGMENTS 20
+                                                      #extension GL_ARB_bindless_texture : enable
+                                                      struct NodeType {
+                                                          vec4 color;
+                                                          float depth;
+                                                          uint next;
+                                                      };
                                                       struct Triangle {
-                                                          vec3 position[3];
+                                                          mat4 transform;
+                                                          mat4 textureMatrix;
+                                                          vec4 position[3];
                                                           vec4 color[3];
-                                                          vec2 texCoords[3];
-                                                          vec3 normal;
+                                                          vec4 texCoords[3];
+                                                          vec4 normal;
                                                           uint textureIndex;
                                                           uint refractReflect;
                                                           float ratio;
-                                                          mat4 transform;
-                                                          mat4 textureMatrix;
                                                       };
                                                       struct Light {
-                                                          vec3 center;
+                                                          vec4 center;
                                                           vec4 color;
                                                           float radius;
                                                       };
@@ -91,18 +179,25 @@ namespace odfaeg {
                                                       struct Ray {
                                                           vec3 origin;
                                                           vec3 dir;
+                                                          vec3 ext;
                                                       };
                                                       layout(local_size_x = 1, local_size_y = 1) in;
-                                                      layout(rgba32f, binding = 0) uniform image2D img_output;
-                                                      layout(binding = 0) uniform ALL_TEXTURES {
+                                                      layout(rgba32f, binding = 1) uniform image2D img_output;
+                                                      layout(std140, binding = 0) uniform ALL_TEXTURES {
                                                           sampler2D textures[200];
                                                       };
-                                                      layout(binding = 0, std430) buffer trianglesBuffer {
+                                                      layout(std430, binding = 1) buffer trianglesBuffer {
                                                           Triangle triangles[];
                                                       };
-                                                      layout(binding = 1, std430) buffer lightsBuffer {
+                                                      layout(std430, binding = 2) buffer lightsBuffer {
                                                           Light lights[];
                                                       };
+                                                      layout(binding = 0, offset = 0) uniform atomic_uint nextNodeCounter;
+                                                      layout(binding = 0, r32ui) uniform uimage2D headPointers;
+                                                      layout(binding = 0, std430) buffer linkedLists {
+                                                          NodeType nodes[];
+                                                      };
+                                                      uniform uint maxNodes;
                                                       uniform uint nbLights;
                                                       uniform uint nbTriangles;
                                                       uniform vec3 cameraPos;
@@ -110,21 +205,181 @@ namespace odfaeg {
                                                       uniform mat4 viewMatrix;
                                                       uniform mat4 projMatrix;
                                                       uniform mat4 viewportMatrix;
-                                                       vec4 castReflectionRay(Pixel currentPixel, uint triangle);
+                                                      uniform uint tindex;
+                                                      uniform uint x;
+                                                      uniform uint y;
+                                                      vec4 castReflectionRay(Pixel currentPixel, uint triangle);
                                                       vec4 castRefractionRay(Pixel currentPixel, uint triangle);
-                                                      bool intersects(Ray ray, Triangle triangle, vec3 intersection) {
-                                                         vec3 r = ray.dir;
-                                                         vec3 u = triangle.position[1] - triangle.position[0];
-                                                         vec3 v = triangle.position[2] - triangle.position[0];
+                                                      /*Functions to debug, draw numbers to the image,
+                                                      draw a vertical ligne*/
+                                                      void drawVLine (ivec2 position, int width, int nbPixels, vec4 color) {
+                                                          int startY = position.y;
+                                                          int startX = position.x;
+                                                          while (position.y < startY + nbPixels) {
+                                                             while (position.x < startX + width) {
+                                                                imageStore(img_output, position, color);
+                                                                position.x++;
+                                                             }
+                                                             position.y++;
+                                                             position.x = startX;
+                                                          }
+                                                      }
+                                                      /*Draw an horizontal line*/
+                                                      void drawHLine (ivec2 position, int height, int nbPixels, vec4 color) {
+                                                          int startY = position.y;
+                                                          int startX = position.x;
+                                                          while (position.y > startY - height) {
+                                                             while (position.x < startX + nbPixels) {
+                                                                imageStore(img_output, position, color);
+                                                                position.x++;
+                                                             }
+                                                             position.y--;
+                                                             position.x = startX;
+                                                          }
+                                                      }
+                                                      /*Draw digits.*/
+                                                      void drawDigit (ivec2 position, int nbPixels, vec4 color, uint digit) {
+                                                          int digitSize = nbPixels * 10;
+                                                          if (digit == 0) {
+                                                              drawVLine(position, digitSize / 2, nbPixels, color);
+                                                              drawHLine(position, digitSize, nbPixels, color);
+                                                              drawHLine(ivec2(position.x + digitSize / 2 - nbPixels, position.y), digitSize, nbPixels, color);
+                                                              drawVLine(ivec2(position.x, position.y - digitSize + nbPixels), digitSize / 2, nbPixels, color);
+                                                          } else if (digit == 1) {
+                                                              drawHLine(ivec2(position.x + digitSize / 2 - nbPixels, position.y), digitSize, nbPixels, color);
+                                                          } else if (digit == 2) {
+                                                              drawVLine(position, digitSize / 2, nbPixels, color);
+                                                              drawHLine(ivec2(position.x, position.y), digitSize / 2 + nbPixels / 2, nbPixels, color);
+                                                              drawVLine(ivec2(position.x, position.y - digitSize / 2 + nbPixels / 2), digitSize / 2, nbPixels, color);
+                                                              drawHLine(ivec2(position.x + digitSize / 2 - nbPixels, position.y - digitSize / 2 + nbPixels / 2), digitSize / 2 + nbPixels / 2, nbPixels, color);
+                                                              drawVLine(ivec2(position.x, position.y - digitSize + nbPixels), digitSize / 2, nbPixels, color);
+                                                          } else if (digit == 3) {
+                                                              drawHLine(ivec2(position.x + digitSize / 2 - nbPixels, position.y), digitSize, nbPixels, color);
+                                                              drawVLine(position, digitSize / 2, nbPixels, color);
+                                                              drawVLine(ivec2(position.x, position.y - digitSize / 2 + nbPixels / 2), digitSize / 2, nbPixels, color);
+                                                              drawVLine(ivec2(position.x, position.y - digitSize + nbPixels), digitSize / 2, nbPixels, color);
+                                                          } else if (digit == 4) {
+                                                              drawHLine(ivec2(position.x, position.y - digitSize / 2), digitSize / 2 + nbPixels / 2, nbPixels, color);
+                                                              drawHLine(ivec2(position.x + digitSize / 2 - nbPixels, position.y), digitSize, nbPixels, color);
+                                                              drawVLine(ivec2(position.x, position.y - digitSize / 2 + nbPixels / 2), digitSize / 2, nbPixels, color);
+                                                          } else if (digit == 5) {
+                                                              drawVLine(position, digitSize / 2, nbPixels, color);
+                                                              drawHLine(ivec2(position.x, position.y - digitSize / 2 + nbPixels / 2), digitSize / 2 + nbPixels / 2, nbPixels, color);
+                                                              drawVLine(ivec2(position.x, position.y - digitSize / 2 + nbPixels / 2), digitSize / 2, nbPixels, color);
+                                                              drawHLine(ivec2(position.x + digitSize / 2 - nbPixels, position.y), digitSize / 2 + nbPixels / 2, nbPixels, color);
+                                                              drawVLine(ivec2(position.x, position.y - digitSize + nbPixels), digitSize / 2, nbPixels, color);
+                                                          } else if (digit == 6) {
+                                                              drawVLine(position, digitSize / 2, nbPixels, color);
+                                                              drawHLine(ivec2(position.x + digitSize / 2 - nbPixels, position.y), digitSize, nbPixels, color);
+                                                              drawVLine(ivec2(position.x, position.y - digitSize / 2 + nbPixels / 2), digitSize / 2, nbPixels, color);
+                                                              drawHLine(position, digitSize / 2 + nbPixels / 2, nbPixels, color);
+                                                              drawVLine(ivec2(position.x, position.y - digitSize + nbPixels), digitSize / 2, nbPixels, color);
+                                                          } else if (digit == 7) {
+                                                              drawVLine(ivec2(position.x, position.y - digitSize + nbPixels), digitSize / 2, nbPixels, color);
+                                                              drawHLine(ivec2(position.x + digitSize / 2 - nbPixels, position.y), digitSize, nbPixels, color);
+                                                          } else if (digit == 8) {
+                                                              drawHLine(position, digitSize, nbPixels, color);
+                                                              drawHLine(ivec2(position.x + digitSize / 2 - nbPixels, position.y), digitSize, nbPixels, color);
+                                                              drawVLine(position, digitSize / 2, nbPixels, color);
+                                                              drawVLine(ivec2(position.x, position.y - digitSize / 2 + nbPixels / 2), digitSize / 2, nbPixels, color);
+                                                              drawVLine(ivec2(position.x, position.y - digitSize + nbPixels), digitSize / 2, nbPixels, color);
+                                                          } else if (digit == 9) {
+                                                              drawVLine(position, digitSize / 2, nbPixels, color);
+                                                              drawHLine(ivec2(position.x + digitSize / 2 - nbPixels, position.y), digitSize, nbPixels, color);
+                                                              drawVLine(ivec2(position.x, position.y - digitSize / 2 + nbPixels / 2), digitSize / 2, nbPixels, color);
+                                                              drawHLine(ivec2(position.x, position.y - digitSize / 2 + nbPixels / 2), digitSize / 2 + nbPixels / 2, nbPixels, color);
+                                                              drawVLine(ivec2(position.x, position.y - digitSize + nbPixels), digitSize / 2, nbPixels, color);
+                                                          }
+                                                      }
+                                                      void drawSquare(ivec2 position, int size, vec4 color) {
+                                                          int startY = position.y;
+                                                          int startX = position.x;
+                                                          while (position.y > startY - size) {
+                                                             while (position.x < startX + size) {
+                                                                imageStore(img_output, position, color);
+                                                                position.x++;
+                                                             }
+                                                             position.y--;
+                                                             position.x = startX;
+                                                          }
+                                                      }
+                                                      void drawPunt(ivec2 position, int nbPixels, vec4 color) {
+                                                          int puntSize = nbPixels * 2;
+                                                          drawSquare(position, puntSize, color);
+                                                      }
+                                                      ivec2 print (ivec2 position, int nbPixels, vec4 color, double number) {
+                                                          int digitSize = nbPixels * 10;
+                                                          int digitSpacing = nbPixels * 6;
+                                                          if (number < 0) {
+                                                             number = -number;
+                                                             drawVLine(ivec2(position.x, position.y - digitSize / 2 + nbPixels / 2), digitSize / 2, nbPixels, color);
+                                                             position.x += digitSpacing;
+                                                          }
+                                                          int pe = int(number);
+                                                          int n = 0;
+                                                          uint rpe[10];
+                                                          do {
+                                                             uint digit = pe % 10;
+                                                             pe /= 10;
+                                                             if (n < 10) {
+                                                                rpe[n] = digit;
+                                                             }
+                                                             n++;
+                                                          } while (pe != 0);
+                                                          if (n >= 10)
+                                                            n = 9;
+                                                          //drawDigit(position, nbPixels, color,0);
+                                                          for (int i = n-1; i >= 0; i--) {
+                                                             drawDigit(position, nbPixels, color, rpe[i]);
+                                                             //drawDigit(position, nbPixels, color,n-i-1);
+                                                             position.x += digitSpacing;
+                                                          }
+                                                          double rest = fract(number);
+                                                          if (rest > 0) {
+                                                              drawPunt(position, nbPixels, color);
+                                                              position.x += digitSpacing;
+                                                              do {
+                                                                 rest *= 10;
+                                                                 int digit = int(rest);
+                                                                 rest -= digit;
+                                                                 drawDigit(position, nbPixels, color, digit);
+                                                                 position.x += digitSpacing;
+                                                              } while (rest != 0);
+                                                          }
+                                                          return position;
+                                                      }
+                                                      ivec2 print (ivec2 position, int nbPixels, vec4 color, mat4 matrix) {
+                                                          int numberSpacing = 10;
+                                                          for (uint i = 0; i < 4; i++) {
+                                                             for (uint j = 0; j < 4; j++) {
+                                                                position = print(position, nbPixels, color, matrix[i][j]);
+                                                                position.x += numberSpacing;
+                                                             }
+                                                          }
+                                                          return position;
+                                                      }
+                                                      ivec2 print (ivec2 position, int nbPixels, vec4 color, vec4 vector) {
+                                                          int numberSpacing = 10;
+                                                          for (uint i = 0; i < 4; i++) {
+                                                            position = print(position, nbPixels, color, vector[i]);
+                                                            position.x += numberSpacing;
+                                                          }
+                                                          return position;
+                                                      }
+                                                      bool intersects(Ray ray, vec4[3] positions, inout vec4 intersection, inout float u, inout float v) {
+                                                         /*vec3 r = ray.origin - ray.ext;
+                                                         vec3 u = (positions[1] - positions[0]).xyz;
+                                                         vec3 v = (positions[2] - positions[0]).xyz;
                                                          vec3 n = cross(u, v);
-                                                         vec3 otr = ray.origin - triangle.position[0];
+                                                         vec3 p1 = positions[0].xyz;
+                                                         vec3 otr = ray.origin - p1;
                                                          vec3 point;
                                                          if (dot(n, r) == 0)
                                                             return false;
                                                          point.x = dot(n, otr) / dot(n, r);
                                                          point.y = dot(cross(-otr, u), r) / dot(n, r);
-                                                         point.z = dot(cross(v, otr), r) / dot(n, r);
-                                                         vec3 p1 = triangle.position[0];
+                                                         point.z = dot(cross(-v, otr), r) / dot(n, r);
+
                                                          if (0 <= point.x
                                                                && 0 <= point.y && point.y <= 1
                                                                &&  0 <= point.z && point.z <= 1
@@ -132,13 +387,66 @@ namespace odfaeg {
                                                                intersection.x = p1.x + u.x * point.z + v.x * point.y;
                                                                intersection.y = p1.y + u.y * point.z + v.y * point.y;
                                                                intersection.z = p1.z + u.z * point.z + v.z * point.y;
+
+
                                                                return true;
                                                          }
-                                                         intersection = vec3(0, 0, 0);
-                                                         return false;
+
+                                                         intersection = vec4(0, 0, 0);
+
+
+
+                                                         return false;*/
+                                                         intersection = vec4(0, 0, 0, 0);
+                                                         vec3 v0v1 = (positions[1] - positions[0]).xyz;
+                                                         vec3 v0v2 = (positions[2] - positions[0]).xyz;
+                                                         vec3 v0 = positions[0].xyz;
+                                                         float wv0 = positions[0].w;
+                                                         vec3 v1 = positions[1].xyz;
+                                                         float wv1 = positions[1].w;
+                                                         vec3 v2 = positions[2].xyz;
+                                                         float wv2 = positions[2].w;
+                                                         vec3 n = cross(v0v1, v0v2);
+                                                         float denom = dot(n, n);
+                                                         float ndotRayDirection = dot(n, ray.dir);
+                                                         if (abs(ndotRayDirection) < 0.0000001)
+                                                            return false;
+                                                         float d = dot(n, v0);
+                                                         float t = (dot(n, ray.origin) + d) / ndotRayDirection;
+                                                         if (t < 0)
+                                                            return false;
+                                                         vec3 p = ray.origin + t * ray.dir;
+
+
+                                                         vec3 c;
+                                                         vec3 edge0 = v1 - v0;
+                                                         vec3 vp0 = p - v0;
+                                                         c = cross(edge0, vp0);
+
+
+
+                                                         if (dot(n, c) < 0)
+                                                            return false;
+                                                         vec3 edge1 = v2 - v1;
+                                                         vec3 vp1 = p - v1;
+                                                         c = cross(edge1, vp1);
+
+                                                         if ((u = dot(n, c)) < 0)
+                                                            return false;
+                                                         vec3 edge2 = v0 - v2;
+                                                         vec3 vp2 = p - v2;
+                                                         c = cross(edge2, vp2);
+                                                         if ((v = dot(n, c)) < 0)
+                                                            return false;
+                                                        u /= denom;
+                                                        v /= denom;
+
+                                                        intersection = vec4(p, 1);
+                                                        intersection.w = u * wv0 + v * wv1 + (1-u-v) * wv2;
+                                                        return true;
                                                       }
                                                       bool intersects (Ray ray, Light light) {
-                                                          vec3 omc = ray.origin - light.center;
+                                                          vec3 omc = ray.origin - light.center.xyz;
                                                           float b = dot(ray.dir, omc);
                                                           float c = dot(omc, omc) - light.radius * light.radius;
                                                           float bsqmc = b * b - c;
@@ -146,33 +454,40 @@ namespace odfaeg {
                                                             return true;
                                                           return false;
                                                       }
-                                                      Pixel interpolate(Triangle triangle, vec2 p) {
+                                                      Pixel interpolate(Triangle triangle, vec3 p, float u, float v) {
                                                            Pixel pixel;
-                                                           vec3 p1 = triangle.position[0];
-                                                           vec3 p2 = triangle.position[1];
-                                                           vec3 p3 = triangle.position[2];
-                                                           mat2 m1 = mat2(p1.x - p3.x, p2.x - p3.x,
-                                                                    p1.y - p3.y, p2.y - p3.y);
-                                                           float u = ((p2.y - p3.y) * (p.x - p3.x) + (p3.x - p2.x) * (p.y - p3.y)) / determinant(m1);
-                                                           float v = ((p3.y - p1.y) * (p.x - p3.x) + (p1.x - p3.x) * (p.y - p3.y)) / determinant(m1);
+                                                           /*vec3 p1 = triangle.position[0].xyz;
+                                                           vec3 p2 = triangle.position[1].xyz;
+                                                           vec3 p3 = triangle.position[2].xyz;
+                                                           float d = (p2.y - p3.y) * (p.x - p3.x) + (p3.x - p2.x) * (p.y - p3.y);
+                                                           float u = ((p2.y - p3.y) * (p.x - p3.x) + (p3.x - p2.x) * (p.y - p3.y)) / d;
+                                                           float v = ((p3.y - p1.y) * (p.x - p3.x) + (p1.x - p3.x) * (p.y - p3.y)) / d;*/
                                                            float w = 1 - u - v;
-                                                           vec3 z = vec3 (p1.z, p2.z, p3.z);
-                                                           float bz = z.x * u + z.y * v + z.z * w;
-                                                           pixel.position = vec3(p, bz);
-                                                           vec3 r = vec3(triangle.color[0].r / 255.f, triangle.color[1].r / 255.f, triangle.color[2].r / 255.f);
-                                                           vec3 g = vec3(triangle.color[0].g / 255.f, triangle.color[1].g / 255.f, triangle.color[2].g / 255.f);
-                                                           vec3 b = vec3(triangle.color[0].b / 255.f, triangle.color[1].b / 255.f, triangle.color[2].b / 255.f);
-                                                           vec3 a = vec3(triangle.color[0].a / 255.f, triangle.color[1].a / 255.f, triangle.color[2].a / 255.f);
+                                                           pixel.position = p;
+                                                           vec3 r = vec3(triangle.color[0].r, triangle.color[1].r, triangle.color[2].r);
+                                                           vec3 g = vec3(triangle.color[0].g, triangle.color[1].g, triangle.color[2].g);
+                                                           vec3 b = vec3(triangle.color[0].b, triangle.color[1].b, triangle.color[2].b);
+                                                           vec3 a = vec3(triangle.color[0].a, triangle.color[1].a, triangle.color[2].a);
                                                            vec4 color = vec4 (r.x * u + r.y * v + r.z * w,
                                                                             g.x * u + g.y * v + g.z * w,
                                                                             b.x * u + b.y * v + b.z * w,
                                                                             a.x * u + a.y * v + a.z * w);
-                                                           vec2 tc1 = (triangle.textureMatrix * vec4(triangle.texCoords[0], 1.f, 1.f)).xy;
-                                                           vec2 tc2 = (triangle.textureMatrix * vec4(triangle.texCoords[1], 1.f, 1.f)).xy;
-                                                           vec2 tc3 = (triangle.textureMatrix * vec4(triangle.texCoords[2], 1.f, 1.f)).xy;
+                                                           vec2 tc1 = (triangle.textureMatrix * triangle.texCoords[0]).xy;
+                                                           vec2 tc2 = (triangle.textureMatrix * triangle.texCoords[1]).xy;
+                                                           vec2 tc3 = (triangle.textureMatrix * triangle.texCoords[2]).xy;
+
+
                                                            pixel.texCoords = vec2(tc1.x * u + tc2.x * v + tc3.x * w,
                                                                                   tc1.y * u + tc2.y * v + tc3.y * w);
-                                                           pixel.color = vec4(1, 0, 0 ,1);/*(triangle.textureIndex > 0) ? color * texture2D(textures[triangle.textureIndex], pixel.texCoords) : color;*/
+                                                           if (pixel.texCoords.x < 0)
+                                                               pixel.texCoords.x = 0;
+                                                           else if (pixel.texCoords.x > 1)
+                                                               pixel.texCoords.x = fract(pixel.texCoords.x);
+                                                           if (pixel.texCoords.y < 0)
+                                                               pixel.texCoords.y = 0;
+                                                           else if (pixel.texCoords.y > 1)
+                                                               pixel.texCoords.y = fract(pixel.texCoords.y);
+                                                           pixel.color = (triangle.textureIndex > 0) ? color * texture(textures[triangle.textureIndex-1], pixel.texCoords) : color;
                                                            return pixel;
                                                       }
                                                       vec4 computeLightAndShadow(Pixel currentPixel, vec3 n, uint triangle) {
@@ -187,25 +502,26 @@ namespace odfaeg {
                                                            toLight.origin = currentPixel.position;
                                                            toLight.dir = dir;
                                                            vec4 visibility=vec4(1, 1, 1, 1);
+                                                           float u, v;
                                                            for (uint l = 0; l < nbLights; l++) {
                                                                 if (intersects(toLight, lights[l])) {
-                                                                    vec3 vertexToLight = lights[l].center - currentPixel.position;
+                                                                    vec3 vertexToLight = lights[l].center.xyz - currentPixel.position;
                                                                     float attenuation = 1.f - length(vertexToLight) / lights[l].radius;
                                                                     vec3 dirToLight = normalize(vertexToLight.xyz);
                                                                     float nDotl = dot (dirToLight, n);
                                                                     attenuation *= nDotl;
                                                                     lightColor *= lights[l].color * max(0.0, attenuation);
                                                                     Ray shadowRay;
-                                                                    shadowRay.origin = lights[l].center;
+                                                                    shadowRay.origin = lights[l].center.xyz;
                                                                     shadowRay.dir = -toLight.dir;
-                                                                    vec3 shadowRayIntersection;
+                                                                    vec4 shadowRayIntersection;
                                                                     for (uint i = 0; i < nbTriangles; i++) {
                                                                         if (i != triangle) {
-                                                                            for (uint j = 0; j < 3; j++) {
+                                                                            /*for (uint j = 0; j < 3; j++) {
                                                                                 triangles[i].position[j] = (viewportMatrix * projMatrix * viewMatrix * triangles[i].transform * vec4(triangles[i].position[j], 1)).xyz;
-                                                                            }
-                                                                            if (intersects(shadowRay, triangles[i], shadowRayIntersection)) {
-                                                                                pixels[count] = interpolate(triangles[i], shadowRayIntersection.xy);
+                                                                            }*/
+                                                                            if (intersects(shadowRay, triangles[i].position, shadowRayIntersection, u, v)) {
+                                                                                pixels[count] = interpolate(triangles[i], shadowRayIntersection.xyz, u, v);
                                                                                 //count++;
                                                                             }
                                                                         }
@@ -270,12 +586,13 @@ namespace odfaeg {
                                                           vec3 I = currentPixel.position - cameraPos;
                                                           int count = 0;
                                                           Pixel depthPixels[MAX_FRAGMENTS];
+                                                          float u, v;
                                                           for (unsigned int i = 0; i < nbTriangles; i++) {
                                                                 if (i != triangle) {
-                                                                    for (uint j = 0; j < 3; j++) {
+                                                                    /*for (uint j = 0; j < 3; j++) {
                                                                         triangles[i].position[j] = (viewportMatrix * projMatrix * viewMatrix * triangles[i].transform * vec4(triangles[i].position[j], 1)).xyz;
-                                                                    }
-                                                                    vec3 n = triangles[i].normal;
+                                                                    }*/
+                                                                    vec3 n = triangles[i].normal.xyz;
                                                                     float k = 1.0 - triangles[i].ratio * triangles[i].ratio * (1.0 - dot(n, I) * dot(n, I));
                                                                     vec3 r;
                                                                     if (k < 0.0) {
@@ -286,15 +603,15 @@ namespace odfaeg {
                                                                     Ray ray;
                                                                     ray.origin = currentPixel.position;
                                                                     ray.dir = r;
-                                                                    vec3 intersection;
-                                                                    if (intersects(ray, triangles[i],intersection)) {
-                                                                        vec3 intersection;
+                                                                    vec4 intersection;
+                                                                    if (intersects(ray, triangles[i].position,intersection, u, v)) {
+                                                                        vec4 intersection;
                                                                         vec4 reflectRefractColor = vec4(1, 1, 1, 1);
                                                                         vec4 lightShadowColor = vec4(1, 1, 1, 1);
                                                                         Pixel p;
-                                                                        if (intersects(ray, triangles[i],intersection)) {
-                                                                            p = interpolate(triangles[i], intersection.xy);
-                                                                            lightShadowColor = computeLightAndShadow(p, triangles[i].normal, i);
+                                                                        if (intersects(ray, triangles[i].position,intersection, u , v)) {
+                                                                            p = interpolate(triangles[i], intersection.xyz, u, v);
+                                                                            lightShadowColor = computeLightAndShadow(p, triangles[i].normal.xyz, i);
                                                                             /*if (triangles[i].refractReflect == 1) {
                                                                                 reflectRefractColor = castReflectionRay(p, i);
                                                                             }
@@ -321,23 +638,24 @@ namespace odfaeg {
                                                           vec3 I = currentPixel.position - cameraPos;
                                                           int count = 0;
                                                           Pixel depthPixels[MAX_FRAGMENTS];
+                                                          float u, v;
 
                                                           for (unsigned int i = 0; i < nbTriangles; i++) {
                                                                 if (i != triangle) {
-                                                                    for (uint j = 0; j < 3; j++) {
+                                                                    /*for (uint j = 0; j < 3; j++) {
                                                                         triangles[i].position[j] = (viewportMatrix * projMatrix * viewMatrix * triangles[i].transform * vec4(triangles[i].position[j], 1)).xyz;
-                                                                    }
-                                                                    vec3 n = triangles[i].normal;
+                                                                    }*/
+                                                                    vec3 n = triangles[i].normal.xyz;
                                                                     vec3 r = I - 2.0 * dot(I, n) * n;
                                                                     Ray ray;
                                                                     ray.origin = currentPixel.position;
                                                                     ray.dir = r;
-                                                                    vec3 intersection;
+                                                                    vec4 intersection;
                                                                     vec4 lightShadowColor = vec4(1, 1, 1, 1);
                                                                     vec4 reflectRefractColor = vec4(1, 1, 1, 1);
                                                                     Pixel p;
-                                                                    if (intersects(ray, triangles[i],intersection)) {
-                                                                        p = interpolate(triangles[i], intersection.xy);
+                                                                    if (intersects(ray, triangles[i].position,intersection, u, v)) {
+                                                                        p = interpolate(triangles[i], intersection.xyz, u, v);
                                                                         //lightShadowColor = computeLightAndShadow(p, triangles[i].normal, i);
                                                                         /*if (triangles[i].refractReflect == 1) {
                                                                             reflectRefractColor = castReflectionRay(p, i);
@@ -363,49 +681,69 @@ namespace odfaeg {
                                                           vec4 pixel = vec4(1.0, 0.0, 0.0, 1.0);
                                                           ivec2 pixel_coords = ivec2(gl_GlobalInvocationID.xy);
                                                           Ray ray;
-                                                          float max_x = resolution.x * 0.5;
-                                                          float max_y = resolution.y * 0.5;
+                                                          float max_x = resolution.x*0.5;
+                                                          float max_y = resolution.y*0.5;
+                                                          float max_z = resolution.z*0.25;
                                                           ivec2 dims = imageSize(img_output);
-                                                          float x = (float(pixel_coords.x * 2 - dims.x) / dims.x);
-                                                          float y = (float(pixel_coords.y * 2 - dims.y) / dims.y);
-                                                          ray.origin = vec3(resolution.x * 0.5, resolution.y * 0.5, 0);
-                                                          vec3 ext = vec3 (pixel_coords.xy, resolution.z * 0.5);
-                                                          ray.dir = ray.origin - ext;
+                                                          float vx = (float(pixel_coords.x * 2 - dims.x) / dims.x);
+                                                          float vy = (float(pixel_coords.y * 2 - dims.y) / dims.y);
+                                                          ray.origin = vec3(pixel_coords.xy, 0);
+                                                          ray.ext = vec3 (pixel_coords.xy, resolution.z * 0.5);
+                                                          ray.dir = ray.ext - ray.origin;
                                                           Pixel depthPixels[MAX_FRAGMENTS];
                                                           Pixel currentPixel;
                                                           int count = 0;
-                                                          for (uint i = 0; i < nbTriangles; i++) {
-                                                               for (uint j = 0; j < 3; j++) {
-                                                                    vec4 t = projMatrix * viewMatrix * triangles[i].transform * vec4(triangles[i].position[j], 1);
-                                                                    t /= t.w;
-                                                                    triangles[i].position[j] = (viewportMatrix * t).xyz;
-                                                               }
-                                                               vec3 intersection;
-                                                               if (intersects(ray, triangles[i], intersection)) {
-                                                                   currentPixel = interpolate(triangles[i], pixel_coords);
-                                                                   //vec4 shadowLightColor = computeLightAndShadow (currentPixel, triangles[i].normal, i);
-                                                                   vec4 reflectRefractColor=vec4(1, 1, 1, 1);
-                                                                   /*if (triangles[i].refractReflect == 1) {
-                                                                       reflectRefractColor = castReflectionRay(currentPixel, i);
-                                                                   }
-                                                                   if (triangles[i].refractReflect == 2) {
-                                                                       reflectRefractColor = castRefractionRay(currentPixel, i);
-                                                                   }
-                                                                   if (triangles[i].refractReflect == 3) {
-                                                                       vec4 reflectColor = castReflectionRay(currentPixel, i);
-                                                                       vec4 refractColor = castRefractionRay(currentPixel, i);
-                                                                       reflectRefractColor = reflectColor * refractColor;
-                                                                   }*/
-                                                                   currentPixel.color = currentPixel.color /** reflectRefractColor * shadowLightColor*/;
-                                                                   /*depthPixels[count] = currentPixel;
-                                                                   if (count < MAX_FRAGMENTS)
-                                                                       count++;*/
-                                                                   vec4 color = blendAlpha (depthPixels, count);
-                                                                   imageStore(img_output, pixel_coords, currentPixel.color);
-                                                               }
 
-                                                          }
+                                                           Triangle tri = triangles[gl_GlobalInvocationID.z];
+                                                           for (uint j = 0; j < 3; j++) {
+                                                                vec4 t = projMatrix * viewMatrix * triangles[gl_GlobalInvocationID.z].transform * triangles[gl_GlobalInvocationID.z].position[j];
+                                                                /*t.y = resolution.y - t.y;
+                                                                t = projMatrix * viewMatrix * t;*/
+                                                                if (t.w == 0) {
+                                                                   t.w = 1;
+                                                                }
+                                                                float tmp = t.w;
+                                                                t /= t.w;
+                                                                tri.position[j] = viewportMatrix * t;
+                                                                tri.position[j].w = tmp;
+                                                                tri.position[j].y = resolution.y - tri.position[j].y;
+                                                           }
 
+                                                           vec4 intersection;
+                                                           float u, v;
+                                                           if (intersects(ray, tri.position, intersection, u, v)
+                                                               && intersection.x >= 0 && intersection.x < resolution.x
+                                                               && intersection.y >= 0 && intersection.y < resolution.y
+                                                               && intersection.w >= 50) {
+
+                                                               currentPixel = interpolate(tri, intersection.xyz, u, v);
+                                                               /*vec4 shadowLightColor = computeLightAndShadow (currentPixel, triangles[i].normal, i);
+                                                               vec4 reflectRefractColor=vec4(1, 1, 1, 1);
+                                                               if (triangles[i].refractReflect == 1) {
+                                                                   reflectRefractColor = castReflectionRay(currentPixel, i);
+                                                               }
+                                                               if (triangles[i].refractReflect == 2) {
+                                                                   reflectRefractColor = castRefractionRay(currentPixel, i);
+                                                               }
+                                                               if (triangles[i].refractReflect == 3) {
+                                                                   vec4 reflectColor = castReflectionRay(currentPixel, i);
+                                                                   vec4 refractColor = castRefractionRay(currentPixel, i);
+                                                                   reflectRefractColor = reflectColor * refractColor;
+                                                               }
+                                                               currentPixel.color = currentPixel.color * reflectRefractColor * shadowLightColor;
+                                                               depthPixels[count] = currentPixel;
+                                                               if (count < MAX_FRAGMENTS)
+                                                                   count++;
+                                                               vec4 color = blendAlpha (depthPixels, count);*/
+                                                               uint nodeIdx = atomicCounterIncrement(nextNodeCounter);
+                                                               if (nodeIdx < maxNodes) {
+                                                                   uint prevHead = imageAtomicExchange(headPointers, pixel_coords, nodeIdx);
+                                                                   nodes[nodeIdx].color = currentPixel.color;
+                                                                   nodes[nodeIdx].depth = -intersection.w;
+                                                                   nodes[nodeIdx].next = prevHead;
+                                                               }
+                                                               //imageStore(img_output, pixel_coords, currentPixel.color);
+                                                           }
                                                       }
                                                       )";
                     if (!rayComputeShader.loadFromMemory(raytracingShaderCode, Shader::Compute)) {
@@ -414,6 +752,7 @@ namespace odfaeg {
                     if (!quadShader.loadFromMemory(quadVertexShader, quadFragmentShader)) {
                         throw core::Erreur(61, "failed to load quad shader!", 3);
                     }
+                    rayComputeShader.setParameter("maxNodes", maxNodes);
                     rayComputeShader.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                     math::Matrix4f viewMatrix = window.getDefaultView().getViewMatrix().getMatrix().transpose();
                     math::Matrix4f projMatrix = window.getDefaultView().getProjMatrix().getMatrix().transpose();
@@ -422,21 +761,33 @@ namespace odfaeg {
                     quadShader.setParameter("worldMat", quad.getTransform().getMatrix().transpose());
                     quadShader.setParameter("texture", Shader::CurrentTexture);
                     quadShader.setParameter("textureMatrix", external.getTextureMatrix());
-                    /*std::vector<Texture*> allTextures = Texture::getAllTextures();
-                    for (unsigned int i = 0; i < allTextures.size(); i++) {
 
+                    std::vector<Texture*> allTextures = Texture::getAllTextures();
+                    Samplers allSamplers{};
+                    for (unsigned int i = 0; i < allTextures.size(); i++) {
                         GLuint64 handle_texture = glGetTextureHandleARB(allTextures[i]->getNativeHandle());
-                        glCheck(glMakeTextureHandleResidentARB(handle_texture));
-                        glCheck(glProgramUniformHandleui64ARB(rayComputeShader.getHandle(), allTextures[i]->getNativeHandle(), handle_texture));
-                    }*/
+                        glMakeTextureHandleResidentARB(handle_texture);
+                        allSamplers.tex[i] = handle_texture;
+                    }
+                    glCheck(glGenBuffers(1, &ubo));
+                    unsigned int ubid;
+                    glCheck(ubid = glGetUniformBlockIndex(rayComputeShader.getHandle(), "ALL_TEXTURES"));
+                    glCheck(glUniformBlockBinding(rayComputeShader.getHandle(),    ubid, 0));
                     backgroundColor = sf::Color::Transparent;
-                    /*glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, trianglesSSBO));
-                    glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightsSSBO));*/
+                    glCheck(glBindBuffer(GL_UNIFORM_BUFFER, ubo));
+                    glCheck(glBufferData(GL_UNIFORM_BUFFER, sizeof(allSamplers),allSamplers.tex, GL_STATIC_DRAW));
+                    glCheck(glBindBuffer(GL_UNIFORM_BUFFER, 0));
+                    glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
+                    glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer));
+                    glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer));
+                    glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, trianglesSSBO));
+                    glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, lightsSSBO));
             }
             void RaytracingRenderComponent::setBackgroundColor(sf::Color color) {
                 backgroundColor = color;
             }
             void RaytracingRenderComponent::clear() {
+                frameBuffer.setActive();
                 frameBuffer.clear(sf::Color::Transparent);
                 glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf));
                 glCheck(glBindTexture(GL_TEXTURE_2D, frameBufferTex));
@@ -444,45 +795,132 @@ namespace odfaeg {
                 GL_FLOAT, NULL));
                 glCheck(glBindTexture(GL_TEXTURE_2D, 0));
                 glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
+                GLuint zero = 0;
+                glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
+                glCheck(glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero));
+                glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0));
+                glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf2));
+                glCheck(glBindTexture(GL_TEXTURE_2D, headPtrTex));
+                glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, view.getSize().x, view.getSize().y, GL_RED_INTEGER,
+                GL_UNSIGNED_INT, NULL));
+                glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+                glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
                 frameBuffer.resetGLStates();
             }
             void RaytracingRenderComponent::drawNextFrame() {
                 if (frameBuffer.getSettings().versionMajor >= 4 && frameBuffer.getSettings().versionMinor >= 6) {
-                    /*math::Vec3f origin(getView().getSize().x * 0.5, getView().getSize().y * 0.5, 0);
-                    for (unsigned int i = 0; i < getView().getSize().x; i++) {
-                        for (unsigned int j = 0; j < getView().getSize().y; j++) {
-                            math::Vec3f ext(i, j, getView().getSize().z*0.5);
+                    float max_x = view.getSize().x*0.5;
+                    float max_y = view.getSize().y*0.5;
+                    math::Vec3f dims = view.getSize();
+                    bool intersects = false;
+                    for (unsigned int i = 0; i < dims.x; i++) {
+                        for (unsigned int j = 0; j < dims.y; j++) {
+
+                            math::Vec3f origin (i, j, 0);
+                            math::Vec3f ext(i, j, dims.z*0.5);
                             math::Ray ray(origin, ext);
+
                             for (unsigned int t = 0; t < triangles.size(); t++) {
                                 math::Vec3f p1 (triangles[t].positions[0].x, triangles[t].positions[0].y,triangles[t].positions[0].z);
                                 math::Vec3f p2 (triangles[t].positions[1].x, triangles[t].positions[1].y,triangles[t].positions[1].z);
                                 math::Vec3f p3 (triangles[t].positions[2].x, triangles[t].positions[2].y,triangles[t].positions[2].z);
-                                p1 = triangles[i].transform * p1;
-                                p2 = triangles[i].transform * p2;
-                                p3 = triangles[i].transform * p3;
-                                p1 = frameBuffer.mapCoordsToPixel(math::Vec3f(p1.x, getView().getSize().y - p1.y, p1.z));
-                                p2 = frameBuffer.mapCoordsToPixel(math::Vec3f(p2.x, getView().getSize().y - p2.y, p2.z));
-                                p3 = frameBuffer.mapCoordsToPixel(math::Vec3f(p3.x, getView().getSize().y - p3.y, p3.z));
-                                math::Triangle trg(p1, p2, p3);
+                                math::Vec3f tp1, tp2, tp3;
 
-                                if (trg.intersects(ray))
-                                    std::cout<<"intersects ? : "<<trg.intersects(ray)<<std::endl;
+                                p1 = triangles[t].transform.transpose() * p1;
+                                p2 = triangles[t].transform.transpose() * p2;
+                                p3 = triangles[t].transform.transpose() * p3;
+                                /*if (i == 0 && j == 0)
+                                    std::cout<<"triangle : "<<p1<<p2<<p3<<std::endl;*/
+                                tp1 = p1;
+                                tp2 = p2;
+                                tp3 = p3;
+                                //std::cout<<"triangle : "<<triangles[t].positions[0]<<triangles[t].positions[1]<<triangles[t].positions[2]<<std::endl;
+                                p1 = frameBuffer.mapCoordsToPixel(math::Vec3f(p1.x, p1.y, p1.z));
+                                p2 = frameBuffer.mapCoordsToPixel(math::Vec3f(p2.x, p2.y, p2.z));
+                                p3 = frameBuffer.mapCoordsToPixel(math::Vec3f(p3.x, p3.y, p3.z));
+
+
+                                tp1 = view.getViewMatrix().transform(tp1);
+                                tp2 = view.getViewMatrix().transform(tp2);
+                                tp3 = view.getViewMatrix().transform(tp3);
+                                /*if (i == 0 && j == 0)
+                                    std::cout<<"view triangle : "<<tp1<<tp2<<tp3<<std::endl;*/
+
+                                tp1 = view.getProjMatrix().project(tp1);
+                                tp2 = view.getProjMatrix().project(tp2);
+                                tp3 = view.getProjMatrix().project(tp3);
+                                /*if (i == 0 && j == 0)
+                                    std::cout<<"proj triangle : "<<tp1<<tp2<<tp3<<std::endl;*/
+                                if (tp1.w == 0)
+                                    tp1.w = dims.z * 0.5;
+                                if (tp2.w == 0)
+                                    tp2.w = dims.z * 0.5;
+                                if (tp3.w == 0)
+                                    tp3.w = dims.z * 0.5;
+                                float tmp1 = tp1.w;
+                                tp1 = tp1.normalizeToVec3();
+                                float tmp2 = tp2.w;
+                                tp2 = tp2.normalizeToVec3();
+                                float tmp3 = tp3.w;
+                                tp3 = tp3.normalizeToVec3();
+                                /*if (i == 0 && j == 0)
+                                    std::cout<<"ndc triangle : "<<tp1<<tp2<<tp3<<std::endl;*/
+
+                                p1.w = tmp1;
+                                p2.w = tmp2;
+                                p3.w = tmp3;
+                                /*if (i == 0 && j == 0)
+                                    std::cout<<"viewport triangle : "<<p1<<p2<<p3<<std::endl;*/
+                                math::Triangle tri(p1, p2, p3);
+                                math::Vec3f i1, i2;
+                                if(tri.intersectsWhere(ray, i1, i2)
+                                   && i1.x >= 0 && i1.x < dims.x
+                                   && i1.y >= 0 && i1.y < dims.y
+                                   && i1.w > 50) {
+                                    /*if (i == 0 && j == 0)
+                                        std::cout<<"viewport triangle : "<<p1<<p2<<p3<<std::endl;
+                                    std::cout<<"int : "<<i1;*/
+                                    intersects = true;
+                                    rayComputeShader.setParameter("x", i);
+                                    rayComputeShader.setParameter("y", j);
+                                    rayComputeShader.setParameter("tindex", t);
+                                    break;
+                                }
+
+
+
                             }
-                        }
-                    }*/
-                    //std::cout<<"size : "<<triangles.size()<<std::endl;
-                    glCheck(glBindBuffer(GL_SHADER_STORAGE_BUFFER, trianglesSSBO));
+                            if (intersects)
+                                break;
 
-                    glCheck(glBufferData(GL_SHADER_STORAGE_BUFFER, triangles.size() * 248, NULL, GL_DYNAMIC_DRAW));
+                        }
+                        if (intersects)
+                            break;
+                    }
+                    glCheck(glBindBuffer(GL_SHADER_STORAGE_BUFFER, trianglesSSBO));
+                    glCheck(glBufferData(GL_SHADER_STORAGE_BUFFER, triangles.size() * sizeof(Triangle)/*300*/, NULL, GL_DYNAMIC_COPY));
                     GLvoid* p = nullptr;
                     glCheck(p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY));
-                    memcpy(p, &triangles[0], triangles.size() * 248);
+                    memcpy(p, triangles.data(), triangles.size() * sizeof(Triangle)/*300*/);
+                    //std::cout<<"size : "<<sizeof(Triangle)<<std::endl;
+                    /*//Position 1.
+                    float x1, y1, z1, w1, x2, y2, z2, w2, x3, y3, z3, w3;
+                    x1 = (*((unsigned char*) (p) + 3) << 24) | (*((unsigned char*) (p) + 2) << 16) | (*((unsigned char*) (p) + 1) << 8) | (*((unsigned char*) (p)));
+                    std::cout<<"x1 : "<<x1<<std::endl;
+                    y1 = (*((unsigned char*) (p) + 7) << 24) | (*((unsigned char*) (p) + 6) << 16) | (*((unsigned char*) (p) + 5) << 8) | (*((unsigned char*) (p) + 4));
+                    std::cout<<"y1 : "<<y1<<std::endl;
+                    z1 = (*((unsigned char*) (p) + 11) << 24) | (*((unsigned char*) (p) + 10) << 16) | (*((unsigned char*) (p) + 9) << 8) | (*((unsigned char*) (p) + 8));
+                    std::cout<<"z1 : "<<z1<<std::endl;
+                    w1 = (*((unsigned char*) (p) + 15) << 24) | (*((unsigned char*) (p) + 14) << 16) | (*((unsigned char*) (p) + 13) << 8) | (*((unsigned char*) (p) + 12));
+                    std::cout<<"w1 : "<<w1<<std::endl;*/
+
+
                     glCheck(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER));
                     glCheck(glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightsSSBO));
-                    glCheck(glBufferData(GL_SHADER_STORAGE_BUFFER, lights.size() * 32, NULL, GL_DYNAMIC_DRAW));
+                    glCheck(glBufferData(GL_SHADER_STORAGE_BUFFER, lights.size() * sizeof(Light)/*36*/, NULL, GL_DYNAMIC_DRAW));
                     GLvoid* p2 = nullptr;
                     glCheck(p2 = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY));
-                    memcpy(p2, &lights[0], lights.size() * 32);
+                    memcpy(p2, lights.data(), lights.size() * sizeof(Light)/*36*/);
                     glCheck(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER));
                     glCheck(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0));
                     math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
@@ -497,34 +935,44 @@ namespace odfaeg {
                     rayComputeShader.setParameter("nbTriangles", triangles.size());
                     rayComputeShader.setParameter("nbLights", lights.size());
                     Shader::bind(&rayComputeShader);
-                    glCheck(glDispatchCompute(view.getSize().x, view.getSize().y, 1));
+                    glCheck(glDispatchCompute(view.getSize().x, view.getSize().y, triangles.size()));
+                    glCheck(glFinish());
                     // make sure writing to image has finished before read
-                    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+                    glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+                    /*glBindTexture (GL_TEXTURE_2D,headPtrTex);
+                     GLuint read[(int) dims.x * (int) dims.y]; //Read back from the buffer (to make sure)
+                    glGetBufferSubData(GL_TEXTURE_2D,0,dims.x * dims.y,read);
+                    for (unsigned i=0;i<(int) dims.x * (int) dims.y;i++)
+                        if (read[i] == 0xffffffff)
+                        std::cout<<read[i]<<" ";
+                            std::cout<<std::endl<<std::endl;*/
                     RenderStates states;
                     states.shader = &quadShader;
                     states.transform = quad.getTransform();
                     states.texture = &external;
                     vb.clear();
                     vb.setPrimitiveType(sf::Quads);
-                    Vertex v1 (sf::Vector3f(0, 0, quad.getSize().z));
-                    Vertex v2 (sf::Vector3f(quad.getSize().x,0, quad.getSize().z));
-                    Vertex v3 (sf::Vector3f(quad.getSize().x, quad.getSize().y, quad.getSize().z));
-                    Vertex v4 (sf::Vector3f(0, quad.getSize().y, quad.getSize().z));
+                    Vertex v1 (sf::Vector3f(0, 0, quad.getSize().z), sf::Color::White,sf::Vector2f(0, 0));
+                    Vertex v2 (sf::Vector3f(quad.getSize().x,0, quad.getSize().z), sf::Color::White,sf::Vector2f(quad.getSize().x, 0));
+                    Vertex v3 (sf::Vector3f(quad.getSize().x, quad.getSize().y, quad.getSize().z),sf::Color::White,sf::Vector2f(quad.getSize().x, quad.getSize().y));
+                    Vertex v4 (sf::Vector3f(0, quad.getSize().y, quad.getSize().z), sf::Color::White,sf::Vector2f(0, quad.getSize().y));
                     vb.append(v1);
                     vb.append(v2);
                     vb.append(v3);
                     vb.append(v4);
                     vb.update();
                     frameBuffer.drawVertexBuffer(vb, states);
+                    glCheck(glFinish());
                     frameBuffer.display();
                 }
             }
             bool RaytracingRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities) {
+                //std::cout<<"load entities on component"<<std::endl;
                 triangles.clear();
                 lights.clear();
                 Light ambientLight;
                 g2d::AmbientLight al = g2d::AmbientLight::getAmbientLight();
-                ambientLight.center = sf::Vector3f(al.getLightCenter().x, al.getLightCenter().y, al.getLightCenter().z);
+                ambientLight.center = math::Vec3f(al.getLightCenter().x, al.getLightCenter().y, al.getLightCenter().z);
                 ambientLight.radius = 10000;
                 ambientLight.color = math::Vec3f(al.getColor().r/255.f, al.getColor().g/255.f, al.getColor().b/255.f, al.getColor().a/255.f);
                 lights.push_back(ambientLight);
@@ -548,28 +996,28 @@ namespace odfaeg {
                                         for (unsigned int n = 0; n < 2; n++) {
                                             if (n == 0) {
                                                 Triangle triangle;
-                                                triangle.positions[0] = va[i*4].position;
-                                                triangle.positions[1] = va[i*4+1].position;
-                                                triangle.positions[2] = va[i*4+2].position;
+                                                triangle.positions[0] = math::Vec3f(va[i*4].position.x,va[i*4].position.y,va[i*4].position.z);
+                                                triangle.positions[1] = math::Vec3f(va[i*4+1].position.x,va[i*4+1].position.y,va[i*4+1].position.z);
+                                                triangle.positions[2] = math::Vec3f(va[i*4+2].position.x,va[i*4+2].position.y,va[i*4+2].position.z);
                                                 triangle.colours[0] = math::Vec3f(va[i*4].color.r / 255.f,va[i*4].color.g / 255.f,va[i*4].color.b / 255.f, va[i*4].color.a / 255.f);
                                                 triangle.colours[1] = math::Vec3f(va[i*4+1].color.r / 255.f,va[i*4+1].color.g / 255.f,va[i*4+1].color.b / 255.f, va[i*4+1].color.a / 255.f);
                                                 triangle.colours[2] = math::Vec3f(va[i*4+2].color.r / 255.f,va[i*4+2].color.g / 255.f,va[i*4+2].color.b / 255.f, va[i*4+2].color.a / 255.f);
-                                                triangle.texCoords[0] = va[i*4].texCoords;
-                                                triangle.texCoords[1] = va[i*4+1].texCoords;
-                                                triangle.texCoords[2] = va[i*4+2].texCoords;
-                                                /*for (unsigned int v = 0; v < 3; v++) {
-                                                    std::cout<<va[i*4+v].position.x<<","<<va[i*4+v].position.y<<","<<va[i*4+v].position.z<<std::endl;
-                                                }*/
+                                                triangle.texCoords[0] = math::Vec3f(va[i*4].texCoords.x, va[i*4].texCoords.y, 0, 0);
+                                                triangle.texCoords[1] = math::Vec3f(va[i*4+1].texCoords.x, va[i*4+1].texCoords.y, 0, 0);
+                                                triangle.texCoords[2] = math::Vec3f(va[i*4+2].texCoords.x, va[i*4+2].texCoords.y, 0, 0);
+
+
                                                 math::Vec3f v1(va[i*4].position.x, va[i*4].position.y, va[i*4].position.z);
                                                 math::Vec3f v2(va[i*4+1].position.x, va[i*4+1].position.y, va[i*4+1].position.z);
                                                 math::Vec3f v3(va[i*4+2].position.x, va[i*4+2].position.y, va[i*4+2].position.z);
                                                 math::Vec3f d1 = v2 - v1;
                                                 math::Vec3f d2 = v3 - v1;
                                                 math::Vec3f n = d1.cross(d2).normalize();
-                                                triangle.normal = sf::Vector3f(n.x, n.y, n.z);
+                                                triangle.normal = math::Vec3f(n.x, n.y, n.z);
                                                 triangle.ratio = material.getRefractionFactor();
                                                 math::Matrix4f m;
                                                 triangle.textureIndex = (material.getTexture() == nullptr) ? 0 : material.getTexture()->getNativeHandle();
+                                                //std::cout<<"texture index : "<<triangle.textureIndex<<std::endl;
                                                 triangle.textureMatrix = (material.getTexture() == nullptr) ? m : material.getTexture()->getTextureMatrix();
                                                 triangle.transform = vEntities[e]->getTransform().getMatrix().transpose();
                                                 if (!material.isReflectable() && !material.isRefractable())
@@ -583,25 +1031,25 @@ namespace odfaeg {
                                                 triangles.push_back(triangle);
                                             } else {
                                                 Triangle triangle;
-                                                triangle.positions[0] = va[i*4+1].position;
-                                                triangle.positions[1] = va[i*4+2].position;
-                                                triangle.positions[2] = va[i*4+3].position;
-                                                triangle.colours[0] = math::Vec3f(va[i*4+1].color.r / 255.f,va[i*4+1].color.g / 255.f,va[i*4+1].color.b / 255.f, va[i*4+1].color.a / 255.f);
+                                                triangle.positions[0] = math::Vec3f(va[i*4].position.x,va[i*4].position.y,va[i*4].position.z);
+                                                triangle.positions[1] = math::Vec3f(va[i*4+2].position.x,va[i*4+2].position.y,va[i*4+2].position.z);
+                                                triangle.positions[2] =  math::Vec3f(va[i*4+3].position.x,va[i*4+3].position.y,va[i*4+3].position.z);
+                                                triangle.colours[0] = math::Vec3f(va[i*4].color.r / 255.f,va[i*4].color.g / 255.f,va[i*4].color.b / 255.f, va[i*4].color.a / 255.f);
                                                 triangle.colours[1] = math::Vec3f(va[i*4+2].color.r / 255.f,va[i*4+2].color.g / 255.f,va[i*4+2].color.b / 255.f, va[i*4+2].color.a / 255.f);
                                                 triangle.colours[2] = math::Vec3f(va[i*4+3].color.r / 255.f,va[i*4+3].color.g / 255.f,va[i*4+3].color.b / 255.f, va[i*4+3].color.a / 255.f);
-                                                triangle.texCoords[0] = va[i*4+1].texCoords;
-                                                triangle.texCoords[1] = va[i*4+2].texCoords;
-                                                triangle.texCoords[2] = va[i*4+3].texCoords;
+                                                triangle.texCoords[0] = math::Vec3f(va[i*4].texCoords.x, va[i*4].texCoords.y, 0, 0);
+                                                triangle.texCoords[1] = math::Vec3f(va[i*4+2].texCoords.x, va[i*4+2].texCoords.y, 0, 0);
+                                                triangle.texCoords[2] = math::Vec3f(va[i*4+3].texCoords.x, va[i*4+3].texCoords.y, 0, 0);
                                                 /*for (unsigned int v = 0; v < 3; v++) {
                                                     std::cout<<va[i*4+v+1].position.x<<","<<va[i*4+v+1].position.y<<","<<va[i*4+v+1].position.z<<std::endl;
                                                 }*/
-                                                math::Vec3f v1(va[i*4+1].position.x, va[i*4+1].position.y, va[i*4+1].position.z);
+                                                math::Vec3f v1(va[i*4].position.x, va[i*4].position.y, va[i*4].position.z);
                                                 math::Vec3f v2(va[i*4+2].position.x, va[i*4+2].position.y, va[i*4+2].position.z);
                                                 math::Vec3f v3(va[i*4+3].position.x, va[i*4+3].position.y, va[i*4+3].position.z);
                                                 math::Vec3f d1 = v2 - v1;
                                                 math::Vec3f d2 = v3 - v1;
                                                 math::Vec3f n = d1.cross(d2).normalize();
-                                                triangle.normal = sf::Vector3f(n.x, n.y, n.z);
+                                                triangle.normal = math::Vec3f(n.x, n.y, n.z);
                                                 triangle.ratio = material.getRefractionFactor();
                                                 math::Matrix4f m;
                                                 triangle.textureIndex = (material.getTexture() == nullptr) ? 0 : material.getTexture()->getNativeHandle();
@@ -620,15 +1068,15 @@ namespace odfaeg {
                                         }
                                     } else if (va.getPrimitiveType() == sf::PrimitiveType::Triangles) {
                                         Triangle triangle;
-                                        triangle.positions[0] = va[i*3].position;
-                                        triangle.positions[1] = va[i*3+1].position;
-                                        triangle.positions[2] = va[i*3+2].position;
+                                        triangle.positions[0] = math::Vec3f(va[i*3].position.x,va[i*3].position.y,va[i*3].position.z);
+                                        triangle.positions[1] = math::Vec3f(va[i*3+1].position.x,va[i*3+1].position.y,va[i*3+1].position.z);
+                                        triangle.positions[2] = math::Vec3f(va[i*3+2].position.x,va[i*3+2].position.y,va[i*3+2].position.z);
                                         triangle.colours[0] = math::Vec3f(va[i*3].color.r / 255.f,va[i*3].color.g / 255.f,va[i*3].color.b / 255.f, va[i*3].color.a / 255.f);
                                         triangle.colours[1] = math::Vec3f(va[i*3+1].color.r / 255.f,va[i*3+1].color.g / 255.f,va[i*3+1].color.b / 255.f, va[i*3+1].color.a / 255.f);
                                         triangle.colours[2] = math::Vec3f(va[i*3+2].color.r / 255.f,va[i*3+2].color.g / 255.f,va[i*3+2].color.b / 255.f, va[i*3+2].color.a / 255.f);
-                                        triangle.texCoords[0] = va[i*3].texCoords;
-                                        triangle.texCoords[1] = va[i*3+1].texCoords;
-                                        triangle.texCoords[2] = va[i*3+2].texCoords;
+                                        triangle.texCoords[0] = math::Vec3f(va[i*3].texCoords.x, va[i*3].texCoords.y, 0, 0);
+                                        triangle.texCoords[1] = math::Vec3f(va[i*3+1].texCoords.x, va[i*3+2].texCoords.y, 0, 0);
+                                        triangle.texCoords[2] = math::Vec3f(va[i*3+2].texCoords.x, va[i*3+2].texCoords.y, 0, 0);
 
                                         math::Vec3f v1(va[i*3].position.x, va[i*3].position.y, va[i*3].position.z);
                                         math::Vec3f v2(va[i*3+1].position.x, va[i*3+1].position.y, va[i*3+1].position.z);
@@ -636,7 +1084,7 @@ namespace odfaeg {
                                         math::Vec3f d1 = v2 - v1;
                                         math::Vec3f d2 = v3 - v1;
                                         math::Vec3f n = d1.cross(d2).normalize();
-                                        triangle.normal = sf::Vector3f(n.x, n.y, n.z);
+                                        triangle.normal = math::Vec3f(n.x, n.y, n.z);
                                         triangle.ratio = material.getRefractionFactor();
                                         math::Matrix4f m;
                                         triangle.textureIndex = (material.getTexture() == nullptr) ? 0 : material.getTexture()->getNativeHandle();
@@ -654,15 +1102,15 @@ namespace odfaeg {
                                     } else if (va.getPrimitiveType() == sf::PrimitiveType::TriangleStrip) {
                                         if (i == 0) {
                                             Triangle triangle;
-                                            triangle.positions[0] = va[i*3].position;
-                                            triangle.positions[1] = va[i*3+1].position;
-                                            triangle.positions[2] = va[i*3+2].position;
+                                            triangle.positions[0] = math::Vec3f(va[i*3].position.x,va[i*3].position.y,va[i*3].position.z);
+                                            triangle.positions[1] = math::Vec3f(va[i*3+1].position.x,va[i*3+1].position.y,va[i*3+1].position.z);
+                                            triangle.positions[2] = math::Vec3f(va[i*3+2].position.x,va[i*3+2].position.y,va[i*3+2].position.z);
                                             triangle.colours[0] = math::Vec3f(va[i*3].color.r / 255.f,va[i*3].color.g / 255.f,va[i*3].color.b / 255.f, va[i*3].color.a / 255.f);
                                             triangle.colours[1] = math::Vec3f(va[i*3+1].color.r / 255.f,va[i*3+1].color.g / 255.f,va[i*3+1].color.b / 255.f, va[i*3+1].color.a / 255.f);
                                             triangle.colours[2] = math::Vec3f(va[i*3+2].color.r / 255.f,va[i*3+2].color.g / 255.f,va[i*3+2].color.b / 255.f, va[i*3+2].color.a / 255.f);
-                                            triangle.texCoords[0] = va[i*3].texCoords;
-                                            triangle.texCoords[1] = va[i*3+1].texCoords;
-                                            triangle.texCoords[2] = va[i*3+2].texCoords;
+                                            triangle.texCoords[0] = math::Vec3f(va[i*3].texCoords.x, va[i*3].texCoords.y, 0, 0);
+                                            triangle.texCoords[1] = math::Vec3f(va[i*3+1].texCoords.x, va[i*3+1].texCoords.y, 0, 0);
+                                            triangle.texCoords[2] = math::Vec3f(va[i*3+2].texCoords.x, va[i*3+2].texCoords.y, 0, 0);
 
                                             math::Vec3f v1(va[i*3].position.x, va[i*3].position.y, va[i*3].position.z);
                                             math::Vec3f v2(va[i*3+1].position.x, va[i*3+1].position.y, va[i*3+1].position.z);
@@ -670,7 +1118,7 @@ namespace odfaeg {
                                             math::Vec3f d1 = v2 - v1;
                                             math::Vec3f d2 = v3 - v1;
                                             math::Vec3f n = d1.cross(d2).normalize();
-                                            triangle.normal = sf::Vector3f(n.x, n.y, n.z);
+                                            triangle.normal = math::Vec3f(n.x, n.y, n.z);
                                             triangle.ratio = material.getRefractionFactor();
                                             math::Matrix4f m;
                                             triangle.textureIndex = (material.getTexture() == nullptr) ? 0 : material.getTexture()->getNativeHandle();
@@ -687,15 +1135,15 @@ namespace odfaeg {
                                             triangles.push_back(triangle);
                                         } else {
                                             Triangle triangle;
-                                            triangle.positions[0] = va[i].position;
-                                            triangle.positions[1] = va[i+1].position;
-                                            triangle.positions[2] = va[i+2].position;
+                                            triangle.positions[0] = math::Vec3f(va[i].position.x,va[i].position.y,va[i].position.z);;
+                                            triangle.positions[1] = math::Vec3f(va[i+1].position.x,va[i+1].position.y,va[i+1].position.z);
+                                            triangle.positions[2] = math::Vec3f(va[i+2].position.x,va[i+2].position.y,va[i+2].position.z);
                                             triangle.colours[0] = math::Vec3f(va[i].color.r / 255.f,va[i].color.g / 255.f,va[i].color.b / 255.f, va[i].color.a / 255.f);
                                             triangle.colours[1] = math::Vec3f(va[i+1].color.r / 255.f,va[i+1].color.g / 255.f,va[i+1].color.b / 255.f, va[i+1].color.a / 255.f);
                                             triangle.colours[2] = math::Vec3f(va[i+2].color.r / 255.f,va[i+2].color.g / 255.f,va[i+2].color.b / 255.f, va[i+2].color.a / 255.f);
-                                            triangle.texCoords[0] = va[i].texCoords;
-                                            triangle.texCoords[1] = va[i+1].texCoords;
-                                            triangle.texCoords[2] = va[i+2].texCoords;
+                                            triangle.texCoords[0] = math::Vec3f(va[i].texCoords.x, va[i].texCoords.y, 0, 0);
+                                            triangle.texCoords[1] = math::Vec3f(va[i+1].texCoords.x, va[i+1].texCoords.y, 0, 0);
+                                            triangle.texCoords[2] = math::Vec3f(va[i+2].texCoords.x, va[i+2].texCoords.y, 0, 0);
 
                                             math::Vec3f v1(va[i].position.x, va[i].position.y, va[i].position.z);
                                             math::Vec3f v2(va[i+1].position.x, va[i+1].position.y, va[i+1].position.z);
@@ -703,7 +1151,7 @@ namespace odfaeg {
                                             math::Vec3f d1 = v2 - v1;
                                             math::Vec3f d2 = v3 - v1;
                                             math::Vec3f n = d1.cross(d2).normalize();
-                                            triangle.normal = sf::Vector3f(n.x, n.y, n.z);
+                                            triangle.normal = math::Vec3f(n.x, n.y, n.z);
                                             triangle.ratio = material.getRefractionFactor();
                                             math::Matrix4f m;
                                             triangle.textureIndex = (material.getTexture() == nullptr) ? 0 : material.getTexture()->getNativeHandle();
@@ -722,15 +1170,15 @@ namespace odfaeg {
                                     } else if (va.getPrimitiveType() == sf::TriangleFan) {
                                         if (i == 0) {
                                             Triangle triangle;
-                                            triangle.positions[0] = va[i*3].position;
-                                            triangle.positions[1] = va[i*3+1].position;
-                                            triangle.positions[2] = va[i*3+2].position;
+                                            triangle.positions[0] = math::Vec3f(va[i*3].position.x,va[i*3].position.y,va[i*3].position.z);;
+                                            triangle.positions[1] = math::Vec3f(va[i*3+1].position.x,va[i*3+1].position.y,va[i*3+1].position.z);;
+                                            triangle.positions[2] = math::Vec3f(va[i*3+2].position.x,va[i*3+2].position.y,va[i*3+2].position.z);;
                                             triangle.colours[0] = math::Vec3f(va[i*3].color.r / 255.f,va[i*3].color.g / 255.f,va[i*3].color.b / 255.f, va[i*3].color.a / 255.f);
                                             triangle.colours[1] = math::Vec3f(va[i*3+1].color.r / 255.f,va[i*3+1].color.g / 255.f,va[i*3+1].color.b / 255.f, va[i*3+1].color.a / 255.f);
                                             triangle.colours[2] = math::Vec3f(va[i*3+2].color.r / 255.f,va[i*3+2].color.g / 255.f,va[i*3+2].color.b / 255.f, va[i*3+2].color.a / 255.f);
-                                            triangle.texCoords[0] = va[i*3].texCoords;
-                                            triangle.texCoords[1] = va[i*3+1].texCoords;
-                                            triangle.texCoords[2] = va[i*3+2].texCoords;
+                                            triangle.texCoords[0] = math::Vec3f(va[i*3].texCoords.x, va[i*3].texCoords.y, 0, 0);
+                                            triangle.texCoords[1] = math::Vec3f(va[i*3+1].texCoords.x, va[i*3+1].texCoords.y, 0, 0);
+                                            triangle.texCoords[2] = math::Vec3f(va[i*3+2].texCoords.x, va[i*3+2].texCoords.y, 0, 0);
 
                                             math::Vec3f v1(va[i*3].position.x, va[i*3].position.y, va[i*3].position.z);
                                             math::Vec3f v2(va[i*3+1].position.x, va[i*3+1].position.y, va[i*3+1].position.z);
@@ -738,7 +1186,7 @@ namespace odfaeg {
                                             math::Vec3f d1 = v2 - v1;
                                             math::Vec3f d2 = v3 - v1;
                                             math::Vec3f n = d1.cross(d2).normalize();
-                                            triangle.normal = sf::Vector3f(n.x, n.y, n.z);
+                                            triangle.normal = math::Vec3f(n.x, n.y, n.z);
                                             triangle.ratio = material.getRefractionFactor();
                                             math::Matrix4f m;
                                             triangle.textureIndex = (material.getTexture() == nullptr) ? 0 : material.getTexture()->getNativeHandle();
@@ -755,15 +1203,15 @@ namespace odfaeg {
                                             triangles.push_back(triangle);
                                         } else {
                                             Triangle triangle;
-                                            triangle.positions[0] = va[0].position;
-                                            triangle.positions[1] = va[i+1].position;
-                                            triangle.positions[2] = va[i+2].position;
+                                            triangle.positions[0] = math::Vec3f(va[0].position.x,va[0].position.y,va[0].position.z);;
+                                            triangle.positions[1] = math::Vec3f(va[i+1].position.x,va[i+1].position.y,va[i+1].position.z);;
+                                            triangle.positions[2] = math::Vec3f(va[i+2].position.x,va[i+2].position.y,va[i+2].position.z);
                                             triangle.colours[0] = math::Vec3f(va[0].color.r / 255.f,va[0].color.g / 255.f,va[0].color.b / 255.f, va[0].color.a / 255.f);
                                             triangle.colours[1] = math::Vec3f(va[i+1].color.r / 255.f,va[i+1].color.g / 255.f,va[i+1].color.b / 255.f, va[i+1].color.a / 255.f);
                                             triangle.colours[2] = math::Vec3f(va[i+2].color.r / 255.f,va[i+2].color.g / 255.f,va[i+2].color.b / 255.f, va[i+2].color.a / 255.f);
-                                            triangle.texCoords[0] = va[0].texCoords;
-                                            triangle.texCoords[1] = va[i+1].texCoords;
-                                            triangle.texCoords[2] = va[i+2].texCoords;
+                                            triangle.texCoords[0] = math::Vec3f(va[0].texCoords.x, va[0].texCoords.y, 0, 0);
+                                            triangle.texCoords[1] = math::Vec3f(va[i+1].texCoords.x, va[i+1].texCoords.y, 0, 0);
+                                            triangle.texCoords[2] = math::Vec3f(va[i+2].texCoords.x, va[i+2].texCoords.y, 0, 0);
 
                                             math::Vec3f v1(va[0].position.x, va[0].position.y, va[0].position.z);
                                             math::Vec3f v2(va[i+1].position.x, va[i+1].position.y, va[i+1].position.z);
@@ -771,7 +1219,7 @@ namespace odfaeg {
                                             math::Vec3f d1 = v2 - v1;
                                             math::Vec3f d2 = v3 - v1;
                                             math::Vec3f n = d1.cross(d2).normalize();
-                                            triangle.normal = sf::Vector3f(n.x, n.y, n.z);
+                                            triangle.normal = math::Vec3f(n.x, n.y, n.z);
                                             triangle.ratio = material.getRefractionFactor();
                                             math::Matrix4f m;
                                             triangle.textureIndex = (material.getTexture() == nullptr) ? 0 : material.getTexture()->getNativeHandle();
@@ -790,7 +1238,7 @@ namespace odfaeg {
                                     } else {
                                         Light light;
                                         g2d::PonctualLight* pl = static_cast<g2d::PonctualLight*>(vEntities[e]);
-                                        light.center = sf::Vector3f(pl->getCenter().x, pl->getCenter().y, pl->getCenter().z);
+                                        light.center = math::Vec3f(pl->getCenter().x, pl->getCenter().y, pl->getCenter().z);
                                         light.radius = pl->getSize().y * 0.5f;
                                         light.color = math::Vec3f(pl->getColor().r / 255.f,pl->getColor().g/255.f,pl->getColor().b/255.f,pl->getColor().a/255.f);
                                         lights.push_back(light);
@@ -825,6 +1273,8 @@ namespace odfaeg {
             }
             void RaytracingRenderComponent::setView(View view) {
                 frameBuffer.setView(view);
+                sf::Vector3i resolution ((int) view.getSize().x, (int) view.getSize().y, view.getSize().z);
+                rayComputeShader.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                 this->view = view;
             }
             std::vector<Entity*> RaytracingRenderComponent::getEntities() {
@@ -861,6 +1311,11 @@ namespace odfaeg {
                 glDeleteBuffers(1, &lightsSSBO);
                 glDeleteBuffers(1, &clearBuf);
                 glDeleteTextures(1, &frameBufferTex);
+                glDeleteBuffers(1, &atomicBuffer);
+                glDeleteBuffers(1, &linkedListBuffer);
+                glDeleteBuffers(1, &clearBuf2);
+                glDeleteTextures(1, &headPtrTex);
             }
+            #endif
     }
 }

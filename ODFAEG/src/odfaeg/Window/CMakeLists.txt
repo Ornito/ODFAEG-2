@@ -55,6 +55,13 @@ set(SRC_WINDOW
 		${SRCROOT}/Windows/win32Keyboard.cpp
 		${SRCROOT}/Windows/win32Mouse.cpp
 		${SRCROOT}/Windows/win32Window.cpp
+		
+		${INCROOT}/vkDebug.hpp
+		${SRCROOT}/vkDebug.cpp
+		${INCROOT}/vkSettup.hpp
+		${SRCROOT}/vkSettup.cpp
+		${INCROOT}/GLFW/vkGLFWWindow.hpp
+		${SRCROOT}/GLFW/vkGLFWWindow.cpp
 	)
 find_package (SFML 2 REQUIRED)
 include_directories(${CMAKE_INCLUDE_PATH})
