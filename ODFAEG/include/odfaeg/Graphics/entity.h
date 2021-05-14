@@ -27,7 +27,7 @@ namespace odfaeg {
           *  Entities can have 0, 1 or more children and 0 or one parent.
           *  Each entity of the framework inherits from this class.
           */
-        class ODFAEG_GRAPHICS_API Entity : public Transformable, public Drawable, public core::Registered<Entity> {
+        class ODFAEG_API_EXPORT Entity : public Transformable, public Drawable, public core::Registered<Entity> {
             public :
                 enum DrawMode {
                     NORMAL, INSTANCED, BASE_INSTANCED

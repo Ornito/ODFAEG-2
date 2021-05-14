@@ -624,19 +624,27 @@ namespace odfaeg {
             }
         }
         ////////////////////////////////////////////////////////////
-        void Shader::setParameter(const std::string& name, std::vector<TransformMatrix*> transforms)
+        void Shader::setParameter(const std::string& name, std::vector<math::Matrix4f> mats)
         {
             if (m_shaderProgram)
             {
 
 
                  if (shading_language_version_major > 3 || shading_language_version_major == 3 && shading_language_version_minor >= 3) {
-                   /* glCheck(glUseProgram(m_shaderProgram));
+                    glCheck(glUseProgram(m_shaderProgram));
                     GLint location = getParamLocation(name);
                     if (location != -1) {
-                        glCheck(glUniformMatrix4fv(location, 1, GL_FALSE,matrix.toGlMatrix().data()));
+                        std::vector<float> matrices;
+                        for (unsigned int i = 0; i < mats.size(); i++) {
+                            std::array<float, 16> glmatrix = mats[i].toGlMatrix();
+                            for (unsigned int j = 0; j < glmatrix.size(); j++) {
+                                //std::cout<<"matrix : "<<i<<" element : "<<j<<" : "<<glmatrix[j]<<std::endl;
+                                matrices.push_back(glmatrix[j]);
+                            }
+                        }
+                        glCheck(glUniformMatrix4fv(location, static_cast<GLsizei>(mats.size()), GL_FALSE,matrices.data()));
                     }
-                    glCheck(glUseProgram(0));*/
+                    glCheck(glUseProgram(0));
                 } else {
                     // Enable program
                     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
@@ -646,13 +654,13 @@ namespace odfaeg {
                     GLint location = getParamLocation(name);
                     if (location != -1) {
                         std::vector<float> matrices;
-                        for (unsigned int i = 0; i < transforms.size(); i++) {
-                            std::array<float, 16> glmatrix = transforms[i]->getMatrix().transpose().toGlMatrix();
+                        for (unsigned int i = 0; i < mats.size(); i++) {
+                            std::array<float, 16> glmatrix = mats[i].toGlMatrix();
                             for (unsigned int j = 0; j < glmatrix.size(); j++) {
                                 matrices.push_back(glmatrix[j]);
                             }
                         }
-                        glCheck(glUniformMatrix4fvARB(location, static_cast<GLsizei>(transforms.size()), GL_FALSE, &matrices[0]));
+                        glCheck(glUniformMatrix4fvARB(location, static_cast<GLsizei>(mats.size()), GL_FALSE, matrices.data()));
                     }
                     // Disable program
                     glCheck(glUseProgramObjectARB(program));

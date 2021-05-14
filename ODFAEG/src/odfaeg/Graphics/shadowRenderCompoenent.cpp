@@ -377,18 +377,6 @@ namespace odfaeg {
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
                             glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                            /*matrices2.clear();
-                            std::vector<TransformMatrix> tm2 = m_shadow_instances[i].getShadowProjMatrix();
-                            for (unsigned int j = 0; j < tm2.size(); j++) {
-                                tm2[j].update();
-                                std::array<float, 16> matrix = tm2[j].getMatrix().transpose().toGlMatrix();
-                                for (unsigned int n = 0; n < 16; n++) {
-                                    matrices2.push_back(matrix[n]);
-                                }
-                            }
-                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboShadowProjMatrices));
-                            glCheck(glBufferData(GL_ARRAY_BUFFER, matrices2.size() * sizeof(float), &matrices2[0], GL_DYNAMIC_DRAW));
-                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));*/
                             if (m_instances[i].getVertexArrays().size() > 0) {
                                 Entity* entity = m_instances[i].getVertexArrays()[0]->getEntity();
                                 for (unsigned int j = 0; j < m_instances[i].getVertexArrays().size(); j++) {

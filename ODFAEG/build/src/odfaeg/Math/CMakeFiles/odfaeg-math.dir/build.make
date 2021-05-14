@@ -60,155 +60,155 @@ src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/transformMatrix.cpp.obj: src/odfaeg/M
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/transformMatrix.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/includes_CXX.rsp
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/transformMatrix.cpp.obj: ../src/odfaeg/Math/transformMatrix.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/transformMatrix.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\transformMatrix.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\transformMatrix.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\transformMatrix.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\transformMatrix.cpp
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/transformMatrix.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-math.dir/transformMatrix.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\transformMatrix.cpp > CMakeFiles\odfaeg-math.dir\transformMatrix.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\transformMatrix.cpp > CMakeFiles\odfaeg-math.dir\transformMatrix.cpp.i
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/transformMatrix.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-math.dir/transformMatrix.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\transformMatrix.cpp -o CMakeFiles\odfaeg-math.dir\transformMatrix.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\transformMatrix.cpp -o CMakeFiles\odfaeg-math.dir\transformMatrix.cpp.s
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/computer.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/flags.make
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/computer.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/includes_CXX.rsp
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/computer.cpp.obj: ../src/odfaeg/Math/computer.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/computer.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\computer.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\computer.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\computer.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\computer.cpp
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/computer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-math.dir/computer.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\computer.cpp > CMakeFiles\odfaeg-math.dir\computer.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\computer.cpp > CMakeFiles\odfaeg-math.dir\computer.cpp.i
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/computer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-math.dir/computer.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\computer.cpp -o CMakeFiles\odfaeg-math.dir\computer.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\computer.cpp -o CMakeFiles\odfaeg-math.dir\computer.cpp.s
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/maths.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/flags.make
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/maths.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/includes_CXX.rsp
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/maths.cpp.obj: ../src/odfaeg/Math/maths.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/maths.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\maths.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\maths.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\maths.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\maths.cpp
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/maths.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-math.dir/maths.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\maths.cpp > CMakeFiles\odfaeg-math.dir\maths.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\maths.cpp > CMakeFiles\odfaeg-math.dir\maths.cpp.i
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/maths.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-math.dir/maths.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\maths.cpp -o CMakeFiles\odfaeg-math.dir\maths.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\maths.cpp -o CMakeFiles\odfaeg-math.dir\maths.cpp.s
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix2.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/flags.make
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix2.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/includes_CXX.rsp
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix2.cpp.obj: ../src/odfaeg/Math/matrix2.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix2.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\matrix2.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix2.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\matrix2.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix2.cpp
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix2.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-math.dir/matrix2.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix2.cpp > CMakeFiles\odfaeg-math.dir\matrix2.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix2.cpp > CMakeFiles\odfaeg-math.dir\matrix2.cpp.i
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix2.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-math.dir/matrix2.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix2.cpp -o CMakeFiles\odfaeg-math.dir\matrix2.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix2.cpp -o CMakeFiles\odfaeg-math.dir\matrix2.cpp.s
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix3.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/flags.make
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix3.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/includes_CXX.rsp
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix3.cpp.obj: ../src/odfaeg/Math/matrix3.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix3.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\matrix3.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix3.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\matrix3.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix3.cpp
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix3.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-math.dir/matrix3.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix3.cpp > CMakeFiles\odfaeg-math.dir\matrix3.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix3.cpp > CMakeFiles\odfaeg-math.dir\matrix3.cpp.i
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix3.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-math.dir/matrix3.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix3.cpp -o CMakeFiles\odfaeg-math.dir\matrix3.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix3.cpp -o CMakeFiles\odfaeg-math.dir\matrix3.cpp.s
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix4.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/flags.make
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix4.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/includes_CXX.rsp
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix4.cpp.obj: ../src/odfaeg/Math/matrix4.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix4.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\matrix4.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix4.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\matrix4.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix4.cpp
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix4.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-math.dir/matrix4.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix4.cpp > CMakeFiles\odfaeg-math.dir\matrix4.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix4.cpp > CMakeFiles\odfaeg-math.dir\matrix4.cpp.i
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/matrix4.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-math.dir/matrix4.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix4.cpp -o CMakeFiles\odfaeg-math.dir\matrix4.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\matrix4.cpp -o CMakeFiles\odfaeg-math.dir\matrix4.cpp.s
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/vec2.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/flags.make
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/vec2.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/includes_CXX.rsp
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/vec2.cpp.obj: ../src/odfaeg/Math/vec2.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/vec2.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\vec2.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\vec2.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\vec2.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\vec2.cpp
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/vec2.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-math.dir/vec2.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\vec2.cpp > CMakeFiles\odfaeg-math.dir\vec2.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\vec2.cpp > CMakeFiles\odfaeg-math.dir\vec2.cpp.i
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/vec2.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-math.dir/vec2.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\vec2.cpp -o CMakeFiles\odfaeg-math.dir\vec2.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\vec2.cpp -o CMakeFiles\odfaeg-math.dir\vec2.cpp.s
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/vec4.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/flags.make
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/vec4.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/includes_CXX.rsp
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/vec4.cpp.obj: ../src/odfaeg/Math/vec4.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/vec4.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\vec4.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\vec4.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\vec4.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\vec4.cpp
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/vec4.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-math.dir/vec4.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\vec4.cpp > CMakeFiles\odfaeg-math.dir\vec4.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\vec4.cpp > CMakeFiles\odfaeg-math.dir\vec4.cpp.i
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/vec4.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-math.dir/vec4.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\vec4.cpp -o CMakeFiles\odfaeg-math.dir\vec4.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\vec4.cpp -o CMakeFiles\odfaeg-math.dir\vec4.cpp.s
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/distribution.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/flags.make
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/distribution.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/includes_CXX.rsp
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/distribution.cpp.obj: ../src/odfaeg/Math/distribution.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/distribution.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\distribution.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\distribution.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\distribution.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\distribution.cpp
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/distribution.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-math.dir/distribution.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\distribution.cpp > CMakeFiles\odfaeg-math.dir\distribution.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\distribution.cpp > CMakeFiles\odfaeg-math.dir\distribution.cpp.i
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/distribution.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-math.dir/distribution.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\distribution.cpp -o CMakeFiles\odfaeg-math.dir\distribution.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\distribution.cpp -o CMakeFiles\odfaeg-math.dir\distribution.cpp.s
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/ray.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/flags.make
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/ray.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/includes_CXX.rsp
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/ray.cpp.obj: ../src/odfaeg/Math/ray.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/ray.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\ray.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\ray.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\ray.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\ray.cpp
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/ray.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-math.dir/ray.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\ray.cpp > CMakeFiles\odfaeg-math.dir\ray.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\ray.cpp > CMakeFiles\odfaeg-math.dir\ray.cpp.i
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/ray.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-math.dir/ray.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\ray.cpp -o CMakeFiles\odfaeg-math.dir\ray.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\ray.cpp -o CMakeFiles\odfaeg-math.dir\ray.cpp.s
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/bigInt.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/flags.make
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/bigInt.cpp.obj: src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/includes_CXX.rsp
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/bigInt.cpp.obj: ../src/odfaeg/Math/bigInt.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/bigInt.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\bigInt.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\bigInt.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-math.dir\bigInt.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\bigInt.cpp
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/bigInt.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-math.dir/bigInt.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\bigInt.cpp > CMakeFiles\odfaeg-math.dir\bigInt.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\bigInt.cpp > CMakeFiles\odfaeg-math.dir\bigInt.cpp.i
 
 src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/bigInt.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-math.dir/bigInt.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\bigInt.cpp -o CMakeFiles\odfaeg-math.dir\bigInt.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Math && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Math\bigInt.cpp -o CMakeFiles\odfaeg-math.dir\bigInt.cpp.s
 
 # Object files for target odfaeg-math
 odfaeg__math_OBJECTS = \

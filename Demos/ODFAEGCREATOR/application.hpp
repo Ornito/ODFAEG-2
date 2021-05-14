@@ -167,5 +167,6 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::vector<odfaeg::graphic::Entity*> selectionBorders;
         std::map<std::string, std::vector<odfaeg::graphic::Entity*>> externals;
         std::map<std::string, std::vector<odfaeg::graphic::Entity*>> toAdd;
+        std::string pluginSourceCode;
 };
 #endif

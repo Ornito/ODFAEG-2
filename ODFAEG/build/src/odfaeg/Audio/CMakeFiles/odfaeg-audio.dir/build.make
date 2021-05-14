@@ -60,43 +60,43 @@ src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/player.cpp.obj: src/odfaeg/Audio/CM
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/player.cpp.obj: src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/includes_CXX.rsp
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/player.cpp.obj: ../src/odfaeg/Audio/player.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/player.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-audio.dir\player.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\player.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-audio.dir\player.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\player.cpp
 
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/player.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-audio.dir/player.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\player.cpp > CMakeFiles\odfaeg-audio.dir\player.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\player.cpp > CMakeFiles\odfaeg-audio.dir\player.cpp.i
 
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/player.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-audio.dir/player.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\player.cpp -o CMakeFiles\odfaeg-audio.dir\player.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\player.cpp -o CMakeFiles\odfaeg-audio.dir\player.cpp.s
 
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.obj: src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/flags.make
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.obj: src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/includes_CXX.rsp
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.obj: ../src/odfaeg/Audio/stream.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-audio.dir\stream.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\stream.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-audio.dir\stream.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\stream.cpp
 
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-audio.dir/stream.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\stream.cpp > CMakeFiles\odfaeg-audio.dir\stream.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\stream.cpp > CMakeFiles\odfaeg-audio.dir\stream.cpp.i
 
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-audio.dir/stream.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\stream.cpp -o CMakeFiles\odfaeg-audio.dir\stream.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\stream.cpp -o CMakeFiles\odfaeg-audio.dir\stream.cpp.s
 
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj: src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/flags.make
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj: src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/includes_CXX.rsp
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj: ../src/odfaeg/Audio/SoundFile.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-audio.dir\SoundFile.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\SoundFile.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-audio.dir\SoundFile.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\SoundFile.cpp
 
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\SoundFile.cpp > CMakeFiles\odfaeg-audio.dir\SoundFile.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\SoundFile.cpp > CMakeFiles\odfaeg-audio.dir\SoundFile.cpp.i
 
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\SoundFile.cpp -o CMakeFiles\odfaeg-audio.dir\SoundFile.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Audio && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Audio\SoundFile.cpp -o CMakeFiles\odfaeg-audio.dir\SoundFile.cpp.s
 
 # Object files for target odfaeg-audio
 odfaeg__audio_OBJECTS = \

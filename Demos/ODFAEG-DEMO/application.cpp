@@ -100,6 +100,8 @@ namespace sorrok {
         tm.fromFileWithAlias("tilesets/flemmes2.png", "FIRE2");
         tm.fromFileWithAlias("tilesets/flemmes3.png", "FIRE3");
         tm.fromFileWithAlias("tilesets/particule.png", "PARTICLE");
+        std::string path = "tilesets/vlad_sword.png";
+        tm.fromFileWithAlias(path, "VLADSWORD");
         SoundBufferManager<> sm;
         sm.fromFileWithAlias("sounds/walk_crop.wav", "step foot");
         sm.fromFileWithAlias("sounds/fire.wav", "fire");
@@ -287,6 +289,11 @@ namespace sorrok {
         ReflectRefractRenderComponent *rrrc = new ReflectRefractRenderComponent(getRenderWindow(), 2, "E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
         ShadowRenderComponent *src = new ShadowRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
         LightRenderComponent *lrc = new LightRenderComponent(getRenderWindow(), 4, "E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", ContextSettings(0, 0, 4, 4, 6));
+        /*frc1->setVisible(false);
+        frc2->setVisible(false);
+        rrrc->setVisible(false);
+        src->setVisible(false);
+        lrc->setVisible(false);*/
         /*gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
         textArea->addFocusListener(this);
         textArea->setVisible(false);
@@ -309,9 +316,8 @@ namespace sorrok {
         getRenderComponentManager().addComponent(op);*/
 
         caracter = new Hero("Sorrok", "Nagi", "M", "Map test", "Brain", "Green", "White","Normal","Novice", 1);
-        std::string path = "tilesets/vlad_sword.png";
-        cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "VLADSWORD");
-        const Texture *text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
+
+        const Texture *text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByAlias("VLADSWORD");
         int textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
         int textWidth = text->getSize().x;
         caracter->setCenter(math::Vec3f(-25, -50, 0));

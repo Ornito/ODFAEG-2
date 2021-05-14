@@ -73,7 +73,7 @@ namespace odfaeg
         /// \brief Image living on the graphics card that can be used for drawing
         ///
         ////////////////////////////////////////////////////////////
-        class ODFAEG_GRAPHICS_API Texture : window::IGLResource
+        class ODFAEG_API_EXPORT Texture : window::IGLResource
         {
         public :
 

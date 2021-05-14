@@ -19,6 +19,13 @@ namespace odfaeg {
         };*/
         class PerPixelLinkedListRenderComponent : public HeavyComponent {
             public :
+            struct uint64_to_uint128 {
+                uint64_t handle;
+                uint64_t padding;
+            };
+            struct Samplers {
+                uint64_to_uint128 tex[200];
+            };
             PerPixelLinkedListRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings);
                  /**
             * \fn bool loadEntitiesOnComponent(std::vector<Entity*> visibleEntities)
@@ -98,7 +105,7 @@ namespace odfaeg {
             View view; /**> the view of the component.*/
             std::string expression;
             bool update;
-            unsigned int atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex, vboWorldMatrices;
+            unsigned int atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex, vboWorldMatrices, ubo;
             Sprite frameBufferSprite;
             VertexBuffer vb, vb2;
             std::vector<float> matrices;

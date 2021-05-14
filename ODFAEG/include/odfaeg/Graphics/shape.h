@@ -43,7 +43,7 @@ namespace odfaeg {
         /// \brief Base class for textured shapes with outline
         ///
         ////////////////////////////////////////////////////////////
-        class ODFAEG_GRAPHICS_API Shape : public Drawable, public Transformable, public core::Registered<Shape>
+        class ODFAEG_API_EXPORT Shape : public Drawable, public Transformable, public core::Registered<Shape>
         {
         public :
 

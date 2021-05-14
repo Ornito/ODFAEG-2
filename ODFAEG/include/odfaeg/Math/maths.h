@@ -43,7 +43,7 @@ namespace odfaeg {
           * TWO_THIRD is the value of two divided by 3.
           * EPSILON is a very little value used to avoid to have overflow problems with floatting numbers.
           */
-        class ODFAEG_MATH_API Math {
+        class ODFAEG_API_EXPORT Math {
             public:
             static void initSeed();
             /**

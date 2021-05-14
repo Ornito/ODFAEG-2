@@ -12,7 +12,7 @@ namespace odfaeg {
         namespace gui {
             class TextArea : public LightComponent {
             public :
-                TextArea(math::Vec3f position, math::Vec3f size, const Font* font, sf::String s, RenderWindow& rw);
+                TextArea(math::Vec3f position, math::Vec3f size, const Font* font, std::string s, RenderWindow& rw);
                 void clear();
                 void onDraw(RenderTarget& target, RenderStates states);
                 void setTextSize(unsigned int size);
@@ -27,7 +27,7 @@ namespace odfaeg {
                 void onUpdate(RenderWindow* window, window::IEvent& event);
                 std::string getText();
                 std::string getSelectedText();
-                void setText(sf::String text);
+                void setText(std::string text);
                 void setCursorPos();
                 void setCursorPos2();
                 void setSelectedText();

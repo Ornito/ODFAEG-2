@@ -257,7 +257,6 @@ namespace odfaeg {
                     nbSerialized++;
                     for (unsigned int i = 0; i < str_size; i++) {
                         (*this)(datas[i]);
-                        std::cout<<datas[i]<<std::endl;
                     }
                 //}
             }
@@ -820,7 +819,7 @@ namespace odfaeg {
                         adresses.insert(newAddress);
                         nbDeserialized++;
                         buffer>>(*data);
-                        std::cout<<"fundamental data : "<<(*data)<<std::endl;
+                        //std::cout<<"fundamental data : "<<(*data)<<std::endl;
                         char space;
                         buffer.get(space);
                     }

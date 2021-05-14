@@ -359,6 +359,7 @@ namespace odfaeg {
             m_vao = m_versionMajor = m_versionMinor = 0;
             enableAlphaTest = true;
             enableCubeMap = false;
+            m_cache.vboPointerSets = false;
         }
         void RenderTarget::setVersionMajor (unsigned int versionMajor) {
             m_versionMajor = versionMajor;
@@ -706,10 +707,17 @@ namespace odfaeg {
                         glCheck(glEnableVertexAttribArray(3));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboNormalBuffer));
                         glCheck(glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(sf::Vector3f), (GLvoid*) 0));
+                        glCheck(glEnableVertexAttribArray(4));
+                        //std::cout<<"vbo texture index buffer : "<<vertexBuffer.vboTextureIndexesBuffer<<std::endl;
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboTextureIndexesBuffer));
+
+                        glCheck(glVertexAttribIPointer(4, 1, GL_UNSIGNED_INT/*,GL_FALSE*/,sizeof(GLuint),(GLvoid*) 0));
                         glCheck(glDisableVertexAttribArray(0));
                         glCheck(glDisableVertexAttribArray(1));
                         glCheck(glDisableVertexAttribArray(2));
                         glCheck(glDisableVertexAttribArray(3));
+                        glCheck(glDisableVertexAttribArray(4));
+
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                     } else {
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
@@ -735,6 +743,7 @@ namespace odfaeg {
                     glCheck(glEnableVertexAttribArray(1));
                     glCheck(glEnableVertexAttribArray(2));
                     glCheck(glEnableVertexAttribArray(3));
+                    glCheck(glEnableVertexAttribArray(4));
                 } else {
                     glCheck(glEnableClientState(GL_COLOR_ARRAY));
                     glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
@@ -760,6 +769,7 @@ namespace odfaeg {
                     glCheck(glDisableVertexAttribArray(1));
                     glCheck(glDisableVertexAttribArray(2));
                     glCheck(glDisableVertexAttribArray(3));
+                    glCheck(glDisableVertexAttribArray(4));
                     glCheck(glBindVertexArray(0));
                 } else {
                     glCheck(glDisableClientState(GL_COLOR_ARRAY));
@@ -833,9 +843,7 @@ namespace odfaeg {
                 glCheck(glDisable(GL_CULL_FACE));
                 glCheck(glDisable(GL_LIGHTING));
                 glCheck(glEnable(GL_DEPTH_TEST));
-                /*glCheck(glEnable(GL_STENCIL_TEST));
-                glCheck(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
-                glCheck(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));*/
+
                 if (enableAlphaTest) {
                     glCheck(glEnable(GL_ALPHA_TEST));
                 } else {
@@ -882,7 +890,8 @@ namespace odfaeg {
                 glCheck(glGenVertexArrays(1, &vaoID));
                 m_vao = static_cast<unsigned int>(vaoID);
             }
-            if (m_versionMajor > 4) {
+            if (m_versionMajor >= 4) {
+                //std::cout<<"load Debug functions"<<std::endl;
                 OpenGL::LoadDebugFunctions();
                 OpenGL::InitialiseDebugFunctions();
             }

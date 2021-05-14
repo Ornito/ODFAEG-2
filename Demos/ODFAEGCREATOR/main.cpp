@@ -18,5 +18,4 @@ int main(int argc, char* argv[]) {
     Class cl = Class::getClass("Hero");
     ODFAEGCreator app(sf::VideoMode(1000,700),"ODFAEG Creator");
     return app.exec();
-
 }

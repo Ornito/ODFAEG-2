@@ -66,6 +66,7 @@ namespace odfaeg {
                                                     uniform vec3 resolution;
                                                     out vec2 fTexCoords;
                                                     out vec4 frontColor;
+                                                    out uint texIndex;
                                                     void main() {
                                                         float xOff = 0;
                                                         float yOff = 0;
@@ -76,6 +77,7 @@ namespace odfaeg {
                                                         gl_Position = projectionMatrix * viewMatrix * worldMat * vec4((position.x - xOff), (position.y + yOff), position.z, 1.f);
                                                         fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
                                                         frontColor = color;
+                                                        texIndex = 0;
                                                     }
                                                     )";
                 const std::string  simpleVertexShader = R"(#version 460
@@ -96,7 +98,8 @@ namespace odfaeg {
                                                             layout (location = 1) in vec4 color;
                                                             layout (location = 2) in vec2 texCoords;
                                                             layout (location = 3) in vec3 normals;
-                                                            uniform mat4 textureMatrix;
+                                                            layout (location = 4) in uint textureIndex;
+                                                            uniform mat4 textureMatrix[)"+core::conversionUIntString(Texture::getAllTextures().size())+R"(];
                                                             uniform mat4 projectionMatrix;
                                                             uniform mat4 viewMatrix;
                                                             uniform float water;
@@ -104,6 +107,7 @@ namespace odfaeg {
                                                             uniform vec3 resolution;
                                                             out vec2 fTexCoords;
                                                             out vec4 frontColor;
+                                                            out uint texIndex;
                                                             void main () {
                                                                 float xOff = 0;
                                                                 float yOff = 0;
@@ -112,10 +116,12 @@ namespace odfaeg {
                                                                     xOff = 0.025*cos(position.x*12+time*FPI)*resolution.x;
                                                                 }
                                                                 gl_Position = projectionMatrix * viewMatrix * vec4((position.x - xOff), (position.y + yOff), position.z, 1.f);
-                                                                fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                                                fTexCoords = (textureIndex != 0) ? (textureMatrix[textureIndex-1] * vec4(texCoords, 1.f, 1.f)).xy : texCoords;
                                                                 frontColor = color;
+                                                                texIndex = textureIndex;
                                                             })";
                 const std::string fragmentShader = R"(#version 460
+                                                      #extension GL_ARB_bindless_texture : enable
                                                       struct NodeType {
                                                           vec4 color;
                                                           float depth;
@@ -126,17 +132,29 @@ namespace odfaeg {
                                                       layout(binding = 0, std430) buffer linkedLists {
                                                           NodeType nodes[];
                                                       };
+                                                      layout(std140, binding = 0) uniform ALL_TEXTURES {
+                                                          sampler2D textures[200];
+                                                      };
                                                       uniform uint maxNodes;
                                                       uniform float haveTexture;
-                                                      uniform sampler2D texture;
+                                                      uniform sampler2D currentTex;
                                                       uniform float water;
                                                       in vec4 frontColor;
                                                       in vec2 fTexCoords;
+                                                      in flat uint texIndex;
                                                       layout (location = 0) out vec4 fcolor;
+                                                      /* fix: because of layout std140 16byte alignment, get uvec2 from array of uvec4 */
+                                                      /*uvec2 GetTexture(uint index)
+                                                      {
+                                                          uint index_corrected = index / 2;
+                                                          if (index % 2 == 0)
+                                                              return maps[index_corrected].xy;
+                                                          return maps[index_corrected].zw;
+                                                      }*/
                                                       void main() {
                                                            uint nodeIdx = atomicCounterIncrement(nextNodeCounter);
-                                                           vec4 texel = texture2D(texture, fTexCoords.xy);
-                                                           vec4 color = (haveTexture > 0.9) ? frontColor * texel : frontColor;
+                                                           //sampler2D tex = sampler2D(GetTexture(texIndex-1));
+                                                           vec4 color = (texIndex != 0) ? frontColor * texture(textures[texIndex-1], fTexCoords.xy) : frontColor;
                                                            if (nodeIdx < maxNodes) {
                                                                 uint prevHead = imageAtomicExchange(headPointers, ivec2(gl_FragCoord.xy), nodeIdx);
                                                                 nodes[nodeIdx].color = color;
@@ -169,10 +187,11 @@ namespace odfaeg {
                            count++;
                       }
                       //merge sort
-                      int i, j1, j2, k;
+                      /*int i, j1, j2, k;
                       int a, b, c;
                       int step = 1;
                       NodeType leftArray[MAX_FRAGMENTS/2]; //for merge sort
+                      //NodeType fgs[2];
                       while (step <= count)
                       {
                           i = 0;
@@ -189,21 +208,37 @@ namespace odfaeg {
                               j2 = 0;
                               for (k = a; k < c; k++)
                               {
+
                                   if (b + j1 >= c || (j2 < step && leftArray[j2].depth > frags[b + j1].depth))
                                       frags[k] = leftArray[j2++];
                                   else
                                       frags[k] = frags[b + j1++];
+                                  //bool idx = (b + j1 >= c || (j2 < step && leftArray[j2].depth > frags[b + j1].depth));
+                                  //fgs[1] = leftArray[j2++];
+                                  //fgs[0] = frags[b + j1++];
+                                  //frags[k] = fgs[int(idx)];
                               }
                               ////////////////////////////////////////////////////////////////////////
                               i += 2 * step;
                           }
                           step *= 2;
+                      }*/
+                      //Insertion sort.
+                      for (int i = 0; i < count - 1; i++) {
+                        for (int j = i + 1; j > 0; j--) {
+                            if (frags[j - 1].depth > frags[j].depth) {
+                                NodeType tmp = frags[j - 1];
+                                frags[j - 1] = frags[j];
+                                frags[j] = tmp;
+                            }
+                        }
                       }
                       vec4 color = vec4(0, 0, 0, 0);
-                      for( int i = count - 1; i >= 0; i--)
+                      for( int i = 0; i < count; i++)
                       {
                         color.rgb = frags[i].color.rgb * frags[i].color.a + color.rgb * (1 - frags[i].color.a);
                         color.a = frags[i].color.a + color.a * (1 - frags[i].color.a);
+                        //color = mix (color, frags[i].color, frags[i].color.a);
                       }
                       fcolor = color;
                    })";
@@ -217,10 +252,10 @@ namespace odfaeg {
                        throw core::Erreur(56, "Failed to load per pixel linked list 2 shader");
                    }
                    perPixelLinkedList.setParameter("maxNodes", maxNodes);
-                   perPixelLinkedList.setParameter("texture", Shader::CurrentTexture);
+                   perPixelLinkedList.setParameter("currentTex", Shader::CurrentTexture);
                    perPixelLinkedList.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                    perPixelLinkedList2.setParameter("maxNodes", maxNodes);
-                   perPixelLinkedList2.setParameter("texture", Shader::CurrentTexture);
+                   perPixelLinkedList2.setParameter("currentTex", Shader::CurrentTexture);
                    perPixelLinkedList2.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                    math::Matrix4f viewMatrix = window.getDefaultView().getViewMatrix().getMatrix().transpose();
                    math::Matrix4f projMatrix = window.getDefaultView().getProjMatrix().getMatrix().transpose();
@@ -340,7 +375,29 @@ namespace odfaeg {
                    perPixelLinkedList.setParameter("maxNodes", maxNodes);
                    perPixelLinkedList.setParameter("texture", Shader::CurrentTexture);
                 }
-               //filterNotOpaque.setParameter("texture", Shader::CurrentTexture);
+                std::vector<Texture*> allTextures = Texture::getAllTextures();
+                Samplers allSamplers{};
+                std::vector<math::Matrix4f> textureMatrices;
+                for (unsigned int i = 0; i < allTextures.size(); i++) {
+                    textureMatrices.push_back(allTextures[i]->getTextureMatrix());
+                    GLuint64 handle_texture = glGetTextureHandleARB(allTextures[i]->getNativeHandle());
+                    glCheck(glMakeTextureHandleResidentARB(handle_texture));
+                    allSamplers.tex[i].handle = handle_texture;
+                    //std::cout<<"add texture : "<<allSamplers.tex[i]<<std::endl;
+                }
+                perPixelLinkedList2.setParameter("textureMatrix", textureMatrices);
+                glCheck(glGenBuffers(1, &ubo));
+                unsigned int ubid;
+                glCheck(ubid = glGetUniformBlockIndex(perPixelLinkedList2.getHandle(), "ALL_TEXTURES"));
+                glCheck(glUniformBlockBinding(perPixelLinkedList2.getHandle(),    ubid, 0));
+                glCheck(ubid = glGetUniformBlockIndex(perPixelLinkedList.getHandle(), "ALL_TEXTURES"));
+                glCheck(glUniformBlockBinding(perPixelLinkedList.getHandle(),    ubid, 0));
+                backgroundColor = sf::Color::Transparent;
+                glCheck(glBindBuffer(GL_UNIFORM_BUFFER, ubo));
+                glCheck(glBufferData(GL_UNIFORM_BUFFER, sizeof(Samplers),allSamplers.tex, GL_STATIC_DRAW));
+                //std::cout<<"size : "<<sizeof(Samplers)<<" "<<alignof (alignas(16) uint64_t[200])<<std::endl;
+                glCheck(glBindBuffer(GL_UNIFORM_BUFFER, 0));
+                glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
                backgroundColor = sf::Color::Transparent;
                glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer));
                glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer));
@@ -437,6 +494,7 @@ namespace odfaeg {
                         frameBuffer.drawInstanced(vb, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
                     }
                 }
+                vb.clear();
                 for (unsigned int i = 0; i < m_normals.size(); i++) {
                    if (m_normals[i].getAllVertices().getVertexCount() > 0) {
                         //std::cout<<"next frame draw normal"<<std::endl;
@@ -444,7 +502,7 @@ namespace odfaeg {
                             perPixelLinkedList2.setParameter("haveTexture", 0.f);
                         } else {
                             math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
-                            perPixelLinkedList2.setParameter("textureMatrix", texMatrix);
+                            //perPixelLinkedList2.setParameter("textureMatrix", texMatrix);
                             perPixelLinkedList2.setParameter("haveTexture", 1.f);
                         }
                         if (m_normals[i].getVertexArrays()[0]->getEntity()->isWater()) {
@@ -458,34 +516,36 @@ namespace odfaeg {
                         }
                         currentStates.blendMode = sf::BlendNone;
                         currentStates.shader = &perPixelLinkedList2;
-                        currentStates.texture = m_normals[i].getMaterial().getTexture();
-                        vb.clear();
+                        currentStates.texture = nullptr;
+
                         vb.setPrimitiveType(m_normals[i].getAllVertices().getPrimitiveType());
                         for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
-                            vb.append(m_normals[i].getAllVertices()[j]);
+                            vb.append(m_normals[i].getAllVertices()[j],(m_normals[i].getMaterial().getTexture() != nullptr) ? m_normals[i].getMaterial().getTexture()->getNativeHandle() : 0);
                         }
-                        vb.update();
-                        frameBuffer.drawVertexBuffer(vb, currentStates);
+
                     }
                 }
+                vb.update();
+                frameBuffer.drawVertexBuffer(vb, currentStates);
+
                 glCheck(glFinish());
                 glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-                vb2.clear();
-                vb2.setPrimitiveType(sf::Quads);
+                vb.clear();
+                vb.setPrimitiveType(sf::Quads);
                 Vertex v1 (sf::Vector3f(0, 0, quad.getSize().z));
                 Vertex v2 (sf::Vector3f(quad.getSize().x,0, quad.getSize().z));
                 Vertex v3 (sf::Vector3f(quad.getSize().x, quad.getSize().y, quad.getSize().z));
                 Vertex v4 (sf::Vector3f(0, quad.getSize().y, quad.getSize().z));
-                vb2.append(v1);
-                vb2.append(v2);
-                vb2.append(v3);
-                vb2.append(v4);
-                vb2.update();
+                vb.append(v1);
+                vb.append(v2);
+                vb.append(v3);
+                vb.append(v4);
+                vb.update();
                 math::Matrix4f matrix = quad.getTransform().getMatrix().transpose();
                 perPixelLinkedListP2.setParameter("worldMat", matrix);
                 currentStates.shader = &perPixelLinkedListP2;
-                frameBuffer.drawVertexBuffer(vb2, currentStates);
+                frameBuffer.drawVertexBuffer(vb, currentStates);
                 glCheck(glFinish());
                 frameBuffer.display();
             } else {

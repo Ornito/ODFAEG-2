@@ -21,6 +21,7 @@ namespace odfaeg {
             vboVertexBuffer = 0;
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
+            vboTextureIndexesBuffer = 0;
             needToUpdateVertexBuffer = false;
             needToUpdateIndexBuffer = false;
             nbVerticesPerFace = 4;
@@ -32,6 +33,7 @@ namespace odfaeg {
             vboVertexBuffer = 0;
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
+            vboTextureIndexesBuffer = 0;
             m_entity = va.m_entity;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
@@ -62,6 +64,7 @@ namespace odfaeg {
             vboVertexBuffer = 0;
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
+            vboTextureIndexesBuffer = 0;
             m_entity = va.m_entity;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
@@ -92,6 +95,7 @@ namespace odfaeg {
             vboVertexBuffer = 0;
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
+            vboTextureIndexesBuffer = 0;
             m_entity = va.m_entity;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
@@ -123,6 +127,7 @@ namespace odfaeg {
             vboVertexBuffer = 0;
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
+            vboTextureIndexesBuffer = 0;
             m_entity = va.m_entity;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
@@ -389,6 +394,7 @@ namespace odfaeg {
             m_indexes.clear();
             m_normals.clear();
             m_locals.clear();
+            m_texturesIndexes.clear();
         }
         void VertexBuffer::resetIndexes(std::vector<unsigned int> indexes) {
             m_indexes = indexes;
@@ -400,7 +406,7 @@ namespace odfaeg {
             m_vertices.resize(vertexCount);
         }
         ////////////////////////////////////////////////////////////
-        void VertexBuffer::append(const Vertex& vertex)
+        void VertexBuffer::append(const Vertex& vertex, unsigned int textureIndex)
         {
             /*bool contains = false;
             for (unsigned int i = 0; i < m_vertices.size(); i++) {
@@ -410,6 +416,7 @@ namespace odfaeg {
             //if (!contains)  {
                 //std::cout<<"position : "<<vertex.position.x<<" "<<vertex.position.y<<" "<<vertex.position.z<<std::endl;
                 m_vertices.push_back(vertex);
+                m_texturesIndexes.push_back(textureIndex);
                 /*m_vPosX.push_back(vertex.position.x);
                 m_vPosY.push_back(vertex.position.y);
                 m_vPosZ.push_back(vertex.position.z);
@@ -505,6 +512,31 @@ namespace odfaeg {
                             }
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                         }
+                        if (vboTextureIndexesBuffer == 0) {
+                            GLuint vbo;
+                            glCheck(glGenBuffers(1, &vbo));
+                            vboTextureIndexesBuffer = static_cast<unsigned int>(vbo);
+                        }
+                        if (oldVerticesSize != m_vertices.size()) {
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboTextureIndexesBuffer));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, m_texturesIndexes.size() * sizeof(unsigned int), &m_texturesIndexes[0], GL_DYNAMIC_DRAW));
+                            //std::cout<<"vbo index texture : "<<vboTextureIndexesBuffer<<std::endl;
+                            /*for (unsigned int i = 0; i < m_texturesIndexes.size(); i++) {
+                                if (m_texturesIndexes[i] > 1)
+                                    std::cout<<"texture indexes size : "<<m_texturesIndexes.size()<<" index : "<<m_texturesIndexes[i]<<std::endl;
+                            }*/
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        } else {
+                            GLvoid *pos_vbo = nullptr;
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboTextureIndexesBuffer));
+                            glCheck(pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
+                            if (pos_vbo != nullptr) {
+                                memcpy(pos_vbo, &m_texturesIndexes[0], m_texturesIndexes.size() * sizeof(unsigned int));
+                                glCheck(glUnmapBuffer(GL_ARRAY_BUFFER));
+                                pos_vbo = nullptr;
+                            }
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        }
                         needToUpdateVertexBuffer = false;
                     }
                     if (needToUpdateIndexBuffer) {
@@ -586,6 +618,29 @@ namespace odfaeg {
                             pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
                             if (pos_vbo != nullptr) {
                                 memcpy(pos_vbo,&m_normals[0],  m_normals.size() * sizeof(math::Vec3f));
+                                glCheck(glUnmapBuffer(GL_ARRAY_BUFFER));
+                                pos_vbo = nullptr;
+                            }
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        }
+                        if (vboTextureIndexesBuffer == 0) {
+                            GLuint vbo;
+                            glCheck(glGenBuffers(1, &vbo));
+                            vboTextureIndexesBuffer = static_cast<unsigned int>(vbo);
+                        }
+                        if (oldVerticesSize != m_vertices.size()) {
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboTextureIndexesBuffer));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, m_texturesIndexes.size() * sizeof(unsigned int), &m_texturesIndexes[0], GL_DYNAMIC_DRAW));
+                            /*for (unsigned int i = 0; i < m_texturesIndexes.size(); i++) {
+                                std::cout<<"texture indexes size : "<<m_texturesIndexes.size()<<" index : "<<m_texturesIndexes[i]<<std::endl;
+                            }*/
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        } else {
+                            GLvoid *pos_vbo = nullptr;
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboTextureIndexesBuffer));
+                            glCheck(pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
+                            if (pos_vbo != nullptr) {
+                                memcpy(pos_vbo, &m_texturesIndexes[0], m_texturesIndexes.size() * sizeof(unsigned int));
                                 glCheck(glUnmapBuffer(GL_ARRAY_BUFFER));
                                 pos_vbo = nullptr;
                             }

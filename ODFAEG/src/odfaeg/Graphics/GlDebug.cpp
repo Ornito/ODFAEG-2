@@ -105,6 +105,7 @@ namespace odfaeg {
         typedef void (CALLBACK * PFNGLDEBUGMESSAGECALLBACK)( PFNGLDEBUGPROC callback, void * userParam );
         typedef void (CALLBACK * PFNGLDEBUGMESSAGECALLBACKAMD)( PFNGLDEBUGAMDPROC callback, void * userParam );
 
+
         PFNGLDEBUGMESSAGECALLBACK glDebugMessageCallback = NULL;
         PFNGLDEBUGMESSAGECALLBACKAMD glDebugMessageCallbackAMD = NULL;
 
@@ -135,11 +136,13 @@ namespace odfaeg {
         {
             if( glDebugMessageCallback )
             {
+                //std::cout<<"init debug functions"<<std::endl;
                 glDebugMessageCallback( PFNGLDEBUGPROC( &CallbackDebugLog ), NULL );
                 glEnable( gl_api::iGL_DEBUG_OUTPUT_SYNCHRONOUS );
             }
             else if( glDebugMessageCallbackAMD )
             {
+                //std::cout<<"init debug functions AMD"<<std::endl;
                  glDebugMessageCallbackAMD( PFNGLDEBUGAMDPROC( &CallbackDebugLogAMD ), NULL );
                  glEnable(gl_api::iGL_DEBUG_OUTPUT);
                  glEnable(gl_api::iGL_DEBUG_OUTPUT_SYNCHRONOUS);

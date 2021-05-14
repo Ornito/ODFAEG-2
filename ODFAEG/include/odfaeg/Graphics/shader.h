@@ -553,7 +553,7 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             void setParameter(const std::string& name, math::Matrix4f matrix);
-            void setParameter(const std::string& name, std::vector<TransformMatrix*> transforms);
+            void setParameter(const std::string& name, std::vector<math::Matrix4f> mats);
 
             ////////////////////////////////////////////////////////////
             /// \brief Change a texture parameter of the shader

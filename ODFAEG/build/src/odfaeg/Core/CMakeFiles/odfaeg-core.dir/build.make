@@ -60,183 +60,183 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/archive.cpp.obj: src/odfaeg/Core/CMak
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/archive.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/archive.cpp.obj: ../src/odfaeg/Core/archive.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/archive.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\archive.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\archive.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\archive.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\archive.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/archive.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/archive.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\archive.cpp > CMakeFiles\odfaeg-core.dir\archive.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\archive.cpp > CMakeFiles\odfaeg-core.dir\archive.cpp.i
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/archive.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/archive.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\archive.cpp -o CMakeFiles\odfaeg-core.dir\archive.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\archive.cpp -o CMakeFiles\odfaeg-core.dir\archive.cpp.s
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.obj: ../src/odfaeg/Core/erreur.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\erreur.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\erreur.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\erreur.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\erreur.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/erreur.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\erreur.cpp > CMakeFiles\odfaeg-core.dir\erreur.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\erreur.cpp > CMakeFiles\odfaeg-core.dir\erreur.cpp.i
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/erreur.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/erreur.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\erreur.cpp -o CMakeFiles\odfaeg-core.dir\erreur.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\erreur.cpp -o CMakeFiles\odfaeg-core.dir\erreur.cpp.s
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/utilities.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/utilities.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/utilities.cpp.obj: ../src/odfaeg/Core/utilities.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/utilities.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\utilities.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\utilities.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\utilities.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\utilities.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/utilities.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/utilities.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\utilities.cpp > CMakeFiles\odfaeg-core.dir\utilities.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\utilities.cpp > CMakeFiles\odfaeg-core.dir\utilities.cpp.i
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/utilities.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/utilities.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\utilities.cpp -o CMakeFiles\odfaeg-core.dir\utilities.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\utilities.cpp -o CMakeFiles\odfaeg-core.dir\utilities.cpp.s
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/__/__/__/include/odfaeg/Core/factory.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/__/__/__/include/odfaeg/Core/factory.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/__/__/__/include/odfaeg/Core/factory.cpp.obj: ../include/odfaeg/Core/factory.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/__/__/__/include/odfaeg/Core/factory.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\__\__\__\include\odfaeg\Core\factory.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\include\odfaeg\Core\factory.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\__\__\__\include\odfaeg\Core\factory.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\include\odfaeg\Core\factory.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/__/__/__/include/odfaeg/Core/factory.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/__/__/__/include/odfaeg/Core/factory.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\include\odfaeg\Core\factory.cpp > CMakeFiles\odfaeg-core.dir\__\__\__\include\odfaeg\Core\factory.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\include\odfaeg\Core\factory.cpp > CMakeFiles\odfaeg-core.dir\__\__\__\include\odfaeg\Core\factory.cpp.i
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/__/__/__/include/odfaeg/Core/factory.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/__/__/__/include/odfaeg/Core/factory.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\include\odfaeg\Core\factory.cpp -o CMakeFiles\odfaeg-core.dir\__\__\__\include\odfaeg\Core\factory.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\include\odfaeg\Core\factory.cpp -o CMakeFiles\odfaeg-core.dir\__\__\__\include\odfaeg\Core\factory.cpp.s
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/state.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/state.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/state.cpp.obj: ../src/odfaeg/Core/state.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/state.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\state.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\state.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\state.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\state.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/state.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/state.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\state.cpp > CMakeFiles\odfaeg-core.dir\state.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\state.cpp > CMakeFiles\odfaeg-core.dir\state.cpp.i
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/state.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/state.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\state.cpp -o CMakeFiles\odfaeg-core.dir\state.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\state.cpp -o CMakeFiles\odfaeg-core.dir\state.cpp.s
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateGroup.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateGroup.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateGroup.cpp.obj: ../src/odfaeg/Core/stateGroup.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateGroup.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\stateGroup.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\stateGroup.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\stateGroup.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\stateGroup.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateGroup.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/stateGroup.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\stateGroup.cpp > CMakeFiles\odfaeg-core.dir\stateGroup.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\stateGroup.cpp > CMakeFiles\odfaeg-core.dir\stateGroup.cpp.i
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateGroup.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/stateGroup.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\stateGroup.cpp -o CMakeFiles\odfaeg-core.dir\stateGroup.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\stateGroup.cpp -o CMakeFiles\odfaeg-core.dir\stateGroup.cpp.s
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateStack.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateStack.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateStack.cpp.obj: ../src/odfaeg/Core/stateStack.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateStack.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\stateStack.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\stateStack.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\stateStack.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\stateStack.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateStack.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/stateStack.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\stateStack.cpp > CMakeFiles\odfaeg-core.dir\stateStack.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\stateStack.cpp > CMakeFiles\odfaeg-core.dir\stateStack.cpp.i
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/stateStack.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/stateStack.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\stateStack.cpp -o CMakeFiles\odfaeg-core.dir\stateStack.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\stateStack.cpp -o CMakeFiles\odfaeg-core.dir\stateStack.cpp.s
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/time.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/time.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/time.cpp.obj: ../src/odfaeg/Core/time.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/time.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\time.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\time.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\time.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\time.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/time.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/time.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\time.cpp > CMakeFiles\odfaeg-core.dir\time.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\time.cpp > CMakeFiles\odfaeg-core.dir\time.cpp.i
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/time.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/time.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\time.cpp -o CMakeFiles\odfaeg-core.dir\time.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\time.cpp -o CMakeFiles\odfaeg-core.dir\time.cpp.s
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/clock.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/clock.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/clock.cpp.obj: ../src/odfaeg/Core/clock.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/clock.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\clock.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\clock.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\clock.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\clock.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/clock.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/clock.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\clock.cpp > CMakeFiles\odfaeg-core.dir\clock.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\clock.cpp > CMakeFiles\odfaeg-core.dir\clock.cpp.i
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/clock.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/clock.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\clock.cpp -o CMakeFiles\odfaeg-core.dir\clock.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\clock.cpp -o CMakeFiles\odfaeg-core.dir\clock.cpp.s
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj: ../src/odfaeg/Core/class.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\class.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\class.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\class.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\class.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/class.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\class.cpp > CMakeFiles\odfaeg-core.dir\class.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\class.cpp > CMakeFiles\odfaeg-core.dir\class.cpp.i
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/class.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/class.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\class.cpp -o CMakeFiles\odfaeg-core.dir\class.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\class.cpp -o CMakeFiles\odfaeg-core.dir\class.cpp.s
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.obj: ../src/odfaeg/Core/constructor.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\constructor.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\constructor.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\constructor.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\constructor.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/constructor.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\constructor.cpp > CMakeFiles\odfaeg-core.dir\constructor.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\constructor.cpp > CMakeFiles\odfaeg-core.dir\constructor.cpp.i
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/constructor.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/constructor.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\constructor.cpp -o CMakeFiles\odfaeg-core.dir\constructor.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\constructor.cpp -o CMakeFiles\odfaeg-core.dir\constructor.cpp.s
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj: ../src/odfaeg/Core/memberFunction.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\memberFunction.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\memberFunction.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\memberFunction.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\memberFunction.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/memberFunction.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\memberFunction.cpp > CMakeFiles\odfaeg-core.dir\memberFunction.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\memberFunction.cpp > CMakeFiles\odfaeg-core.dir\memberFunction.cpp.i
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/memberFunction.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/memberFunction.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\memberFunction.cpp -o CMakeFiles\odfaeg-core.dir\memberFunction.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\memberFunction.cpp -o CMakeFiles\odfaeg-core.dir\memberFunction.cpp.s
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/flags.make
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj: src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/includes_CXX.rsp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj: ../src/odfaeg/Core/runtimeCompiler.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Laurent\Windows\ODFAEG\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.obj"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\runtimeCompiler.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\runtimeCompiler.cpp
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\odfaeg-core.dir\runtimeCompiler.cpp.obj -c C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\runtimeCompiler.cpp
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.i"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\runtimeCompiler.cpp > CMakeFiles\odfaeg-core.dir\runtimeCompiler.cpp.i
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\runtimeCompiler.cpp > CMakeFiles\odfaeg-core.dir\runtimeCompiler.cpp.i
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-core.dir/runtimeCompiler.cpp.s"
-	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\PROGRA~2\CODEBL~1\MinGW\bin\MINGW3~2.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\runtimeCompiler.cpp -o CMakeFiles\odfaeg-core.dir\runtimeCompiler.cpp.s
+	cd /d C:\Users\Laurent\Windows\ODFAEG\build\src\odfaeg\Core && C:\TDM-GCC-32\bin\mingw32-g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Laurent\Windows\ODFAEG\src\odfaeg\Core\runtimeCompiler.cpp -o CMakeFiles\odfaeg-core.dir\runtimeCompiler.cpp.s
 
 # Object files for target odfaeg-core
 odfaeg__core_OBJECTS = \

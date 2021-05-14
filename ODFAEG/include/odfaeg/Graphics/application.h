@@ -170,7 +170,6 @@ namespace odfaeg {
             void render() {
                 if (windows.size() != 0 && windows[0].first->isOpen()) {
                     for (unsigned int i = 0; i < windows.size(); i++) {
-                        //windows[i].first->setActive(true);
                         windows[i].first->clear(clearColor);
                     }
                     onRender(componentManager.get());
@@ -179,9 +178,6 @@ namespace odfaeg {
                        listener->processEvents();
                     }
                     componentManager->updateComponents();
-                    /*if (name == "EXTERNAL")
-                        std::cout<<"appli clear event stack"<<std::endl;
-                    Command::clearEventsStack();*/
                     componentManager->drawRenderComponents();
                     onDisplay(windows[0].first);
                     componentManager->drawGuiComponents();

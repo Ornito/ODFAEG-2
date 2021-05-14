@@ -2,7 +2,7 @@
 namespace odfaeg {
     namespace graphic {
         namespace gui {
-            TextArea::TextArea(math::Vec3f position, math::Vec3f size, const Font* font, sf::String t, RenderWindow& rw) :
+            TextArea::TextArea(math::Vec3f position, math::Vec3f size, const Font* font, std::string t, RenderWindow& rw) :
                 LightComponent(rw, position, size, math::Vec3f(0, 0, 0)) {
                 tmp_text = t;
                 background = sf::Color::White;
@@ -194,8 +194,8 @@ namespace odfaeg {
                     scrollX = getSize().x - text.getGlobalBounds().getSize().x;
                 }
             }
-            void TextArea::setText(sf::String text) {
-                tmp_text = text.toAnsiString();
+            void TextArea::setText(std::string text) {
+                tmp_text = text;
                 this->text.setString(text);
                 textChanged = true;
             }

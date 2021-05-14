@@ -1,5 +1,6 @@
 #include "odfaegCreatorStateExecutor.hpp"
 #include "application.hpp"
+
 using namespace odfaeg::core;
 using namespace odfaeg::math;
 using namespace odfaeg::graphic;

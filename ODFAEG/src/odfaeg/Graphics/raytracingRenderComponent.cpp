@@ -454,6 +454,14 @@ namespace odfaeg {
                                                             return true;
                                                           return false;
                                                       }
+                                                      /* fix: because of layout std140 16byte alignment, get uvec2 from array of uvec4 */
+                                                      /*uvec2 GetTexture(uint index)
+                                                      {
+                                                          uint index_corrected = index / 2;
+                                                          if (index % 2 == 0)
+                                                              return maps[index_corrected].xy;
+                                                          return maps[index_corrected].zw;
+                                                      }*/
                                                       Pixel interpolate(Triangle triangle, vec3 p, float u, float v) {
                                                            Pixel pixel;
                                                            /*vec3 p1 = triangle.position[0].xyz;
@@ -487,6 +495,7 @@ namespace odfaeg {
                                                                pixel.texCoords.y = 0;
                                                            else if (pixel.texCoords.y > 1)
                                                                pixel.texCoords.y = fract(pixel.texCoords.y);
+                                                           //sampler2D tex = sampler2D(GetTexture(triangle.textureIndex-1));
                                                            pixel.color = (triangle.textureIndex > 0) ? color * texture(textures[triangle.textureIndex-1], pixel.texCoords) : color;
                                                            return pixel;
                                                       }
@@ -767,7 +776,7 @@ namespace odfaeg {
                     for (unsigned int i = 0; i < allTextures.size(); i++) {
                         GLuint64 handle_texture = glGetTextureHandleARB(allTextures[i]->getNativeHandle());
                         glMakeTextureHandleResidentARB(handle_texture);
-                        allSamplers.tex[i] = handle_texture;
+                        allSamplers.tex[i].handle = handle_texture;
                     }
                     glCheck(glGenBuffers(1, &ubo));
                     unsigned int ubid;

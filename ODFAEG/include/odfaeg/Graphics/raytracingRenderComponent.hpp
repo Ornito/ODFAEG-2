@@ -27,16 +27,20 @@ namespace odfaeg {
                 math::Vec3f normal;
                 uint32_t textureIndex;
                 uint32_t refractReflect;
-                float ratio;
-                float padding;
+                alignas (8) float ratio;
+                //float padding;
             };
             struct Light {
                 math::Vec3f center;
                 math::Vec3f color;
                 float radius;
             };
+            struct uint64_to_uint128 {
+                uint64_t handle;
+                uint64_t padding;
+            };
             struct Samplers {
-                GLuint64 tex[200];
+                uint64_to_uint128 tex[200];
             };
             RaytracingRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings);
                  /**

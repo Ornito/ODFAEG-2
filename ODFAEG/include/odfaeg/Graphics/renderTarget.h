@@ -585,6 +585,7 @@ namespace odfaeg {
                 enum {VertexCacheSize = 4};
                 bool      glStatesSet; ///< Are our internal GL states set yet?
                 bool      viewChanged; ///< Has the current view changed since last draw?
+                bool vboPointerSets;
                 sf::BlendMode lastBlendMode; ///< Cached blending mode
                 sf::Uint64    lastTextureId; ///< Cached texture
                 bool      useVertexCache; ///< Did we previously use the vertex cache?

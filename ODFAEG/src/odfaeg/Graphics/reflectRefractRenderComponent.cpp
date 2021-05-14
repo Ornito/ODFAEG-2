@@ -351,7 +351,7 @@ namespace odfaeg {
                            count++;
                       }
                       //merge sort
-                      int i, j1, j2, k;
+                      /*int i, j1, j2, k;
                       int a, b, c;
                       int step = 1;
                       NodeType leftArray[MAX_FRAGMENTS/2]; //for merge sort
@@ -380,9 +380,19 @@ namespace odfaeg {
                               i += 2 * step;
                           }
                           step *= 2;
+                      }*/
+                      //Insertion sort.
+                      for (int i = 0; i < count - 1; i++) {
+                        for (int j = i + 1; j > 0; j--) {
+                            if (frags[j - 1].depth > frags[j].depth) {
+                                NodeType tmp = frags[j - 1];
+                                frags[j - 1] = frags[j];
+                                frags[j] = tmp;
+                            }
+                        }
                       }
                       vec4 color = vec4(0, 0, 0, 0);
-                      for( int i = count - 1; i >= 0; i--)
+                      for( int i = 0; i < count; i++)
                       {
                         color.rgb = frags[i].color.rgb * frags[i].color.a + color.rgb * (1 - frags[i].color.a);
                         color.a = frags[i].color.a + color.a * (1 - frags[i].color.a);
@@ -722,22 +732,22 @@ namespace odfaeg {
                                 glCheck(glFinish());
                                 glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
                                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-                                vb2.clear();
-                                vb2.setPrimitiveType(sf::Quads);
+                                vb.clear();
+                                vb.setPrimitiveType(sf::Quads);
                                 Vertex v1 (sf::Vector3f(0, 0, quad.getSize().z));
                                 Vertex v2 (sf::Vector3f(quad.getSize().x,0, quad.getSize().z));
                                 Vertex v3 (sf::Vector3f(quad.getSize().x, quad.getSize().y, quad.getSize().z));
                                 Vertex v4 (sf::Vector3f(0, quad.getSize().y, quad.getSize().z));
-                                vb2.append(v1);
-                                vb2.append(v2);
-                                vb2.append(v3);
-                                vb2.append(v4);
-                                vb2.update();
+                                vb.append(v1);
+                                vb.append(v2);
+                                vb.append(v3);
+                                vb.append(v4);
+                                vb.update();
                                 math::Matrix4f matrix = quad.getTransform().getMatrix().transpose();
                                 sLinkedList2.setParameter("worldMat", matrix);
                                 currentStates.shader = &sLinkedList2;
                                 currentStates.texture = nullptr;
-                                environmentMap.drawVertexBuffer(vb2, currentStates);
+                                environmentMap.drawVertexBuffer(vb, currentStates);
                                 glCheck(glFinish());
                                 glCheck(glMemoryBarrier(GL_ALL_BARRIER_BITS));
                             }

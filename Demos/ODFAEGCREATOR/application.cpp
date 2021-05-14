@@ -987,8 +987,52 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                 }
             }
         }
+        if (event.keyboard.control && event.keyboard.code == IKeyboard::A) {
+            rectSelect.getItems().clear();
+            for (unsigned int i = 0; i < selectionBorders.size(); i++) {
+                delete selectionBorders[i];
+            }
+            selectionBorders.clear();
+            if (getWorld()->getCurrentEntityManager() != nullptr) {
+                //std::cout<<"select get visible entities"<<std::endl;
+                std::vector<Entity*> entities = getWorld()->getVisibleEntities(taSelectExpression->getText());
+                //std::cout<<"visible entities selected get : "<<entities.size()<<std::endl;
+                for (unsigned int i = 0; i < entities.size(); i++) {
+                    //std::cout<<"type : "<<entities[i]->getType()<<std::endl<<"select pos : "<<rectSelect.getSelectionRect().getPosition()<<"select size : "<<rectSelect.getSelectionRect().getSize()<<"globalbounds pos : "<<entities[i]->getGlobalBounds().getPosition()<<"globalbounds size : "<<entities[i]->getGlobalBounds().getSize()<<std::endl;
+                    if (dynamic_cast<Tile*>(entities[i])) {
+                        //std::cout<<"add tile : "<<i<<std::endl;
+                        rectSelect.addItem(entities[i]);
+                        Entity* border = entities[i]->clone();
+                        //std::cout<<"add border"<<std::endl;
+                        for (unsigned int f = 0; f < border->getNbFaces(); f++) {
+                            //std::cout<<"clear textures"<<std::endl;
+                            if (border->getFace(f)->getMaterial().getTexture() != nullptr) {
+                                border->getFace(f)->getMaterial().clearTextures();
+                                //std::cout<<"add texture"<<std::endl;
+                                border->getFace(f)->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
+                            }
+                            //std::cout<<"get va"<<std::endl;
+                            VertexArray& va = border->getFace(f)->getVertexArray();
+                            //std::cout<<"change color"<<std::endl;
+                            for (unsigned int j = 0; j < va.getVertexCount(); j++) {
+                                va[j].color = sf::Color::Cyan;
+                            }
+                            //std::cout<<"color changed"<<std::endl;
+                        }
+                        border->setScale(Vec3f(1.1f, 1.1f, 1.0f));
+                        selectionBorders.push_back(border);
+                        //std::cout<<"border added"<<std::endl;
+                    }
+                }
+            }
+        }
     }
+
     if (&getRenderWindow() == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
+        if (pluginSourceCode != "") {
+            std::ofstream file("sourceCode.cpp");
+            file<<pluginSourceCode;
+        }
         stop();
     }
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_PRESSED && event.mouseButton.button == IMouse::Left) {
@@ -1659,6 +1703,10 @@ void ODFAEGCreator::onExec() {
                 rtc.addSourceFile("sourceCode");
                 rtc.compile();
                 rtc.run<void>("readObjects", this);
+                std::string line;
+                while (getline(file, line)) {
+                    pluginSourceCode += line + "\n";
+                }
             }
         }
         fdProjectPath->setVisible(false);
@@ -3100,6 +3148,11 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         std::ifstream file8("sourceCode.cpp");
         if (file8) {
             rtc.run<void>("createObject", this, true);
+            pluginSourceCode = "";
+            std::string line;
+            while (getline(file8, line)) {
+                pluginSourceCode += line + "\n";
+            }
         }
      }
      if (item == item18) {
