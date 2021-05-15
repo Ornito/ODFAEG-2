@@ -532,6 +532,11 @@ namespace odfaeg {
                                 glCheck(glDisableVertexAttribArray(i + 8));
                             }
                         }
+                        glCheck(glEnableVertexAttribArray(12));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboIndexBuffer));
+                        glCheck(glVertexAttribIPointer(12, 1, GL_UNSIGNED_INT, sizeof(GLuint), (GLvoid*) 0));
+                        glCheck(glDisableVertexAttribArray(12));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                     }
                     m_cache.lastVboBuffer = &vertexBuffer;
 
@@ -551,6 +556,7 @@ namespace odfaeg {
                             glCheck(glEnableVertexAttribArray(8 + i));
                         }
                     }
+                    glCheck(glEnableVertexAttribArray(12));
                     static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
                                                        GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
                     GLenum mode = modes[type];
@@ -570,8 +576,8 @@ namespace odfaeg {
                             glCheck(glDisableVertexAttribArray(8 + i));
                         }
                     }
+                    glCheck(glDisableVertexAttribArray(12));
                     glCheck(glBindVertexArray(0));
-
                 }
             }
         } //////////////////////////////////////////////////////////

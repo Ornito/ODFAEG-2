@@ -58,9 +58,10 @@ namespace odfaeg {
                                                     layout (location = 2) in vec2 texCoords;
                                                     layout (location = 3) in vec3 normals;
                                                     layout (location = 4) in mat4 worldMat;
+                                                    layout (location = 12) in uint textureIndex;
                                                     uniform mat4 projectionMatrix;
                                                     uniform mat4 viewMatrix;
-                                                    uniform mat4 textureMatrix;
+                                                    uniform mat4 textureMatrix[)"+core::conversionUIntString(Texture::getAllTextures().size())+R"(];
                                                     uniform float water;
                                                     uniform float time;
                                                     uniform vec3 resolution;
@@ -75,9 +76,9 @@ namespace odfaeg {
                                                             xOff = 0.025*cos(position.x*12+time*FPI)*resolution.x;
                                                         }
                                                         gl_Position = projectionMatrix * viewMatrix * worldMat * vec4((position.x - xOff), (position.y + yOff), position.z, 1.f);
-                                                        fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                                        fTexCoords = (textureIndex != 0) ? (textureMatrix[textureIndex-1] * vec4(texCoords, 1.f, 1.f)).xy : texCoords;
                                                         frontColor = color;
-                                                        texIndex = 0;
+                                                        texIndex = textureIndex;
                                                     }
                                                     )";
                 const std::string  simpleVertexShader = R"(#version 460
@@ -385,6 +386,7 @@ namespace odfaeg {
                     allSamplers.tex[i].handle = handle_texture;
                     //std::cout<<"add texture : "<<allSamplers.tex[i]<<std::endl;
                 }
+                perPixelLinkedList.setParameter("textureMatrix", textureMatrices);
                 perPixelLinkedList2.setParameter("textureMatrix", textureMatrices);
                 glCheck(glGenBuffers(1, &ubo));
                 unsigned int ubid;
@@ -401,6 +403,9 @@ namespace odfaeg {
                backgroundColor = sf::Color::Transparent;
                glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer));
                glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer));
+               for (unsigned int i = 0; i < Batcher::nbPrimitiveTypes; i++) {
+                    vbBindlessTex[i].setPrimitiveType(static_cast<sf::PrimitiveType>(i));
+               }
         }
         void PerPixelLinkedListRenderComponent::setBackgroundColor(sf::Color color) {
             backgroundColor = color;
@@ -434,6 +439,9 @@ namespace odfaeg {
                 perPixelLinkedList.setParameter("viewMatrix", viewMatrix);
                 perPixelLinkedList2.setParameter("projectionMatrix", projMatrix);
                 perPixelLinkedList2.setParameter("viewMatrix", viewMatrix);
+                for (unsigned int i = 0; i < Batcher::nbPrimitiveTypes; i++) {
+                    vbBindlessTex[i].clear();
+                }
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
                     if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                         if (m_instances[i].getVertexArrays()[0]->getEntity()->isWater()) {
@@ -445,8 +453,6 @@ namespace odfaeg {
                             float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
                             perPixelLinkedList.setParameter("time", time);
                         }
-                        vb.clear();
-                        vb.setPrimitiveType(m_instances[i].getVertexArrays()[0]->getPrimitiveType());
                         matrices.clear();
                         std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
                         for (unsigned int j = 0; j < tm.size(); j++) {
@@ -463,20 +469,13 @@ namespace odfaeg {
                             Entity* entity = m_instances[i].getVertexArrays()[0]->getEntity();
                             for (unsigned int j = 0; j < m_instances[i].getVertexArrays().size(); j++) {
                                 if (entity == m_instances[i].getVertexArrays()[j]->getEntity()) {
+                                    unsigned int p = m_instances[i].getVertexArrays()[j]->getPrimitiveType();
                                     for (unsigned int k = 0; k < m_instances[i].getVertexArrays()[j]->getVertexCount(); k++) {
-                                        vb.append((*m_instances[i].getVertexArrays()[j])[k]);
+                                        vbBindlessTex[p].append((*m_instances[i].getVertexArrays()[j])[k], (m_instances[i].getMaterial().getTexture() != nullptr) ? m_instances[i].getMaterial().getTexture()->getNativeHandle() : 0);
                                     }
                                 }
                             }
-                            vb.update();
                         }
-                        currentStates.blendMode = sf::BlendNone;
-                        currentStates.shader = &perPixelLinkedList;
-                        currentStates.texture = m_instances[i].getMaterial().getTexture();
-
-
-
-
                         //std::cout<<"texture : "<<m_instances[i].getMaterial().getTexture()<<std::endl;
                         //std::cout<<"entity : "<<m_instances[i].getVertexArrays()[0]->getEntity()->getRootEntity()->getType()<<std::endl;
                         if (m_instances[i].getMaterial().getTexture() != nullptr) {
@@ -485,7 +484,7 @@ namespace odfaeg {
 
                             //std::cout<<"texture"<<std::endl;
                             math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
-                            perPixelLinkedList.setParameter("textureMatrix", texMatrix);
+                            //perPixelLinkedList.setParameter("textureMatrix", texMatrix);
                             perPixelLinkedList.setParameter("haveTexture", 1.f);
                         } else {
                             //std::cout<<"no texture"<<std::endl;
@@ -494,7 +493,14 @@ namespace odfaeg {
                         frameBuffer.drawInstanced(vb, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
                     }
                 }
-                vb.clear();
+                currentStates.blendMode = sf::BlendNone;
+                currentStates.shader = &perPixelLinkedList;
+                currentStates.texture = nullptr;
+                for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                    vbBindlessTex[p].update();
+                    frameBuffer.drawVertexBuffer(vbBindlessTex[p], currentStates);
+                    vbBindlessTex[p].clear();
+                }
                 for (unsigned int i = 0; i < m_normals.size(); i++) {
                    if (m_normals[i].getAllVertices().getVertexCount() > 0) {
                         //std::cout<<"next frame draw normal"<<std::endl;
@@ -514,19 +520,20 @@ namespace odfaeg {
                             float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
                             perPixelLinkedList2.setParameter("time", time);
                         }
-                        currentStates.blendMode = sf::BlendNone;
-                        currentStates.shader = &perPixelLinkedList2;
-                        currentStates.texture = nullptr;
-
-                        vb.setPrimitiveType(m_normals[i].getAllVertices().getPrimitiveType());
+                        unsigned int p = m_normals[i].getAllVertices().getPrimitiveType();
                         for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
-                            vb.append(m_normals[i].getAllVertices()[j],(m_normals[i].getMaterial().getTexture() != nullptr) ? m_normals[i].getMaterial().getTexture()->getNativeHandle() : 0);
+                            vbBindlessTex[p].append(m_normals[i].getAllVertices()[j],(m_normals[i].getMaterial().getTexture() != nullptr) ? m_normals[i].getMaterial().getTexture()->getNativeHandle() : 0);
                         }
 
                     }
                 }
-                vb.update();
-                frameBuffer.drawVertexBuffer(vb, currentStates);
+                currentStates.blendMode = sf::BlendNone;
+                currentStates.shader = &perPixelLinkedList2;
+                currentStates.texture = nullptr;
+                for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                    vbBindlessTex[p].update();
+                    frameBuffer.drawVertexBuffer(vbBindlessTex[p], currentStates);
+                }
 
                 glCheck(glFinish());
                 glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));

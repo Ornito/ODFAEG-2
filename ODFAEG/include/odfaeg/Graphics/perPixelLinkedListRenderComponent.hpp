@@ -107,7 +107,8 @@ namespace odfaeg {
             bool update;
             unsigned int atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex, vboWorldMatrices, ubo;
             Sprite frameBufferSprite;
-            VertexBuffer vb, vb2;
+            VertexBuffer vb;
+            std::array<VertexBuffer ,Batcher::nbPrimitiveTypes> vbBindlessTex;
             std::vector<float> matrices;
             int layer;
         };

@@ -162,7 +162,7 @@ namespace odfaeg {
             } else if (m_primitiveType == sf::PrimitiveType::Triangles) {
                 size = m_vertices.size() / 3;
             } else if (m_primitiveType == sf::PrimitiveType::TriangleStrip || m_primitiveType == sf::PrimitiveType::TriangleFan) {
-                size = m_vertices.size() - 2;
+                size = (m_vertices.size() > 2) ? m_vertices.size() - 2 : 0;
             }
             for (unsigned int i = 0; i < size; i++) {
                 if (m_primitiveType == sf::PrimitiveType::Quads) {
