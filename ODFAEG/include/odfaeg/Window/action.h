@@ -144,9 +144,9 @@ namespace odfaeg {
                 return pressed;
             }
             Action& operator=(const Action& action);
-            void pushEvent(window::IEvent& event);
+            /*void pushEvent(window::IEvent& event);
             void clearEvents();
-            void removeEvent(window::IEvent& event);
+            void removeEvent(window::IEvent& event);*/
             private :
             /**\fn bool equalEvent (window::IEvent event, window::IEvent other)
             *  \brief compare two window::IEvents. (The events are equal if the event's types and params are equal)
@@ -161,7 +161,7 @@ namespace odfaeg {
             std::unique_ptr<Action> rightChild;/**<pointers to the two action's children if the action is a combined action*/
             std::function<bool(Action*, Action&, Action&)> comparator;/**A pointer to the function which's used to compare two actions. (For combined actions only)*/
             bool is_not; /**<determine if the isTriggered function have to return true or false if the action is triggered*/
-            std::vector<window::IEvent> events;
+            //std::vector<window::IEvent> events;
         };
     }
 }

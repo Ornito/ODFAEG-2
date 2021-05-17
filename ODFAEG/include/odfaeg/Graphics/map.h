@@ -159,8 +159,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         * \fn  void checkVisibleEntities();
         * \brief check the entities which are visible. (Which are in the field of view of the camera)
         */
-        void checkVisibleEntities();
-        bool containsMovableVisibleEntity(AnimatedEntity *ae);
+        void checkVisibleEntities();        
         /**
         * \fn  Entity* getEntity(int id);
         * \brief get an entity from its id.
@@ -180,8 +179,8 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
                 ar(name);
                 ar(cellWidth);
                 ar(cellHeight);
-                BaseChangementMatrix bcm = getBaseChangementMatrix();
-                ar(bcm);
+                BaseChangementMatrix bcm = getBaseChangementMatrix();                
+                ar(bcm);               
                 std::vector<Entity*> entities = getEntities("*");
                 std::vector<Entity*> internalEntities;
                 for (unsigned int i = 0; i < entities.size(); i++) {
@@ -335,24 +334,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         * \brief get the shadow tile. (The tile where all the shadows are drawn)
         * \return the shadow tile.
         */
-        void generateStencilBuffer(std::string expression, int n, va_list args);
-        Entity& getShadowTile(std::string expression, int n, va_list args);
-        /**
-        * \fn Tile& getLightTile();
-        * \brief get the light tile. (The tile where all the lights are drawn)
-        * \param n : the number of the layers.
-        * \param the layer of the components which have entities which intersects with the light. (dereffered shading)
-        * \return the light tile.
-        */
-        Entity& getLightTile(std::string expression, int n, va_list args);
-        /**
-        * \fn void drawOnComponents(std::string expression, int layer, sf::BlendMode mode = sf::BlendMode::BlendAlpha);
-        * \brief draw the entities on a component.
-        * \param expression : the types of entities to draw.
-        * \param layer : the layer of the component on which to draw the entities.
-        * \param mode: the blend mode.
-        */
-        Entity& getRefractionTile (std::string expression, int n, va_list args);
+        
         void drawOnComponents(std::string expression, int layer, sf::BlendMode mode = sf::BlendAlpha);
         /**
         * \fn void drawOnComponents(Drawable& drawable, int layer, RenderStates states = RenderStates::Default);

@@ -5,7 +5,7 @@
 // *** END ***
 #ifndef MY_APPLI
 #define MY_APPLI
-#include "odfaeg/Core/application.h"
+#include "odfaeg/Graphics/application.h"
 #include "odfaeg/Graphics/convexShape.h"
 #include "odfaeg/Graphics/rectangleShape.h"
 #include "odfaeg/Graphics/circleShape.h"

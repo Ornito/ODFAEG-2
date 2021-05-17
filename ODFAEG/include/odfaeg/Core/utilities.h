@@ -6,7 +6,8 @@
 #include <sstream>
 #include <SFML/Config.hpp>
 #include <dirent.h>
-#include <unistd.h>
+#include <io.h>
+#include <direct.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 /**

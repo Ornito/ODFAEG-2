@@ -171,6 +171,7 @@ namespace odfaeg {
             virtual void destroy();
             virtual bool pollEvent(IEvent& event);
             virtual bool waitEvent(IEvent& event) {
+                return false;
             }
         protected:
 

@@ -1,4 +1,5 @@
 #include "../../../include/odfaeg/Math/matrix4.h"
+#include <array>
 /*Classe créant une matrice 4*4.*/
 namespace odfaeg {
     namespace math {

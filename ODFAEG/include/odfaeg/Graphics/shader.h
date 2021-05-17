@@ -56,7 +56,7 @@ namespace odfaeg {
     namespace graphic {
         class Texture;
         #ifdef VULKAN
-        class ODFAEG_API_EXPORT Shader : sf::NonCopyable {
+        class ODFAEG_GRAPHICS_API Shader : sf::NonCopyable {
         public :
             ////////////////////////////////////////////////////////////
             /// \brief Special type/value that can be passed to setParameter,
@@ -183,7 +183,7 @@ namespace odfaeg {
         /// \brief Shader class (vertex and fragment)
         ///
         ////////////////////////////////////////////////////////////
-        class ODFAEG_API_EXPORT Shader : sf::NonCopyable, window::IGLResource
+        class Shader : sf::NonCopyable, window::IGLResource
         {
         public :
 

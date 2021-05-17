@@ -31,6 +31,7 @@ namespace odfaeg {
                 pl->height = height;
                 pl->triangles = triangles;
                 pl->quality = quality;
+                return pl;
             }
             //On initialise les triangles lumineux pour former une élipse.
             void PonctualLight::initTriangles () {

@@ -75,6 +75,7 @@ namespace odfaeg {
             entity->layer = layer;
             entity->type = type;
             entity->externalObjectName = externalObjectName;
+            entity->external = external;
             //std::cout<<"clone id : "<<entity->getId()<<std::endl;
             for (unsigned int i = 0; i < faces.size(); i++) {
                 entity->addFace(new Face(faces[i]->getVertexArray(), faces[i]->getMaterial(), entity->getTransform()));

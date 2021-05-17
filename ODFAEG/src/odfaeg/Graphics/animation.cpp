@@ -42,6 +42,7 @@ namespace odfaeg {
             anim->interpLevels = interpLevels;
             anim->interpPerc = interpPerc;
             anim->interpolatedFrame.reset(interpolatedFrame->clone());
+            return anim;
         }
         bool Anim::isCurrentFrameChanged() {
             return currentFrameChanged;

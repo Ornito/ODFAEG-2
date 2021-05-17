@@ -3,8 +3,8 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include <dlfcn.h>
-//#include <windows.h>
+//#include <dlfcn.h>
+#include <windows.h>
 #include "erreur.h"
 namespace odfaeg {
     namespace core {
@@ -14,17 +14,17 @@ namespace odfaeg {
             void compile();
             template<typename R, typename... A>
             R run(std::string fName, A... a) {
-                std::string path = "./"+funcName+".so";
-                /*if (!isDllOpened) {
-                    flib = LoadLibrary(path.c_str());
+                std::string path = "./"+funcName+".dll";
+                if (!isDllOpened) {
+                    flib = LoadLibraryA(path.c_str());
                     if (!flib) {
                         throw Erreur(10, "Failed to open dynamic library!", 3);
                     }
                     isDllOpened = true;
                 }
                 typedef R(*func)(A...);
-                func pfunc = (func) GetProcAddress(flib, fName.c_str());*/
-                if (!isDllOpened) {
+                func pfunc = (func) GetProcAddress(flib, fName.c_str());
+                /*if (!isDllOpened) {
                     flib = dlopen(path.c_str(), RTLD_LAZY);
                     if (!flib) {
                         throw Erreur(10, "Failed to open dynamic library!", 3);
@@ -32,7 +32,7 @@ namespace odfaeg {
                     isDllOpened = true;
                 }
                 typedef R(*func)(A...);
-                func pfunc = (func) dlsym(flib, fName.c_str());
+                func pfunc = (func) dlsym(flib, fName.c_str());*/
                 if (!pfunc) {
                     throw Erreur(10, "Failed to load the function!", 3);
                 }
@@ -47,8 +47,10 @@ namespace odfaeg {
             void addMacro(std::string macro);
             void addRuntimeFunction (std::string f);
             std::string getCompileErrors();
+            ~RuntimeCompiler();
             private :
-            void* flib;
+            //void* flib;
+            HMODULE flib;
             bool isDllOpened;
             std::string funcName;
             std::string compileErrors;

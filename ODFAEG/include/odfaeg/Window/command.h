@@ -68,17 +68,17 @@ namespace odfaeg
             /** \fn void clearEventsStack ()
             *   \brief clear all the window::IEvents in the events stack.
             */
-            void clearEventsStack ();
+            static void clearEventsStack ();
             /** \fn void pushEvent (window::IEvent& event)
             *   \brief store all the incoming window::IEvents which are triggered.
             *   \param the triggered window::IEvent.
             */
-            void pushEvent (window::IEvent& event);
+            static void pushEvent (window::IEvent& event);
             /** \fn void getEvents()
             *   \brief return all sfml events which are generated since the last event loop.
             *   \return the sfml event which are generated since the last loop.
             */
-            //static std::vector<window::IEvent> getEvents();
+            static std::vector<window::IEvent> getEvents();
 
             /** \fn void operator()()
             *   \brief call the slot function linked to command.
@@ -122,7 +122,7 @@ namespace odfaeg
             /** < the trigger mapped to the command.*/
             std::unique_ptr<FastDelegate<bool>> trigger;
             /** < the SFML events generated.*/
-            //static std::vector<window::IEvent> events;
+            static std::vector<window::IEvent> events;
             std::string name;
 
         };

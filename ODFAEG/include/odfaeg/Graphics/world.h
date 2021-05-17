@@ -24,7 +24,7 @@ namespace odfaeg {
         * \version 1.0
         * \date 1/02/2014
         */
-        class ODFAEG_API_EXPORT World {
+        class  World {
             public :
                 struct Cache {
                     std::vector<std::unique_ptr<core::EntitySystem>> eus; /**> holds every entity systems*/
@@ -34,6 +34,7 @@ namespace odfaeg {
                 World() {
                     /*nbEntities = 0;
                     nbEntitiesTypes = 0;*/
+                    currentEntityManager = nullptr;
                 }
                 EntityManager* getCurrentEntityManager() {
                     return currentEntityManager;
@@ -95,43 +96,7 @@ namespace odfaeg {
                         return currentEntityManager->deleteEntity(entity);
                     return false;
                 }
-                /**
-                *   \fn E& getShadowMap()
-                *   \return the shadow map.
-                */
-                graphic::Entity* getShadowMap(std::string expression, int n...) {
-                    if (currentEntityManager != nullptr) {
-                        va_list args;
-                        va_list copy;
-                        va_copy(copy, args);
-                        va_start(args, n);
-                        currentEntityManager->generateStencilBuffer(expression, n, args);
-                        va_start(copy, n);
-                        return &currentEntityManager->getShadowTile(expression, n, copy);
-                    }
-                    return nullptr;
-                }
-                /**
-                *  \fn E& getLightMap(std::string expression, int n...)
-                *  \param std::string expression : the types of lights to draw on the light map.
-                *  \param int n... : the layers of the component which have entities which can intersect with the light.
-                */
-                graphic::Entity* getLightMap(std::string expression, int n...) {
-                    if (currentEntityManager != nullptr) {
-                        va_list args;
-                        va_start(args, n);
-                        return &currentEntityManager->getLightTile(expression, n, args);
-                    }
-                    return nullptr;
-                }
-                graphic::Entity* getReflectionMap(std::string expression, int n...) {
-                    if (currentEntityManager != nullptr) {
-                        va_list args;
-                        va_start(args, n);
-                        return &currentEntityManager->getRefractionTile(expression, n, args);
-                    }
-                    return nullptr;
-                }
+                
                 /** \fn getVisibleEntities (std::string expression)
                 *   \brief get the visible entities of the given types.
                 *   \param the types of the entities to get.
@@ -435,26 +400,20 @@ namespace odfaeg {
                     return std::vector<Entity*>();
                 }
                 void removeEntityManager (std::string emName) {
-                    std::vector<std::unique_ptr<EntityManager>>::iterator it;
-                    for (it = cache.ems.begin(); it != cache.ems.end();) {
-                        std::string otherName = (*it)->getName();
-                        if (emName == otherName) {
-                            it = cache.ems.erase(it);
-                            if (currentEntityManager == it->get())
-                                currentEntityManager = nullptr;
-                        } else {
-                            it++;
-                        }
+                    const auto itEmToRemove = std::find_if(cache.ems.begin(), cache.ems.end(), [&](auto& p) { return p.get()->getName() == emName; });
+                    const bool found = (itEmToRemove != cache.ems.end());
+                    if (found) {
+                        cache.ems.erase(itEmToRemove);
                     }
                 }
                 void setCurrentEntityManager (std::string mapName) {
 
-                    std::vector<std::unique_ptr<EntityManager>>::iterator it;
-                    for (it = cache.ems.begin(); it != cache.ems.end(); it++) {
-                        std::string otherName = (*it)->getName();
+                    std::vector<EntityManager*> ems = getEntityManagers();
+                    for (unsigned int i = 0; i < ems.size(); i++) {
+                        std::string otherName = ems[i]->getName();
                         if (otherName == mapName) {
                             //std::cout<<"set current entity manager "<<mapName<<std::endl;
-                           currentEntityManager = it->get();
+                           currentEntityManager = ems[i];
                         }
                     }
                 }

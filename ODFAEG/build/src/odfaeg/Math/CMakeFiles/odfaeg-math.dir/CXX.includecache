@@ -815,7 +815,9 @@ SFML/Config.hpp
 -
 dirent.h
 -
-unistd.h
+io.h
+-
+direct.h
 -
 sys/types.h
 -
@@ -980,6 +982,10 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/vec2f.h
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
 
+C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Math/bigInt.cpp
+../../../include/odfaeg/Math/bigInt.hpp
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/bigInt.hpp
+
 C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Math/computer.cpp
 ../../../include/odfaeg/Math/computer.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/computer.h
@@ -1011,6 +1017,8 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix4.h
 C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Math/matrix4.cpp
 ../../../include/odfaeg/Math/matrix4.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/matrix4.h
+array
+-
 
 C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Math/ray.cpp
 ../../../include/odfaeg/Math/ray.h

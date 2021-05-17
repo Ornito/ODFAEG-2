@@ -60,10 +60,10 @@ namespace odfaeg {
             //Set the position of the entity, the position is always the top left corner of the entity.
             void setPosition(math::Vec3f position) {
                 math::Vec3f t = position - m_position;
-                if (getName() == "LFILE") {
+                /*if (getName() == "LFILE") {
                     std::cout<<"set position : "<<position<<m_position<<t<<std::endl;
                     std::cout<<position.x-m_position.x<<std::endl;
-                }
+                }*/
                 move(t);
             }
             /**

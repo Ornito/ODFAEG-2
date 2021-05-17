@@ -119,22 +119,7 @@ namespace odfaeg {
                 *  \brief return the first edge of the oriented bounding box.
                 *  \return the first edge of the oriented bounding box.
                 */
-                math::Vec3f getSize();
-                math::Vec3f getBX();
-                /**\fn math::Vec3f getBY()
-                *  \brief return the second edge of the oriented bounding box.
-                *  \return the second edge of the oriented bounding box.
-                */
-                math::Vec3f getBY();
-                /**\fn math::Vec3f getBZ()
-                *  \brief return the thirst edge of the oriented bounding box.
-                *  \return the thirst edge of the oriented bounding box.
-                */
-                math::Vec3f getBZ();
-                /**\fn math::Vec3f getPosition()
-                *  \brief return the position of the oriented bounding box
-                *  \return the position of the oriented bounding box.
-                */
+                math::Vec3f getSize();                
                 math::Vec3f getPosition();
                 /**\fn math::Vec3f getCenter()
                 *  \brief return the center of the oriented bounding box

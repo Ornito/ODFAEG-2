@@ -101,7 +101,8 @@ namespace odfaeg {
                 shape.setPoint(1, sf::Vector3f(getSize().x - 50, 0, 0));
                 shape.setPoint(2, sf::Vector3f(getSize().x, 0, 0));
                 shape.setPosition(getPosition());
-                math::Vec3f points[shape.getPointCount()];
+                std::vector<math::Vec3f> points;
+                points.resize(shape.getPointCount());                
                 for (unsigned int i = 0; i < shape.getPointCount(); i++) {
                     sf::Vector3f position = shape.getPoint(i);
                     points[i] = shape.getTransform().transform(math::Vec3f(position.x, position.y, position.z));

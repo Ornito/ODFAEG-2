@@ -32,6 +32,7 @@
 #include <SFML/System/Err.hpp>
 #include <fstream>
 #include <vector>
+#include <array>
 #ifndef VULKAN
 #include "glCheck.h"
 #include <GL/glew.h>
@@ -614,9 +615,8 @@ namespace odfaeg {
 
                     // Get parameter location and assign it new values
                     GLint location = getParamLocation(name);
-                    if (location != -1) {
-                        std::array<float, 16> glmatrix = matrix.toGlMatrix();
-                        glCheck(glUniformMatrix4fvARB(location, 1, GL_FALSE, glmatrix.data()));
+                    if (location != -1) {                        
+                        glCheck(glUniformMatrix4fvARB(location, 1, GL_FALSE, matrix.toGlMatrix().data()));
                     }
                     // Disable program
                     glCheck(glUseProgramObjectARB(program));
@@ -825,12 +825,13 @@ namespace odfaeg {
                 GLint success;
                 glCheck(glGetShaderiv(computeShaderID, GL_COMPILE_STATUS,&success));
                 if (success == GL_FALSE) {
-                    int infoLogLength;
+                    int infoLogLength=0;
                     glCheck(glGetShaderiv(computeShaderID, GL_INFO_LOG_LENGTH, &infoLogLength));
-                    char log[infoLogLength];
+                    std::vector<char> log;
+                    log.resize(infoLogLength);
                     glCheck(glGetShaderInfoLog(computeShaderID, infoLogLength, 0, &log[0]));
-                    std::cerr << "Failed to compile compute shader:" << std::endl
-                    << log << std::endl;
+                    std::cerr << "Failed to compile compute shader:" << std::endl                    
+                    << std::string (log.begin(), log.end()) << std::endl;
                     glCheck(glDeleteShader(computeShaderID));
                     glCheck(glDeleteProgram(m_shaderProgram));
                 }
@@ -849,10 +850,11 @@ namespace odfaeg {
                     if (success == GL_FALSE) {
                         int infoLogLength;
                         glCheck(glGetShaderiv(vertexShaderID, GL_INFO_LOG_LENGTH, &infoLogLength));
-                        char log[infoLogLength];
+                        std::vector<char> log;
+                        log.resize(infoLogLength);
                         glCheck(glGetShaderInfoLog(vertexShaderID, infoLogLength, 0, &log[0]));
                         std::cerr << "Failed to compile vertex shader:" << std::endl
-                        << log << std::endl;
+                            << std::string(log.begin(), log.end()) << std::endl;
                         glCheck(glDeleteShader(vertexShaderID));
                         glCheck(glDeleteProgram(m_shaderProgram));
                         m_shaderProgram = 0;
@@ -899,10 +901,11 @@ namespace odfaeg {
                     if (success == GL_FALSE) {
                         int infoLogLength;
                         glCheck(glGetShaderiv(fragmentShaderID, GL_INFO_LOG_LENGTH, &infoLogLength));
-                        char log[infoLogLength];
+                        std::vector<char> log;
+                        log.resize(infoLogLength);
                         glCheck(glGetShaderInfoLog(fragmentShaderID, infoLogLength, 0, &log[0]));
                         std::cerr << "Failed to compile fragment shader:" << std::endl
-                        << log << std::endl;
+                            << std::string(log.begin(), log.end()) << std::endl;
                         glCheck(glDeleteShader(fragmentShaderID));
                         glCheck(glDeleteProgram(m_shaderProgram));
                         m_shaderProgram = 0;
@@ -943,10 +946,11 @@ namespace odfaeg {
                     if (success == GL_FALSE) {
                         int infoLogLength;
                         glCheck(glGetShaderiv(geometryShaderID, GL_INFO_LOG_LENGTH, &infoLogLength));
-                        char log[infoLogLength];
+                        std::vector<char> log;
+                        log.resize(infoLogLength);
                         glCheck(glGetShaderInfoLog(geometryShaderID, infoLogLength, 0, &log[0]));
-                        std::cerr << "Failed to compile geometry shader:" << std::endl
-                        << log << std::endl;
+                        std::cerr << "Failed to compile compute shader:" << std::endl
+                            << std::string(log.begin(), log.end()) << std::endl;
                         glCheck(glDeleteShader(geometryShaderID));
                         glCheck(glDeleteProgram(m_shaderProgram));
                         m_shaderProgram = 0;
@@ -984,10 +988,11 @@ namespace odfaeg {
                 if (success == GL_FALSE) {
                     int infoLogLength;
                     glCheck(glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &infoLogLength));
-                    char log[infoLogLength];
-                    glCheck(glGetProgramInfoLog(m_shaderProgram, infoLogLength, nullptr, &log[0]));
+                    std::vector<char> log;
+                    log.resize(infoLogLength);
+                    glCheck(glGetProgramInfoLog(m_shaderProgram, infoLogLength, 0, &log[0]));
                     std::cerr << "Failed to link shader:" << std::endl
-                          << log << std::endl;
+                        << std::string(log.begin(), log.end()) << std::endl;
                     glCheck(glDeleteProgram(m_shaderProgram));
                     m_shaderProgram = 0;
                     return false;

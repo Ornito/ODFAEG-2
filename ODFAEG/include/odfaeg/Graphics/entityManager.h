@@ -118,21 +118,7 @@ namespace odfaeg {
             * \brief virtual function to redefine to check if the entity manager contains an animated entity.
             * \return true if the entity manager contains the animated entity.
             */
-            virtual bool containsVisibleParentEntity(Entity *ae) = 0;
-            /**
-            * \fn Entity& getShadowTile()
-            * \brief virtual method to redefine to get the shadow tile.
-            * \return Entity& the shadow tile.
-            */
-            virtual void generateStencilBuffer(std::string expression, int n, va_list args) = 0;
-            virtual Entity& getShadowTile(std::string expression, int n, va_list args) = 0;
-            /**
-            * \fn Entity& getLightTile()
-            * \brief virtual method to redefine to get the light tile.
-            * \return Entity& the light tile.
-            */
-            virtual Entity& getLightTile(std::string expression, int n, va_list args) = 0;
-            virtual Entity& getRefractionTile(std::string expression, int n, va_list args) = 0;
+            virtual bool containsVisibleParentEntity(Entity *ae) = 0;   
             /**
             * \fn void drawOnComponents(std::string expression, int layer, sf::BlendMode mode)
             * \brief virtual method to redefine to draw the visibles entities to a component.

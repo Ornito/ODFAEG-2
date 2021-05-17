@@ -81,6 +81,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         bool WindowImpl::waitEvent(IEvent& event) {
             //For later.
+            return false;
         }
         ////////////////////////////////////////////////////////////
         bool WindowImpl::filterEvent(const IEvent& event)
@@ -171,7 +172,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         bool WindowImpl::hasFocus() const
         {
-            WindowImplType::hasFocus();
+            return WindowImplType::hasFocus();
         }
         ////////////////////////////////////////////////////////////
         WindowHandle WindowImpl::getSystemHandle() const

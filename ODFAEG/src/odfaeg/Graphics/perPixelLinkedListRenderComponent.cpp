@@ -433,6 +433,7 @@ namespace odfaeg {
         }
         void PerPixelLinkedListRenderComponent::drawNextFrame() {
             if (frameBuffer.getSettings().versionMajor >= 4 && frameBuffer.getSettings().versionMinor >= 3) {
+                //std::cout<<"draw nex frame"<<std::endl;
                 math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
                 math::Matrix4f projMatrix = view.getProjMatrix().getMatrix().transpose();
                 perPixelLinkedList.setParameter("projectionMatrix", projMatrix);

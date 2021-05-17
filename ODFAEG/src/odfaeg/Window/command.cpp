@@ -1,8 +1,8 @@
 #include "../../../include/odfaeg/Window/command.h"
 namespace odfaeg {
     namespace core {
-        std::string Command::sname = "";
-        //std::vector<window::IEvent> Command::events = std::vector<window::IEvent> ();
+        std::string Command::sname __attribute__((section ("shared"), shared)) = "test";
+        std::vector<window::IEvent> Command::events __attribute__((section ("shared"), shared)) = std::vector<window::IEvent> ();
 
         Command::Command (Action action, FastDelegate<void> slot) : slot(slot)
         {
@@ -39,8 +39,8 @@ namespace odfaeg {
 
         bool Command::isTriggered()
         {
-            if (name == "TANAMECTEXTENTERED")
-                action->name = "ANAMECTEXTENTERED";
+            /*if (name == "TANAMECTEXTENTERED")
+                action->name = "ANAMECTEXTENTERED";*/
             if (trigger == nullptr && action != nullptr)
             {
                 return action->isTriggered();
@@ -62,21 +62,18 @@ namespace odfaeg {
 
         void Command::clearEventsStack ()
         {
-            if (action != nullptr)
-                action->clearEvents();
-            /*if (sname == "EXTERNAL")
-                std::cout<<"clear event stack"<<std::endl;
-            events.clear();*/
+            /*if (action != nullptr)
+                action->clearEvents();*/
+            events.clear();
 
         }
 
         void Command::pushEvent (window::IEvent& event)
         {
-            if (action != nullptr)
-                action->pushEvent(event);
-            /*if (sname == "EXTERNAL")
-                std::cout<<"push event"<<std::endl;*/
-            /*std::vector<window::IEvent>::iterator it;
+            /*if (action != nullptr)
+                action->pushEvent(event);*/
+
+            std::vector<window::IEvent>::iterator it;
             bool containsEvent = false;
             for (it = events.begin(); it != events.end(); it++)
             {
@@ -84,16 +81,17 @@ namespace odfaeg {
                     containsEvent = true;
             }
             if (!containsEvent) {
+                //std::cout<<"push event!"<<std::endl;
                 events.push_back(event);
-            }*/
+            }
         }
         Action* Command::getAction() {
             return action.get();
         }
-        /*std::vector<window::IEvent> Command::getEvents()
+        std::vector<window::IEvent> Command::getEvents()
         {
             return events;
-        }*/
+        }
 
 
         void Command::operator()()
@@ -102,15 +100,15 @@ namespace odfaeg {
         }
 
         void Command::removeEvent(window::IEvent& event) {
-            /*std::vector<window::IEvent>::iterator it;
+            std::vector<window::IEvent>::iterator it;
             for (it = events.begin(); it != events.end();) {
                 if (equalEvent(*it, event))
                     it = events.erase(it);
                 else
                     it++;
-            }*/
-            if (action != nullptr)
-                action->removeEvent(event);
+            }
+            /*if (action != nullptr)
+                action->removeEvent(event);*/
         }
         bool Command::equalEvent (window::IEvent event, window::IEvent other) {
             if (event.type != other.type) {

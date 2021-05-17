@@ -160,7 +160,7 @@ namespace odfaeg {
                 /*else if (type == JOYSTICK_BUTTON_HELD_DOWN)
                     return sf::Joystick::isButtonPressed(startEvent.joystickButton.button);*/
 
-                //vector<window::IEvent> events = Command::getEvents();
+                vector<window::IEvent> events = Command::getEvents();
                 for (unsigned int i = 0; i < events.size(); i++) {
                     /*if (type == KEY_HELD_DOWN || type == MOUSE_BUTTON_HELD_DOWN) {
                         if (!is_not)
@@ -171,12 +171,14 @@ namespace odfaeg {
                         /*Sometimes the event stored to startEvent is deleted*/
                         /*if (name == "ANAMECTEXTENTERED" && events[i].type == window::IEvent::EventType::TEXT_INPUT_EVENT)
                             std::cout<<"text input event ta name"<<std::endl;*/
+                        //std::cout<<"test event"<<std::endl;
                         if (!is_not && Command::equalEvent(events[i], startEvent) && !pressed) {
                             if (events[i].type == window::IEvent::KEYBOARD_EVENT && events[i].keyboard.type == window::IEvent::KEY_EVENT_PRESSED
                                 && startEvent.type == window::IEvent::KEYBOARD_EVENT && startEvent.keyboard.type == window::IEvent::KEY_EVENT_PRESSED
                                 || events[i].type == window::IEvent::MOUSE_BUTTON_EVENT && events[i].mouseButton.type == window::IEvent::BUTTON_EVENT_PRESSED
                                 && startEvent.type == window::IEvent::MOUSE_BUTTON_EVENT && startEvent.mouseButton.type == window::IEvent::BUTTON_EVENT_PRESSED)
                                 pressed = true;
+                            //std::cout<<"triggered!"<<std::endl;
                             return true;
                         } else if (is_not && !Command::equalEvent(events[i], startEvent) && !pressed) {
                             if (events[i].type == window::IEvent::KEYBOARD_EVENT && events[i].keyboard.type == window::IEvent::KEY_EVENT_RELEASED
@@ -257,7 +259,7 @@ namespace odfaeg {
             }
             return *this;
         }
-        void Action::pushEvent(window::IEvent& event) {
+        /*void Action::pushEvent(window::IEvent& event) {
             std::vector<window::IEvent>::iterator it;
             bool containsEvent = false;
             for (it = events.begin(); it != events.end(); it++)
@@ -280,7 +282,7 @@ namespace odfaeg {
                 else
                     it++;
             }
-        }
+        }*/
     }
 }
 

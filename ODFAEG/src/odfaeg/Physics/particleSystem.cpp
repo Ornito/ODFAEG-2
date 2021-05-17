@@ -99,6 +99,7 @@ namespace odfaeg
             ps->mTexture = mTexture;
             ps->mTextureRects = mTextureRects;
             ps->mVertices = mVertices;
+            return ps;
         }
         void ParticleSystem::setScene(graphic::EntityManager* scene) {
             this->scene = scene;

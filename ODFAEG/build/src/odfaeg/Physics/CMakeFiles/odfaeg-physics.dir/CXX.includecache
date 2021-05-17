@@ -1019,7 +1019,9 @@ SFML/Config.hpp
 -
 dirent.h
 -
-unistd.h
+io.h
+-
+direct.h
 -
 sys/types.h
 -
@@ -1724,6 +1726,16 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Window/iWindow.hpp
 
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/config.hpp
 
+C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Physics/affector.cpp
+../../../include/odfaeg/Physics/affector.h
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/affector.h
+../../../include/odfaeg/Physics/particule.h
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/particule.h
+cassert
+-
+cmath
+-
+
 C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Physics/boundingBox.cpp
 ../../../include/odfaeg/Physics/boundingBox.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/boundingBox.h
@@ -1805,6 +1817,10 @@ C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/orientedBoundingBox.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/boundingPolyhedron.h
 ../../../include/odfaeg/Math/transformMatrix.h
 C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Math/transformMatrix.h
+
+C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Physics/particle.cpp
+../../../include/odfaeg/Physics/particule.h
+C:/Users/Laurent/Windows/ODFAEG/include/odfaeg/Physics/particule.h
 
 C:/Users/Laurent/Windows/ODFAEG/src/odfaeg/Physics/particleSystem.cpp
 ../../../include/odfaeg/Physics/particuleSystem.h

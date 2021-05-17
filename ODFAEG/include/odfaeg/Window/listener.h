@@ -95,9 +95,9 @@ namespace odfaeg {
              void pushEvent(window::IEvent event) {
                  std::map<std::string, Command>::iterator it;
                  for (it = commands.begin(); it != commands.end(); it++) {
-                    if(it->second.containsBufferEvent(event)) {
-                        it->second.pushEvent(event);
-                    }
+                    //if(it->second.containsBufferEvent(event)) {
+                        Command::pushEvent(event);
+                    //}
                     Action* action = it->second.getAction();
                     if(action != nullptr) {
                         action->setPressed(event);
@@ -131,9 +131,9 @@ namespace odfaeg {
                             break;
                         }
                     }
-                    if (!removeListener) {
+                    /*if (!removeListener) {
                         it->second.clearEventsStack();
-                    }
+                    }*/
                     /*Action* action = it->second.getAction();
                     if (action != nullptr) {
                         std::vector<window::IEvent> events;
@@ -146,10 +146,11 @@ namespace odfaeg {
                  //Command::clearEventsStack();
              }
              void clearEventsStack() {
-                 std::map<std::string, Command>::iterator it;
+                 /*std::map<std::string, Command>::iterator it;
                  for (it = commands.begin(); it != commands.end(); it++) {
                      it->second.clearEventsStack();
-                 }
+                 }*/
+                 Command::clearEventsStack();
              }
              void removeLater(std::string name) {
                 toRemove.push_back(name);

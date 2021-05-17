@@ -166,7 +166,7 @@ namespace odfaeg {
         }
         std::string getCurrentPath() {
             char cCurrentPath[FILENAME_MAX];
-            getcwd(cCurrentPath,sizeof(cCurrentPath));
+            _getcwd(cCurrentPath,sizeof(cCurrentPath));
             return std::string(cCurrentPath);
         }
     }

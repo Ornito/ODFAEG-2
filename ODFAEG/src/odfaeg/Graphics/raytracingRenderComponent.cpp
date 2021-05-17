@@ -306,8 +306,8 @@ namespace odfaeg {
                                                       void drawPunt(ivec2 position, int nbPixels, vec4 color) {
                                                           int puntSize = nbPixels * 2;
                                                           drawSquare(position, puntSize, color);
-                                                      }
-                                                      ivec2 print (ivec2 position, int nbPixels, vec4 color, double number) {
+                                                      })" \
+                                                      R"(ivec2 print (ivec2 position, int nbPixels, vec4 color, double number) {
                                                           int digitSize = nbPixels * 10;
                                                           int digitSpacing = nbPixels * 6;
                                                           if (number < 0) {
@@ -503,8 +503,8 @@ namespace odfaeg {
                                                            vec4 lightColor = vec4(1, 1, 1, 1);
                                                            int count = 0;
                                                            bool isInShadow=false;
-                                                           float maxAlpha = 0;
-                                                           Pixel pixels[MAX_FRAGMENTS];
+                                                           float maxAlpha = 0; )"\
+                                                           R"(Pixel pixels[MAX_FRAGMENTS];
                                                            vec3 i = currentPixel.position - cameraPos;
                                                            vec3 dir = i + dot (i, n) * 2;
                                                            Ray toLight;
@@ -673,8 +673,8 @@ namespace odfaeg {
                                                                             reflectRefractColor = castRefractionRay(p, i);
                                                                         }
                                                                         if (triangles[i].refractReflect == 3) {
-                                                                            vec4 reflectColor = castReflectionRay(p, i);
-                                                                            vec4 refractColor = castRefractionRay(p, i);
+                                                                            vec4 reflectColor = castReflectionRay(p, i);)"\
+                                                                            R"(vec4 refractColor = castRefractionRay(p, i);"
                                                                             reflectRefractColor = reflectColor * refractColor;
                                                                         }*/
                                                                     }
@@ -941,8 +941,10 @@ namespace odfaeg {
                     rayComputeShader.setParameter("viewMatrix", viewMatrix);
                     rayComputeShader.setParameter("projMatrix", projMatrix);
                     rayComputeShader.setParameter("viewportMatrix", viewportMatrix);
-                    rayComputeShader.setParameter("nbTriangles", triangles.size());
-                    rayComputeShader.setParameter("nbLights", lights.size());
+                    unsigned int nbTriangles = triangles.size();
+                    unsigned int nbLights = lights.size();
+                    rayComputeShader.setParameter("nbTriangles", nbTriangles);
+                    rayComputeShader.setParameter("nbLights", nbLights);
                     Shader::bind(&rayComputeShader);
                     glCheck(glDispatchCompute(view.getSize().x, view.getSize().y, triangles.size()));
                     glCheck(glFinish());

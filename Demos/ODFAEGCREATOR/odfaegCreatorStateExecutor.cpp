@@ -98,6 +98,7 @@ bool ODFAEGCreatorStateExecutor::doState(State& state) {
             static_cast<Shape*>(shape)->setTextureRect(sf::IntRect(static_cast<Shape*>(shape)->getTextureRect().left,static_cast<Shape*>(shape)->getTextureRect().top,static_cast<Shape*>(shape)->getTextureRect().width,texCoordH));
         }
     }
+    return true;
 }
 bool ODFAEGCreatorStateExecutor::undoState(State& state) {
     if (state.getName() == "ADDREMOVESHAPE") {
@@ -189,4 +190,5 @@ bool ODFAEGCreatorStateExecutor::undoState(State& state) {
             static_cast<Shape*>(shape)->setTextureRect(sf::IntRect(static_cast<Shape*>(shape)->getTextureRect().left,static_cast<Shape*>(shape)->getTextureRect().top,static_cast<Shape*>(shape)->getTextureRect().width,texCoordH));
         }
     }
+    return true;
 }

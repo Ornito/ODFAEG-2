@@ -40,11 +40,11 @@ odfaeg::core::BaseFactory<BASE>::register_type(typeid(DERIVED).name(), allocator
 * \param DERIVED : the derived type of the derived class.
 * \param SIGNATURE : the signature of the function to register.
 */
-#define REGISTER_FUNC(ID, funcName, SID, BASE, DERIVED, SIGNATURE, args...) \
+#define REGISTER_FUNC(ID, funcName, SID, BASE, DERIVED, SIGNATURE, ...) \
 { \
 REGISTER_TYPE(ID, BASE, DERIVED) \
 void(DERIVED::*f##ID##funcName##SID)SIGNATURE = &DERIVED::vt##funcName; \
-odfaeg::core::FastDelegate<void> delegate##ID##funcName##SID (f##ID##funcName##SID, args); \
+odfaeg::core::FastDelegate<void> delegate##ID##funcName##SID (f##ID##funcName##SID, __VA_ARGS__); \
 odfaeg::core::BaseFactory<BASE>::register_function(typeid(DERIVED).name(), #funcName, #SID, delegate##ID##funcName##SID); \
 }
 /**

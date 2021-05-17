@@ -97,12 +97,12 @@ typedef __int16			int16_t;
 typedef unsigned __int16	uint16_t;
 #endif
 
-/*#ifdef HAVE_MS_INT32
-typedef __int32			int32_t;
+#ifdef HAVE_MS_INT32
+//typedef __int32			int32_t;
 #endif
 
 #ifdef HAVE_MS_UINT32
-typedef unsigned __int32	uint32_t;
+//typedef unsigned __int32	uint32_t;
 #endif
 
 #ifdef HAVE_MS_INT64
@@ -110,7 +110,7 @@ typedef __int64			int64_t;
 #endif
 #ifdef HAVE_MS_UINT64
 typedef unsigned __int64	uint64_t;
-#endif*/
+#endif
 
 #endif  // _MSC_VER >= 1600
 #endif	// CPPCONN_DONT_TYPEDEF_MS_TYPES_TO_C99_TYPES

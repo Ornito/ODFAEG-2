@@ -7,7 +7,8 @@ namespace odfaeg {
         }
         void RuntimeCompiler::compile() {
             if (isDllOpened) {
-                dlclose(flib);
+                //dlclose(flib);
+                FreeLibrary(flib);
                 isDllOpened = false;
             }
             std::ofstream file(funcName+".DEF");
@@ -53,7 +54,7 @@ namespace odfaeg {
             }
             //std::cout<<"command : "<<command<<std::endl;
             system(command.c_str());
-            command = "g++ -shared -o "+funcName+".so";
+            command = "g++ -shared -o "+funcName+".dll";
             for (unsigned int s = 0; s < sourceFiles.size(); s++) {
                 command+=" "+sourceFiles[s]+".o ";
             }
@@ -112,6 +113,10 @@ namespace odfaeg {
         }
         void RuntimeCompiler::addRuntimeFunction(std::string f) {
             functions.push_back(f);
+        }
+        RuntimeCompiler::~RuntimeCompiler() {
+            FreeLibrary(flib);
+            //fclose(flib);
         }
     }
 }
