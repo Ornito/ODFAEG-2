@@ -388,12 +388,14 @@ namespace odfaeg {
             if (activate(true))
             {
                 applyTexture(nullptr);
+                glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferId));
                 glCheck(glClearColor(color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f));
                 glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
             }
         }
 
         void RenderTarget::clearDepth() {
+            glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferId));
             glCheck(glClear(GL_DEPTH_BUFFER_BIT));
         }        ////////////////////////////////////////////////////////////
         void RenderTarget::setView(View view)
@@ -580,6 +582,8 @@ namespace odfaeg {
                     glCheck(glBindVertexArray(0));
                 }
             }
+            applyTexture(nullptr);
+            applyShader(nullptr);
         } //////////////////////////////////////////////////////////
         void RenderTarget::draw(Drawable& drawable, RenderStates states)
         {
@@ -667,12 +671,15 @@ namespace odfaeg {
                                                    GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
                 GLenum mode = modes[type];
                 // Draw the primitives
+                //std::cout<<"frame buffer id : "<<m_framebufferId<<std::endl;
                 glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferId);
                 glDrawArrays(mode, 0, vertexCount);
                 glDisableClientState(GL_COLOR_ARRAY);
                 glDisableClientState(GL_TEXTURE_COORD_ARRAY);
                 glDisableClientState(GL_VERTEX_ARRAY);
                 m_cache.useVertexCache = useVertexCache;
+                applyTexture(nullptr);
+                applyShader(nullptr);
             }
         }
         void RenderTarget::drawVertexBuffer(VertexBuffer& vertexBuffer, RenderStates states) {
@@ -763,10 +770,12 @@ namespace odfaeg {
                 GLenum mode = modes[vertexBuffer.getPrimitiveType()];
                 if (vertexBuffer.m_indexes.size() > 0) {
                     glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexBuffer.vboIndexBuffer));
+                    glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferId));
                     glCheck(glDrawElements(mode, vertexBuffer.m_indexes.size(), GL_UNSIGNED_INT, (GLvoid*) 0));
                     glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
                 } else {
                     //std::cout<<"draw arrays"<<std::endl;
+                    //std::cout<<"frame buffer id : "<<m_framebufferId<<std::endl;
                     glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferId));
                     glCheck(glDrawArrays(mode, 0, vertexBuffer.getVertexCount()));
                 }
@@ -784,7 +793,8 @@ namespace odfaeg {
                     glCheck(glDisableClientState(GL_NORMAL_ARRAY));
                 }
             }
-
+            applyTexture(nullptr);
+            applyShader(nullptr);
         }
         ////////////////////////////////////////////////////////////
         void RenderTarget::pushGLStates()

@@ -1349,7 +1349,7 @@ namespace odfaeg {
             if (frc != nullptr) {
                 frc->draw(drawable, states);
             }
-        }        
+        }
         BaseChangementMatrix Map::getBaseChangementMatrix() {
             std::cout << "gridmap : " << gridMap << std::endl;
             return gridMap->getBaseChangementMatrix();

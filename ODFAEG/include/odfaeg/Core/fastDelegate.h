@@ -309,10 +309,22 @@ namespace odfaeg {
                     return (dynamic_cast<C*>(o)->*pfunc)(std::forward<ArgU>(arg)...);
                 throw Erreur(0, "Invalid cast : types are nor polymorphic!", 1);
             }
-            template<class O, class... ArgU>
+            template<class O, class... ArgU, class = typename std::enable_if<std::is_reference<O>::value>::type>
+            R operator()(O o, ArgU&&... arg) {
+                if (dynamic_cast<C&>(o)) {
+                    return (dynamic_cast<C&>(o).*pfunc)(std::forward<ArgU>(arg)...);
+                }
+                throw Erreur(0, "Invalid cast : types are nor polymorphic!", 1);
+            }
+            template<class O, class... ArgU, class = typename std::enable_if<std::is_same<C, O>::value>::type>
             R operator()(O o, ArgU&&... arg) const
             {
                 return (o.*pfunc)(std::forward<ArgU>(arg)...);
+            }
+            template<class O, class... ArgU, class = typename std::enable_if<std::is_same<C, O>::value>::type, class = typename std::enable_if<std::is_pointer<O>::value>::type>
+            R operator()(O* o, ArgU&&... arg) const
+            {
+                return (o->*pfunc)(std::forward<ArgU>(arg)...);
             }
         private:
             R (C::*pfunc)(ArgT...); /**> a pointer to a member's function.*/

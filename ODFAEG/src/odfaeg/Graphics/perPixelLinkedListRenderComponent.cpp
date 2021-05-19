@@ -398,11 +398,12 @@ namespace odfaeg {
                 glCheck(glBindBuffer(GL_UNIFORM_BUFFER, ubo));
                 glCheck(glBufferData(GL_UNIFORM_BUFFER, sizeof(Samplers),allSamplers.tex, GL_STATIC_DRAW));
                 //std::cout<<"size : "<<sizeof(Samplers)<<" "<<alignof (alignas(16) uint64_t[200])<<std::endl;
+                backgroundColor = sf::Color::Transparent;
                 glCheck(glBindBuffer(GL_UNIFORM_BUFFER, 0));
                 glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
-               backgroundColor = sf::Color::Transparent;
-               glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer));
-               glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer));
+                glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer));
+                glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer));
+
                for (unsigned int i = 0; i < Batcher::nbPrimitiveTypes; i++) {
                     vbBindlessTex[i].setPrimitiveType(static_cast<sf::PrimitiveType>(i));
                }
@@ -411,7 +412,6 @@ namespace odfaeg {
             backgroundColor = color;
         }
         void PerPixelLinkedListRenderComponent::clear() {
-
             frameBuffer.setActive();
             frameBuffer.clear(backgroundColor);
             //getWindow().setActive();
@@ -619,7 +619,10 @@ namespace odfaeg {
             /*target.draw(quad, states);
             glCheck(glFinish());*/
             frameBufferSprite.setCenter(target.getView().getPosition());
+            //std::cout<<"view position : "<<view.getPosition()<<std::endl;
+            //std::cout<<"sprite position : "<<frameBufferSprite.getCenter()<<std::endl;
             target.draw(frameBufferSprite, states);
+
 
         }
         int  PerPixelLinkedListRenderComponent::getLayer() {

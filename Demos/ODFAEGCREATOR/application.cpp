@@ -13,7 +13,8 @@ using namespace odfaeg::graphic::g2d;
 using namespace odfaeg::physic;
 using namespace odfaeg::window;
 ODFAEGCreator::ODFAEGCreator(sf::VideoMode vm, std::string title) :
-Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 8, 4, 3, 0)), isGuiShown (false), cursor(10), se(this), rtc("create") {
+Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 8, 4, 4, 6)), isGuiShown (false), cursor(10), se(this), rtc("create") {
+    Command::sname = "modified by process";
     dpSelectTexture = nullptr;
     dpSelectEm = nullptr;
     sTextRect = nullptr;
@@ -1373,15 +1374,16 @@ void ODFAEGCreator::onExec() {
             if (!contains) {
                 //std::cout<<"clone entity"<<std::endl;
                 Entity* entity = it->second[i]->clone();
+                std::cout<<"nb entities type : "<<Entity::getNbEntitiesTypes()<<std::endl;
                 /*for (unsigned int j = 0; j < entity->getChildren().size(); j++) {
                     std::cout<<"parent : "<<entity->getChildren()[j]->getParent()<<","<<entity<<std::endl;
                 }*/
+                std::cout<<"sname from process : "<<Command::sname<<std::endl;
                 entity->setExternal(true);
                 getWorld()->addEntity(entity);
                 std::vector<Entity*> entities=getWorld()->getChildrenEntities(entity->getType());
                 TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
                 for (unsigned int e = 0; e < entities.size(); e++) {
-                    std::cout<<"type : "<<entities[e]->getType()<<std::endl;
                     for (unsigned int f = 0; f < entities[e]->getNbFaces(); f++) {
                         Face* face = entities[e]->getFace(f);
                         std::string alias = face->getMaterial().getTexId();
@@ -2402,7 +2404,6 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             sourceCode += "    EXPORT_CLASS_GUID(EntityMesh, odfaeg::graphic::Entity, odfaeg::graphic::Mesh)\n";
             sourceCode += "    EXPORT_CLASS_GUID(EntityParticleSystem, odfaeg::graphic::Entity, odfaeg::physic::ParticleSystem)\n";
             sourceCode += "    odfaeg::core::Application::app = c;\n";
-            sourceCode += "    std::cout<<\"static var : \"<<odfaeg::core::Command::sname<<std::endl;\n";
             sourceCode += "}\n";
             sourceCode += "void readObjects (ODFAEGCreator *c) {\n";
             sourceCode += "    EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, odfaeg::physic::BoundingVolume, odfaeg::physic::BoundingBox)\n";
@@ -2506,6 +2507,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 toInsert += "   std::ifstream if"+cl.getName()+" (\""+cl.getName()+".oc\");\n";
                 toInsert += "   odfaeg::core::ITextArchive ia"+cl.getName()+" (if"+cl.getName()+");\n";
                 toInsert += "   ia"+cl.getName()+"(v"+cl.getName()+");\n";
+                toInsert += "   std::cout<<\"sname in dll : \"<<odfaeg::core::Command::sname<<std::endl;\n";
+                toInsert += "   odfaeg::core::Command::sname = \"modified by dll\";";
                 if (found) {
                     //toInsert += "   c->getExternals().insert(std::make_pair(\""+cl.getName()+"\",v"+cl.getName()+"));\n";
                     toInsert += "   for (unsigned int i = 0; i < v"+cl.getName()+".size(); i++)\n";
@@ -2554,6 +2557,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 }
 
                 //toInsert += "       it"+cl.getName()+"->second.push_back("+taObjectName->getText()+");\n";
+                toInsert += "   std::cout<<\"sname in dll : \"<<odfaeg::core::Command::sname<<std::endl;\n";
+                toInsert += "   odfaeg::core::Command::sname = \"modified by dll\";";
                 toInsert += "   c->addExternalEntity("+taObjectName->getText()+",\""+cl.getName()+"\");\n";
                 /*toInsert += "   }\n";
                 it->second += 1;*/

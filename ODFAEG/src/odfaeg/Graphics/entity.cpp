@@ -2,33 +2,33 @@
 #include "../../../include/odfaeg/Graphics/application.h"
 namespace odfaeg {
     namespace graphic {
-        /*int Entity::nbEntities = 0;
+        int Entity::nbEntities = 0;
         int Entity::nbEntitiesTypes = 0;
-        std::map<int, std::string>* Entity::types = Entity::initTypes();*/
+        std::map<int, std::string> Entity::types = std::map<int, std::string>();
         float Entity::nbLayers = 1;
         Entity::Entity (math::Vec3f position, math::Vec3f size, math::Vec3f origin, std::string sType, Entity *parent) :
             Transformable (position, size, origin), Drawable(), entityState("Entity State", nullptr) {
             this->parent = parent;
-            /*types = initTypes();
+
             int iType = getIntOfType(sType);
             if (iType == -1) {
                 type = std::pair<int, std::string> (nbEntitiesTypes, sType);
-                types->insert(type);
+                types.insert(type);
                 nbEntitiesTypes++;
             } else {
-                std::map<int, std::string>::iterator it = types->find(iType);
+                std::map<int, std::string>::iterator it = types.find(iType);
                 type = *it;
-            }*/
-            /*type.first = -1;
-            type.second = sType;
-            id = nbEntities;*/
+            }
+            if (sType == "E_PNJ")
+                std::cout<<"type : "<<type.first<<", nb Entities types : "<<nbEntitiesTypes<<std::endl;
+            id = nbEntities;
             id = -1;
             if (core::Application::app != nullptr) {
                 id = core::Application::app->getUniqueId()-1;
                 type = core::Application::app->updateTypes(sType);
             }
             getTransform().setEntityId(id);
-            //nbEntities++;
+            nbEntities++;
             alreadySerialized = false;
             collisionVolume = nullptr;
             shadowOrigin = math::Vec3f (0, 0, 0);
@@ -49,6 +49,14 @@ namespace odfaeg {
             if (core::Application::app != nullptr) {
                 type = core::Application::app->updateTypes(getType());
             }
+
+            int iType = getIntOfType(getType());
+            if (iType == -1) {
+                type = std::pair<int, std::string> (nbEntitiesTypes, getType());
+                types.insert(type);
+                nbEntitiesTypes++;
+            }
+            nbEntities++;
         }
         /*void Entity::setTypeInt (int iType) {
             type.first = iType;
@@ -86,6 +94,7 @@ namespace odfaeg {
                 child->setParent(entity);
                 entity->addChild(child);
             }
+            std::cout<<"nb entities type : "<<nbEntitiesTypes<<std::endl;
         }
         void Entity::setExternalObjectName(std::string externalObjectName) {
             this->externalObjectName = externalObjectName;
@@ -139,9 +148,9 @@ namespace odfaeg {
                 return this;
             return parent->getRootEntity();
         }
-        /*int Entity::getNbEntities () {
+        int Entity::getNbEntities () {
             return nbEntities;
-        }*/
+        }
         void Entity::draw (RenderTarget& target, RenderStates states) {
             states.transform = getTransform();
             onDraw(target, states);
@@ -150,15 +159,15 @@ namespace odfaeg {
             }
         }
         void Entity::setType(std::string sType) {
-            /*int iType = getIntOfType(sType);
+            int iType = getIntOfType(sType);
             if (iType == -1) {
                 type = std::pair<int, std::string> (nbEntitiesTypes, sType);
-                types->insert(type);
+                types.insert(type);
                 nbEntitiesTypes++;
             } else {
-                std::map<int, std::string>::iterator it = types->find(iType);
+                std::map<int, std::string>::iterator it = types.find(iType);
                 type = *it;
-            }*/
+            }
             if (core::Application::app != nullptr) {
                 type = core::Application::app->updateTypes(sType);
             }
@@ -177,19 +186,19 @@ namespace odfaeg {
         int Entity::getTypeInt () {
             return type.first;
         }
-        /*int Entity::getIntOfType(std::string sType) {
+        int Entity::getIntOfType(std::string sType) {
 
             std::map<int, std::string>::iterator it;
-            for (it = types->begin(); it != types->end(); ++it) {
+            for (it = types.begin(); it != types.end(); ++it) {
                 if (it->second == sType)
                     return it->first;
             }
             return -1;
         }
         std::string Entity::getTypeOfInt (int type) {
-            std::map<int, std::string>::iterator it = types->find(type);
+            std::map<int, std::string>::iterator it = types.find(type);
             return it->second;
-        }*/
+        }
         Entity* Entity::getChild(unsigned int n) {
             if (n >= 0 && n < children.size())
                 return children[n].get();
@@ -334,9 +343,9 @@ namespace odfaeg {
             math::Vec3f Entity::getShadowOrigin() {
                 return shadowOrigin;
             }
-            /*int Entity::getNbEntitiesTypes () {
+            int Entity::getNbEntitiesTypes () {
                 return nbEntitiesTypes;
-            }*/
+            }
             void Entity::setBoneIndex(unsigned int boneIndex) {
                 this->boneIndex = boneIndex;
             }

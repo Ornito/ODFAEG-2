@@ -9,7 +9,7 @@ using namespace odfaeg::core;
 using namespace odfaeg::audio;
 using namespace odfaeg::window;
 namespace sorrok {
-    MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, sf::Style::Default, ContextSettings(0, 0, 4, 3, 0)) {
+    MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, sf::Style::Default, ContextSettings(0, 0, 4, 4, 6)) {
         running = false;
         actualKey = IKeyboard::Key::Unknown;
         previousKey = IKeyboard::Key::Unknown;
@@ -289,8 +289,8 @@ namespace sorrok {
         ReflectRefractRenderComponent *rrrc = new ReflectRefractRenderComponent(getRenderWindow(), 2, "E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
         ShadowRenderComponent *src = new ShadowRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
         LightRenderComponent *lrc = new LightRenderComponent(getRenderWindow(), 4, "E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", ContextSettings(0, 0, 4, 4, 6));
-        /*frc1->setVisible(false);
-        frc2->setVisible(false);
+        //frc1->setVisible(false);
+        /*frc2->setVisible(false);
         rrrc->setVisible(false);
         src->setVisible(false);
         lrc->setVisible(false);*/

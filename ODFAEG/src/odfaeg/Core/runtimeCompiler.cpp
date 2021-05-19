@@ -17,6 +17,8 @@ namespace odfaeg {
             for (unsigned int i = 0; i < functions.size(); i++) {
                 file<<functions[i]+"\n";
             }
+            file<<"SECTIONS\n";
+            file<<".shared READ WRITE SHARED\n";
             file.close();
             std::string command;
             for (unsigned int s = 0; s < sourceFiles.size(); s++) {

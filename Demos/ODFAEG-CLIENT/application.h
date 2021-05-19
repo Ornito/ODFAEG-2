@@ -5,7 +5,7 @@
 // *** END ***
 #ifndef MY_APPLI
 #define MY_APPLI
-#include "odfaeg/Core/application.h"
+#include "odfaeg/Graphics/application.h"
 #include "odfaeg/Graphics/convexShape.h"
 #include "odfaeg/Graphics/rectangleShape.h"
 #include "odfaeg/Graphics/circleShape.h"
@@ -26,7 +26,7 @@
 #include "monster.h"
 #include "odfaeg/Network/network.h"
 #include "odfaeg/Graphics/sprite.h"
-#include "odfaeg/Graphics/zSortingRenderComponent.hpp"
+
 #include "odfaeg/Graphics/shadowRenderComponent.hpp"
 #include "odfaeg/Graphics/lightRenderComponent.hpp"
 #include "odfaeg/Graphics/GUI/label.hpp"

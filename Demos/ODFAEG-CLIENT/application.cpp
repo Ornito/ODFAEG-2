@@ -110,7 +110,7 @@ namespace sorrok {
             ps->addEmitter(refEmitter(emitter));
             psu->addParticleSystem(ps);
             particles.insert(std::make_pair(ps, std::make_pair(Application::getClock("TimeClock").getElapsedTime(), sf::seconds(1))));
-            World::addEntity(ps);
+            getWorld()->addEntity(ps);
         }
     }
     void MyAppli::onShowSkillPressed () {
@@ -562,17 +562,17 @@ namespace sorrok {
         BaseChangementMatrix bcm;
         bcm.set2DIsoMatrix();
         theMap->setBaseChangementMatrix(bcm);
-        World::addEntityManager(theMap);
-        World::setCurrentEntityManager("Map test");
+        getWorld()->addEntityManager(theMap);
+        getWorld()->setCurrentEntityManager("Map test");
         eu = new EntitiesUpdater();
         eu->setName("Entity system updater");
-        World::addWorker(eu);
+        getWorld()->addWorker(eu);
         au = new AnimUpdater();
         au->setInterval(sf::seconds(0.01f));
-        World::addTimer(au);
+        getWorld()->addTimer(au);
         psu = new ParticleSystemUpdater();
         psu->setName("Particle system updater");
-        World::addWorker(psu);
+        getWorld()->addWorker(psu);
         tiles.push_back(new Tile(tm.getResourceByAlias("GRASS"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 0, 100, 100)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 100, 100, 100)));
@@ -614,9 +614,9 @@ namespace sorrok {
         getRenderComponentManager().addComponent(frc3);
         getRenderComponentManager().addComponent(frc4);
         //getView().move(d.x * 0.5f, d.y * 0.5f, 0);
-        //World::computeIntersectionsWithWalls();
-        //World::update();
-        //World::computeIntersectionsWithWalls();
+        //getWorld()->computeIntersectionsWithWalls();
+        //getWorld()->update();
+        //getWorld()->computeIntersectionsWithWalls();
         Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Up);
         Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Left);
         Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Down);
@@ -663,7 +663,7 @@ namespace sorrok {
         addWindow(wPickupItems);
         wPickupItems->setVisible(false);
         getRenderComponentManager().setEventContextActivated(false, *wPickupItems);
-        World::update();
+        getWorld()->update();
         addWindow(wResuHero);
         pItems = new Panel(*wPickupItems,Vec3f(0, 0, 0),Vec3f(100, 200, 0));
         getRenderComponentManager().addComponent(pItems);
@@ -759,22 +759,22 @@ namespace sorrok {
 
         ps->addEmitter(refEmitter(emitter2));
         psu->addParticleSystem(ps);
-        World::addEntity(ps);
+        getWorld()->addEntity(ps);
         setEventContextActivated(false);
         getRenderComponentManager().setEventContextActivated(false, getRenderWindow());
     }
     void MyAppli::onRender(RenderComponentManager *cm) {
         // draw everything here...
         if (isClientAuthentified) {
-            World::drawOnComponents("E_BIGTILE", 0);
-            World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_MONSTER+E_PNJ", 1);
-            World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_MONSTER+E_PNJ+E_PARTICLES", 2);
-            World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_MONSTER+E_PNJ+E_PONCTUAL_LIGHT", 3);
+            getWorld()->drawOnComponents("E_BIGTILE", 0);
+            getWorld()->drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_MONSTER+E_PNJ", 1);
+            getWorld()->drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_MONSTER+E_PNJ+E_PARTICLES", 2);
+            getWorld()->drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_MONSTER+E_PNJ+E_PONCTUAL_LIGHT", 3);
         } else {
-            World::drawOnComponents("", 0);
-            World::drawOnComponents("", 1);
-            World::drawOnComponents("", 2);
-            World::drawOnComponents("", 3);
+            getWorld()->drawOnComponents("", 0);
+            getWorld()->drawOnComponents("", 1);
+            getWorld()->drawOnComponents("", 2);
+            getWorld()->drawOnComponents("", 3);
         }
     }
     void MyAppli::onDisplay(RenderWindow* window) {
@@ -877,18 +877,18 @@ namespace sorrok {
             std::vector<std::string> infos = split(response, "*");
             int id = conversionStringInt(infos[0]);
             float amount = conversionStringFloat(infos[1]);
-            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            Caracter* caracter = static_cast<Caracter*>(getWorld()->getEntity(id));
             caracter->setLife(caracter->getLife() + amount);
         }
         if (Network::getResponse("RETRACTMANA", response)) {
             std::vector<std::string> infos = split(response, "*");
             int id = conversionStringInt(infos[0]);
             float amount = conversionStringFloat(infos[1]);
-            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            Caracter* caracter = static_cast<Caracter*>(getWorld()->getEntity(id));
             caracter->setMana(caracter->getMana() - amount);
         }
         if (Network::getResponse("SHOWQUEST", response)) {
-            Pnj* pnj = static_cast<Pnj*>(World::getEntity(conversionStringInt(response)));
+            Pnj* pnj = static_cast<Pnj*>(getWorld()->getEntity(conversionStringInt(response)));
             selectedPnj = pnj;
             std::vector<Quest> quests = pnj->getQuests();
             std::vector<Quest> diary = static_cast<Hero*>(hero)->getDiary();
@@ -924,7 +924,7 @@ namespace sorrok {
             std::vector<Vec2f> path;
             int size = conversionStringInt(infos[0]);
             int id = conversionStringInt(infos[1]);
-            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            Caracter* caracter = static_cast<Caracter*>(getWorld()->getEntity(id));
             /*if (caracter->getType() == "E_HERO") {
                 std::cout<<"move from path"<<std::endl;
             }*/
@@ -958,7 +958,7 @@ namespace sorrok {
                 Vec2f dir = d.normalize();
                 if (dir != caracter->getDir())
                     caracter->setDir(dir);
-                World::moveEntity(caracter, d.x, d.y, d.y);
+                getWorld()->moveEntity(caracter, d.x, d.y, d.y);
             }
             caracter->setPath(path);
             caracter->setMoving(true);
@@ -975,7 +975,7 @@ namespace sorrok {
             std::vector<std::string> infos = split(response, "*");
             int id = conversionStringInt(infos[0]);
             ping = conversionStringLong(infos[1]);
-            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            Caracter* caracter = static_cast<Caracter*>(getWorld()->getEntity(id));
             Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
             Vec3f newPos (conversionStringFloat(infos[2]), conversionStringFloat(infos[3]), conversionStringFloat(infos[4]));
 
@@ -1019,8 +1019,8 @@ namespace sorrok {
                     }
                     getView().move (d.x, d.y, d.y);
                 }
-                World::moveEntity(caracter, d.x, d.y, d.y);
-                //World::update();
+                getWorld()->moveEntity(caracter, d.x, d.y, d.y);
+                //getWorld()->update();
             }
             caracter->interpolation.first = caracter->getCenter();
             if (caracter->isMoving()) {
@@ -1036,7 +1036,7 @@ namespace sorrok {
        }
        if (Network::getResponse("DEATH", response)) {
            int id = conversionStringInt(response);
-           Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+           Caracter* caracter = static_cast<Caracter*>(getWorld()->getEntity(id));
            std::cout<<caracter->getType()<<" is death"<<std::endl;
            caracter->setLife(0);
            caracter->setAttacking(false);
@@ -1052,13 +1052,13 @@ namespace sorrok {
        }
        if (Network::getResponse("ENTERINFIGHTINGMODE", response)) {
             int id = conversionStringInt(response);
-            Entity* entity = World::getEntity(id);
+            Entity* entity = getWorld()->getEntity(id);
             if (static_cast<Caracter*> (entity))
                 static_cast<Caracter*> (entity)->setFightingMode(true);
        }
        if (Network::getResponse("LEAVEINFIGHTINGMODE", response)) {
             int id = conversionStringInt(response);
-            Entity* entity = World::getEntity(id);
+            Entity* entity = getWorld()->getEntity(id);
             if (static_cast<Caracter*> (entity))
                 static_cast<Caracter*> (entity)->setFightingMode(false);
        }
@@ -1067,10 +1067,10 @@ namespace sorrok {
             std::vector<std::string> parts = split(response, "*");
             //std::cout<<"size : "<<parts.size()<<std::endl;
             int id = conversionStringInt(parts[0]);
-            Entity* entity = World::getEntity(id);
+            Entity* entity = getWorld()->getEntity(id);
             int idFocused = conversionStringInt(parts[1]);
             std::cout<<"ids : "<<parts[0]<<std::endl<<parts[1]<<std::endl;
-            Entity* focused = World::getEntity(idFocused);
+            Entity* focused = getWorld()->getEntity(idFocused);
             if (static_cast<Caracter*> (entity)) {
                 static_cast<Caracter*> (entity)->setAttacking(true);
                 static_cast<Caracter*> (entity)->setFocusedCaracter(static_cast<Caracter*>(focused));
@@ -1085,7 +1085,7 @@ namespace sorrok {
             std::vector<std::string> infos = split(response, "*");
             int id = conversionStringInt(infos[0]);
             Vec3f center(conversionStringFloat(infos[1]), conversionStringFloat(infos[2]), conversionStringFloat(infos[2]));
-            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            Caracter* caracter = static_cast<Caracter*>(getWorld()->getEntity(id));
             if (caracter->getType() == "E_HERO") {
                 wResuHero->setVisible(false);
                 button->setEventContextActivated(false);
@@ -1099,7 +1099,7 @@ namespace sorrok {
             caracter->restartRegenHP();
        }
        if (Network::getResponse("ATTACK", response)) {
-            Caracter* monster = static_cast<Caracter*>(World::getEntity(conversionStringInt(response)));
+            Caracter* monster = static_cast<Caracter*>(getWorld()->getEntity(conversionStringInt(response)));
             hero->setFocusedCaracter(monster);
             hero->setFightingMode(true);
             hero->setAttacking(false);
@@ -1122,7 +1122,7 @@ namespace sorrok {
             ia(entities);
             TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
             for (unsigned int i = 0; i < entities.size(); i++) {
-                World::addEntity(entities[i]);
+                getWorld()->addEntity(entities[i]);
                 if (entities[i]->getType() == "E_BIGTILE") {
                     for (unsigned int j = 0; j < entities[i]->getChildren().size(); j++) {
                         std::string texId =  entities[i]->getChildren()[j]->getFaces()[0]->getMaterial().getTexId();
@@ -1138,7 +1138,7 @@ namespace sorrok {
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
-                    World::getGridCellAt(Vec3f(entities[i]->getCenter().x, entities[i]->getCenter().y, 0))->setPassable(false);
+                    getWorld()->getGridCellAt(Vec3f(entities[i]->getCenter().x, entities[i]->getCenter().y, 0))->setPassable(false);
                 } else if (entities[i]->getType() == "E_DECOR") {
                     std::string texId =  entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().getTexId();
                     sf::IntRect texRect = entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().getTexRect();
@@ -1275,7 +1275,7 @@ namespace sorrok {
                     shorcutsButtons[i] = new Button(Vec3f(i * 50, 540, 0),Vec3f(45, 45, 0), fm.getResourceByAlias(Fonts::Serif), "F"+conversionIntString(i+1), 10,getRenderWindow());
                     getRenderComponentManager().addComponent(shorcutsButtons[i]);
                 }
-                World::addEntity(player);
+                getWorld()->addEntity(player);
             }
             //Network::sendTcpPacket(packet);
             response = Network::waitForLastResponse("MONSTERSINFOS", sf::seconds(5.f));
@@ -1367,7 +1367,7 @@ namespace sorrok {
                 fcHpBar->setVisible(false);
                 monster->setXpHpBar(nullptr, fcHpBar, nullptr);
                 getRenderComponentManager().addComponent(fcHpBar);
-                World::addEntity(monster);
+                getWorld()->addEntity(monster);
             }
             response = Network::waitForLastResponse("PNJINFOS");
             iss.str("");
@@ -1405,7 +1405,7 @@ namespace sorrok {
                     pnj->addAnimation(animation);
                     au->addAnim(animation);
                 }
-                World::addEntity(pnj);
+                getWorld()->addEntity(pnj);
             }
 
             //monster->setXpHpBar(nullptr, fcHpBar);
@@ -1415,7 +1415,7 @@ namespace sorrok {
             getClock("RequestTime").restart();
             Network::sendTcpPacket(packet);
             received = false;
-            World::update();
+            getWorld()->update();
             setEventContextActivated(true);
        }
        if (Network::getResponse("ITEMS", response)) {
@@ -1446,7 +1446,7 @@ namespace sorrok {
             std::vector<std::string> parts = split(response, "*");
             int id = conversionStringInt(parts[0]);
             int dmg = conversionStringInt(parts[1]);
-            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            Caracter* caracter = static_cast<Caracter*>(getWorld()->getEntity(id));
             caracter->getFocusedCaracter()->attackFocusedCaracter(dmg);
             FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
             Text text;
@@ -1462,7 +1462,7 @@ namespace sorrok {
             std::vector<std::string> parts = split(response, "*");
             int id = conversionStringInt(parts[0]);
             int rgn = conversionStringInt(parts[1]);
-            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            Caracter* caracter = static_cast<Caracter*>(getWorld()->getEntity(id));
             if (caracter->getLife() + rgn >= caracter->getMaxLife()) {
                 caracter->setLife(caracter->getMaxLife());
             } else {
@@ -1482,7 +1482,7 @@ namespace sorrok {
             std::vector<std::string> parts = split(response, "*");
             int id = conversionStringInt(parts[0]);
             int rgn = conversionStringInt(parts[1]);
-            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            Caracter* caracter = static_cast<Caracter*>(getWorld()->getEntity(id));
             if (caracter->getMana() + rgn >= caracter->getManaMax()) {
                 caracter->setMana(caracter->getManaMax());
             } else {
@@ -1498,7 +1498,7 @@ namespace sorrok {
             text.setSize(Vec3f(10, 10, 0));
             tmpTexts.push_back(std::make_pair(std::make_pair(caracter, text), std::make_pair(Application::getTimeClk().getElapsedTime(), sf::seconds(0.5))));
        }
-       std::vector<Entity*> caracters = World::getEntities("E_MONSTER+E_HERO");
+       std::vector<Entity*> caracters = getWorld()->getEntities("E_MONSTER+E_HERO");
        for (unsigned int i = 0; i < caracters.size(); i++) {
             Caracter* caracter = static_cast<Caracter*>(caracters[i]);
 
@@ -1509,7 +1509,7 @@ namespace sorrok {
                         sf::Int64 elapsedTime = caracter->getClkTransfertTime().getElapsedTime().asMicroseconds();
                         Vec3f newPos = caracter->interpolation.first + (caracter->interpolation.second - caracter->interpolation.first) * ((float) elapsedTime / (float) (ping + timeBtwnTwoReq.asMicroseconds()));
                         Ray ray(actualPos, newPos);
-                        if (World::collide(caracter, ray)) {
+                        if (getWorld()->collide(caracter, ray)) {
                             newPos = actualPos;
                         }
                         for (unsigned int j = 0; j < getRenderComponentManager().getNbComponents(); j++) {
@@ -1521,9 +1521,9 @@ namespace sorrok {
                             }
                         }
                         Vec3f d = newPos - actualPos;
-                        World::moveEntity(caracter, d.x, d.y, d.y);
+                        getWorld()->moveEntity(caracter, d.x, d.y, d.y);
                         getView().move(d.x, d.y, d.y);
-                        World::update();
+                        getWorld()->update();
                     } else {
                         Vec2f actualPos = Vec2f(caracter->getCenter().x, caracter->getCenter().y);
                         sf::Int64 elapsedTime = caracter->getClkTransfertTime().getElapsedTime().asMicroseconds();
@@ -1560,8 +1560,8 @@ namespace sorrok {
                             }
                             getView().move(d.x, d.y, d.y);
                         }
-                        World::moveEntity(caracter, d.x, d.y, d.y);
-                        //World::update("Entity system updater");
+                        getWorld()->moveEntity(caracter, d.x, d.y, d.y);
+                        //getWorld()->update("Entity system updater");
                     }
                     /*if (caracter->getType() == "E_HERO")
                         std::cout<<"caracter position : "<<caracter->getCenter()<<std::endl;*/
@@ -1755,7 +1755,7 @@ namespace sorrok {
             it->second.second -= elapsedTime;
             if (it->second.second <= sf::seconds(0)) {
                 psu->removeParticleSystem(it->first);
-                World::deleteEntity(it->first);
+                getWorld()->deleteEntity(it->first);
                 it = particles.erase(it);
                 //std::cout<<"it erased"<<std::endl;
             } else
@@ -1768,7 +1768,7 @@ namespace sorrok {
         for (unsigned int i=0; i < particles2.size(); i++) {
             particles2[i]->update(getClock("LoopTime").getElapsedTime());
         }*/
-        World::update("*");
+        getWorld()->update("*");
         fps++;
         if (getClock("FPS").getElapsedTime().asSeconds() >= 1.f) {
             //std::cout<<"fps : "<<fps<<std::endl;

@@ -1,8 +1,8 @@
 #include "../../../include/odfaeg/Window/command.h"
 namespace odfaeg {
     namespace core {
-        std::string Command::sname __attribute__((section ("shared"), shared)) = "test";
-        std::vector<window::IEvent> Command::events __attribute__((section ("shared"), shared)) = std::vector<window::IEvent> ();
+        std::string Command::sname __attribute__((section (".shared"), shared)) = "test";
+        std::vector<window::IEvent> Command::events = std::vector<window::IEvent> ();
 
         Command::Command (Action action, FastDelegate<void> slot) : slot(slot)
         {
