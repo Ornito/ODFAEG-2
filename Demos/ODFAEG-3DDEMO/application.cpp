@@ -113,7 +113,7 @@ void MyAppli::onInit() {
     //frc->setVisible(false);
     /*ShadowRenderComponent* src = new ShadowRenderComponent(getRenderWindow(), 1, "E_CUBE+E_3DMODEL");
     src->setView(view);*/
-    PerPixelLinkedListRenderComponent* frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(), 1, "E_BIGTILE",ContextSettings(0, 0, 4, 4, 6));
+    RaytracingRenderComponent* frc2 = new RaytracingRenderComponent(getRenderWindow(), 1, "E_BIGTILE",ContextSettings(0, 0, 4, 4, 6));
     frc2->setView(view3D);
     /*LightRenderComponent* lrc = new LightRenderComponent(getRenderWindow(), 3, "E_BIGTILE+E_CUBE+E_3DMODEL+E_PONCTUAL_LIGHT");
     lrc->setView(view);*/
@@ -126,12 +126,12 @@ void MyAppli::onInit() {
     for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
         View view = getRenderComponentManager().getRenderComponent(i)->getView();
         float z = heightmap->getHeight(Vec2f(view.getPosition().x, view.getPosition().y));
-        view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+60));
+        view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+20));
         getRenderComponentManager().getRenderComponent(i)->setView(view);
     }
     View view = billboard->getView();
     float z = heightmap->getHeight(Vec2f(view.getPosition().x, view.getPosition().y));
-    view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+60));
+    view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+20));
     billboard->setView(view);
     billboard->setCenter(Vec3f(0, 0, z+20));
     g2d::AmbientLight::getAmbientLight().setColor(sf::Color::White);
@@ -224,13 +224,13 @@ void MyAppli::onExec() {
             View view = getRenderComponentManager().getRenderComponent(i)->getView();
             view.move(view.getForward(), -speed * clock.getElapsedTime().asSeconds());
             float z = heightmap->getHeight(Vec2f(view.getPosition().x, view.getPosition().y));
-            view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+60));
+            view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+20));
             getRenderComponentManager().getRenderComponent(i)->setView(view);
         }
         View view = billboard->getView();
         view.move(view.getForward(), -speed * clock.getElapsedTime().asSeconds());
         float z = heightmap->getHeight(Vec2f(view.getPosition().x, view.getPosition().y));
-        view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+60));
+        view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+20));
         billboard->setView(view);
         billboard->setCenter(Vec3f(0, 0, z+20));
         /*View view = getRenderWindow().getView();
@@ -245,13 +245,13 @@ void MyAppli::onExec() {
             View view = getRenderComponentManager().getRenderComponent(i)->getView();
             view.move(view.getForward(), speed * clock.getElapsedTime().asSeconds());
             float z = heightmap->getHeight(Vec2f(view.getPosition().x, view.getPosition().y));
-            view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+60));
+            view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+20));
             getRenderComponentManager().getRenderComponent(i)->setView(view);
         }
         View view = billboard->getView();
         view.move(view.getForward(), -speed * clock.getElapsedTime().asSeconds());
         float z = heightmap->getHeight(Vec2f(view.getPosition().x, view.getPosition().y));
-        view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+60));
+        view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+20));
         billboard->setView(view);
         billboard->setCenter(Vec3f(0, 0, z+20));
         /*View view = getRenderWindow().getView();
@@ -266,13 +266,13 @@ void MyAppli::onExec() {
             View view = getRenderComponentManager().getRenderComponent(i)->getView();
             view.move(view.getLeft(), speed * clock.getElapsedTime().asSeconds());
             float z = heightmap->getHeight(Vec2f(view.getPosition().x, view.getPosition().y));
-            view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+60));
+            view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+20));
             getRenderComponentManager().getRenderComponent(i)->setView(view);
         }
         View view = billboard->getView();
         view.move(view.getForward(), -speed * clock.getElapsedTime().asSeconds());
         float z = heightmap->getHeight(Vec2f(view.getPosition().x, view.getPosition().y));
-        view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+60));
+        view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+20));
         billboard->setView(view);
         billboard->setCenter(Vec3f(0, 0, z+20));
         /*View view = getRenderWindow().getView();
@@ -287,13 +287,13 @@ void MyAppli::onExec() {
             View view = getRenderComponentManager().getRenderComponent(i)->getView();
             view.move(view.getLeft(), -speed * clock.getElapsedTime().asSeconds());
             float z = heightmap->getHeight(Vec2f(view.getPosition().x, view.getPosition().y));
-            view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+60));
+            view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+20));
             getRenderComponentManager().getRenderComponent(i)->setView(view);
         }
         View view = billboard->getView();
         view.move(view.getForward(), -speed * clock.getElapsedTime().asSeconds());
         float z = heightmap->getHeight(Vec2f(view.getPosition().x, view.getPosition().y));
-        view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+60));
+        view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+20));
         billboard->setView(view);
         billboard->setCenter(Vec3f(0, 0, z+20));
         /*View view = getRenderWindow().getView();

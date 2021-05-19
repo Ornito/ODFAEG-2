@@ -397,7 +397,7 @@ namespace odfaeg {
 
 
                                                          return false;*/
-                                                         intersection = vec4(0, 0, 0, 0);
+                                                         /*intersection = vec4(0, 0, 0, 0);
                                                          vec3 v0v1 = (positions[1] - positions[0]).xyz;
                                                          vec3 v0v2 = (positions[2] - positions[0]).xyz;
                                                          vec3 v0 = positions[0].xyz;
@@ -442,6 +442,33 @@ namespace odfaeg {
                                                         v /= denom;
 
                                                         intersection = vec4(p, 1);
+                                                        intersection.w = u * wv0 + v * wv1 + (1-u-v) * wv2;
+                                                        return true;*/
+                                                        //Möller Trumbore.
+                                                        vec3 v0v1 = (positions[1] - positions[0]).xyz;
+                                                        vec3 v0v2 = (positions[2] - positions[0]).xyz;
+                                                        vec3 v0 = positions[0].xyz;
+                                                        float wv0 = positions[0].w;
+                                                        vec3 v1 = positions[1].xyz;
+                                                        float wv1 = positions[1].w;
+                                                        vec3 v2 = positions[2].xyz;
+                                                        float wv2 = positions[2].w;
+                                                        vec3 pvec = cross(ray.dir, v0v2);
+                                                        float det = dot(v0v1, pvec);
+                                                        if (abs(det) < 0.000001) return false;
+                                                        float invDet = 1 / det;
+
+                                                        vec3 tvec = ray.origin - v0;
+                                                        u = dot(tvec, pvec) * invDet;
+                                                        if (u < 0 || u > 1) return false;
+
+                                                        vec3 qvec = cross(tvec, v0v1);
+                                                        v = dot(ray.dir, qvec) * invDet;
+                                                        if (v < 0 || u + v > 1) return false;
+
+                                                        float t = dot(v0v2, qvec) * invDet;
+
+                                                        intersection = vec4(ray.origin + t * ray.dir, 1);
                                                         intersection.w = u * wv0 + v * wv1 + (1-u-v) * wv2;
                                                         return true;
                                                       }
@@ -818,7 +845,7 @@ namespace odfaeg {
             }
             void RaytracingRenderComponent::drawNextFrame() {
                 if (frameBuffer.getSettings().versionMajor >= 4 && frameBuffer.getSettings().versionMinor >= 6) {
-                    float max_x = view.getSize().x*0.5;
+                    /*float max_x = view.getSize().x*0.5;
                     float max_y = view.getSize().y*0.5;
                     math::Vec3f dims = view.getSize();
                     bool intersects = false;
@@ -838,8 +865,7 @@ namespace odfaeg {
                                 p1 = triangles[t].transform.transpose() * p1;
                                 p2 = triangles[t].transform.transpose() * p2;
                                 p3 = triangles[t].transform.transpose() * p3;
-                                /*if (i == 0 && j == 0)
-                                    std::cout<<"triangle : "<<p1<<p2<<p3<<std::endl;*/
+
                                 tp1 = p1;
                                 tp2 = p2;
                                 tp3 = p3;
@@ -852,14 +878,11 @@ namespace odfaeg {
                                 tp1 = view.getViewMatrix().transform(tp1);
                                 tp2 = view.getViewMatrix().transform(tp2);
                                 tp3 = view.getViewMatrix().transform(tp3);
-                                /*if (i == 0 && j == 0)
-                                    std::cout<<"view triangle : "<<tp1<<tp2<<tp3<<std::endl;*/
 
                                 tp1 = view.getProjMatrix().project(tp1);
                                 tp2 = view.getProjMatrix().project(tp2);
                                 tp3 = view.getProjMatrix().project(tp3);
-                                /*if (i == 0 && j == 0)
-                                    std::cout<<"proj triangle : "<<tp1<<tp2<<tp3<<std::endl;*/
+
                                 if (tp1.w == 0)
                                     tp1.w = dims.z * 0.5;
                                 if (tp2.w == 0)
@@ -872,23 +895,19 @@ namespace odfaeg {
                                 tp2 = tp2.normalizeToVec3();
                                 float tmp3 = tp3.w;
                                 tp3 = tp3.normalizeToVec3();
-                                /*if (i == 0 && j == 0)
-                                    std::cout<<"ndc triangle : "<<tp1<<tp2<<tp3<<std::endl;*/
+
 
                                 p1.w = tmp1;
                                 p2.w = tmp2;
                                 p3.w = tmp3;
-                                /*if (i == 0 && j == 0)
-                                    std::cout<<"viewport triangle : "<<p1<<p2<<p3<<std::endl;*/
+
                                 math::Triangle tri(p1, p2, p3);
                                 math::Vec3f i1, i2;
                                 if(tri.intersectsWhere(ray, i1, i2)
                                    && i1.x >= 0 && i1.x < dims.x
                                    && i1.y >= 0 && i1.y < dims.y
                                    && i1.w > 50) {
-                                    /*if (i == 0 && j == 0)
-                                        std::cout<<"viewport triangle : "<<p1<<p2<<p3<<std::endl;
-                                    std::cout<<"int : "<<i1;*/
+
                                     intersects = true;
                                     rayComputeShader.setParameter("x", i);
                                     rayComputeShader.setParameter("y", j);
@@ -905,31 +924,21 @@ namespace odfaeg {
                         }
                         if (intersects)
                             break;
-                    }
+                    }*/
                     glCheck(glBindBuffer(GL_SHADER_STORAGE_BUFFER, trianglesSSBO));
-                    glCheck(glBufferData(GL_SHADER_STORAGE_BUFFER, triangles.size() * sizeof(Triangle)/*300*/, NULL, GL_DYNAMIC_COPY));
+                    glCheck(glBufferData(GL_SHADER_STORAGE_BUFFER, triangles.size() * sizeof(Triangle), NULL, GL_DYNAMIC_COPY));
                     GLvoid* p = nullptr;
                     glCheck(p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY));
-                    memcpy(p, triangles.data(), triangles.size() * sizeof(Triangle)/*300*/);
-                    //std::cout<<"size : "<<sizeof(Triangle)<<std::endl;
-                    /*//Position 1.
-                    float x1, y1, z1, w1, x2, y2, z2, w2, x3, y3, z3, w3;
-                    x1 = (*((unsigned char*) (p) + 3) << 24) | (*((unsigned char*) (p) + 2) << 16) | (*((unsigned char*) (p) + 1) << 8) | (*((unsigned char*) (p)));
-                    std::cout<<"x1 : "<<x1<<std::endl;
-                    y1 = (*((unsigned char*) (p) + 7) << 24) | (*((unsigned char*) (p) + 6) << 16) | (*((unsigned char*) (p) + 5) << 8) | (*((unsigned char*) (p) + 4));
-                    std::cout<<"y1 : "<<y1<<std::endl;
-                    z1 = (*((unsigned char*) (p) + 11) << 24) | (*((unsigned char*) (p) + 10) << 16) | (*((unsigned char*) (p) + 9) << 8) | (*((unsigned char*) (p) + 8));
-                    std::cout<<"z1 : "<<z1<<std::endl;
-                    w1 = (*((unsigned char*) (p) + 15) << 24) | (*((unsigned char*) (p) + 14) << 16) | (*((unsigned char*) (p) + 13) << 8) | (*((unsigned char*) (p) + 12));
-                    std::cout<<"w1 : "<<w1<<std::endl;*/
+                    memcpy(p, triangles.data(), triangles.size() * sizeof(Triangle));
+
 
 
                     glCheck(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER));
                     glCheck(glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightsSSBO));
-                    glCheck(glBufferData(GL_SHADER_STORAGE_BUFFER, lights.size() * sizeof(Light)/*36*/, NULL, GL_DYNAMIC_DRAW));
+                    glCheck(glBufferData(GL_SHADER_STORAGE_BUFFER, lights.size() * sizeof(Light), NULL, GL_DYNAMIC_DRAW));
                     GLvoid* p2 = nullptr;
                     glCheck(p2 = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY));
-                    memcpy(p2, lights.data(), lights.size() * sizeof(Light)/*36*/);
+                    memcpy(p2, lights.data(), lights.size() * sizeof(Light));
                     glCheck(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER));
                     glCheck(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0));
                     math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
@@ -950,13 +959,7 @@ namespace odfaeg {
                     glCheck(glFinish());
                     // make sure writing to image has finished before read
                     glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-                    /*glBindTexture (GL_TEXTURE_2D,headPtrTex);
-                     GLuint read[(int) dims.x * (int) dims.y]; //Read back from the buffer (to make sure)
-                    glGetBufferSubData(GL_TEXTURE_2D,0,dims.x * dims.y,read);
-                    for (unsigned i=0;i<(int) dims.x * (int) dims.y;i++)
-                        if (read[i] == 0xffffffff)
-                        std::cout<<read[i]<<" ";
-                            std::cout<<std::endl<<std::endl;*/
+
                     RenderStates states;
                     states.shader = &quadShader;
                     states.transform = quad.getTransform();
