@@ -69,7 +69,7 @@ namespace odfaeg {
                 //std::cout<<"copy material"<<std::endl;
                 if (core::Application::app != nullptr)
                     core::Application::app->getMaterials().push_back(this);
-                updateIds();
+                //updateIds();
             }
             Material& Material::operator= (const Material& material) {
                 color = material.color;
@@ -244,7 +244,7 @@ namespace odfaeg {
                             it++;
                     }
                 }
-                updateIds();
+                //updateIds();
             }
             Face::Face() {
                 transform = nullptr;
