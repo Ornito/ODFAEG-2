@@ -37,15 +37,18 @@ namespace odfaeg {
                                                                               layout (location = 1) in vec4 color;
                                                                               layout (location = 2) in vec2 texCoords;
                                                                               layout (location = 3) in vec3 normals;
+                                                                              layout (location = 4) in uint textureIndex;
                                                                               uniform mat4 projectionMatrix;
                                                                               uniform mat4 viewMatrix;
-                                                                              uniform mat4 textureMatrix;
+                                                                              uniform mat4 textureMatrix[)"+core::conversionUIntString(Texture::getAllTextures().size())+R"(];
                                                                               out vec2 fTexCoords;
                                                                               out vec4 frontColor;
+                                                                              out uint texIndex;
                                                                               void main() {
                                                                                   gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.f);
-                                                                                  fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                                                                  fTexCoords = (textureIndex != 0) ? (textureMatrix[textureIndex-1] * vec4(texCoords, 1.f, 1.f)).xy : texCoords;
                                                                                   frontColor = color;
+                                                                                  texIndex = textureIndex;
                                                                               }
                                                                               )";
                     const std::string buildDepthBufferVertexShader = R"(#version 460
@@ -54,35 +57,39 @@ namespace odfaeg {
                                                                         layout (location = 2) in vec2 texCoords;
                                                                         layout (location = 3) in vec3 normals;
                                                                         layout (location = 4) in mat4 worldMat;
+                                                                        layout (location = 12) in uint textureIndex;
                                                                         uniform mat4 projectionMatrix;
                                                                         uniform mat4 viewMatrix;
-                                                                        uniform mat4 textureMatrix;
+                                                                        uniform mat4 textureMatrix[)"+core::conversionUIntString(Texture::getAllTextures().size())+R"(];
                                                                         out vec2 fTexCoords;
                                                                         out vec4 frontColor;
+                                                                        out uint texIndex;
                                                                         void main() {
                                                                             gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
-                                                                            fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                                                            fTexCoords = (textureIndex != 0) ? (textureMatrix[textureIndex-1] * vec4(texCoords, 1.f, 1.f)).xy : texCoords;
                                                                             frontColor = color;
+                                                                            texIndex = textureIndex;
                                                                         }
                                                                      )";
                     const std::string buildDepthBufferFragmentShader = R"(#version 460
+                                                                          #extension GL_ARB_bindless_texture : enable
                                                                           in vec4 frontColor;
                                                                           in vec2 fTexCoords;
                                                                           uniform sampler2D texture;
                                                                           uniform float haveTexture;
+                                                                          layout (std140, binding=0) uniform ALL_TEXTURES {
+                                                                              sampler2D textures[200];
+                                                                          };
+                                                                          in flat uint texIndex;
                                                                           layout (location = 0) out vec4 fColor;
                                                                           void main () {
-                                                                              vec4 texel = texture2D(texture, fTexCoords);
-                                                                              vec4 colors[2];
-                                                                              colors[1] = texel * frontColor;
-                                                                              colors[0] = frontColor;
-                                                                              bool b = (haveTexture > 0.9);
-                                                                              float current_alpha = colors[int(b)].a;
+                                                                              vec4 texel = (texIndex != 0) ? frontColor * texture2D(textures[texIndex-1], fTexCoords) : frontColor;
+                                                                              float current_alpha = texel.a;
                                                                               float z = gl_FragCoord.z;
                                                                               fColor = vec4(0, 0, z, current_alpha);
                                                                           }
                                                                         )";
-                    const std::string buildShadowMapVertexShaderNormal = R"(#version 460
+                    /*const std::string buildShadowMapVertexShaderNormal = R"(#version 460
                                                                             layout (location = 0) in vec3 position;
                                                                             layout (location = 1) in vec4 color;
                                                                             layout (location = 2) in vec2 texCoords;
@@ -114,20 +121,21 @@ namespace odfaeg {
                                                                           fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
                                                                           frontColor = color;
                                                                       }
-                                                                    )";
+                                                                    )";*/
                     const std::string buildShadowMapFragmentShader = R"(#version 460
+                                                                        #extension GL_ARB_bindless_texture : enable
                                                                         in vec4 frontColor;
                                                                         in vec2 fTexCoords;
                                                                         uniform sampler2D texture;
                                                                         uniform float haveTexture;
+                                                                        layout (std140, binding = 0) uniform ALL_TEXTURES {
+                                                                            sampler2D textures[200];
+                                                                        };
+                                                                        in flat uint texIndex;
                                                                         layout (location = 0) out vec4 fColor;
                                                                         void main() {
-                                                                            vec4 texel = texture2D(texture, fTexCoords);
-                                                                            vec4 colors[2];
-                                                                            colors[1] = texel * frontColor;
-                                                                            colors[0] = frontColor;
-                                                                            bool b = (haveTexture >= 0.9f);
-                                                                            float color = colors[int(b)].a;
+                                                                            vec4 texel = (texIndex != 0) ? frontColor * texture2D(textures[texIndex-1], fTexCoords) : frontColor;
+                                                                            float color = texel.a;
                                                                             float z = gl_FragCoord.z;
                                                                             fColor = vec4(0, 0, z, color);
                                                                         }
@@ -139,18 +147,21 @@ namespace odfaeg {
                                                                    layout (location = 3) in vec3 normals;
                                                                    layout (location = 4) in mat4 worldMat;
                                                                    layout (location = 8) in mat4 shadowProjMat;
+                                                                   layout (location = 12) in uint textureIndex;
                                                                    uniform mat4 projectionMatrix;
                                                                    uniform mat4 viewMatrix;
                                                                    uniform mat4 depthBiasMatrix;
-                                                                   uniform mat4 textureMatrix;
+                                                                   uniform mat4 textureMatrix[)"+core::conversionUIntString(Texture::getAllTextures().size())+R"(];
                                                                    out vec4 shadowCoords;
                                                                    out vec4 frontColor;
                                                                    out vec2 fTexCoords;
+                                                                   out uint texIndex;
                                                                    void main() {
                                                                        gl_Position = projectionMatrix * viewMatrix * shadowProjMat * worldMat * vec4(position, 1.f);
-                                                                       fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                                                       fTexCoords = (textureIndex != 0) ? (textureMatrix[textureIndex-1] * vec4(texCoords, 1.f, 1.f)).xy : texCoords;
                                                                        frontColor = color;
-                                                                       shadowCoords = depthBiasMatrix * viewMatrix * projectionMatrix * vec4(gl_Position.xyz, 1);
+                                                                       shadowCoords = depthBiasMatrix * worldMat * viewMatrix * projectionMatrix * vec4(gl_Position.xyz, 1);
+                                                                       texIndex = textureIndex;
                                                                    }
                                                                   )";
                         const std::string perPixShadowNormalVertexShader = R"(#version 460
@@ -158,46 +169,50 @@ namespace odfaeg {
                                                                    layout (location = 1) in vec4 color;
                                                                    layout (location = 2) in vec2 texCoords;
                                                                    layout (location = 3) in vec3 normals;
+                                                                   layout (location = 4) in uint textureIndex;
                                                                    uniform mat4 projectionMatrix;
                                                                    uniform mat4 viewMatrix;
+                                                                   uniform mat4 lviewMatrix;
+                                                                   uniform mat4 lprojectionMatrix;
                                                                    uniform mat4 depthBiasMatrix;
-                                                                   uniform mat4 textureMatrix;
+                                                                   uniform mat4 textureMatrix[)"+core::conversionUIntString(Texture::getAllTextures().size())+R"(];
                                                                    out vec4 shadowCoords;
                                                                    out vec4 frontColor;
                                                                    out vec2 fTexCoords;
+                                                                   out uint texIndex;
                                                                    void main() {
                                                                        gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.f);
-                                                                       fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                                                       fTexCoords = (textureIndex != 0) ? (textureMatrix[textureIndex-1] * vec4(texCoords, 1.f, 1.f)).xy : texCoords;
                                                                        frontColor = color;
-                                                                       shadowCoords = depthBiasMatrix * viewMatrix * projectionMatrix * vec4(gl_Position.xyz, 1);
+                                                                       shadowCoords = depthBiasMatrix * lviewMatrix * lprojectionMatrix * vec4(gl_Position.xyz, 1);
+                                                                       texIndex = textureIndex;
                                                                    }
                                                                   )";
                         const std::string perPixShadowFragmentShader = R"(#version 460
+                                                                          #extension GL_ARB_bindless_texture : enable
                                                                           in vec4 shadowCoords;
                                                                           in vec4 frontColor;
                                                                           in vec2 fTexCoords;
+                                                                          in flat uint texIndex;
                                                                           uniform sampler2D texture;
                                                                           uniform sampler2D stencilBuffer;
                                                                           uniform sampler2D depthBuffer;
                                                                           uniform float haveTexture;
                                                                           uniform vec3 resolution;
+                                                                          layout (std140, binding = 0) uniform ALL_TEXTURES {
+                                                                              sampler2D textures[200];
+                                                                          };
                                                                           layout (location = 0) out vec4 fColor;
                                                                           void main() {
                                                                             vec2 position = (gl_FragCoord.xy / resolution.xy);
                                                                             vec4 depth = texture2D(depthBuffer, position);
-                                                                            vec4 texel = texture2D(texture, fTexCoords);
-                                                                            vec4 colors[2];
-                                                                            colors[1] = texel * frontColor;
-                                                                            colors[0] = frontColor;
-                                                                            bool b = (haveTexture >= 0.9f);
-                                                                            float color = colors[int(b)].a;
+                                                                            vec4 texel = (texIndex != 0) ? frontColor * texture2D(textures[texIndex-1], fTexCoords) : frontColor;
+
+                                                                            float color = texel.a;
                                                                             vec4 stencil = texture2D (stencilBuffer, shadowCoords.xy);
                                                                             float z = gl_FragCoord.z;
-                                                                            /*colors[1] = vec4 (0, 0, 0, color);
-                                                                            colors[0] = vec4 (1, 1, 1, 1);
-                                                                            b = (stencil.z < z);*/
                                                                             vec4 visibility;
-                                                                            if (stencil.z < z) {
+                                                                            if (stencil.z < shadowCoords.z) {
                                                                                 if (depth.z >= z) {
                                                                                     visibility = vec4 (1, 1, 1, depth.a);
                                                                                 } else {
@@ -206,7 +221,6 @@ namespace odfaeg {
                                                                             } else {
                                                                                 visibility = vec4 (1, 1, 1, 1);
                                                                             }
-                                                                            //vec4 visibility = colors[int(b)];
                                                                             fColor = visibility;
                                                                           }
                                                                           )";
@@ -216,10 +230,10 @@ namespace odfaeg {
                         if (!depthGenNormalShader.loadFromMemory(buildDepthBufferVertexShaderNormal, buildDepthBufferFragmentShader)) {
                             throw core::Erreur(51, "Error, failed to load build depth buffer normal shader", 3);
                         }
-                        if (!buildShadowMapShader.loadFromMemory(buildShadowMapVertexShader, buildShadowMapFragmentShader)) {
+                        if (!buildShadowMapShader.loadFromMemory(buildDepthBufferVertexShader, buildShadowMapFragmentShader)) {
                             throw core::Erreur(53, "Error, failed to load build shadow map shader", 3);
                         }
-                        if (!buildShadowMapNormalShader.loadFromMemory(buildShadowMapVertexShaderNormal, buildShadowMapFragmentShader)) {
+                        if (!buildShadowMapNormalShader.loadFromMemory(buildDepthBufferVertexShaderNormal, buildShadowMapFragmentShader)) {
                             throw core::Erreur(50, "Error, failed to load build shadow map normal shader", 3);
                         }
                         if (!perPixShadowShader.loadFromMemory(perPixShadowVertexShader, perPixShadowFragmentShader)) {
@@ -240,6 +254,47 @@ namespace odfaeg {
                         perPixShadowShaderNormal.setParameter("depthBuffer", depthBuffer.getTexture());
                         perPixShadowShaderNormal.setParameter("texture", Shader::CurrentTexture);
                         perPixShadowShaderNormal.setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                        std::vector<Texture*> allTextures = Texture::getAllTextures();
+                        Samplers allSamplers{};
+                        std::vector<math::Matrix4f> textureMatrices;
+                        for (unsigned int i = 0; i < allTextures.size(); i++) {
+                            textureMatrices.push_back(allTextures[i]->getTextureMatrix());
+                            GLuint64 handle_texture = glGetTextureHandleARB(allTextures[i]->getNativeHandle());
+                            glCheck(glMakeTextureHandleResidentARB(handle_texture));
+                            allSamplers.tex[i].handle = handle_texture;
+                            //std::cout<<"add texture : "<<allSamplers.tex[i]<<std::endl;
+                        }
+                        buildShadowMapNormalShader.setParameter("textureMatrix", textureMatrices);
+                        buildShadowMapShader.setParameter("textureMatrix", textureMatrices);
+                        depthGenShader.setParameter("textureMatrix", textureMatrices);
+                        depthGenNormalShader.setParameter("textureMatrix", textureMatrices);
+                        perPixShadowShader.setParameter("textureMatrix", textureMatrices);
+                        perPixShadowShaderNormal.setParameter("textureMatrix", textureMatrices);
+                        glCheck(glGenBuffers(1, &ubo));
+                        unsigned int ubid;
+                        glCheck(ubid = glGetUniformBlockIndex(buildShadowMapShader.getHandle(), "ALL_TEXTURES"));
+                        glCheck(glUniformBlockBinding(buildShadowMapShader.getHandle(),    ubid, 0));
+                        glCheck(ubid = glGetUniformBlockIndex(buildShadowMapNormalShader.getHandle(), "ALL_TEXTURES"));
+                        glCheck(glUniformBlockBinding(buildShadowMapNormalShader.getHandle(),    ubid, 0));
+                        glCheck(ubid = glGetUniformBlockIndex(depthGenShader.getHandle(), "ALL_TEXTURES"));
+                        glCheck(glUniformBlockBinding(depthGenShader.getHandle(),    ubid, 0));
+                        glCheck(ubid = glGetUniformBlockIndex(depthGenNormalShader.getHandle(), "ALL_TEXTURES"));
+                        glCheck(glUniformBlockBinding(depthGenNormalShader.getHandle(),    ubid, 0));
+                        glCheck(ubid = glGetUniformBlockIndex(perPixShadowShader.getHandle(), "ALL_TEXTURES"));
+                        glCheck(glUniformBlockBinding(perPixShadowShader.getHandle(),    ubid, 0));
+                        glCheck(ubid = glGetUniformBlockIndex(perPixShadowShaderNormal.getHandle(), "ALL_TEXTURES"));
+                        glCheck(glUniformBlockBinding(perPixShadowShaderNormal.getHandle(),    ubid, 0));
+                        glCheck(glBindBuffer(GL_UNIFORM_BUFFER, ubo));
+                        glCheck(glBufferData(GL_UNIFORM_BUFFER, sizeof(Samplers),allSamplers.tex, GL_STATIC_DRAW));
+                        //std::cout<<"size : "<<sizeof(Samplers)<<" "<<alignof (alignas(16) uint64_t[200])<<std::endl;
+
+                        glCheck(glBindBuffer(GL_UNIFORM_BUFFER, 0));
+                        glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
+
+
+                        for (unsigned int i = 0; i < Batcher::nbPrimitiveTypes; i++) {
+                            vbBindlessTex[i].setPrimitiveType(static_cast<sf::PrimitiveType>(i));
+                        }
 
                 } else {
                     if (Shader::isAvailable()) {
@@ -318,6 +373,8 @@ namespace odfaeg {
                         buildShadowMapShader.setParameter("texture", Shader::CurrentTexture);
                         perPixShadowShader.setParameter("stencilBuffer", stencilBuffer.getTexture());
                         perPixShadowShader.setParameter("texture", Shader::CurrentTexture);
+
+
                     }   else {
                         throw core::Erreur(55, "Shader not supported!", 0);
                     }
@@ -336,15 +393,18 @@ namespace odfaeg {
                 math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
                 math::Vec3f size (viewArea.getWidth(), viewArea.getHeight(), 0);
                 depthBuffer.setView(view);
+                for (unsigned int i = 0; i < Batcher::nbPrimitiveTypes; i++) {
+                    vbBindlessTex[i].clear();
+                }
                 if (shadowMap.getSettings().versionMajor >= 3 && shadowMap.getSettings().versionMinor >= 3) {
-                    math::Matrix4f viewMatrix = lightView.getViewMatrix().getMatrix().transpose();
-                    math::Matrix4f projMatrix = lightView.getProjMatrix().getMatrix().transpose();
-                    buildShadowMapShader.setParameter("projectionMatrix", projMatrix);
-                    buildShadowMapShader.setParameter("viewMatrix", viewMatrix);
-                    buildShadowMapNormalShader.setParameter("projectionMatrix", projMatrix);
-                    buildShadowMapNormalShader.setParameter("viewMatrix", viewMatrix);
-                    viewMatrix = view.getViewMatrix().getMatrix().transpose();
-                    projMatrix = view.getProjMatrix().getMatrix().transpose();
+                    math::Matrix4f lviewMatrix = lightView.getViewMatrix().getMatrix().transpose();
+                    math::Matrix4f lprojMatrix = lightView.getProjMatrix().getMatrix().transpose();
+                    buildShadowMapShader.setParameter("projectionMatrix", lprojMatrix);
+                    buildShadowMapShader.setParameter("viewMatrix", lviewMatrix);
+                    buildShadowMapNormalShader.setParameter("projectionMatrix", lprojMatrix);
+                    buildShadowMapNormalShader.setParameter("viewMatrix", lviewMatrix);
+                    math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
+                    math::Matrix4f projMatrix = view.getProjMatrix().getMatrix().transpose();
                     depthGenShader.setParameter("projectionMatrix", projMatrix);
                     depthGenShader.setParameter("viewMatrix", viewMatrix);
                     depthGenNormalShader.setParameter("projectionMatrix", projMatrix);
@@ -398,9 +458,9 @@ namespace odfaeg {
                        if (m_normals[i].getAllVertices().getVertexCount() > 0) {
                             if (m_normals[i].getMaterial().getTexture() != nullptr) {
                                 math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
-                                buildShadowMapNormalShader.setParameter("textureMatrix", texMatrix);
+                                //buildShadowMapNormalShader.setParameter("textureMatrix", texMatrix);
                                 buildShadowMapNormalShader.setParameter("haveTexture", 1.f);
-                                depthGenNormalShader.setParameter("textureMatrix", texMatrix);
+                                //depthGenNormalShader.setParameter("textureMatrix", texMatrix);
                                 depthGenNormalShader.setParameter("haveTexture", 1.f);
                             } else {
                                 buildShadowMapNormalShader.setParameter("haveTexture", 0.f);
@@ -408,17 +468,22 @@ namespace odfaeg {
                             }
                             states.blendMode = sf::BlendNone;
                             states.shader = &depthGenNormalShader;
-                            states.texture = m_normals[i].getMaterial().getTexture();
-                            vb.clear();
-                            vb.setPrimitiveType(m_normals[i].getAllVertices().getPrimitiveType());
+                            states.texture = nullptr;
+                            unsigned int p = m_normals[i].getAllVertices().getPrimitiveType();
                             for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
-                                vb.append(m_normals[i].getAllVertices()[j]);
+                                vbBindlessTex[p].append(m_normals[i].getAllVertices()[j],(m_normals[i].getMaterial().getTexture() != nullptr) ? m_normals[i].getMaterial().getTexture()->getNativeHandle() : 0);
                             }
-                            vb.update();
-                            depthBuffer.drawVertexBuffer(vb, states);
-                            states.shader = &buildShadowMapNormalShader;
-                            stencilBuffer.drawVertexBuffer(vb, states);
                         }
+                    }
+                    for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                        states.blendMode = sf::BlendNone;
+                        states.shader = &depthGenNormalShader;
+                        states.texture = nullptr;
+                        vbBindlessTex[p].update();
+                        depthBuffer.drawVertexBuffer(vbBindlessTex[p], states);
+                        states.shader = &buildShadowMapNormalShader;
+                        stencilBuffer.drawVertexBuffer(vbBindlessTex[p], states);
+                        vbBindlessTex[p].clear();
                     }
                     stencilBuffer.display();
                     stencilBufferTile.setPosition(position);
@@ -433,25 +498,31 @@ namespace odfaeg {
                     perPixShadowShaderNormal.setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
                     perPixShadowShaderNormal.setParameter("projectionMatrix", projMatrix);
                     perPixShadowShaderNormal.setParameter("viewMatrix", viewMatrix);
+                    perPixShadowShaderNormal.setParameter("lviewMatrix", lviewMatrix);
+                     perPixShadowShaderNormal.setParameter("lprojectionMatrix", lprojMatrix);
                     states.shader = &perPixShadowShaderNormal;
                     for (unsigned int i = 0; i < m_shadow_normals.size(); i++) {
                         if (m_shadow_normals[i].getAllVertices().getVertexCount() > 0) {
-                            states.texture = m_shadow_normals[i].getMaterial().getTexture();
+                            states.texture = nullptr;
                             if (m_shadow_normals[i].getMaterial().getTexture() != nullptr) {
                                 math::Matrix4f texMatrix = m_shadow_normals[i].getMaterial().getTexture()->getTextureMatrix();
-                                perPixShadowShaderNormal.setParameter("textureMatrix", texMatrix);
+                                //perPixShadowShaderNormal.setParameter("textureMatrix", texMatrix);
                                 perPixShadowShaderNormal.setParameter("haveTexture", 1.f);
                             } else {
                                 perPixShadowShaderNormal.setParameter("haveTexture", 0.f);
                             }
-                            vb.clear();
-                            vb.setPrimitiveType(m_shadow_normals[i].getAllVertices().getPrimitiveType());
+
+                            unsigned int p = m_shadow_normals[i].getAllVertices().getPrimitiveType();
                             for (unsigned int j = 0; j < m_shadow_normals[i].getAllVertices().getVertexCount(); j++) {
-                                vb.append(m_shadow_normals[i].getAllVertices()[j]);
+                                vbBindlessTex[p].append(m_shadow_normals[i].getAllVertices()[j],(m_shadow_normals[i].getMaterial().getTexture() != nullptr) ? m_shadow_normals[i].getMaterial().getTexture()->getNativeHandle() : 0);
                             }
-                            vb.update();
-                            shadowMap.drawVertexBuffer(vb, states);
+
                         }
+                    }
+                    for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                        vbBindlessTex[p].update();
+                        shadowMap.drawVertexBuffer(vbBindlessTex[p], states);
+                        vbBindlessTex[p].clear();
                     }
                     perPixShadowShader.setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
                     perPixShadowShader.setParameter("projectionMatrix", projMatrix);

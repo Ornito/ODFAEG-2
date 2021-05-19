@@ -28,6 +28,13 @@ namespace odfaeg {
           */
         class ODFAEG_GRAPHICS_API ShadowRenderComponent : public HeavyComponent {
             public :
+                struct uint64_to_uint128 {
+                    uint64_t handle;
+                    uint64_t padding;
+                };
+                struct Samplers {
+                    uint64_to_uint128 tex[200];
+                };
                 ShadowRenderComponent (RenderWindow& window, int layer, std::string expression,window::ContextSettings settings = window::ContextSettings(0, 0, 4, 3, 0));
                 void drawNextFrame();
                 std::vector<Entity*> getEntities();
@@ -65,8 +72,9 @@ namespace odfaeg {
                 View view; /**> the view of the component.*/
                 std::string expression;
                 bool update;
-                unsigned int vboWorldMatrices, vboShadowProjMatrices;
+                unsigned int vboWorldMatrices, vboShadowProjMatrices, ubo;
                 VertexBuffer vb, vb2;
+                std::array<VertexBuffer ,Batcher::nbPrimitiveTypes> vbBindlessTex;
                 std::vector<float> matrices, matrices2;
          };
          #endif

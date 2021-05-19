@@ -289,11 +289,11 @@ namespace sorrok {
         ReflectRefractRenderComponent *rrrc = new ReflectRefractRenderComponent(getRenderWindow(), 2, "E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
         ShadowRenderComponent *src = new ShadowRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
         LightRenderComponent *lrc = new LightRenderComponent(getRenderWindow(), 4, "E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", ContextSettings(0, 0, 4, 4, 6));
-        /*frc1->setVisible(false);
+        /*//frc1->setVisible(false);
         frc2->setVisible(false);
         rrrc->setVisible(false);
-        src->setVisible(false);
-        lrc->setVisible(false);*/
+        //src->setVisible(false);
+        lrc->setVisible(false);
         /*gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
         textArea->addFocusListener(this);
         textArea->setVisible(false);
