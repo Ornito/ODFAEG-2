@@ -1,0 +1,2 @@
+C:\TDM-GCC-32\bin\ar.exe qc ..\..\..\lib\libodfaeg-network-s-d.a  CMakeFiles/odfaeg-network.dir/aes.cpp.obj CMakeFiles/odfaeg-network.dir/rsa.cpp.obj CMakeFiles/odfaeg-network.dir/encryptedPacket.cpp.obj CMakeFiles/odfaeg-network.dir/symEncPacket.cpp.obj CMakeFiles/odfaeg-network.dir/client.cpp.obj CMakeFiles/odfaeg-network.dir/srkserveur.cpp.obj CMakeFiles/odfaeg-network.dir/network.cpp.obj CMakeFiles/odfaeg-network.dir/user.cpp.obj CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.obj
+C:\TDM-GCC-32\bin\ranlib.exe ..\..\..\lib\libodfaeg-network-s-d.a

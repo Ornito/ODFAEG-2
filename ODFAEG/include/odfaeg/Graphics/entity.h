@@ -302,13 +302,13 @@ namespace odfaeg {
                 /** \fn void addFace(Face* face)
                 *   \brief add a face to the entity.
                 */
-                void addFace(Face* face);
+                void addFace(Face face);
                 /** \fn std::vector<Face*> getFaces()
                 *   \brief get the faces of the entity.
                 *   \return std::vector<Face*> the faces of the entity.
                 */
-                std::vector<Face*> getFaces() const;
-                //static int getNbEntityTypes();
+                std::vector<Face>& getFaces();
+                static int getNbEntityTypes();
                 /** \fn void vtserialize(Archive & ar)
                 *   \brief serialize the entity into an archive.
                 *   \param Archive : the archive onwhich to serialize the entities.
@@ -418,7 +418,7 @@ namespace odfaeg {
             protected :
                 math::Vec3f shadowCenter, shadowScale, shadowRotationAxis, shadowOrigin, refractDir; /**> The center of the shadow of the entity.*/
                 float shadowRotationAngle;
-                std::vector<std::unique_ptr<Face>> faces; /**> the faces of the entity.*/
+                std::vector<Face> faces; /**> the faces of the entity.*/
                 static std::map<int, std::string> types; /** A list of the type's id and name's of the entities. */
                 std::pair<int, std::string> type; /** The type's id and the type's name of the entity.*/
                 std::vector<std::unique_ptr<Entity>> children; /** the children of the entities. */

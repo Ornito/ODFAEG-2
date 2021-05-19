@@ -104,7 +104,7 @@ namespace odfaeg {
             //static unsigned int nbMaterials;
             unsigned int id, instanceId;
             const Texture* bumpTexture;
-            /*static std::vector<Material*> materials;
+           /* static std::vector<Material*> materials;
             static std::vector<Material*> sameMaterials;*/
             bool reflectable, refractable;
             public :
@@ -113,6 +113,7 @@ namespace odfaeg {
             * \brief constructor.
             */
             Material();
+            Material (const Material& material);
             unsigned int getId();
             //static unsigned int getNbMaterials();
             /**
@@ -208,8 +209,9 @@ namespace odfaeg {
             bool isRefractable();
 
             void updateIds();
-            bool contains(Material material);
+            bool contains(Material& material);
             void countNbMaterials();
+            Material& operator=(const Material& material);
             template <typename Archive>
             void serialize(Archive & ar) {
                 ar(texInfos);
@@ -286,7 +288,7 @@ namespace odfaeg {
             * \return the material.
             */
             Material& getMaterial();
-            void setMaterial(Material material);
+            void setMaterial(Material& material);
             void setTransformMatrix(TransformMatrix& tm);
             /**
             * \fn VertexArray& getVertexArray()

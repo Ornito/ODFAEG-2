@@ -48,8 +48,8 @@ namespace odfaeg {
         }
         void Mesh::onDraw(RenderTarget& target, RenderStates states) {
             for (unsigned int i = 0; i < getFaces().size(); i++) {
-                states.texture = getFaces()[i]->getMaterial().getTexture();
-                target.draw(getFaces()[i]->getVertexArray(), states);
+                states.texture = getFace(i)->getMaterial().getTexture();
+                target.draw(getFace(i)->getVertexArray(), states);
             }
         }
     }

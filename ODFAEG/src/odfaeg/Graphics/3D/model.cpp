@@ -56,9 +56,9 @@ namespace odfaeg {
                 std::vector<math::Vec3f> verts;
                 for(unsigned int i = 0; i < mesh->mNumFaces; i++)
                 {
-                    Face* f = new Face(sf::Triangles, emesh->getTransform());
-                    f->setMaterial(mat);
-                    f->getVertexArray().setEntity(emesh);
+                    Face f (sf::Triangles, emesh->getTransform());
+                    f.setMaterial(mat);
+                    f.getVertexArray().setEntity(emesh);
                     aiFace face = mesh->mFaces[i];
                     for(unsigned int j = 0; j < face.mNumIndices; j++) {
                         Vertex vertex;
@@ -67,7 +67,7 @@ namespace odfaeg {
                         vertex.position.z = mesh->mVertices[face.mIndices[j]].z;
                         vertex.texCoords.x = mesh->mTextureCoords[0][face.mIndices[j]].x * mat.getTexture()->getSize().x;
                         vertex.texCoords.y = mesh->mTextureCoords[0][face.mIndices[j]].y * mat.getTexture()->getSize().y;
-                        f->append(vertex,face.mIndices[j]);
+                        f.append(vertex,face.mIndices[j]);
                         verts.push_back(math::Vec3f(vertex.position.x, vertex.position.y, vertex.position.z));
                     }
                     emesh->addFace(f);

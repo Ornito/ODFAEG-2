@@ -1,0 +1,2 @@
+C:\TDM-GCC-32\bin\ar.exe qc ..\..\..\lib\libodfaeg-audio-s-d.a  CMakeFiles/odfaeg-audio.dir/player.cpp.obj CMakeFiles/odfaeg-audio.dir/stream.cpp.obj CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.obj
+C:\TDM-GCC-32\bin\ranlib.exe ..\..\..\lib\libodfaeg-audio-s-d.a

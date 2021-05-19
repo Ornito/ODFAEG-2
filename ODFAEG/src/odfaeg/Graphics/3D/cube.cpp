@@ -17,7 +17,7 @@ namespace odfaeg {
                     va1[3] = v4;
                     Material material1;
                     material1.addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
-                    Face* face1 = new Face (va1, material1, getTransform());
+                    Face face1 (va1, material1, getTransform());
                     //Dessus
                     VertexArray va2(sf::Quads, 4, this);
                     Vertex v5(Vector3f(position.x, position.y, position.z + h), color);
@@ -30,7 +30,7 @@ namespace odfaeg {
                     va2[3] = v8;
                     Material material2;
                     material2.addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
-                    Face* face2 = new Face (va2, material2, getTransform());
+                    Face face2 (va2, material2, getTransform());
                     //Derrière.
                     VertexArray va3(sf::Quads, 4, this);
                     Vertex v9(Vector3f(position.x, position.y, position.z), color);
@@ -43,7 +43,7 @@ namespace odfaeg {
                     va3[3] = v12;
                     Material material3;
                     material3.addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
-                    Face* face3 = new Face (va3, material3, getTransform());
+                    Face face3 (va3, material3, getTransform());
                     //Dessous.
                     VertexArray va4(sf::Quads, 4, this);
                     Vertex v13(Vector3f(position.x, position.y, position.z), color);
@@ -56,7 +56,7 @@ namespace odfaeg {
                     va3[3] = v16;
                     Material material4;
                     material4.addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
-                    Face* face4 = new Face (va4, material4, getTransform());
+                    Face face4 (va4, material4, getTransform());
                     //Gauche.
                     VertexArray va5(sf::Quads, 4, this);
                     Vertex v17(Vector3f(position.x, position.y, position.z), color);
@@ -69,7 +69,7 @@ namespace odfaeg {
                     va5[3] = v20;
                     Material material5;
                     material5.addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
-                    Face* face5 = new Face (va5, material5, getTransform());
+                    Face face5 (va5, material5, getTransform());
                     //Droite.
                     VertexArray va6(sf::Quads, 4, this);
                     Vertex v21(Vector3f(position.x + w, position.y, position.z), color);
@@ -82,14 +82,13 @@ namespace odfaeg {
                     va6[3] = v24;
                     Material material6;
                     material6.addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
-                    Face* face6 = new Face (va6, material6, getTransform());
+                    Face face6 (va6, material6, getTransform());
                     addFace(face1);
                     addFace(face2);
                     addFace(face3);
                     addFace(face4);
                     addFace(face5);
                     addFace(face6);
-                    setDrawMode(Entity::NORMAL);
             }
             void Cube::setTexCoords(int face, sf::IntRect texCoords) {
                 VertexArray& va = getFace(face)->getVertexArray();
@@ -100,8 +99,8 @@ namespace odfaeg {
             }
             void Cube::onDraw (RenderTarget &target, RenderStates states) {
                 for (unsigned int i = 0; i < getFaces().size(); i++) {
-                    states.texture = const_cast<Cube*>(this)->getFaces()[i]->getMaterial().getTexture();
-                    target.draw (getFaces()[i]->getVertexArray(),states);
+                    states.texture = const_cast<Cube*>(this)->getFace(i)->getMaterial().getTexture();
+                    target.draw (getFace(i)->getVertexArray(),states);
                 }
             }
             Entity* Cube::clone() {

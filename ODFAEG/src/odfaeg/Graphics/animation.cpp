@@ -145,8 +145,8 @@ namespace odfaeg {
             }
             if (currentFrame->isLeaf()) {
                 for (unsigned int i = 0; i < currentFrame->getFaces().size(); i++) {
-                    VertexArray va = currentFrame->getFaces()[i]->getVertexArray();
-                    Face* face = new Face(va,currentFrame->getFaces()[i]->getMaterial(), currentFrame->getTransform());
+                    VertexArray va = currentFrame->getFace(i)->getVertexArray();
+                    Face face (va,currentFrame->getFace(i)->getMaterial(), currentFrame->getTransform());
                     interpolatedFrame->addFace(face);
                 }
                 interpolatedFrame->setType(currentFrame->getType());
@@ -167,15 +167,15 @@ namespace odfaeg {
             if (currentFrame->getFaces().size() == interpolatedFrame->getFaces().size()) {
                 for (unsigned int i = 0; i < currentFrame->getFaces().size(); i++) {
                     VertexArray& iva = interpolatedFrame->getFace(i)->getVertexArray();
-                    VertexArray va = currentFrame->getFaces()[i]->getVertexArray();
+                    VertexArray va = currentFrame->getFace(i)->getVertexArray();
                     for (unsigned int n = 0; n < va.getVertexCount(); n++) {
                         iva[n] = va[n];
                     }
                     /*if(scene != nullptr) {
                         scene->updateVertices(iva);
                     }*/
-                    interpolatedFrame->getFaces()[i]->setMaterial(currentFrame->getFaces()[i]->getMaterial());
-                    interpolatedFrame->getFaces()[i]->setTransformMatrix(currentFrame->getFaces()[i]->getTransformMatrix());
+                    interpolatedFrame->getFaces()[i].setMaterial(currentFrame->getFace(i)->getMaterial());
+                    interpolatedFrame->getFaces()[i].setTransformMatrix(currentFrame->getFace(i)->getTransformMatrix());
                 }
                 interpolatedFrame->setPosition(currentFrame->getPosition());
                 interpolatedFrame->setSize(currentFrame->getSize());

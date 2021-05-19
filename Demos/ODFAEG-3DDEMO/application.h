@@ -14,7 +14,7 @@
 class MyAppli : public odfaeg::core::Application {
 public :
     enum TEXTURES {
-        GRASS, PARTICLE
+        GRASS, PARTICLE, SKYBOX0, SKYBOX1, SKYBOX2, SKYBOX3, SKYBOX4, SKYBOX5
     };
     MyAppli(odfaeg::math::Vec2f size, std::string title);
     void onLoad();

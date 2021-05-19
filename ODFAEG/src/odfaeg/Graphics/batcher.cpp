@@ -55,7 +55,38 @@ namespace odfaeg {
                     core::Application::app->getMaterials().push_back(this);
                 //materials.push_back(this);
             }
-            bool Material::contains(Material material) {
+            Material::Material(const Material& material) {
+                color = material.color;
+                texInfos = material.texInfos;
+                id = material.id;
+                instanceId = material.instanceId;
+                specularIntensity = material.specularIntensity;
+                specularPower = material.specularPower;
+                refractionFactor = material.refractionFactor;
+                refractable = material.refractable;
+                reflectable = material.reflectable;
+                bumpTexture = material.bumpTexture;
+                //std::cout<<"copy material"<<std::endl;
+                if (core::Application::app != nullptr)
+                    core::Application::app->getMaterials().push_back(this);
+                updateIds();
+            }
+            Material& Material::operator= (const Material& material) {
+                color = material.color;
+                texInfos = material.texInfos;
+                id = material.id;
+                instanceId = material.instanceId;
+                specularIntensity = material.specularIntensity;
+                specularPower = material.specularPower;
+                refractionFactor = material.refractionFactor;
+                refractable = material.refractable;
+                reflectable = material.reflectable;
+                bumpTexture = material.bumpTexture;
+                if (core::Application::app != nullptr)
+                    core::Application::app->getMaterials().push_back(this);
+                return *this;
+            }
+            bool Material::contains(Material& material) {
                 if (core::Application::app != nullptr) {
                     std::vector<Material*>& sameMaterials = core::Application::app->getSameMaterials();
                     for (unsigned int i = 0; i < sameMaterials.size(); i++) {
@@ -180,7 +211,7 @@ namespace odfaeg {
                     std::vector<Material*>& materials = core::Application::app->getMaterials();
                     sameMaterials.clear();
                     for (unsigned int i = 0; i < materials.size(); i++) {
-                        if (!contains(*materials[i])) {
+                        if (materials[i] != nullptr && !contains(*materials[i])) {
                             nbMaterials++;
                             sameMaterials.push_back(materials[i]);
                         }
@@ -195,7 +226,7 @@ namespace odfaeg {
                    std::vector<Material*>& materials = core::Application::app->getMaterials();
                    for (unsigned int i = 0; i < sameMaterials.size(); i++) {
                        for (unsigned int j = 0; j < materials.size(); j++) {
-                            if (*sameMaterials[i] == *materials[j]) {
+                            if (materials[j] != nullptr && *sameMaterials[i] == *materials[j]) {
                                 materials[j]->id = i;
                             }
                        }
@@ -213,7 +244,7 @@ namespace odfaeg {
                             it++;
                     }
                 }
-                //updateIds();
+                updateIds();
             }
             Face::Face() {
                 transform = nullptr;
@@ -238,7 +269,7 @@ namespace odfaeg {
             Material& Face::getMaterial() {
                 return m_material;
             }
-            void Face::setMaterial (Material material) {
+            void Face::setMaterial (Material& material) {
                 m_material = material;
             }
             void Face::setTransformMatrix(TransformMatrix& tm) {
@@ -277,6 +308,7 @@ namespace odfaeg {
             void Instance::addVertexArray(VertexArray& va, TransformMatrix& tm) {
                 m_transforms.push_back(&tm);
                 m_vertexArrays.push_back(&va);
+
                 //m_indexes.push_back(std::vector<unsigned int>());
                 for (unsigned int i = 0; i < va.getVertexCount(); i++) {
                     math::Vec3f t = tm.transform(math::Vec3f(va[i].position.x, va[i].position.y, va[i].position.z));
@@ -384,6 +416,9 @@ namespace odfaeg {
                 nbLayers = 0;
             }
             void Batcher::addFace(Face* face) {
+                /*if (face->getVertexArray().getEntity() != nullptr && face->getVertexArray().getEntity()->getRootType() == "E_BIGTILE")
+                        std::cout<<"add E_TILE : "<<face->getVertexArray().getPrimitiveType() * core::Application::app->getNbMaterials() + face->getMaterial().getId()<<std::endl;*/
+                //std::cout<<"instance id : "<<face->getVertexArray().getPrimitiveType() * Material::getNbMaterials() + face->getMaterial().getId()<<std::endl;
                 Instance& instance = instances[face->getVertexArray().getPrimitiveType() * core::Application::app->getNbMaterials() + face->getMaterial().getId()];
                 instance.setPrimitiveType(face->getVertexArray().getPrimitiveType());
                 instance.setMaterial(face->getMaterial());
@@ -430,6 +465,7 @@ namespace odfaeg {
                 }*/
             }
             void Batcher::addShadowFace(Face* face, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix) {
+
                 Instance& instance = instances[face->getVertexArray().getPrimitiveType() * core::Application::app->getNbMaterials() + face->getMaterial().getId()];
                 instance.setPrimitiveType(face->getVertexArray().getPrimitiveType());
                 instance.setMaterial(face->getMaterial());
@@ -467,6 +503,7 @@ namespace odfaeg {
             }
             void Batcher::clear() {
                 instances.clear();
+                //std::cout<<"nb instances : "<<nbPrimitiveTypes * Material::getNbMaterials()<<std::endl;
                 instances.resize(nbPrimitiveTypes * core::Application::app->getNbMaterials());
                 nbLayers = 0;
                 //tmpZPos.clear();

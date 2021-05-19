@@ -535,7 +535,7 @@ namespace odfaeg {
                             }
                         }
                         glCheck(glEnableVertexAttribArray(12));
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboIndexBuffer));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboTextureIndexesBuffer));
                         glCheck(glVertexAttribIPointer(12, 1, GL_UNSIGNED_INT, sizeof(GLuint), (GLvoid*) 0));
                         glCheck(glDisableVertexAttribArray(12));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));

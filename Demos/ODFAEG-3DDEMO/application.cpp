@@ -33,6 +33,18 @@ void MyAppli::onLoad() {
     TextureManager<TEXTURES> tm;
     tm.fromFileWithAlias("tilesets/Terre2.jpg", GRASS);
     tm.fromFileWithAlias("tilesets/particule.png", PARTICLE);
+    std::vector<std::string> faces
+    {
+        "tilesets/skybox/right.jpg",
+        "tilesets/skybox/left.jpg",
+        "tilesets/skybox/top.jpg",
+        "tilesets/skybox/bottom.jpg",
+        "tilesets/skybox/front.jpg",
+        "tilesets/skybox/back.jpg"
+    };
+    for (unsigned int i = 0; i < 6; i++) {
+        tm.fromFileWithAlias(faces[i], static_cast<TEXTURES>(i+2));
+    }
     cache.addResourceManager(tm, "TextureManager");
 }
 void MyAppli::onInit() {
@@ -43,7 +55,7 @@ void MyAppli::onInit() {
     theMap->setBaseChangementMatrix(bcm);
     getWorld()->addEntityManager(theMap);
     getWorld()->setCurrentEntityManager("Map test");
-    cube = new g3d::Cube(Vec3f(-400, -400, -400), 800, 800, 800, sf::Color::White);
+    cube = new g3d::Cube(Vec3f(-400, -300, 0), 800, 600, 600, sf::Color::White);
     cube->setPosition(view3D.getPosition());
 
     /*cube->move(Vec3f(0.f, 0.f, 50));
@@ -60,13 +72,11 @@ void MyAppli::onInit() {
         "tilesets/skybox/front.jpg",
         "tilesets/skybox/back.jpg"
     };
-    Texture* texs[6];
     for (unsigned int i = 0; i < 6; i++) {
-        texs[i] = new Texture();
-        texs[i]->loadFromFile(faces[i]);
-        sf::IntRect texRect (0, 0, texs[i]->getSize().x, texs[i]->getSize().y);
+        const Texture* tex = tm.getResourceByAlias(static_cast<TEXTURES>(i+2));
+        sf::IntRect texRect (0, 0, tex->getSize().x, tex->getSize().y);
         cube->getFace(i)->getMaterial().clearTextures();
-        cube->getFace(i)->getMaterial().addTexture(texs[i], texRect);
+        cube->getFace(i)->getMaterial().addTexture(tex, texRect);
         static_cast<g3d::Cube*>(cube)->setTexCoords(i, texRect);
     }
     getWorld()->addEntity(cube);
@@ -100,10 +110,10 @@ void MyAppli::onInit() {
 
     PerPixelLinkedListRenderComponent* frc = new PerPixelLinkedListRenderComponent(getRenderWindow(), 0, "E_CUBE", ContextSettings(0, 0, 4, 4, 6));
     frc->setView(view3D);
-    frc->setVisible(false);
+    //frc->setVisible(false);
     /*ShadowRenderComponent* src = new ShadowRenderComponent(getRenderWindow(), 1, "E_CUBE+E_3DMODEL");
     src->setView(view);*/
-    RaytracingRenderComponent* frc2 = new RaytracingRenderComponent(getRenderWindow(), 1, "E_BIGTILE",ContextSettings(0, 0, 4, 4, 6));
+    PerPixelLinkedListRenderComponent* frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(), 1, "E_BIGTILE",ContextSettings(0, 0, 4, 4, 6));
     frc2->setView(view3D);
     /*LightRenderComponent* lrc = new LightRenderComponent(getRenderWindow(), 3, "E_BIGTILE+E_CUBE+E_3DMODEL+E_PONCTUAL_LIGHT");
     lrc->setView(view);*/
@@ -125,11 +135,11 @@ void MyAppli::onInit() {
     billboard->setView(view);
     billboard->setCenter(Vec3f(0, 0, z+20));
     g2d::AmbientLight::getAmbientLight().setColor(sf::Color::White);
-    /*loader = g3d::Model();
+    loader = g3d::Model();
     Entity* model = loader.loadModel("tilesets/mesh_puddingmill/puddingmill.obj");
     model->move(Vec3f(0, 0, 20));
     model->setShadowCenter(Vec3f(0, 20, 0));
-    getWorld()->addEntity(model);*/
+    getWorld()->addEntity(model);
 
     getWorld()->update();
 

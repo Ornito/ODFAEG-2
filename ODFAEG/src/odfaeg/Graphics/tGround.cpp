@@ -20,12 +20,12 @@ namespace odfaeg {
                 int position = yPosition * nbTilesPerRow + xPosition;
                 int belowPos = (yPosition - 1) * nbTilesPerRow  + xPosition;
                 if (xPosition > 0 && position - 1 < getChildren().size()) {
-                    heights[0] = getChildren()[position-1]->getFaces()[0]->getVertexArray()[1].position.z;
-                    heights[3] = getChildren()[position-1]->getFaces()[0]->getVertexArray()[2].position.z;
+                    heights[0] = getChildren()[position-1]->getFace(0)->getVertexArray()[1].position.z;
+                    heights[3] = getChildren()[position-1]->getFace(0)->getVertexArray()[2].position.z;
                 }
                 if (belowPos  > 0 && belowPos < getChildren().size()) {
-                    heights[0] = getChildren()[belowPos]->getFaces()[0]->getVertexArray()[3].position.z;
-                    heights[1] = getChildren()[belowPos]->getFaces()[0]->getVertexArray()[2].position.z;
+                    heights[0] = getChildren()[belowPos]->getFace(0)->getVertexArray()[3].position.z;
+                    heights[1] = getChildren()[belowPos]->getFace(0)->getVertexArray()[2].position.z;
                 }
                 tile->changeVerticesHeights(
                             heights[0],
@@ -42,10 +42,10 @@ namespace odfaeg {
              int position = yPosition * nbTilesPerRow + xPosition;
              float dx = (point.x - getChildren()[position]->getPosition().x) / tileSize.x;
              float dy = (point.y - getChildren()[position]->getPosition().y) / tileSize.y;
-             int h1 = getChildren()[position]->getFaces()[0]->getVertexArray()[0].position.z;
-             int h2 = getChildren()[position]->getFaces()[0]->getVertexArray()[1].position.z;
-             int h3 = getChildren()[position]->getFaces()[0]->getVertexArray()[2].position.z;
-             int h4 = getChildren()[position]->getFaces()[0]->getVertexArray()[3].position.z;
+             int h1 = getChildren()[position]->getFace(0)->getVertexArray()[0].position.z;
+             int h2 = getChildren()[position]->getFace(0)->getVertexArray()[1].position.z;
+             int h3 = getChildren()[position]->getFace(0)->getVertexArray()[2].position.z;
+             int h4 = getChildren()[position]->getFace(0)->getVertexArray()[3].position.z;
              return ((1 - dx) * h1 + dx * h2) * (1 - dy) + ((1 - dx) * h4 + dx * h3) * dy;
         }
         bool BigTile::operator== (Entity &other) {

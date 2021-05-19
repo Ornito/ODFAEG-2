@@ -84,9 +84,10 @@ namespace odfaeg {
             entity->type = type;
             entity->externalObjectName = externalObjectName;
             entity->external = external;
+            entity->drawMode = drawMode;
             //std::cout<<"clone id : "<<entity->getId()<<std::endl;
             for (unsigned int i = 0; i < faces.size(); i++) {
-                entity->addFace(new Face(faces[i]->getVertexArray(), faces[i]->getMaterial(), entity->getTransform()));
+                entity->addFace(Face(faces[i].getVertexArray(), faces[i].getMaterial(), entity->getTransform()));
                 entity->getFace(i)->getVertexArray().setEntity(entity);
             }
             for (unsigned int i = 0; i < children.size(); i++) {
@@ -283,24 +284,18 @@ namespace odfaeg {
                 children[i]->rotate(angle);
             }
         }
-        void Entity::addFace (Face* face) {
-            std::unique_ptr<Face> ptr;
-            ptr.reset(face);
-            faces.push_back(std::move(ptr));
+        void Entity::addFace (Face face) {
+            faces.push_back(face);
         }
-        std::vector<Face*> Entity::getFaces() const {
-            std::vector<Face*> fcs;
-            for (unsigned int i = 0; i < faces.size(); i++) {
-                fcs.push_back(faces[i].get());
-            }
-            return fcs;
+        std::vector<Face>& Entity::getFaces()  {
+            return faces;
         }
         unsigned int Entity::getNbFaces() {
             return faces.size();
         }
         Face* Entity::getFace(unsigned int n) {
             if (n >= 0 && n < faces.size())
-                return faces[n].get();
+                return &faces[n];
             return nullptr;
         }
          void Entity::setShadowCenter(math::Vec3f shadowCenter) {

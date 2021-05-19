@@ -146,16 +146,16 @@ namespace sorrok {
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 300, 100, 100)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 400, 100, 100)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 500, 100, 100)));
-        tiles[0]->getFaces()[0]->getMaterial().setTexId("WATER");
+        tiles[0]->getFace(0)->getMaterial().setTexId("WATER");
         tiles[0]->setReflectable(true);
         tiles[0]->setWater(true);
         tiles[0]->setDrawMode(Entity::INSTANCED);
-        walls[0]->getFaces()[0]->getMaterial().setTexId("WALLS");
-        walls[1]->getFaces()[0]->getMaterial().setTexId("WALLS");
-        walls[2]->getFaces()[0]->getMaterial().setTexId("WALLS");
-        walls[3]->getFaces()[0]->getMaterial().setTexId("WALLS");
-        walls[4]->getFaces()[0]->getMaterial().setTexId("WALLS");
-        walls[5]->getFaces()[0]->getMaterial().setTexId("WALLS");
+        walls[0]->getFace(0)->getMaterial().setTexId("WALLS");
+        walls[1]->getFace(0)->getMaterial().setTexId("WALLS");
+        walls[2]->getFace(0)->getMaterial().setTexId("WALLS");
+        walls[3]->getFace(0)->getMaterial().setTexId("WALLS");
+        walls[4]->getFace(0)->getMaterial().setTexId("WALLS");
+        walls[5]->getFace(0)->getMaterial().setTexId("WALLS");
         walls[0]->setLayer(1);
         walls[1]->setLayer(1);
         walls[2]->setLayer(1);
@@ -163,7 +163,7 @@ namespace sorrok {
         walls[4]->setLayer(1);
         walls[5]->setLayer(1);
         std::ifstream ifs("FichierDeSerialisation");
-        if(ifs) {
+        /*if(ifs) {
             std::cout<<"read serialisation file"<<std::endl;
             ITextArchive ia(ifs);
             std::vector<Entity*> entities;
@@ -172,41 +172,41 @@ namespace sorrok {
                 getWorld()->addEntity(entities[i]);
                 if (entities[i]->getType() == "E_BIGTILE") {
                     for (unsigned int j = 0; j < entities[i]->getChildren().size(); j++) {
-                        std::string texId =  entities[i]->getChildren()[j]->getFaces()[0]->getMaterial().getTexId();
-                        sf::IntRect texRect = entities[i]->getChildren()[j]->getFaces()[0]->getMaterial().getTexRect();
-                        entities[i]->getChildren()[j]->getFaces()[0]->getMaterial().clearTextures();
-                        entities[i]->getChildren()[j]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
-                        entities[i]->getChildren()[j]->getFaces()[0]->getMaterial().setTexId(texId);
+                        std::string texId =  entities[i]->getChildren()[j]->getFace(0)->getMaterial().getTexId();
+                        sf::IntRect texRect = entities[i]->getChildren()[j]->getFace(0)->getMaterial().getTexRect();
+                        entities[i]->getChildren()[j]->getFace(0)->getMaterial().clearTextures();
+                        entities[i]->getChildren()[j]->getFace(0)->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
+                        entities[i]->getChildren()[j]->getFace(0)->getMaterial().setTexId(texId);
                     }
 
                 } else if (entities[i]->getType() == "E_WALL") {
-                    std::string texId =  entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().getTexId();
-                    sf::IntRect texRect = entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().getTexRect();
-                    entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
-                    entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
-                    entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
+                    std::string texId =  entities[i]->getChildren()[0]->getFace(0)->getMaterial().getTexId();
+                    sf::IntRect texRect = entities[i]->getChildren()[0]->getFace(0)->getMaterial().getTexRect();
+                    entities[i]->getChildren()[0]->getFace(0)->getMaterial().clearTextures();
+                    entities[i]->getChildren()[0]->getFace(0)->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
+                    entities[i]->getChildren()[0]->getFace(0)->getMaterial().setTexId(texId);
                     getWorld()->getGridCellAt(Vec3f(entities[i]->getCenter().x, entities[i]->getCenter().y, 0))->setPassable(false);
                 } else if (entities[i]->getType() == "E_DECOR") {
-                    std::string texId =  entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().getTexId();
-                    sf::IntRect texRect = entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().getTexRect();
-                    entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
-                    entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
-                    entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
+                    std::string texId =  entities[i]->getChildren()[0]->getFace(0)->getMaterial().getTexId();
+                    sf::IntRect texRect = entities[i]->getChildren()[0]->getFace(0)->getMaterial().getTexRect();
+                    entities[i]->getChildren()[0]->getFace(0)->getMaterial().clearTextures();
+                    entities[i]->getChildren()[0]->getFace(0)->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
+                    entities[i]->getChildren()[0]->getFace(0)->getMaterial().setTexId(texId);
                 } else if (entities[i]->getType() == "E_ANIMATION") {
                     Anim* anim = static_cast<Anim*> (entities[i]);
                     for (unsigned int j = 0; j < anim->getChildren().size(); j++) {
-                        std::string texId = entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().getTexId();
-                        sf::IntRect texRect = entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().getTexRect();
-                        entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
-                        entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
-                        entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
+                        std::string texId = entities[i]->getChildren()[j]->getChildren()[0]->getFace(0)->getMaterial().getTexId();
+                        sf::IntRect texRect = entities[i]->getChildren()[j]->getChildren()[0]->getFace(0)->getMaterial().getTexRect();
+                        entities[i]->getChildren()[j]->getChildren()[0]->getFace(0)->getMaterial().clearTextures();
+                        entities[i]->getChildren()[j]->getChildren()[0]->getFace(0)->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
+                        entities[i]->getChildren()[j]->getChildren()[0]->getFace(0)->getMaterial().setTexId(texId);
                     }
                     anim->play(true);
                     au->addAnim(anim);
                 }
             }
             ifs.close();
-        } else {
+        } else {*/
             std::cout<<"not read serialisation file"<<std::endl;
             BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
             std::cout<<"generate map"<<std::endl;
@@ -214,7 +214,7 @@ namespace sorrok {
             std::cout<<"map generated"<<std::endl;
             Tile* thouse = new Tile(tm.getResourceByAlias("HOUSE"), Vec3f(0, 0, 0), Vec3f(250, 300, 0), sf::IntRect(0, 0, 250, 300));
             thouse->setLayer(1);
-            thouse->getFaces()[0]->getMaterial().setTexId("HOUSE");
+            thouse->getFace(0)->getMaterial().setTexId("HOUSE");
             g2d::Decor* decor = new g2d::Decor(thouse, &g2d::AmbientLight::getAmbientLight());
             decor->setPosition(Vec3f(-100, 250, 400));
             BoundingVolume *bb = new BoundingBox(decor->getGlobalBounds().getPosition().x, decor->getGlobalBounds().getPosition().y + decor->getGlobalBounds().getSize().y * 0.4f, 0,
@@ -222,26 +222,26 @@ namespace sorrok {
             //std::cout<<bb->getPosition()<<" "<<bb->getSize()<<std::endl;
             decor->setCollisionVolume(bb);
             decor->setShadowCenter(Vec3f(0, 500, -250));
-            thouse->getFaces()[0]->getMaterial().setSpecularPower(10);
-            thouse->getFaces()[0]->getMaterial().setSpecularIntensity(100);
+            thouse->getFace(0)->getMaterial().setSpecularPower(10);
+            thouse->getFace(0)->getMaterial().setSpecularIntensity(100);
             std::cout<<"add house"<<std::endl;
             getWorld()->addEntity(decor);
             Anim* fire = new Anim(0.1f, Vec3f(0, 0, 0), Vec3f(100, 100, 0), 0);
             Tile* tf1 = new Tile(tm.getResourceByAlias("FIRE1"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
             tf1->setLayer(1);
-            tf1->getFaces()[0]->getMaterial().setTexId("FIRE1");
+            tf1->getFace(0)->getMaterial().setTexId("FIRE1");
             g2d::Decor *fire1 = new g2d::Decor(tf1, &g2d::AmbientLight::getAmbientLight());
             fire1->setShadowCenter(Vec3f(0, 200, 0));
             //decor->changeGravityCenter(Vec3f(50, 50, 0));
             Tile* tf2 = new Tile(tm.getResourceByAlias("FIRE2"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
             tf2->setLayer(1);
-            tf2->getFaces()[0]->getMaterial().setTexId("FIRE2");
+            tf2->getFace(0)->getMaterial().setTexId("FIRE2");
             g2d::Decor *fire2 = new g2d::Decor(tf2, &g2d::AmbientLight::getAmbientLight());
             fire2->setShadowCenter(Vec3f(0, 200, 0));
             //decor->changeGravityCenter(Vec3f(50, 50, 0));
             Tile* tf3 = new Tile(tm.getResourceByAlias("FIRE3"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
             tf3->setLayer(1);
-            tf3->getFaces()[0]->getMaterial().setTexId("FIRE3");
+            tf3->getFace(0)->getMaterial().setTexId("FIRE3");
             g2d::Decor *fire3 = new g2d::Decor(tf3, &g2d::AmbientLight::getAmbientLight());
             fire3->setShadowCenter(Vec3f(0, 200, 0));
             //decor->changeGravityCenter(Vec3f(50, 50, 0));
@@ -261,7 +261,7 @@ namespace sorrok {
             w->setPosition(Vec3f(0, 130, 130 + w->getSize().y * 0.5f));
             w->setLayer(1);
             getWorld()->addEntity(w);
-        }
+        //}
         ps->setTexture(*tm.getResourceByAlias("PARTICLE"));
         for (unsigned int i = 0; i < 10; i++) {
             ps->addTextureRect(sf::IntRect(i*10, 0, 10, 10));
@@ -289,8 +289,8 @@ namespace sorrok {
         ReflectRefractRenderComponent *rrrc = new ReflectRefractRenderComponent(getRenderWindow(), 2, "E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
         ShadowRenderComponent *src = new ShadowRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
         LightRenderComponent *lrc = new LightRenderComponent(getRenderWindow(), 4, "E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", ContextSettings(0, 0, 4, 4, 6));
-        //frc1->setVisible(false);
-        /*frc2->setVisible(false);
+        /*frc1->setVisible(false);
+        frc2->setVisible(false);
         rrrc->setVisible(false);
         src->setVisible(false);
         lrc->setVisible(false);*/
@@ -326,7 +326,7 @@ namespace sorrok {
             for (unsigned int j = 0; j < 8; j++) {
                 sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
                 Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(textRectWidth, textRectHeight, 0), textRect);
-                tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
+                tile->getFace(0)->getMaterial().setTexId("VLADSWORD");
                 g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
                 frame->setShadowCenter(Vec3f(0, 200, 200));
                 textRectX += textRectWidth;

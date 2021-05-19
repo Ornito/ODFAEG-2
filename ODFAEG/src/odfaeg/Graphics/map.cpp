@@ -673,8 +673,8 @@ namespace odfaeg {
             }*/
             //if (entity->isLeaf()) {
                 for (unsigned int j = 0; j < entity->getFaces().size(); j++) {
-                     if (entity->getFaces()[j]->getMaterial().getTexture() != nullptr) {
-                         increaseComptImg(entity->getFaces()[j]->getMaterial().getTexture());
+                     if (entity->getFace(j)->getMaterial().getTexture() != nullptr) {
+                         increaseComptImg(entity->getFace(j)->getMaterial().getTexture());
                      }
                 }
                 //std::cout<<"add entity parent : "<<entity->getParent()<<", this : "<<entity<<std::endl;
@@ -718,9 +718,9 @@ namespace odfaeg {
                 }
             }
             if (entity->isLeaf()) {
-                std::vector<Face*> faces = entity->getFaces();
+                std::vector<Face> faces = entity->getFaces();
                 for (unsigned int j = 0; j < faces.size(); j++) {
-                    decreaseComptImg(faces[j]->getMaterial().getTexture());
+                    decreaseComptImg(faces[j].getMaterial().getTexture());
                 }
                 return gridMap->removeEntity(entity);
             }
@@ -746,9 +746,9 @@ namespace odfaeg {
                 }
             }
             if (entity != nullptr && entity->isLeaf()) {
-                std::vector<Face*> faces = entity->getFaces();
+                std::vector<Face> faces = entity->getFaces();
                 for (unsigned int j = 0; j < faces.size(); j++) {
-                    decreaseComptImg(faces[j]->getMaterial().getTexture());
+                    decreaseComptImg(faces[j].getMaterial().getTexture());
                 }
                 std::cout<<"grid map delete entity"<<std::endl;
                 gridMap->deleteEntity(entity);

@@ -88,7 +88,7 @@ namespace odfaeg
         {
             graphic::Material material;
             material.addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
-            graphic::Face* face = new graphic::Face(mVertices, material, getTransform());
+            graphic::Face face (mVertices, material, getTransform());
             addFace(face);
         }
         graphic::Entity* ParticleSystem::clone() {
@@ -107,8 +107,8 @@ namespace odfaeg
         void ParticleSystem::setTexture(const graphic::Texture& texture)
         {
             mTexture = &texture;
-            getFaces()[0]->getMaterial().clearTextures();
-            getFaces()[0]->getMaterial().addTexture(mTexture, sf::IntRect(0, 0, 0, 0));
+            getFaces()[0].getMaterial().clearTextures();
+            getFaces()[0].getMaterial().addTexture(mTexture, sf::IntRect(0, 0, 0, 0));
             mNeedsQuadUpdate = true;
         }
 
@@ -290,7 +290,7 @@ namespace odfaeg
                     vertex.color = it->color;
                     mVertices.append(vertex);
                 }
-                getFaces()[0]->setVertexArray(mVertices);
+                const_cast<ParticleSystem*>(this)->getFace(0)->setVertexArray(mVertices);
                 tm.reset3D();
             }
             /*if (scene != nullptr)

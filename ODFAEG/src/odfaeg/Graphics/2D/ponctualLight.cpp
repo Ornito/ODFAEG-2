@@ -65,7 +65,7 @@ namespace odfaeg {
                 /*triangle->EnableFill(true);
                 triangle->EnableOutline(false);*/
                 Material material;
-                Face* face = new Face(*triangle,material,getTransform());
+                Face face (*triangle,material,getTransform());
                 addFace(face);
                 triangles.push_back(triangle);
             }

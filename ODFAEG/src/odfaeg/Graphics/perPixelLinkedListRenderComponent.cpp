@@ -443,6 +443,7 @@ namespace odfaeg {
                 for (unsigned int i = 0; i < Batcher::nbPrimitiveTypes; i++) {
                     vbBindlessTex[i].clear();
                 }
+                std::vector<TransformMatrix*> tm;
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
                     if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                         if (m_instances[i].getVertexArrays()[0]->getEntity()->isWater()) {
@@ -455,7 +456,7 @@ namespace odfaeg {
                             perPixelLinkedList.setParameter("time", time);
                         }
                         matrices.clear();
-                        std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
+                        tm = m_instances[i].getTransforms();
                         for (unsigned int j = 0; j < tm.size(); j++) {
                             tm[j]->update();
                             std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
@@ -470,8 +471,10 @@ namespace odfaeg {
                             Entity* entity = m_instances[i].getVertexArrays()[0]->getEntity();
                             for (unsigned int j = 0; j < m_instances[i].getVertexArrays().size(); j++) {
                                 if (entity == m_instances[i].getVertexArrays()[j]->getEntity()) {
+
                                     unsigned int p = m_instances[i].getVertexArrays()[j]->getPrimitiveType();
                                     for (unsigned int k = 0; k < m_instances[i].getVertexArrays()[j]->getVertexCount(); k++) {
+                                        //std::cout<<"add vertices : "<<" i : "<<i<<" j : "<<"k : "<<k<<" size  : "<<vbBindlessTex[p].getVertexCount()<<std::endl;
                                         vbBindlessTex[p].append((*m_instances[i].getVertexArrays()[j])[k], (m_instances[i].getMaterial().getTexture() != nullptr) ? m_instances[i].getMaterial().getTexture()->getNativeHandle() : 0);
                                     }
                                 }
@@ -491,7 +494,6 @@ namespace odfaeg {
                             //std::cout<<"no texture"<<std::endl;
                             perPixelLinkedList.setParameter("haveTexture", 0.f);
                         }
-                        frameBuffer.drawInstanced(vb, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
                     }
                 }
                 currentStates.blendMode = sf::BlendNone;
@@ -499,10 +501,13 @@ namespace odfaeg {
                 currentStates.texture = nullptr;
                 for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
                     vbBindlessTex[p].update();
-                    frameBuffer.drawVertexBuffer(vbBindlessTex[p], currentStates);
+                    //std::cout<<"num vertices : "<<vbBindlessTex[p].getVertexCount()<<std::endl;
+                    frameBuffer.drawInstanced(vbBindlessTex[p], vbBindlessTex[p].getPrimitiveType(), 0, vbBindlessTex[p].getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
                     vbBindlessTex[p].clear();
                 }
+                //std::cout<<"nb instances : "<<m_normals.size()<<std::endl;
                 for (unsigned int i = 0; i < m_normals.size(); i++) {
+
                    if (m_normals[i].getAllVertices().getVertexCount() > 0) {
                         //std::cout<<"next frame draw normal"<<std::endl;
                         if (m_normals[i].getMaterial().getTexture() == nullptr) {
@@ -655,10 +660,11 @@ namespace odfaeg {
         bool PerPixelLinkedListRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities) {
             batcher.clear();
             normalBatcher.clear();
+            //std::cout<<"load entities on components"<<std::endl;
 
             //std::cout<<"load tile"<<std::endl;
             for (unsigned int i = 0; i < vEntities.size(); i++) {
-                //std::cout<<"type : "<<vEntities[i]->getType()<<std::endl;
+
                 if ( vEntities[i]->isLeaf()) {
                     //std::cout<<"leaf type : "<<vEntities[i]->getType()<<std::endl;
                     for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
@@ -666,7 +672,7 @@ namespace odfaeg {
                             //std::cout<<"draw instanced"<<std::endl;
                             batcher.addFace( vEntities[i]->getFace(j));
                          } else {
-                            //std::cout<<"add normal"<<std::endl;
+
                             normalBatcher.addFace(vEntities[i]->getFace(j));
                          }
                     }
@@ -674,6 +680,7 @@ namespace odfaeg {
             }
             m_instances = batcher.getInstances();
             m_normals = normalBatcher.getInstances();
+
             visibleEntities = vEntities;
             update = true;
             return true;
