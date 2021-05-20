@@ -8,8 +8,35 @@
 #include <utility>
 #include <memory>
 #include "variant.h"
-#define FUN_PARAM void* p0 =nullptr, void* p1 =nullptr, void* p2 =nullptr, void* p3 =nullptr
-#define FWD_PARAM p0,p1,p2,p3
+
+#define REPEAT(N,M,P) REPEAT##N(M,P)
+#define REPEAT0(M,P)
+#define REPEAT1(M,P) M(0,P)
+#define REPEAT2(M,P) REPEAT1(M,P),M(1,P)
+#define REPEAT3(M,P) REPEAT2(M,P),M(2,P)
+#define REPEAT4(M,P) REPEAT3(M,P),M(3,P)
+#define REPEAT5(M,P) REPEAT4(M,P),M(4,P)
+#define REPEAT6(M,P) REPEAT5(M,P),M(5,P)
+#define REPEAT7(M,P) REPEAT6(M,P),M(6,P)
+#define REPEAT8(M,P) REPEAT7(M,P),M(7,P)
+#define REPEAT9(M,P) REPEAT8(M,P),M(8,P)
+#define REPEAT10(M,P) REPEAT9(M,P),M(9,P)
+#define REPEAT11(M,P) REPEAT10(M,P),M(10,P)
+
+
+
+#define D_FUN_PARAM(n, text) text ## n = nullptr
+#define D_FWD_PARAM(n, text) text ## n
+
+
+#define FUN_PARAM REPEAT(10, D_FUN_PARAM, void* p)
+
+#define FWD_PARAM REPEAT(10, D_FWD_PARAM, p)
+
+
+
+/*#define FUN_PARAM void* p0 = nullptr, void* p1 = nullptr, void* p2 = nullptr, void* p3 = nullptr
+#define FWD_PARAM p0, p1, p2, p3*/
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.

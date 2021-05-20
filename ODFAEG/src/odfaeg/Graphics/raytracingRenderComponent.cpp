@@ -93,7 +93,7 @@ namespace odfaeg {
                                                         uniform sampler2D texture;
                                                         in vec4 frontColor;
                                                         in vec2 fTexCoords;
-                                                        layout(origin_upper_left) in vec4 gl_FragCoord;
+                                                        //layout(origin_upper_left) in vec4 gl_FragCoord;
                                                         layout (location = 0) out vec4 fcolor;
                                                         void main() {
                                                             /*vec4 texel = texture2D(texture, fTexCoords.xy) * frontColor;
@@ -468,8 +468,7 @@ namespace odfaeg {
 
                                                         float t = dot(v0v2, qvec) * invDet;
 
-                                                        intersection = vec4(ray.origin + t * ray.dir, 1);
-                                                        intersection.w = u * wv0 + v * wv1 + (1-u-v) * wv2;
+                                                        intersection = vec4(ray.origin + t * ray.dir, u * wv0 + v * wv1 + (1-u-v) * wv2);
                                                         return true;
                                                       }
                                                       bool intersects (Ray ray, Light light) {
@@ -717,14 +716,8 @@ namespace odfaeg {
                                                           vec4 pixel = vec4(1.0, 0.0, 0.0, 1.0);
                                                           ivec2 pixel_coords = ivec2(gl_GlobalInvocationID.xy);
                                                           Ray ray;
-                                                          float max_x = resolution.x*0.5;
-                                                          float max_y = resolution.y*0.5;
-                                                          float max_z = resolution.z*0.25;
-                                                          ivec2 dims = imageSize(img_output);
-                                                          float vx = (float(pixel_coords.x * 2 - dims.x) / dims.x);
-                                                          float vy = (float(pixel_coords.y * 2 - dims.y) / dims.y);
                                                           ray.origin = vec3(pixel_coords.xy, 0);
-                                                          ray.ext = vec3 (pixel_coords.xy, resolution.z * 0.5);
+                                                          ray.ext = vec3 (pixel_coords.xy, 1);
                                                           ray.dir = ray.ext - ray.origin;
                                                           Pixel depthPixels[MAX_FRAGMENTS];
                                                           Pixel currentPixel;
@@ -733,16 +726,12 @@ namespace odfaeg {
                                                            Triangle tri = triangles[gl_GlobalInvocationID.z];
                                                            for (uint j = 0; j < 3; j++) {
                                                                 vec4 t = projMatrix * viewMatrix * triangles[gl_GlobalInvocationID.z].transform * triangles[gl_GlobalInvocationID.z].position[j];
-                                                                /*t.y = resolution.y - t.y;
-                                                                t = projMatrix * viewMatrix * t;*/
-                                                                if (t.w == 0) {
-                                                                   t.w = 1;
-                                                                }
                                                                 float tmp = t.w;
-                                                                t /= t.w;
+                                                                if (t.w != 0) {
+                                                                    t /= t.w;
+                                                                }
                                                                 tri.position[j] = viewportMatrix * t;
                                                                 tri.position[j].w = tmp;
-                                                                tri.position[j].y = resolution.y - tri.position[j].y;
                                                            }
 
                                                            vec4 intersection;

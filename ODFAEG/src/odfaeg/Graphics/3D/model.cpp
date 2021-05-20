@@ -56,9 +56,7 @@ namespace odfaeg {
                 std::vector<math::Vec3f> verts;
                 for(unsigned int i = 0; i < mesh->mNumFaces; i++)
                 {
-                    Face f (sf::Triangles, emesh->getTransform());
-                    f.setMaterial(mat);
-                    f.getVertexArray().setEntity(emesh);
+                    VertexArray va(sf::Triangles, 0, emesh);
                     aiFace face = mesh->mFaces[i];
                     for(unsigned int j = 0; j < face.mNumIndices; j++) {
                         Vertex vertex;
@@ -67,25 +65,15 @@ namespace odfaeg {
                         vertex.position.z = mesh->mVertices[face.mIndices[j]].z;
                         vertex.texCoords.x = mesh->mTextureCoords[0][face.mIndices[j]].x * mat.getTexture()->getSize().x;
                         vertex.texCoords.y = mesh->mTextureCoords[0][face.mIndices[j]].y * mat.getTexture()->getSize().y;
-                        f.append(vertex,face.mIndices[j]);
+                        va.append(vertex);
                         verts.push_back(math::Vec3f(vertex.position.x, vertex.position.y, vertex.position.z));
                     }
+                    Face f(va,mat,emesh->getTransform());
                     emesh->addFace(f);
                 }
                 std::array<std::array<float, 2>, 3> exts = math::Computer::getExtends(verts);
                 emesh->setSize(math::Vec3f(exts[0][1] - exts[0][0], exts[1][1] - exts[1][0], exts[2][1] - exts[2][0]));
-                if (exts[0][0] < min.x)
-                    min.x = exts[0][0];
-                if (exts[0][1] > max.x)
-                    max.x = exts[0][1];
-                if (exts[1][0] < min.y)
-                    min.y = exts[1][0];
-                if (exts[1][1] > max.y)
-                    max.y = exts[1][1];
-                if (exts[2][0] < min.z)
-                    min.z = exts[2][0];
-                if (exts[2][1] > max.z)
-                    max.z = exts[2][1];
+                emesh->setOrigin(math::Vec3f(emesh->getSize()*0.5));
             }
             std::vector<const Texture*> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
             {

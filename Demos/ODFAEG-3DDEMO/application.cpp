@@ -13,7 +13,7 @@ MyAppli::MyAppli(Vec2f size, std::string title) :
     //Rotate the cube around a vector.
 
     //The default view have a perspective projection, but you can set another view with the setView function.
-    view3D.move(0, 50, 0);
+    view3D.move(0, 10, 0);
     ps = new ParticleSystem(Vec3f(0, 0, 0), Vec3f(100, 100, 100));
     billboard = new BillBoard(view3D, *ps);
     view3D.setConstrains(0, 10);
@@ -84,7 +84,6 @@ void MyAppli::onInit() {
     std::vector<Tile*> tWall;
     Texture* text = const_cast<Texture*>(tm.getResourceByAlias(GRASS));
     text->setRepeated(true);
-    text->loadFromFile("tilesets/Terre2.jpg");
     text->setSmooth(true);
     tGround.push_back(new Tile(text, Vec3f(0, 0, 0), Vec3f(50, 50, 0),sf::IntRect(0, 0, 100*20, 100*20)));
     BoundingBox mapZone (-500, -500, 0, 1000, 1000, 50);
@@ -107,13 +106,22 @@ void MyAppli::onInit() {
     getWorld()->addEntity(light);
     eu = new EntitiesUpdater();
     getWorld()->addWorker(eu);
+    View view = billboard->getView();
+    float z = heightmap->getHeight(Vec2f(view.getPosition().x, view.getPosition().y));
+    loader = g3d::Model();
+    Entity* model = loader.loadModel("tilesets/mesh_puddingmill/puddingmill.obj");
+    model->move(Vec3f(0, 0, z+20));
+    model->setRotation(90, Vec3f(1, 0, 0));
+    model->setShadowCenter(Vec3f(0, 20, 0));
+    std::cout<<"matrix : "<<model->getMatrix()<<std::endl;
+    getWorld()->addEntity(model);
 
     PerPixelLinkedListRenderComponent* frc = new PerPixelLinkedListRenderComponent(getRenderWindow(), 0, "E_CUBE", ContextSettings(0, 0, 4, 4, 6));
     frc->setView(view3D);
     //frc->setVisible(false);
     /*ShadowRenderComponent* src = new ShadowRenderComponent(getRenderWindow(), 1, "E_CUBE+E_3DMODEL");
     src->setView(view);*/
-    RaytracingRenderComponent* frc2 = new RaytracingRenderComponent(getRenderWindow(), 1, "E_BIGTILE",ContextSettings(0, 0, 4, 4, 6));
+    PerPixelLinkedListRenderComponent* frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(), 1, "E_BIGTILE+E_MESH",ContextSettings(0, 0, 4, 4, 6));
     frc2->setView(view3D);
     /*LightRenderComponent* lrc = new LightRenderComponent(getRenderWindow(), 3, "E_BIGTILE+E_CUBE+E_3DMODEL+E_PONCTUAL_LIGHT");
     lrc->setView(view);*/
@@ -129,17 +137,12 @@ void MyAppli::onInit() {
         view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+20));
         getRenderComponentManager().getRenderComponent(i)->setView(view);
     }
-    View view = billboard->getView();
-    float z = heightmap->getHeight(Vec2f(view.getPosition().x, view.getPosition().y));
+
     view.setCenter(Vec3f(view.getPosition().x, view.getPosition().y, z+20));
     billboard->setView(view);
     billboard->setCenter(Vec3f(0, 0, z+20));
     g2d::AmbientLight::getAmbientLight().setColor(sf::Color::White);
-    loader = g3d::Model();
-    Entity* model = loader.loadModel("tilesets/mesh_puddingmill/puddingmill.obj");
-    model->move(Vec3f(0, 0, 20));
-    model->setShadowCenter(Vec3f(0, 20, 0));
-    getWorld()->addEntity(model);
+
 
     getWorld()->update();
 
@@ -147,7 +150,7 @@ void MyAppli::onInit() {
 void MyAppli::onRender(RenderComponentManager* frcm) {
     getWorld()->drawOnComponents("E_CUBE", 0);
     //World::drawOnComponents("E_CUBE+E_3DMODEL", 1);
-    getWorld()->drawOnComponents("E_BIGTILE", 1);
+    getWorld()->drawOnComponents("E_BIGTILE+E_MESH", 1);
     //World::drawOnComponents("E_BIGTILE+E_CUBE+E_3DMODEL+E_PONCTUAL_LIGHT", 3);
     fpsCounter++;
     if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {

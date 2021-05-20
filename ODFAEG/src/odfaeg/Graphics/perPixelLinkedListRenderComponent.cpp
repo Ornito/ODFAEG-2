@@ -384,7 +384,7 @@ namespace odfaeg {
                     GLuint64 handle_texture = glGetTextureHandleARB(allTextures[i]->getNativeHandle());
                     glCheck(glMakeTextureHandleResidentARB(handle_texture));
                     allSamplers.tex[i].handle = handle_texture;
-                    //std::cout<<"add texture : "<<allSamplers.tex[i]<<std::endl;
+                    //std::cout<<"add texture i : "<<i<<" id : "<<allTextures[i]->getNativeHandle()<<std::endl;
                 }
                 perPixelLinkedList.setParameter("textureMatrix", textureMatrices);
                 perPixelLinkedList2.setParameter("textureMatrix", textureMatrices);
@@ -501,7 +501,6 @@ namespace odfaeg {
                 currentStates.texture = nullptr;
                 for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
                     vbBindlessTex[p].update();
-                    //std::cout<<"num vertices : "<<vbBindlessTex[p].getVertexCount()<<std::endl;
                     frameBuffer.drawInstanced(vbBindlessTex[p], vbBindlessTex[p].getPrimitiveType(), 0, vbBindlessTex[p].getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
                     vbBindlessTex[p].clear();
                 }
@@ -528,6 +527,10 @@ namespace odfaeg {
                         }
                         unsigned int p = m_normals[i].getAllVertices().getPrimitiveType();
                         for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
+                            /*if (m_normals[i].getVertexArrays()[0]->getEntity()->getType() == "E_MESH")
+                                std::cout<<"add mesh : "<<m_normals[i].getMaterial().getTexture()->getNativeHandle()<<" "<<p<<std::endl;
+                            if (m_normals[i].getVertexArrays()[0]->getEntity()->getType() == "E_TILE")
+                                std::cout<<"add tile : "<<m_normals[i].getMaterial().getTexture()->getNativeHandle()<<" "<<p<<std::endl;*/
                             vbBindlessTex[p].append(m_normals[i].getAllVertices()[j],(m_normals[i].getMaterial().getTexture() != nullptr) ? m_normals[i].getMaterial().getTexture()->getNativeHandle() : 0);
                         }
 
