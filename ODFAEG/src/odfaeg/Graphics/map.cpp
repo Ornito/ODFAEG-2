@@ -443,8 +443,8 @@ namespace odfaeg {
                                     for (unsigned int n = 0; n < cell->getNbEntitiesInside(); n++) {
                                        Entity* entity = cell->getEntityInside(n);
                                        if (visibleEntities[entity->getRootTypeInt()][entity->getId()] == nullptr) {
-                                           /*if (entity->getRootType() == "E_WALL")
-                                            std::cout<<"wall visible : "<<entity->getRootTypeInt()<<std::endl;*/
+                                           /*if (entity->getRootType() == "E_MONSTER" && entity->getFaces().size() > 0)
+                                               std::cout<<"map tex coords : "<<entity->getFace(0)->getVertexArray()[0].texCoords.x<<","<<entity->getFace(0)->getVertexArray()[0].texCoords.y<<std::endl;*/
                                            visibleEntities[entity->getRootTypeInt()][entity->getId()] = entity;
                                        }
                                     }
@@ -692,6 +692,8 @@ namespace odfaeg {
                         if (visibleEntitiesType[i] != nullptr && found) {
                             Entity* ba = visibleEntitiesType[i]->getRootEntity();
                             if (ba->getBoneAnimationIndex() == visibleEntitiesType[i]->getBoneIndex()) {
+                                /*if (visibleEntitiesType[i]->getRootType() == "E_MONSTER" && visibleEntitiesType[i]->getFaces().size() > 0)
+                                        std::cout<<"bone index : "<<ba->getBoneAnimationIndex()<<" get visible entities texCoords : "<<visibleEntitiesType[i]->getFace(0)->getVertexArray()[0].texCoords.x<<","<<visibleEntitiesType[i]->getFace(0)->getVertexArray()[0].texCoords.y<<std::endl;*/
                                 entities.push_back(visibleEntitiesType[i]);
                             }
                         }

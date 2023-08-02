@@ -40,7 +40,8 @@ namespace odfaeg {
             */
             void onUpdate() {
                 for (unsigned int i = 0; i < anims.size(); i++) {
-
+                   /* if (anims[i]->getRootType() == "E_MONSTER")
+                        std::cout<<"running ? "<<anims[i]->isRunning()<<std::endl;*/
                     if (anims[i]->isRunning() &&
                         anims[i]->getElapsedTime().asSeconds() > anims[i]->getFrameRate()) {
                        /* if (anims[i]->getRootType() == "E_HERO")
@@ -53,6 +54,7 @@ namespace odfaeg {
                         anims[i]->resetClock();
                     }
                 }
+               // std::cout<<"end animations"<<std::endl;
             }
             std::vector<Entity*> getAnims() {
                 return anims;

@@ -1203,12 +1203,12 @@ namespace sorrok {
                 player->setShadowCenter(Vec3f(0, 200, 0));
                 player->setShadowScale(Vec3f(1, -1, 1));
                 for (unsigned int i = 0; i < 8; i++) {
-                    Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), factory);
+                    Anim* animation = factory.make_entity<Anim>(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), factory);
                     for (unsigned int j = 0; j < 8; j++) {
                         sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
-                        Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect, factory);
+                        Tile *tile = factory.make_entity<Tile>(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect, factory);
                         tile->getFaces()[0].getMaterial().setTexId("VLADSWORD");
-                        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight(), factory);
+                        g2d::Decor *frame = factory.make_entity<g2d::Decor>(tile, &g2d::AmbientLight::getAmbientLight(), factory);
                         //frame->setShadowCenter(Vec3f(0, 200, 0));
                         if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
@@ -1223,12 +1223,12 @@ namespace sorrok {
                     au->addAnim(animation);
                 }
                 for (unsigned int i = 0; i < 8; i++) {
-                    Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), factory);
+                    Anim* animation = factory.make_entity<Anim>(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), factory);
                     for (unsigned int j = 0; j < 12; j++) {
                         sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
-                        Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect, factory);
+                        Tile *tile = factory.make_entity<Tile>(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect, factory);
                         tile->getFaces()[0].getMaterial().setTexId("VLADSWORD");
-                        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight(), factory);
+                        g2d::Decor *frame = factory.make_entity<g2d::Decor>(tile, &g2d::AmbientLight::getAmbientLight(), factory);
                         //frame->setShadowCenter(Vec3f(0, 200, 0));
                         if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
@@ -1244,12 +1244,12 @@ namespace sorrok {
                 }
                 textRectWidth = 100;
                 for (unsigned int i = 0; i < 8; i++) {
-                    Anim* animation = new Anim(0.1f, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), factory);
+                    Anim* animation = factory.make_entity<Anim>(0.1f, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), factory);
                     for (unsigned int j = 0; j < 12; j++) {
                         sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
-                        Tile *tile = new Tile(text, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), textRect, factory);
+                        Tile *tile = factory.make_entity<Tile>(text, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), textRect, factory);
                         tile->getFaces()[0].getMaterial().setTexId("VLADSWORD");
-                        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight(), factory);
+                        g2d::Decor *frame = factory.make_entity<g2d::Decor>(tile, &g2d::AmbientLight::getAmbientLight(), factory);
                         //frame->setShadowCenter(Vec3f(0, 200, 0));
                         if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
@@ -1319,12 +1319,12 @@ namespace sorrok {
                 int textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
                 int textWidth = text->getSize().x;
                 for (unsigned int i = 0; i < 8; i++) {
-                    Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), factory);
+                    Anim* animation = factory.make_entity<Anim>(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), factory);
                     for (unsigned int j = 0; j < 8; j++) {
                         sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
-                        Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect, factory);
+                        Tile *tile = factory.make_entity<Tile>(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect, factory);
                         tile->getFaces()[0].getMaterial().setTexId("OGRO");
-                        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight(), factory);
+                        g2d::Decor *frame = factory.make_entity<g2d::Decor>(tile, &g2d::AmbientLight::getAmbientLight(), factory);
                         //frame->setShadowCenter(Vec3f(0, 200, 0));
                         if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
@@ -1339,12 +1339,12 @@ namespace sorrok {
                     au->addAnim(animation);
                 }
                 for (unsigned int i = 0; i < 8; i++) {
-                    Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), factory);
+                    Anim* animation = factory.make_entity<Anim>(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), factory);
                     for (unsigned int j = 0; j < 11; j++) {
                         sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
-                        Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect, factory);
+                        Tile *tile = factory.make_entity<Tile>(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect, factory);
                         tile->getFaces()[0].getMaterial().setTexId("OGRO");
-                        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight(), factory);
+                        g2d::Decor *frame = factory.make_entity<g2d::Decor>(tile, &g2d::AmbientLight::getAmbientLight(), factory);
                         //frame->setShadowCenter(Vec3f(0, 200, 0));
                         //decor->changeGravityCenter(Vec3f(50, 50, 0));
                         if (textRectX + textRectWidth >= textWidth) {
@@ -1361,12 +1361,12 @@ namespace sorrok {
                 }
                 textRectWidth = 100;
                 for (unsigned int i = 0; i < 8; i++) {
-                    Anim* animation = new Anim(0.1f, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), factory);
+                    Anim* animation = factory.make_entity<Anim>(0.1f, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), factory);
                     for (unsigned int j = 0; j < 11; j++) {
                         sf::IntRect textRect(textRectX, textRectY, textRectWidth, textRectHeight);
-                        Tile *tile = new Tile(text, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), textRect, factory);
+                        Tile *tile = factory.make_entity<Tile>(text, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), textRect, factory);
                         tile->getFaces()[0].getMaterial().setTexId("OGRO");
-                        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight(), factory);
+                        g2d::Decor *frame = factory.make_entity<g2d::Decor>(tile, &g2d::AmbientLight::getAmbientLight(), factory);
                         //frame->setShadowCenter(Vec3f(0, 200, 0));
                         //decor->changeGravityCenter(Vec3f(50, 50, 0));
                         if (textRectX + textRectWidth >= textWidth) {
@@ -1406,13 +1406,13 @@ namespace sorrok {
                 int textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
                 int textWidth = text->getSize().x;
                 for (unsigned int i = 0; i < 1; i++) {
-                    Anim* animation = new Anim(0.1f, Vec3f(275, 250, 0), Vec3f(50, 100, 0), factory);
+                    Anim* animation = factory.make_entity<Anim>(0.1f, Vec3f(275, 250, 0), Vec3f(50, 100, 0), factory);
                     for (unsigned int j = 0; j < 8; j++) {
                         sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
-                        Tile *tile = new Tile(text, Vec3f(275, 250, 0), Vec3f(50, 100, 0), textRect, factory);
+                        Tile *tile = factory.make_entity<Tile>(text, Vec3f(275, 250, 0), Vec3f(50, 100, 0), textRect, factory);
                         tile->setName("PNJ");
                         tile->getFaces()[0].getMaterial().setTexId("LUIGI");
-                        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight(), factory);
+                        g2d::Decor *frame = factory.make_entity<g2d::Decor>(tile, &g2d::AmbientLight::getAmbientLight(), factory);
                         //frame->setShadowCenter(Vec3f(0, 200, 0));
                         if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
@@ -1544,7 +1544,6 @@ namespace sorrok {
                         Vec3f d = newPos - actualPos;
                         getWorld()->moveEntity(caracter, d.x, d.y, d.y);
                         getView().move(d.x, d.y, d.y);
-                        getWorld()->update();
                     } else {
                         Vec2f actualPos = Vec2f(caracter->getCenter().x, caracter->getCenter().y);
                         sf::Int64 elapsedTime = caracter->getClkTransfertTime().getElapsedTime().asMicroseconds();
@@ -1582,7 +1581,6 @@ namespace sorrok {
                             getView().move(d.x, d.y, d.y);
                         }
                         getWorld()->moveEntity(caracter, d.x, d.y, d.y);
-                        //getWorld()->update("Entity system updater");
                     }
                     /*if (caracter->getType() == "E_HERO")
                         std::cout<<"caracter position : "<<caracter->getCenter()<<std::endl;*/

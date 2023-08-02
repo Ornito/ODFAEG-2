@@ -551,10 +551,11 @@ namespace odfaeg {
                             perPixelLinkedList2.setParameter("time", time);
                         }
                         unsigned int p = m_normals[i].getAllVertices().getPrimitiveType();
+                        /*if (m_normals[i].getVertexArrays()[0]->getEntity()->getRootType() == "E_MONSTER") {
+                                std::cout<<"tex coords : "<<(*m_normals[i].getVertexArrays()[0])[0].texCoords.x<<","<<(*m_normals[i].getVertexArrays()[0])[0].texCoords.y<<std::endl;
+                            }*/
                         for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
-                            if (m_normals[i].getVertexArrays()[0]->getEntity()->getRootType() == "E_MONSTER") {
-                                std::cout<<"position : "<<m_normals[i].getVetexArrays()[0]->texCoords.x<<","<<m_normals[i].getVertexArrays()[0]->texCoords.y<<std::endl;
-                            }
+
                             vbBindlessTex[p].append(m_normals[i].getAllVertices()[j],(m_normals[i].getMaterial().getTexture() != nullptr) ? m_normals[i].getMaterial().getTexture()->getId() : 0);
                         }
 
@@ -701,7 +702,8 @@ namespace odfaeg {
                          if (vEntities[i]->getDrawMode() == Entity::INSTANCED) {
                             batcher.addFace( vEntities[i]->getFace(j));
                          } else {
-                            //std::cout<<"add face to batch : "<<vEntities[i]->getFace(j)->getTransformMatrix().getMatrix()<<std::endl;
+                            /*if (vEntities[i]->getRootType() == "E_MONSTER")
+                                std::cout<<" ppll tex coords: "<<vEntities[i]->getFace(j)->getVertexArray()[0].texCoords.x<<","<<vEntities[i]->getFace(j)->getVertexArray()[0].texCoords.y<<std::endl;*/
                             normalBatcher.addFace(vEntities[i]->getFace(j));
                          }
                     }
@@ -746,3 +748,4 @@ namespace odfaeg {
         }
         #endif // VULKAN
     }
+}

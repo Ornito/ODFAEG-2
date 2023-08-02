@@ -311,10 +311,14 @@ namespace odfaeg {
                 transform = &tm;
             }
             VertexArray& Face::getVertexArray() {
+                /*if (m_vertices.getEntity() != nullptr && m_vertices.getEntity()->getRootType() == "E_MONSTER")
+                    std::cout<<"face tex coords : "<<m_vertices[0].texCoords.x<<","<<m_vertices[0].texCoords.y<<std::endl;*/
                 return m_vertices;
             }
             void Face::setVertexArray(VertexArray va) {
                 m_vertices = va;
+                /*if (m_vertices.getEntity()->getRootType() == "E_MONSTER")
+                    std::cout<<"face tex coords : "<<m_vertices[0].texCoords.x<<","<<m_vertices[0].texCoords.y<<std::endl;*/
             }
             bool Face::useSameMaterial(Face& other) {
                 return m_material == other.m_material;
@@ -377,6 +381,7 @@ namespace odfaeg {
                 m_transforms.push_back(&tm);
                 m_vertexArrays.push_back(&va);
                 m_shadowProjMatrix.push_back(shadowProjMatrix);
+
                 //shadowProjMatrix.combine(viewMatrix.getMatrix());
                 shadowProjMatrix.combine(tm.getMatrix());
                 for (unsigned int i = 0; i < va.getVertexCount(); i++) {
@@ -474,6 +479,8 @@ namespace odfaeg {
                 instance.setPrimitiveType(face->getVertexArray().getPrimitiveType());
                 instance.setMaterial(face->getMaterial());
                 instance.addVertexArray(face->getVertexArray(),face->getTransformMatrix());
+                /*if (face->getVertexArray().getEntity() != nullptr && face->getVertexArray().getEntity()->getRootType() == "E_MONSTER")
+                    std::cout<<"batcher tex coords : "<<face->getVertexArray()[0].texCoords.x<<","<<face->getVertexArray()[0].texCoords.y<<std::endl;*/
                 /*if (face->getVertexArray().getEntity()->getType() == "E_MESH") {
                 sf::Image img = instance.getMaterial().getTexture()->copyToImage();
                                 for (unsigned int i = 0; i < img.getSize().x; i++) {

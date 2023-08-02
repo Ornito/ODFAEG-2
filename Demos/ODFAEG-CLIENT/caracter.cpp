@@ -140,7 +140,7 @@ namespace sorrok {
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 //anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
                 baseAnimIndex = ATTACKING;
-                BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
+                BoneAnimation::setBoneAnimationIndex(baseAnimIndex + currentAnimIndex);
                 anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
             } else {
                 changeAttribute("isAttacking"+conversionIntString(getId()), Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
@@ -157,7 +157,7 @@ namespace sorrok {
             //anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
             baseAnimIndex = TIPPING_OVER;
             anims[baseAnimIndex + currentAnimIndex]->play(false);
-            BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
+            BoneAnimation::setBoneAnimationIndex(baseAnimIndex + currentAnimIndex);
             damages.clear();
             regen.clear();
             manaRegen.clear();
@@ -166,7 +166,7 @@ namespace sorrok {
         } else if (alive == false && b == true) {
             changeAttribute("isAlive"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
             baseAnimIndex = WALKING;
-            BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
+            BoneAnimation::setBoneAnimationIndex(baseAnimIndex + currentAnimIndex);
             setLife(getMaxLife());
             //World::update();
         }
@@ -256,12 +256,12 @@ namespace sorrok {
             currentAnimIndex = 1;
         this->dir = dir;
         if (previousAnimIndex != baseAnimIndex + currentAnimIndex) {
-            anims[baseAnimIndex + currentAnimIndex]->stop();
+            anims[previousAnimIndex]->stop();
             if (moving)
                 anims[baseAnimIndex + currentAnimIndex]->play(true);
             else
                 anims[baseAnimIndex + currentAnimIndex]->play(false);
-            BoneAnimation::setBoneIndex(baseAnimIndex+currentAnimIndex);
+            BoneAnimation::setBoneAnimationIndex(baseAnimIndex+currentAnimIndex);
         }
         //World::update();
     }
@@ -281,17 +281,20 @@ namespace sorrok {
             }
             this->moving = b;
             if (moving ) {
-
+               /* if (getRootType() == "E_MONSTER")
+                std::cout<<"start moving"<<std::endl;*/
                 changeAttribute("isMoving"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 //anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
                 baseAnimIndex = WALKING;
                 anims[baseAnimIndex + currentAnimIndex]->play(true);
-                BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
+                BoneAnimation::setBoneAnimationIndex(baseAnimIndex + currentAnimIndex);
             } else {
+                /* if (getRootType() == "E_MONSTER")
+                std::cout<<"stop moving"<<std::endl;*/
                 changeAttribute("isMoving"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
-                anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
+                //anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
             }
         }
     }

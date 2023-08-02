@@ -69,20 +69,25 @@ namespace odfaeg {
             this->fr = fr;
         }
         bool Anim::isRunning () {
+
             return running;
         }
         void Anim::play (bool loop) {
             if (getChildren().size() > 1 && !running) {
                 running = true;
+                //std::cout<<"play : "<<running<<std::endl;
                 this->loop = loop;
             }
         }
         void Anim::stop (){
             if (running) {
+
                 running = false;
+                loop = false;
             }
         }
         void Anim::computeNextFrame () {
+
             onFrameChanged();
         }
         void Anim::onFrameChanged() {
@@ -181,11 +186,11 @@ namespace odfaeg {
                                 iva[j].position.z = cva[j].position.z + (nva[j].position.z - cva[j].position.z) * (interpPerc / interpLevels);
                                 iva[j].color = cva[j].color;
                                 iva[j].texCoords = cva[j].texCoords;
-                                std::cout<<"tex coords : "<<iva[j].texCoords.x<<","<<iva[j].texCoords.y<<std::endl;
+                                /*if (currentFrame->getRootType() == "E_MONSTER")
+                                    std::cout<<"interpolation tex coords : "<<interpolatedFrame->getFace(i)->getVertexArray()[j].texCoords.x<<","<<interpolatedFrame->getFace(i)->getVertexArray()[j].texCoords.y<<std::endl;*/
                             }
                             interpolatedFrame->getFace(i)->setMaterial(currentFrame->getFace(i)->getMaterial());
                             interpolatedFrame->getFace(i)->setTransformMatrix(currentFrame->getFace(i)->getTransformMatrix());
-
                         }
                     }
                 }
