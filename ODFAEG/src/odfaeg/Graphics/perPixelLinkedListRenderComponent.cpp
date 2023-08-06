@@ -569,9 +569,79 @@ namespace odfaeg {
 
                         vbBindlessTex[p].update();
                         frameBuffer.drawVertexBuffer(vbBindlessTex[p], currentStates);
+                        vbBindlessTex[p].clear();
                     }
                 }
+                for (unsigned int i = 0; i < m_selected.size(); i++) {
+                    if (m_selected[i].getAllVertices().getVertexCount() > 0) {
+                        //std::cout<<"next frame draw normal"<<std::endl;
+                        if (m_selected[i].getMaterial().getTexture() == nullptr) {
+                            perPixelLinkedList2.setParameter("haveTexture", 0.f);
+                        } else {
+                            math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
+                            //perPixelLinkedList2.setParameter("textureMatrix", texMatrix);
+                            perPixelLinkedList2.setParameter("haveTexture", 1.f);
+                        }
+                        if (m_selected[i].getMaterial().getType() == Material::WATER) {
+                            perPixelLinkedList2.setParameter("water", 1.0f);
+                        } else {
+                            perPixelLinkedList2.setParameter("water", 0.0f);
+                        }
+                        if (core::Application::app != nullptr) {
+                            float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
+                            perPixelLinkedList2.setParameter("time", time);
+                        }
+                        unsigned int p = m_selected[i].getAllVertices().getPrimitiveType();
 
+                        for (unsigned int j = 0; j < m_selected[i].getAllVertices().getVertexCount(); j++) {
+
+                            vbBindlessTex[p].append(m_selected[i].getAllVertices()[j],(m_selected[i].getMaterial().getTexture() != nullptr) ? m_selected[i].getMaterial().getTexture()->getId() : 0);
+                        }
+                    }
+                }
+                currentStates.blendMode = sf::BlendNone;
+                currentStates.shader = &perPixelLinkedList2;
+                currentStates.texture = nullptr;
+                glCheck(glEnable(GL_STENCIL_TEST));
+                glCheck(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
+                glStencilFunc(GL_ALWAYS, 1, 0xFF);
+                glStencilMask(0xFF);
+                for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                        vbBindlessTex[p].update();
+                        frameBuffer.drawVertexBuffer(vbBindlessTex[p], currentStates);
+                        vbBindlessTex[p].clear();
+                }
+                for (unsigned int i = 0; i < m_selectedScale.size(); i++) {
+                    if (m_selectedScale[i].getAllVertices().getVertexCount() > 0) {
+                        //std::cout<<"next frame draw normal"<<std::endl;
+                        perPixelLinkedList2.setParameter("haveTexture", 0.f);
+                        if (m_selectedScale[i].getMaterial().getType() == Material::WATER) {
+                            perPixelLinkedList2.setParameter("water", 1.0f);
+                        } else {
+                            perPixelLinkedList2.setParameter("water", 0.0f);
+                        }
+                        if (core::Application::app != nullptr) {
+                            float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
+                            perPixelLinkedList2.setParameter("time", time);
+                        }
+                        unsigned int p = m_selectedScale[i].getAllVertices().getPrimitiveType();
+
+                        for (unsigned int j = 0; j < m_selectedScale[i].getAllVertices().getVertexCount(); j++) {
+
+                            vbBindlessTex[p].append(m_selectedScale[i].getAllVertices()[j],(m_selectedScale[i].getMaterial().getTexture() != nullptr) ? m_selectedScale[i].getMaterial().getTexture()->getId() : 0);
+                        }
+                    }
+                }
+                currentStates.blendMode = sf::BlendNone;
+                currentStates.shader = &perPixelLinkedList2;
+                currentStates.texture = nullptr;
+                glCheck(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
+                glCheck(glStencilMask(0x00));
+                for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                    vbBindlessTex[p].update();
+                    frameBuffer.drawVertexBuffer(vbBindlessTex[p], currentStates);
+                }
+                glCheck(glDisable(GL_STENCIL_TEST));
                 glCheck(glFinish());
                 glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -693,17 +763,41 @@ namespace odfaeg {
         bool PerPixelLinkedListRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities) {
             batcher.clear();
             normalBatcher.clear();
-
+            selectedBatcher.clear();
+            selectedScaleBatcher.clear();
 
             //std::cout<<"load tile"<<std::endl;
             for (unsigned int i = 0; i < vEntities.size(); i++) {
                 if ( vEntities[i]->isLeaf()) {
+                    Entity* border;
+                    if (vEntities[i]->isSelected())
+                        border = vEntities[i]->clone();
                     for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
-                         if (vEntities[i]->getDrawMode() == Entity::INSTANCED) {
+                         if (vEntities[i]->getDrawMode() == Entity::INSTANCED/* && !vEntities[i]->isSelected()*/) {
                             batcher.addFace( vEntities[i]->getFace(j));
+                         /*} else if (vEntities[i]->isSelected()) {
+                           // std::cout<<"selected add face"<<std::endl;
+                            selectedBatcher.addFace(vEntities[i]->getFace(j));
+                           // std::cout<<"remove texture"<<std::endl;
+                            border->getFace(j)->getMaterial().name = "border";
+                            if (border->getFace(j)->getMaterial().getTexture() != nullptr) {
+                                border->getFace(j)->getMaterial().clearTextures();
+                                border->getFace(j)->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
+                            }
+                            //std::cout<<"get va"<<std::endl;
+                            VertexArray& va = border->getFace(j)->getVertexArray();
+                            //std::cout<<"change color"<<std::endl;
+                            for (unsigned int j = 0; j < va.getVertexCount(); j++) {
+
+                                va[j].color = sf::Color::Cyan;
+                            }
+
+                            border->setOrigin(border->getSize() * 0.5f);
+                            border->setScale(math::Vec3f(1.1f, 1.1f, 1.1f));
+                           // std::cout<<"add to batcher"<<std::endl;
+                            selectedScaleBatcher.addFace(border->getFace(j));*/
+                           // std::cout<<"face added"<<std::endl;
                          } else {
-                            /*if (vEntities[i]->getRootType() == "E_MONSTER")
-                                std::cout<<" ppll tex coords: "<<vEntities[i]->getFace(j)->getVertexArray()[0].texCoords.x<<","<<vEntities[i]->getFace(j)->getVertexArray()[0].texCoords.y<<std::endl;*/
                             normalBatcher.addFace(vEntities[i]->getFace(j));
                          }
                     }
@@ -711,7 +805,9 @@ namespace odfaeg {
             }
             m_instances = batcher.getInstances();
             m_normals = normalBatcher.getInstances();
-
+            /*m_selected = selectedBatcher.getInstances();
+            m_selectedScale = selectedScaleBatcher.getInstances();*/
+            //std::cout<<"instances added"<<std::endl;
             visibleEntities = vEntities;
             update = true;
             return true;

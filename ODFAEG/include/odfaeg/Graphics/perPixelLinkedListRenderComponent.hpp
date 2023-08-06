@@ -90,9 +90,9 @@ namespace odfaeg {
             void compileShaders();
             RectangleShape quad;
             std::vector<std::pair<std::reference_wrapper<Drawable>, RenderStates>> drawables;
-            Batcher batcher, normalBatcher; /**> A group of faces using the same materials and primitive type.*/
+            Batcher batcher, normalBatcher, selectedScaleBatcher, selectedBatcher; /**> A group of faces using the same materials and primitive type.*/
             sf::Color backgroundColor; /**> The background color.*/
-            std::vector<Instance> m_instances, m_normals; /**> Instances to draw. (Instanced rendering.) */
+            std::vector<Instance> m_instances, m_normals, m_selectedScale, m_selected; /**> Instances to draw. (Instanced rendering.) */
             std::vector<std::unique_ptr<Face>> additionalFaces;
             std::vector<Entity*> visibleEntities; /**> Entities loaded*/
             RenderTexture frameBuffer; /**> the frame buffer.*/

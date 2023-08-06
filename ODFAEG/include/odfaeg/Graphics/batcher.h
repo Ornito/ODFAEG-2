@@ -202,6 +202,7 @@ namespace odfaeg {
             void setType(Type type);
             Type getType();
             ~Material();
+            std::string name;
             private :
             std::vector<TextureInfo*> texInfos; /**> The informations about the textures. */
             float specularIntensity, specularPower, refractionFactor;
@@ -212,6 +213,7 @@ namespace odfaeg {
             static std::vector<Material*> sameMaterials;
             bool reflectable, refractable;
             Type type;
+
         };
         /**
           * \file face.h
@@ -451,6 +453,7 @@ namespace odfaeg {
             * \brief clean the instances.
             */
             void clear();
+            void resize();
             unsigned int getNbLayers();
             static const unsigned int nbPrimitiveTypes = 7;
         private :

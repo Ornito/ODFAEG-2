@@ -34,6 +34,7 @@ namespace odfaeg {
 
             id = factory.getUniqueId();
             getTransform().setEntityId(id);
+            selected = false;
         }
         //Setup the static variables when reading entities from an input stream.
         void Entity::onLoad() {

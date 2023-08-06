@@ -883,38 +883,42 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
 
         if (isGuiShown) {
             //std::cout<<"get visible tiles : "<<std::endl;
-            for (unsigned int i = 0; i < selectionBorders.size(); i++) {
+           /* for (unsigned int i = 0; i < selectionBorders.size(); i++) {
                 delete selectionBorders[i];
             }
-            selectionBorders.clear();
+            selectionBorders.clear();*/
             std::vector<Transformable*> entities = rectSelect.getItems();
             //std::cout<<"create borders"<<std::endl;
             for (unsigned int i = 0; i < entities.size(); i++) {
-                if (dynamic_cast<Entity*>(entities[i])) {
+                RectangleShape rect(entities[i]->getSize());
+                rect.setPosition(entities[i]->getPosition());
+                rect.setFillColor(sf::Color::Transparent);
+                rect.setOutlineThickness(5);
+                rect.setOutlineColor(sf::Color::Cyan);
+                window->draw(rect);
+                /*if (dynamic_cast<Entity*>(entities[i])) {
                     Entity* border = dynamic_cast<Entity*>(entities[i])->clone();
-                    border->setName("");
-                    //std::cout<<"add border"<<std::endl;
                     for (unsigned int f = 0; f < border->getNbFaces(); f++) {
-                        //std::cout<<"clear textures"<<std::endl;
                         if (border->getFace(f)->getMaterial().getTexture() != nullptr) {
                             border->getFace(f)->getMaterial().clearTextures();
-                            //std::cout<<"add texture"<<std::endl;
                             border->getFace(f)->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
                         }
                         //std::cout<<"get va"<<std::endl;
                         VertexArray& va = border->getFace(f)->getVertexArray();
                         //std::cout<<"change color"<<std::endl;
                         for (unsigned int j = 0; j < va.getVertexCount(); j++) {
+
                             va[j].color = sf::Color::Cyan;
                         }
                         //std::cout<<"color changed"<<std::endl;
                     }
-                    border->setScale(Vec3f(1.1f, 1.1f, 1.0f));
+                    border->setOrigin(border->getSize() * 0.5f);
+                    border->setScale(Vec3f(1.1f, 1.1f, 1.1f));
                     selectionBorders.push_back(border);
-                }
+                }*/
             }
             //std::cout<<"tiles size : "<<tiles.size()<<std::endl;
-            glCheck(glEnable(GL_STENCIL_TEST));
+            /*glCheck(glEnable(GL_STENCIL_TEST));
             glCheck(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
             glStencilFunc(GL_ALWAYS, 1, 0xFF);
             glStencilMask(0xFF);
@@ -939,7 +943,7 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
             }
             //std::cout<<"borders drawn"<<std::endl;
             glCheck(glDisable(GL_STENCIL_TEST));
-            glEnable(GL_ALPHA_TEST);
+            glEnable(GL_ALPHA_TEST);*/
             if (tabPane->getSelectedTab() == "Collisions") {
                 //window->setView(defaultView);
                 BoundingBox view = currentView.getViewVolume();
@@ -1121,6 +1125,10 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
         }
         if (event.keyboard.control && event.keyboard.code == IKeyboard::A) {
             if (getWorld()->getCurrentSceneManager() != nullptr) {
+                for (unsigned int i = 0; i < rectSelect.getItems().size(); i++) {
+                    if (dynamic_cast<Entity*>(rectSelect.getItems()[i]))
+                        dynamic_cast<Entity*>(rectSelect.getItems()[i])->setSelected(false);
+                }
                 rectSelect.getItems().clear();
                 //std::cout<<"select get visible entities"<<std::endl;
                 std::vector<Entity*> entities = getWorld()->getEntities(taSelectExpression->getText());
@@ -1129,7 +1137,8 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                     //std::cout<<"type : "<<entities[i]->getType()<<std::endl<<"select pos : "<<rectSelect.getSelectionRect().getPosition()<<"select size : "<<rectSelect.getSelectionRect().getSize()<<"globalbounds pos : "<<entities[i]->getGlobalBounds().getPosition()<<"globalbounds size : "<<entities[i]->getGlobalBounds().getSize()<<std::endl;
                     //if (dynamic_cast<Tile*>(entities[i])) {
                         //std::cout<<"add tile : "<<i<<std::endl;
-                        rectSelect.addItem(entities[i]);
+
+                        entities[i]->setSelected(true);
                         //std::cout<<"border added"<<std::endl;
                     //}
                 }
@@ -1137,7 +1146,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                     selectedObject = rectSelect.getItems()[0];
                 if (dynamic_cast<Entity*>(selectedObject)) {
                     Entity* selectedEntity = dynamic_cast<Entity*>(selectedObject);
-                    std::cout<<"type : "<<selectedEntity->getType()<<std::endl;
+                    selectedEntity->setSelected(true);
                     if (selectedEntity->getType() == "E_TILE") {
                         displayTileInfos(selectedEntity);
                     } else if (selectedEntity->getType() == "E_BIGTILE") {
@@ -1356,6 +1365,11 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     }
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_RELEASED && event.mouseButton.button == IMouse::Right) {
         if (showRectSelect && !pScriptsFiles->isPointInside(mousePosition)) {
+            for (unsigned int i = 0; i < rectSelect.getItems().size(); i++) {
+                if (dynamic_cast<Entity*>(rectSelect.getItems()[i])) {
+                    dynamic_cast<Entity*>(rectSelect.getItems()[i])->setSelected(false);
+                }
+            }
             rectSelect.getItems().clear();
             BoundingBox box = rectSelect.getSelectionRect();
             Vec3f savedPos = box.getPosition();
@@ -1372,6 +1386,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                         //if (dynamic_cast<Tile*>(entities[i])) {
                             //std::cout<<"add tile : "<<i<<std::endl;
                             rectSelect.addItem(entities[i]);
+                            entities[i]->setSelected(true);
                             //std::cout<<"border added"<<std::endl;
                         //}
                     }
@@ -1469,7 +1484,9 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
         if (selectBpPoints.size() > 2 && selectBpPoints[0].intersects(selectBpPoints[selectBpPoints.size()-1], info)) {
             BoundingPolyhedron bp;
             for (unsigned int i = 0; i < selectBpPoints.size()-2; i++) {
-                bp.addTriangle(getRenderWindow().mapPixelToCoords(selectBpPoints[0].getCenter()), getRenderWindow().mapPixelToCoords(selectBpPoints[i+1].getCenter()), getRenderWindow().mapPixelToCoords(selectBpPoints[i+2].getCenter()));
+                bp.addTriangle(getRenderWindow().mapPixelToCoords(Vec3f(selectBpPoints[0].getCenter().x, getRenderWindow().getSize().y - selectBpPoints[0].getCenter().y, selectBpPoints[0].getCenter().z)),
+                               getRenderWindow().mapPixelToCoords(Vec3f(selectBpPoints[i+1].getCenter().x, getRenderWindow().getSize().y - selectBpPoints[i+1].getCenter().y, selectBpPoints[i+1].getCenter().z)),
+                               getRenderWindow().mapPixelToCoords(Vec3f(selectBpPoints[i+2].getCenter().x, getRenderWindow().getSize().y - selectBpPoints[i+2].getCenter().y, selectBpPoints[i+2].getCenter().z)));
             }
             tmpBps.push_back(bp);
             isSelectingPolyhedron = false;
@@ -1512,7 +1529,7 @@ void ODFAEGCreator::onExec() {
         if (alignToGrid)
             view.move(-gridWidth, 0, 0);
         else
-            view.move(speed * getClock("LoopTime").getElapsedTime().asSeconds(), 0, 0);
+            view.move(-speed * getClock("LoopTime").getElapsedTime().asSeconds(), 0, 0);
         getRenderWindow().setView(view);
         for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
             if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
@@ -1523,7 +1540,7 @@ void ODFAEGCreator::onExec() {
                     if (alignToGrid)
                         cpntView.move(cpntView.getLeft(), -gridWidth);
                     else
-                        cpntView.move(cpntView.getLeft(), speed * getClock("LoopTime").getElapsedTime().asSeconds());
+                        cpntView.move(cpntView.getLeft(), -speed * getClock("LoopTime").getElapsedTime().asSeconds());
                     getRenderComponentManager().getRenderComponent(i)->setView(cpntView);
                 }
             }

@@ -247,6 +247,8 @@ namespace odfaeg {
                    for (unsigned int i = 0; i < sameMaterials.size(); i++) {
                        for (unsigned int j = 0; j < materials.size(); j++) {
                             if (materials[j] != nullptr && *sameMaterials[i] == *materials[j]) {
+                                if (name == "border")
+                                    std::cout<<"id : "<<i<<" nb materials : "<<core::Application::app->getNbMaterials()<<std::endl;
                                 materials[j]->id = i;
                             }
                        }
@@ -356,9 +358,11 @@ namespace odfaeg {
                 material = &mat;
             }
             void Instance::addVertexArray(VertexArray& va, TransformMatrix& tm) {
+                //std::cout<<"push transform"<<std::endl;
                 m_transforms.push_back(&tm);
+                //std::cout<<"transform pushed"<<std::endl;
                 m_vertexArrays.push_back(&va);
-
+                //std::cout<<"va pushed"<<std::endl;
                 //m_indexes.push_back(std::vector<unsigned int>());
                 for (unsigned int i = 0; i < va.getVertexCount(); i++) {
                     /*if (va.getEntity()->getRootType() == "E_HERO")
@@ -376,6 +380,7 @@ namespace odfaeg {
                         allIndexes.push_back(va.m_indexes[i]);*/
                     //}
                 }
+                //std::cout<<"vertices transformed"<<std::endl;
             }
             void Instance::addVertexShadowArray (VertexArray& va, TransformMatrix& tm, ViewMatrix& viewMatrix, TransformMatrix shadowProjMatrix) {
                 m_transforms.push_back(&tm);
@@ -474,11 +479,17 @@ namespace odfaeg {
             void Batcher::addFace(Face* face) {
                 /*if (face->getVertexArray().getEntity() != nullptr && face->getVertexArray().getEntity()->getRootType() == "E_BIGTILE")
                         std::cout<<"add E_TILE : "<<face->getVertexArray().getPrimitiveType() * core::Application::app->getNbMaterials() + face->getMaterial().getId()<<std::endl;*/
-                //std::cout<<"instance id : "<<face->getVertexArray().getPrimitiveType() * Material::getNbMaterials() + face->getMaterial().getId()<<std::endl;
+
+                //std::cout<<"get instance"<<std::endl;
                 Instance& instance = instances[face->getVertexArray().getPrimitiveType() * core::Application::app->getNbMaterials() + face->getMaterial().getId()];
+                //std::cout<<"set primitive type : "<<std::endl;
                 instance.setPrimitiveType(face->getVertexArray().getPrimitiveType());
+                //std::cout<<"set material"<<std::endl;
                 instance.setMaterial(face->getMaterial());
+                //std::cout<<"add vertex array"<<std::endl;
                 instance.addVertexArray(face->getVertexArray(),face->getTransformMatrix());
+                //std::cout<<"vertex array added"<<std::endl;
+                //std::cout<<"size : "<<instances.size()<<" id : "<<face->getVertexArray().getPrimitiveType() * core::Application::app->getNbMaterials() + face->getMaterial().getId()<<std::endl;
                 /*if (face->getVertexArray().getEntity() != nullptr && face->getVertexArray().getEntity()->getRootType() == "E_MONSTER")
                     std::cout<<"batcher tex coords : "<<face->getVertexArray()[0].texCoords.x<<","<<face->getVertexArray()[0].texCoords.y<<std::endl;*/
                 /*if (face->getVertexArray().getEntity()->getType() == "E_MESH") {
@@ -528,6 +539,7 @@ namespace odfaeg {
                 instance.setPrimitiveType(face->getVertexArray().getPrimitiveType());
                 instance.setMaterial(face->getMaterial());
                 instance.addVertexShadowArray(face->getVertexArray(),face->getTransformMatrix(), viewMatrix, shadowProjMatrix);
+                //std::cout<<"size : "
                 /*bool added = false;
                 for (unsigned int i = 0; i < instances.size() && !added; i++) {
                     if (instances[i].getMaterial() == face->getMaterial()
@@ -559,9 +571,14 @@ namespace odfaeg {
             unsigned int Batcher::getNbLayers() {
                 return nbLayers;
             }
+            void Batcher::resize() {
+
+                instances.resize(nbPrimitiveTypes * core::Application::app->getNbMaterials());
+            }
             void Batcher::clear() {
                 instances.clear();
                 //std::cout<<"nb instances : "<<nbPrimitiveTypes * Material::getNbMaterials()<<std::endl;
+
                 instances.resize(nbPrimitiveTypes * core::Application::app->getNbMaterials());
                 nbLayers = 0;
                 //tmpZPos.clear();
