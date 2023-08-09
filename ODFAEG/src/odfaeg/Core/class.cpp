@@ -57,6 +57,7 @@ namespace odfaeg {
             //browse every header files.
             for (unsigned int i = 0; i < files.size() && !found; i++) {
                 //Read files.
+
                 ifstream ifs(files[i]);
                 if (ifs) {
                     std::string line;
@@ -122,6 +123,7 @@ namespace odfaeg {
             int j= 0;
             //If we have found the class we check informations about the class.
             if (found) {
+
                 //check each namespaces englobing the class.
                 while(fileContent.find("namespace ") != std::string::npos && found) {
                     //Find the namespace pos.

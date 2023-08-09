@@ -39,7 +39,16 @@ namespace sorrok {
         manaMax = 100;
         mana = 100;
     }
-    Entity* Caracter::clone() {
+    Entity* Caracter::copy(Caracter* other) {
+        GameObject::copy(other);
+        other->currentAnimIndex = currentAnimIndex;
+        other->name = name;
+        other->classs = classs;
+        other->level = level;
+        other->speed = speed;
+        other->moving = moving;
+        other->dir = dir;
+
     }
     float Caracter::getRegenManaSpeed() {
         return regenManaSpeed;
