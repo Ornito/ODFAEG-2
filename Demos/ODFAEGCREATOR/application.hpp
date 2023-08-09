@@ -111,6 +111,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void addId (unsigned int id);
     bool isAlreadyCalled(unsigned int id);
     void setIsCalled(unsigned int id);
+    unsigned int getCurrentId();
     std::vector<odfaeg::physic::BoundingPolyhedron> getTmpBps();
     enum Fonts {
         Serif
@@ -134,7 +135,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         *taRotMin, *taRotMax, *taTexIndexMin, *taTexIndexMax, *taScaleMinX, *taScaleMinY, *taScaleMinZ, *taScaleMaxX, *taScaleMaxY, *taScaleMaxZ, *taColor1, *taColor2,
         *taParticleSystemUpdaterName, *taTileWidth, *taTileHeight, *taZoneXPos, *taZoneYPos, *taZoneZPos, *taZoneWidth, *taZoneHeight, *taZoneDepth;
         odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType, *dpSelectEm, *dpSelectComponent, *dpSelectParent, *dpSelectAU, *dpSelectPPType, *dpSelectPSU, *dpSelectClass, *dpSelectFunction, *dpSelectMClass,
-        *dpSelectMFunction, *dpSelectRClass, *dpSelectPointerType, *dpSelectViewPerspective, *dpScriptBaseClass;
+        *dpSelectMFunction, *dpSelectRClass, *dpSelectPointerType, *dpSelectViewPerspective, *dpScriptBaseClass, *dpSelectWallType;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight, *lOrigX, *lOrigY, *lOrigZ, *lOrigin;
         odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight, *taWallType, *taIntensity, *taQuality, *taWindowPos, *taWindowSize, *taWindowTitle, *taWindowName, *taObjectName, *taMObjectName, *taRObjectName, *taSelectExpression;
         odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial, *pShadows, *pCollisions, *pComponent, *pObjectsParameters, *pMObjectsParameters;
@@ -159,7 +160,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage, *lParent;
         odfaeg::graphic::gui::TabPane* tabPane;
         odfaeg::graphic::gui::Button* bChooseText, *bAddTexRect, *bCreateComponent, *bCreateScene, *bCreateEntitiesUpdater, *bCreateAppli, *bCreateAnimUpdater, *bCreateEmitter, *bCreateParticleSystemUpdater, *bCreateWindow, *bCreateObject, *bModifyObject,
-        *bGenerateTerrain, *bRemoveObject;
+        *bGenerateTerrain, *bRemoveObject, *bAddTileGround, *bAddWall, *bSetTexRect;
         odfaeg::graphic::Shape* sTextRect;
         odfaeg::core::StateStack stateStack;
         ODFAEGCreatorStateExecutor se;
@@ -185,7 +186,9 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::vector<odfaeg::physic::BoundingPolyhedron> tmpBps;
         odfaeg::graphic::VertexArray bpLines;
         odfaeg::graphic::VertexArray bpPoints;
-        bool isSelectingPolyhedron;
+        bool isSelectingPolyhedron, isGeneratingTerrain;
         std::vector<std::string> argsTps;
+        std::vector<odfaeg::graphic::Tile*> ground;
+        std::vector<odfaeg::graphic::g2d::Wall*> walls;
 };
 #endif

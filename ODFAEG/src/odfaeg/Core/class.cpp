@@ -15,6 +15,7 @@ namespace odfaeg {
             for (unsigned int i = 0; i < files.size(); i++) {
                 //Read header files.
                 ifstream ifs(files[i]);
+
                 if (ifs) {
                     std::string line;
                     //Read file's lines.
@@ -237,6 +238,7 @@ namespace odfaeg {
 
             //The constructor definition can be at the same file than the constructor declaration, in this case, we need to split the string.
             std::vector<std::string> parts = split(fileContent, "}");
+            //std::cout<<"file content : "<<fileContent<<std::endl;
             for (unsigned int i = 0; i < parts.size(); i++) {
                 unsigned int nb = 0;
                 //Count the number of sub blocks (introduced by if, while, etc...) and remove they definition.

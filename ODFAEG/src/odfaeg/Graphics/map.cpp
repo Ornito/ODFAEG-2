@@ -252,6 +252,7 @@ namespace odfaeg {
                             int i = math::Math::random(tGround.size());
                             tile = tGround[i]->clone();
                             tile->setPosition(math::Vec3f(pos.x, pos.y, pos.y + tile->getSize().y * 0.5f));
+                            //std::cout<<"add tile : "<<tile->getPosition()<<std::endl;
                         } else {
                             tile = factory.make_entity<Tile>(nullptr, math::Vec3f(pos.x, pos.y, pos.y + tileSize.y * 0.5f), math::Vec3f(tileSize.x, tileSize.y, 0), sf::IntRect(0, 0, tileSize.x, tileSize.y), factory);
                         }
