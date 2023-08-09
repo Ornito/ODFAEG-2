@@ -15,4 +15,10 @@ namespace sorrok {
     bool Pnj::isMonster() {
         return false;
     }
+    Entity* Pnj::clone() {
+        Pnj* pnj = factory.make_entity<Pnj>(factory);
+        Caracter::copy(pnj);
+        pnj->quests = quests;
+        return pnj;
+    }
 }

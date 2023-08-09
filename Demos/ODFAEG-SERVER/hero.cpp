@@ -68,6 +68,21 @@ namespace sorrok {
     std::vector<Skill> Hero::getSkills() {
         return skills;
     }
+    Entity* Hero::clone() {
+        Hero* h = factory.make_entity<Hero>(factory);
+        Caracter::copy(h);
+        h->factionName = factionName;
+        h->sex = sex;
+        h->hairColor = hairColor;
+        h->eyesColor = eyesColor;
+        h->skinColor = skinColor;
+        h->faceType = faceType;
+        h->xp = xp;
+        h-> xpReqForNextLevel = xpReqForNextLevel;
+        h->moveFromKeyboard = moveFromKeyboard;
+        h->user = user;
+        return h;
+    }
     Hero::~Hero() {
     }
 }

@@ -16,6 +16,7 @@ namespace sorrok {
                 Caracter::vtserialize(ar);
                 ar(quests);
             }
+            odfaeg::graphic::Entity* clone();
         private :
             std::vector<Quest> quests;
     };

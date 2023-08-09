@@ -39,6 +39,7 @@ namespace sorrok {
         std::vector<Skill> getSkills();
         void addItem(Item item);
         std::map<Item::Type, std::vector<Item>>& getInventory();
+        odfaeg::graphic::Entity* clone();
         ~Hero();
     private :
         std::string factionName, sex, hairColor, eyesColor, skinColor, faceType;

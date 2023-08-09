@@ -39,7 +39,7 @@ namespace sorrok {
         manaMax = 100;
         mana = 100;
     }
-    Entity* Caracter::copy(Caracter* other) {
+    void Caracter::copy(Caracter* other) {
         GameObject::copy(other);
         other->currentAnimIndex = currentAnimIndex;
         other->name = name;
@@ -48,7 +48,32 @@ namespace sorrok {
         other->speed = speed;
         other->moving = moving;
         other->dir = dir;
-
+        other->life = life;
+        other->maxLife = maxLife;
+        other->range = range;
+        other->fleeRate = fleeRate;
+        other->criticalChanceRate = criticalChanceRate;
+        other->criticalAddDamagesRate = criticalAddDamagesRate;
+        other->defMin = defMin;
+        other->defMax = defMax;
+        other->attackSpeed = attackSpeed;
+        other->attackMin = attackMin;
+        other->attackMax = attackMax;
+        other->fightingMode = fightingMode;
+        other->attacking = attacking;
+        other->attacked = attacked;
+        other->agressif = agressif;
+        other->alive = alive;
+        other->regenHpSpeed = regenHpSpeed;
+        other->regenHpAmountMin = regenHpAmountMin;
+        other->regenHpAmountMax = regenHpAmountMax;
+        other->regenManaAmountMin = regenManaAmountMin;
+        other->regenManaAmountMax = regenManaAmountMax;
+        other->regenManaSpeed = regenManaSpeed;
+        other->focusedCaracter = focusedCaracter;
+        other->timeBefLastRespawn = timeBefLastRespawn;
+        other->manaMax = manaMax;
+        other->mana = mana;
     }
     float Caracter::getRegenManaSpeed() {
         return regenManaSpeed;

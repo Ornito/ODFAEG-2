@@ -72,6 +72,16 @@ namespace sorrok {
     unsigned int Monster::getXp() {
         return xp;
     }
+    Entity* Monster::clone() {
+        Monster* m = factory.make_entity<Monster>(factory);
+        Caracter::copy(m);
+        m->zone = zone;
+        m->time1 = time1;
+        m->time2 = time2;
+        m->time3 = time3;
+        m->xp = xp;
+        return m;
+    }
     Monster::~Monster() {
     }
 }

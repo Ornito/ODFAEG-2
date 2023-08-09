@@ -32,6 +32,7 @@ namespace sorrok {
         odfaeg::math::Vec3f getSavedPos();
         void setXp (unsigned int xp);
         unsigned int getXp();
+        odfaeg::graphic::Entity* clone();
         ~Monster();
     private :
         sf::Time time1, time2, time3;
