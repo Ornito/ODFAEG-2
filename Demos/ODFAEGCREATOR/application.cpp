@@ -15,6 +15,8 @@ using namespace odfaeg::window;
 ODFAEGCreator::ODFAEGCreator(sf::VideoMode vm, std::string title) :
 Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 8, 4, 4, 6)), isGuiShown (false), cursor(10), se(this), rtc("create") {
     //Command::sname = "modified by process";
+    isSelectingPolyhedron = false;
+    isSecondClick = false;
     dpSelectTexture = nullptr;
     dpSelectEm = nullptr;
     sTextRect = nullptr;
@@ -1028,8 +1030,8 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
         }
         window->setView(defaultView);
         if (isSelectingPolyhedron) {
-            window->draw(bpLines);
             window->draw(bpPoints);
+            window->draw(bpLines);
         }
         if (showRectSelect) {
             window->draw(rectSelect);
@@ -1484,39 +1486,43 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
         view.setPerspective(-event.window.data1 * 0.5f, event.window.data1 * 0.5f, -event.window.data2 * 0.5f, event.window.data2 * 0.5f, getRenderWindow().getView().getViewport().getPosition().z, getRenderWindow().getView().getViewport().getSize().z);
         getRenderWindow().setView(view);
     }
-    if (wCreateNewObject == window && isSelectingPolyhedron && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_RELEASED && event.mouseButton.button == IMouse::Right) {
-        sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
-        int x = mousePosition.x;
-        int y = mousePosition.y;
-        bpPoints.append(Vertex(sf::Vector3f(x, y, getRenderWindow().getDefaultView().getPosition().z), sf::Color::Red));
-        bpLines.setPrimitiveType(sf::LinesStrip);
-        if (bpPoints.getVertexCount() == 2) {
-            bpLines.append(Vertex(sf::Vector3f(bpPoints[0].position.x, bpPoints[0].position.y, bpPoints[0].position.z), sf::Color::Red));
-            bpLines.append(Vertex(sf::Vector3f(bpPoints[1].position.x, bpPoints[1].position.y, bpPoints[1].position.z), sf::Color::Red));
+    if (&getRenderWindow() == window && isSelectingPolyhedron && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_RELEASED && event.mouseButton.button == IMouse::Left) {
+        if (isSecondClick) {
+            sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
+            int x = IMouse::getPosition(getRenderWindow()).x;
+            int y = IMouse::getPosition(getRenderWindow()).y;
+            bpPoints.append(Vertex(sf::Vector3f(x - getRenderWindow().getSize().x*0.5f, y-getRenderWindow().getSize().y*0.5f, getRenderWindow().getDefaultView().getPosition().z), sf::Color::Red));
+            bpLines.setPrimitiveType(sf::LinesStrip);
+            if (bpPoints.getVertexCount() == 2) {
+                bpLines.append(Vertex(sf::Vector3f(bpPoints[0].position.x, bpPoints[0].position.y, bpPoints[0].position.z), sf::Color::Red));
+                bpLines.append(Vertex(sf::Vector3f(bpPoints[1].position.x, bpPoints[1].position.y, bpPoints[1].position.z), sf::Color::Red));
 
-        } else if (bpPoints.getVertexCount() > 2) {
-            unsigned int last = bpPoints.getVertexCount() - 1;
-            bpLines.append(Vertex(sf::Vector3f(bpPoints[last].position.x, bpPoints[last].position.y, bpPoints[last].position.z), sf::Color::Red));
-        }
-        BoundingSphere bp (Vec3f(x, y, 0), 5);
-        selectBpPoints.push_back(bp);
-        CollisionResultSet::Info info;
-        if (selectBpPoints.size() > 2 && selectBpPoints[0].intersects(selectBpPoints[selectBpPoints.size()-1], info)) {
-            BoundingPolyhedron bp;
-            for (unsigned int i = 0; i < selectBpPoints.size()-2; i++) {
-                bp.addTriangle(getRenderWindow().mapPixelToCoords(Vec3f(selectBpPoints[0].getCenter().x, getRenderWindow().getSize().y - selectBpPoints[0].getCenter().y, selectBpPoints[0].getCenter().z)),
-                               getRenderWindow().mapPixelToCoords(Vec3f(selectBpPoints[i+1].getCenter().x, getRenderWindow().getSize().y - selectBpPoints[i+1].getCenter().y, selectBpPoints[i+1].getCenter().z)),
-                               getRenderWindow().mapPixelToCoords(Vec3f(selectBpPoints[i+2].getCenter().x, getRenderWindow().getSize().y - selectBpPoints[i+2].getCenter().y, selectBpPoints[i+2].getCenter().z)));
+            } else if (bpPoints.getVertexCount() > 2) {
+                unsigned int last = bpPoints.getVertexCount() - 1;
+                bpLines.append(Vertex(sf::Vector3f(bpPoints[last].position.x, bpPoints[last].position.y, bpPoints[last].position.z), sf::Color::Red));
             }
-            tmpBps.push_back(bp);
-            isSelectingPolyhedron = false;
-            wCreateNewObject->setVisible(true);
-            getRenderComponentManager().setEventContextActivated(true, *wCreateNewObject);
-            tScriptEdit->setEventContextActivated(false);
-            bpLines.clear();
-            bpPoints.clear();
-            selectBpPoints.clear();
+            BoundingSphere bs (Vec3f(x, y, 0), 5);
+            selectBpPoints.push_back(bs);
+            CollisionResultSet::Info info;
+            if (selectBpPoints.size() > 2 && selectBpPoints[0].intersects(selectBpPoints[selectBpPoints.size()-1], info)) {
+                BoundingPolyhedron bp;
+                for (unsigned int i = 0; i < selectBpPoints.size()-2; i++) {
+                    bp.addTriangle(getRenderWindow().mapPixelToCoords(Vec3f(selectBpPoints[0].getCenter().x, getRenderWindow().getSize().y - selectBpPoints[0].getCenter().y, selectBpPoints[0].getCenter().z)),
+                                   getRenderWindow().mapPixelToCoords(Vec3f(selectBpPoints[i+1].getCenter().x, getRenderWindow().getSize().y - selectBpPoints[i+1].getCenter().y, selectBpPoints[i+1].getCenter().z)),
+                                   getRenderWindow().mapPixelToCoords(Vec3f(selectBpPoints[i+2].getCenter().x, getRenderWindow().getSize().y - selectBpPoints[i+2].getCenter().y, selectBpPoints[i+2].getCenter().z)));
+                }
+                tmpBps.push_back(bp);
+                isSelectingPolyhedron = false;
+                isSecondClick = false;
+                wCreateNewObject->setVisible(true);
+                getRenderComponentManager().setEventContextActivated(true, *wCreateNewObject);
+                tScriptEdit->setEventContextActivated(false);
+                bpLines.clear();
+                bpPoints.clear();
+                selectBpPoints.clear();
+            }
         }
+        isSecondClick = true;
     }
     oldX = IMouse::getPosition(getRenderWindow()).x;
     oldY = IMouse::getPosition(getRenderWindow()).y;
@@ -1634,7 +1640,7 @@ void ODFAEGCreator::onExec() {
                     std::cout<<"parent : "<<entity->getChildren()[j]->getParent()<<","<<entity<<std::endl;
                 }*/
                 //std::cout<<"sname from process : "<<Command::sname<<std::endl;
-                std::cout<<"entity : "<<entity<<std::endl;
+
                 entity->setExternal(true);
                 getWorld()->addEntity(entity);
                 std::vector<Entity*> entities=getWorld()->getChildrenEntities(entity->getType());
@@ -2893,7 +2899,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         std::vector<std::string> argValues;
         unsigned int j = 0;
         for (unsigned int i = 0; i < argsTps.size(); i++) {
-            if (argsTps[i] == "BoundingPolyhedron") {
+            if (argsTps[i] == "odfaeg::physic::BoundingPolyhedron") {
                 argValues.push_back("c->getTmpBps()["+conversionIntString(currentBp)+"];\n");
                 currentBp++;
             } else {
@@ -3021,7 +3027,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 toInsert += "           }\n";
                 toInsert += "       }\n";
                 toInsert += "   }\n";
-                currentId++;
+
             } else {
                 std::vector<std::string> parts2 = split(dpSelectMFunction->getSelectedItem(), " ");
                 if (cbIsPointer->isChecked()) {
@@ -3040,6 +3046,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         std::string errors = rtc.getCompileErrors();
         //std::cout<<"errors : "<<rtc.getCompileErrors();
         rtc.run<void>("createObject", this, false);
+        currentId++;
         wCreateNewObject->setVisible(false);
         getRenderComponentManager().setEventContextActivated(false, *wCreateNewObject);
         tScriptEdit->setEventContextActivated(true);
@@ -6048,7 +6055,7 @@ void ODFAEGCreator::onSelectedFunctionChanged(DropDownList* dp) {
                 Node* node = new Node(argsNames[i], label, Vec2f(0, 0), Vec2f(0.25, 0.025),rootObjectParams.get());
                 label->setParent(pObjectsParameters);
                 pObjectsParameters->addChild(label);
-                if (argsTypes[i] == "BoundingPolyhedron") {
+                if (argsTypes[i] == "odfaeg::physic::BoundingPolyhedron") {
                     Button* button = new Button(Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "Select Area", 15, *wCreateNewObject);
                     node->addOtherComponent(button, Vec2f(0.75, 0.025));
                     button->setParent(pObjectsParameters);

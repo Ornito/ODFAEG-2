@@ -186,7 +186,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::vector<odfaeg::physic::BoundingPolyhedron> tmpBps;
         odfaeg::graphic::VertexArray bpLines;
         odfaeg::graphic::VertexArray bpPoints;
-        bool isSelectingPolyhedron, isGeneratingTerrain;
+        bool isSelectingPolyhedron, isGeneratingTerrain, isSecondClick;
         std::vector<std::string> argsTps;
         std::vector<odfaeg::graphic::Tile*> ground;
         std::vector<odfaeg::graphic::g2d::Wall*> walls;

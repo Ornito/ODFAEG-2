@@ -57,6 +57,7 @@ namespace odfaeg {
         {
             if (m_window && m_window->pollEvent(event))
             {
+
                 return m_window->filterEvent(event);
             }
             else
