@@ -360,6 +360,18 @@ namespace sorrok {
     void Caracter::restartRegenMana() {
         clockRegenMana.restart();
     }
+    void Caracter::setAttackMin(int attackMin) {
+        this->attackMin = attackMin;
+    }
+    void Caracter::setAttackMax(int attackMax) {
+        this->attackMax = attackMax;
+    }
+    void Caracter::setDefMin(int defMin) {
+        this->defMin = defMin;
+    }
+    void Caracter::setDefMax(int defMax) {
+        this->defMax = defMax;
+    }
     Caracter::~Caracter() {
     }
 }

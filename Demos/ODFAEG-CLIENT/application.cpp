@@ -52,7 +52,7 @@ namespace sorrok {
         }
     }
     void MyAppli::onIconMoved(Icon* icon) {
-        //std::cout<<"move icon"<<std::endl;
+        std::cout<<"move icon : "<<IMouse::getPosition(getRenderWindow()).x<<","<<IMouse::getPosition(getRenderWindow()).y<<std::endl;
         floatingIcon->setPosition(Vec3f(IMouse::getPosition(getRenderWindow()).x, IMouse::getPosition(getRenderWindow()).y, 0));
 
     }
@@ -132,11 +132,15 @@ namespace sorrok {
         for (unsigned int i = 0; i < static_cast<Hero*>(hero)->getSkills().size(); i++) {
             Sprite sprite(*tm3.getResourceByAlias(Skill::LAST_HEAL), Vec3f(0, 100*i, 0), Vec3f(50, 50, 0), sf::IntRect(0, 0, 50, 50));
             Icon* icon = new Icon(*wSkills, Vec3f(0, 100*i, 0),Vec3f(50, 50, 0), sprite);
+            std::cout<<"skill name : "<<static_cast<Hero*>(hero)->getSkills()[i].getName()<<std::endl;
             icon->setName(static_cast<Hero*>(hero)->getSkills()[i].getName());
             Action aSkillButtonPressed(Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
             Action aSkillButtonHeldDown(Action::MOUSE_BUTTON_HELD_DOWN, IMouse::Left);
+            aSkillButtonHeldDown.name="SkillButtonHeldDown";
             Action aSkillMouseMoved(Action::MOUSE_MOVED_);
+            aSkillMouseMoved.name="SkillMouseMoved";
             Action aSkillCombined = aSkillButtonHeldDown && aSkillMouseMoved;
+            aSkillCombined.name ="SkillCombined";
             Command cmd (aSkillCombined, FastDelegate<void>(&MyAppli::onIconMoved, this, icon));
             icon->getListener().connect("IconMoved", cmd);
             Action aSkillMouseButtonReleased(Action::MOUSE_BUTTON_RELEASED, IMouse::Left);
@@ -337,6 +341,25 @@ namespace sorrok {
             icon->setParent(pInventory);
             label->setParent(pInventory);
         }
+    }
+    void MyAppli::showEquipement() {
+        std::vector<Item> stuff = static_cast<Hero*>(hero)->getEquipment();
+        pEquipement->clearDrawables();
+        TextureManager<std::string>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
+        Sprite sequipement (*tm.getResourceByAlias("EQUIPEMENT"), Vec3f(0, 0, 0), Vec3f(400, 600, 0), sf::IntRect(0, 0, 300, 500));
+        pEquipement->addSprite(sequipement);
+        for (unsigned int i = 0; i < stuff.size(); i++) {
+            Sprite sprite;
+            TextureManager<Item::Type>& tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
+            if (stuff[i].getName() == "Novice Head") {
+                sprite = Sprite (*tm2.getResourceByAlias(Item::HEAD), Vec3f(0, 0, 0), Vec3f(50, 50, 0),sf::IntRect(0, 0, 50, 50));
+            } if (stuff[i].getName() == "Novice Weapon Right")
+                sprite = Sprite (*tm2.getResourceByAlias(Item::WEAPON_RIGHT), Vec3f(0, 200, 0), Vec3f(50, 50, 0),sf::IntRect(0, 0, 50, 50));
+            if (stuff[i].getName() == "Novice Boots")
+                sprite = Sprite (*tm2.getResourceByAlias(Item::BOOTS), Vec3f(0, 400, 0), Vec3f(50, 50, 0),sf::IntRect(0, 0, 50, 50));
+            pEquipement->addSprite(sprite);
+        }
+        wEquipement->setVisible(true);
     }
     void MyAppli::dropItems(Label* label) {
         std::vector<Item>::iterator it;
@@ -547,8 +570,16 @@ namespace sorrok {
         tm.fromFileWithAlias("tilesets/cristal.png", "CRISTAL");
         tm.fromFileWithAlias("tilesets/particles.jpeg", "HEAL_PARTICLE");
         tm.fromFileWithAlias("tilesets/particule.png", "PARTICLE");
+        tm.fromFileWithAlias("tilesets/equipement.png", "EQUIPEMENT");
         TextureManager<Item::Type> tm2;
         tm2.fromFileWithAlias("tilesets/hppotion-icon.png", Item::HP_POTION);
+        tm2.fromFileWithAlias("tilesets/head.png", Item::HEAD);
+        tm2.fromFileWithAlias("tilesets/armor.png", Item::ARMOR);
+        tm2.fromFileWithAlias("tilesets/gloves.png", Item::GLOVES);
+        tm2.fromFileWithAlias("tilesets/boots.png", Item::BOOTS);
+        tm2.fromFileWithAlias("tilesets/weaponright.png", Item::WEAPON_RIGHT);
+        tm2.fromFileWithAlias("tilesets/weaponleft.png", Item::WEAPON_LEFT);
+
         TextureManager<Skill::Type> tm3;
         tm3.fromFileWithAlias("tilesets/lastheal-icon.png", Skill::LAST_HEAL);
         std::string path = "tilesets/vlad_sword.png";
@@ -667,6 +698,9 @@ namespace sorrok {
         Action aShorcutF1(Action::KEY_PRESSED_ONCE, IKeyboard::Key::F1);
         Command cmdShorcutF1(aShorcutF1, FastDelegate<void>(&MyAppli::onF1Pressed, this));
         getListener().connect("ShorcutF1", cmdShorcutF1);
+        Action aEquipement(Action::KEY_PRESSED_ONCE, IKeyboard::E);
+        Command cmdEquipement(aEquipement, FastDelegate<void>(&MyAppli::showEquipement, this));
+        getListener().connect("ShowEquipement", cmdEquipement);
 
         wResuHero = new RenderWindow (sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Titlebar, ContextSettings(0, 0, 4, 3, 0));
         label = new gui::Label(*wResuHero, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"5", 15);
@@ -759,6 +793,14 @@ namespace sorrok {
         floatingIcon = new Icon(getRenderWindow(), Vec3f(0, 0, -1), Vec3f(50, 50, 0), sprite);
         floatingIcon->setVisible(false);
         getRenderComponentManager().addComponent(floatingIcon);
+
+        wEquipement = new RenderWindow(sf::VideoMode(400, 600),"Equipment",sf::Style::Default,ContextSettings(0, 0, 4, 3, 0));
+        addWindow(wEquipement);
+        wEquipement->setVisible(false);
+        pEquipement = new Panel(*wEquipement, Vec3f(0, 0, 0), Vec3f(400, 600, 0));
+        getRenderComponentManager().addComponent(pEquipement);
+        Sprite sEquipement(*tm.getResourceByAlias("EQUIPEMENT"),Vec3f(0, 0, 0),Vec3f(400, 600, 0), sf::IntRect(0, 0, 300, 500));
+        pEquipement->addSprite(sEquipement);
 
 
 
@@ -906,6 +948,7 @@ namespace sorrok {
             caracter->setMana(caracter->getMana() - amount);
         }
         if (Network::getResponse("SHOWQUEST", response)) {
+            std::cout<<"show quests"<<std::endl;
             Pnj* pnj = static_cast<Pnj*>(getWorld()->getEntity(conversionStringInt(response)));
             selectedPnj = pnj;
             std::vector<Quest> quests = pnj->getQuests();

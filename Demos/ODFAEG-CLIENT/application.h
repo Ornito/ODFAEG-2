@@ -68,13 +68,13 @@ namespace sorrok {
         sf::Int64 ping;
         bool received = false;
         static const unsigned int PATH_ERROR_MARGIN = 5;
-        odfaeg::graphic::RenderWindow* wResuHero, *wIdentification, *wPickupItems, *wInventory, *wDisplayQuests, *wDisplayQuest, *wDiary, *wSkills;
+        odfaeg::graphic::RenderWindow* wResuHero, *wIdentification, *wPickupItems, *wInventory, *wDisplayQuests, *wDisplayQuest, *wDiary, *wSkills, *wEquipement;
         odfaeg::graphic::gui::Label* label, *labPseudo, *labMdp, *lQuestName, *lQuestTask;
         odfaeg::graphic::gui::TextArea* taPseudo;
         odfaeg::graphic::gui::PasswordField* taPassword;
         odfaeg::graphic::gui::Button* button, *idButton, *invButton, *bAccept, *bDeny, *bGiveUp;
         odfaeg::graphic::gui::ProgressBar* hpBar, *xpBar, *manaBar;
-        odfaeg::graphic::gui::Panel* pItems, *pInventory, *pQuestList, *pQuestNames, *pQuestProgress, *pRewards, *pSkills;
+        odfaeg::graphic::gui::Panel* pItems, *pInventory, *pQuestList, *pQuestNames, *pQuestProgress, *pRewards, *pSkills, *pEquipement;
         bool isClientAuthentified;
         std::map<int, std::pair<odfaeg::graphic::Sprite*, std::vector<Item>>> cristals;
         std::pair<odfaeg::graphic::Sprite*, std::vector<Item>> selectedCristal;
@@ -125,6 +125,7 @@ namespace sorrok {
         void onIconPressed(odfaeg::graphic::gui::Icon* icon);
         void retractFromInventory(Item& item);
         void onF1Pressed();
+        void showEquipement();
         ~MyAppli();
     };
 }

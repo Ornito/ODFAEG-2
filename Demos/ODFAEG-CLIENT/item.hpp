@@ -8,7 +8,7 @@ namespace sorrok {
     class Item {
     public :
         enum Type {
-            HP_POTION
+            HP_POTION, HEAD, ARMOR, GLOVES, BOOTS, WEAPON_RIGHT, WEAPON_LEFT
         };
         Item () {itemBehaviour=nullptr;}
         Item (std::string name, Type type, std::string requiredClass);

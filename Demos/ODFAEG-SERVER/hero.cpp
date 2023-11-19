@@ -16,6 +16,33 @@ namespace sorrok {
         moveFromKeyboard = false;
         this->user = user;
     }
+    void Hero::addEquipment(Item equipment) {
+        if (equipment.getName() == "Novice Head") {
+            setDefMin(getDefMin() + 2);
+            setDefMax(getDefMax() + 2);
+        }
+        if (equipment.getName() == "Novice Armor") {
+            setDefMin(getDefMin() + 3);
+            setDefMax(getDefMax() + 3);
+        }
+        if (equipment.getName() == "Novice Gloves") {
+            setDefMin(getDefMin() + 1);
+            setDefMax(getDefMax() + 1);
+        }
+        if (equipment.getName() == "Novice Boots") {
+            setDefMin(getDefMin() + 2);
+            setDefMax(getDefMax() + 2);
+        }
+        if (equipment.getName() == "Novice Weapon Right") {
+            setAttackMin(getAttackMin() + 5);
+            setAttackMax(getAttackMax() + 5);
+        }
+        if (equipment.getName() == "Novice Weapon Left") {
+            setAttackMin(getAttackMin() + 3);
+            setAttackMax(getAttackMax() + 3);
+        }
+        stuff.push_back(equipment);
+    }
     void Hero::addItem(Item item) {
         std::map<Item::Type, std::vector<Item>>::iterator it;
         it = inventory.find(item.getType());
@@ -82,6 +109,9 @@ namespace sorrok {
         h->moveFromKeyboard = moveFromKeyboard;
         h->user = user;
         return h;
+    }
+    std::vector<Item> Hero::getEquipment() {
+        return stuff;
     }
     Hero::~Hero() {
     }

@@ -381,7 +381,9 @@ namespace odfaeg {
                     }
                 }
                 std::vector<Entity*> getEntitiesInRect(physic::BoundingBox rect, std::string expression) {
+
                     if (currentEntityManager != nullptr) {
+                        std::cout<<"get entities in box "<<currentEntityManager<<std::endl;
                         return currentEntityManager->getEntitiesInBox(rect, expression);
                     }
                     return std::vector<Entity*>();

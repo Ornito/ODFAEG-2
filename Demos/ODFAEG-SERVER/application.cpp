@@ -230,7 +230,6 @@ namespace sorrok {
                         id = pnjs[i]->getId();
                     }
                 }
-
                 if (id != -1) {
                     std::string message = "SHOWQUEST"+conversionIntString(id);
                     SymEncPacket packet;
@@ -437,6 +436,18 @@ namespace sorrok {
                 caracter->getGlobalBounds().getSize().x, caracter->getGlobalBounds().getSize().y * 0.25f, 0);
                 caracter->setCollisionVolume(bb2);
                 caracter->setCenter(Vec3f(0, 300, 300));
+                Item noviceHead ("Novice Head", Item::HEAD, "All");
+                Item noviceArmor ("Novice Armor", Item::ARMOR, "All");
+                Item noviceGloves ("Novice Gloves", Item::GLOVES, "All");
+                Item noviceBoots ("Novice Boots", Item::BOOTS, "ALL");
+                Item noviceWeaponRight ("Novice Weapon Right", Item::WEAPON_RIGHT, "All");
+                Item noviceWeaponLeft ("Novice Weapon Left", Item::WEAPON_LEFT, "ALL");
+                static_cast<Hero*>(caracter)->addEquipment(noviceHead);
+                static_cast<Hero*>(caracter)->addEquipment(noviceArmor);
+                static_cast<Hero*>(caracter)->addEquipment(noviceGloves);
+                static_cast<Hero*>(caracter)->addEquipment(noviceBoots);
+                static_cast<Hero*>(caracter)->addEquipment(noviceWeaponRight);
+                static_cast<Hero*>(caracter)->addEquipment(noviceWeaponLeft);
                 Skill skill("LastHeal", 10, "All");
                 static_cast<Hero*>(caracter)->addSkill(skill);
                 SymEncPacket packet;

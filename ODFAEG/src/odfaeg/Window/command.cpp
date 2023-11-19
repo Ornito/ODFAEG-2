@@ -6,6 +6,7 @@ namespace odfaeg {
         Command::Command (Action action, FastDelegate<void> slot) : slot(slot)
         {
             this->action = std::make_unique<Action>(action);
+            this->trigger = nullptr;
         }
         void Command::setName(std::string name) {
             this->name = name;
@@ -42,6 +43,8 @@ namespace odfaeg {
                 action->name = "ANAMECTEXTENTERED";*/
             if (trigger == nullptr && action != nullptr)
             {
+                /*if (action->name == "SkillCombined")
+                    std::cout<<"skill action triggered ? "<<std::endl;*/
                 return action->isTriggered();
             }
             if (trigger != nullptr && action != nullptr) {

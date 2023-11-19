@@ -106,6 +106,9 @@ namespace odfaeg
             static bool equalEvent (window::IEvent event, window::IEvent other);
             void setName(std::string name);
             static std::string sname;
+            std::string getName() {
+                return name;
+            }
         private :
 
             /** \fn bool equalEvent (window::IEvent event, window::IEvent other)

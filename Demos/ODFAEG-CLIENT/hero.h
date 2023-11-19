@@ -33,6 +33,8 @@ namespace sorrok {
             ar(xp);
             ar(xpReqForNextLevel);
             ar(skills);
+            ar(stuff);
+            std::cout<<"equipement : "<<stuff.size()<<std::endl;
         }
         void addItem (Item item);
         bool containsQuest(std::string name);
@@ -41,6 +43,7 @@ namespace sorrok {
         Quest* getQuest(std::string name);
         std::vector<Quest> getDiary();
         std::map<Item::Type, std::vector<Item>>& getInventory();
+        std::vector<Item> getEquipment();
         void addSkill (Skill skill);
         ~Hero();
     private :
@@ -50,6 +53,7 @@ namespace sorrok {
         std::map<Item::Type, std::vector<Item>> inventory;
         std::vector<Skill> skills;
         std::vector<Quest> diary;
+        std::vector<Item> stuff;
     };
 }
 #endif // HERO_HPP

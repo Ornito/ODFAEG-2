@@ -1,15 +1,14 @@
-#ifndef ITEM_HPP
-#define ITEM_HPP
+#ifndef EQUIPMENT_HPP
+#define EQUIPMENT_HPP
 #include <string>
 #include <map>
 namespace sorrok {
-    class Item {
-    public :
+    class Equipement {
         enum Type {
-            HP_POTION, HEAD, ARMOR, GLOVES, BOOTS, WEAPON_RIGHT, WEAPON_LEFT
+            HEAD, ARMOR, GLOVES, BOOTS, WEAPON_RIGHT, WEAPON_LEFT
         };
-        Item();
-        Item (std::string name, Type type, std::string requiredClass);
+        Equipment();
+        Equipement((std::string name, Type type, std::string requiredClass);
         Type getType();
         std::string getName();
         std::string getRequiredClass();
@@ -24,4 +23,4 @@ namespace sorrok {
         Type type;
     };
 }
-#endif // ITEM_HPP
+#endif // EQUIPMENT_HPP

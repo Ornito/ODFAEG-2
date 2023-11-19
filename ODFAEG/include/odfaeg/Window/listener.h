@@ -40,6 +40,8 @@ namespace odfaeg {
              */
              void connect(std::string key, Command command) {
                 command.setName(key);
+                if (command.getName() == "IconMoved")
+                        std::cout<<"add icon moved command ? "<<std::endl;
                 toAdd.insert(std::make_pair(key, command));
              }
              /**
@@ -128,14 +130,14 @@ namespace odfaeg {
                  }
                  toRemove.clear();
                  for (it = toAdd.begin(); it != toAdd.end(); it++) {
+
                     commands.insert(std::make_pair(it->first, it->second));
                  }
                  toAdd.clear();
                  for (it = commands.begin(); it != commands.end(); it++) {
-                    /*if (name == "TANAMELISTENER" && it->first == "CTEXTENTERED")
-                        it->second.setName("TANAMECTEXTENTERED");*/
+                    /*if (it->second.getName() == "IconMoved")
+                        std::cout<<"is icon moved triggered ? "<<std::endl;*/
                     if (it->second.isTriggered()) {
-
                         (it->second)();
                         if (removeListener) {
                             break;

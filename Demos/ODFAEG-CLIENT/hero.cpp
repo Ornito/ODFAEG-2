@@ -95,6 +95,9 @@ namespace sorrok {
     std::vector<Skill> Hero::getSkills() {
         return skills;
     }
+    std::vector<Item> Hero::getEquipment() {
+        return stuff;
+    }
     Hero::~Hero() {
     }
 }

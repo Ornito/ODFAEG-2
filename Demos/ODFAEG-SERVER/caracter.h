@@ -72,6 +72,10 @@ namespace sorrok {
         int getRegenManaAmountMax();
         void setRegenHpAmountMin(int regenHpAmountMin);
         void setRegenHpAmountMax(int regenHpAmountMax);
+        void setDefMax(int defMax);
+        void setDefMin(int defMin);
+        void setAttackMax(int attackMax);
+        void setAttackMin(int attackMin);
         Entity* getCurrentFrame() const;
         void onDraw(odfaeg::graphic::RenderTarget&, odfaeg::graphic::RenderStates);
         void onMove(odfaeg::math::Vec3f& t);

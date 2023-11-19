@@ -103,12 +103,15 @@ namespace odfaeg {
             is_not = other.is_not;
             comparator = other.comparator;
             type = other.type;
+            name = other.name;
             if (!other.leaf) {
                 leftChild = std::make_unique<Action>(*other.leftChild);
                 rightChild = std::make_unique<Action>(*other.rightChild);
             }
         }
         bool Action::andComparator (Action& a1, Action& a2) {
+            /*if (name == "SkillCombined")
+                std::cout<<"skill combined"<<std::endl;*/
             return a1.isTriggered() && a2.isTriggered();
         }
         bool Action::orComparator (Action& a1, Action& a2) {
@@ -152,6 +155,8 @@ namespace odfaeg {
                     return !window::IKeyboard::isKeyPressed(static_cast<window::IKeyboard::Key>(startEvent.keyboard.code));
                 }
                 if (type == MOUSE_BUTTON_HELD_DOWN && !is_not) {
+                    /*if (name == "SkillButtonHeldDown")
+                        std::cout<<"skill move mouse button held down ? "<<window::IMouse::isButtonPressed(static_cast<window::IMouse::Button>(startEvent.mouseButton.button))<<std::endl;*/
                     return window::IMouse::isButtonPressed(static_cast<window::IMouse::Button>(startEvent.mouseButton.button));
                 }
                 if (type == MOUSE_BUTTON_HELD_DOWN && is_not) {
@@ -161,7 +166,10 @@ namespace odfaeg {
                     return sf::Joystick::isButtonPressed(startEvent.joystickButton.button);*/
 
                 //vector<window::IEvent> events = Command::getEvents();
+                /*if (name == "SkillMouseMoved")
+                                std::cout<<"events ? "<<events.size()<<std::endl;*/
                 for (unsigned int i = 0; i < events.size(); i++) {
+
                     /*if (type == KEY_HELD_DOWN || type == MOUSE_BUTTON_HELD_DOWN) {
                         if (!is_not)
                             return Command::equalEvent(events[i], startEvent);
@@ -178,7 +186,8 @@ namespace odfaeg {
                                 || events[i].type == window::IEvent::MOUSE_BUTTON_EVENT && events[i].mouseButton.type == window::IEvent::BUTTON_EVENT_PRESSED
                                 && startEvent.type == window::IEvent::MOUSE_BUTTON_EVENT && startEvent.mouseButton.type == window::IEvent::BUTTON_EVENT_PRESSED)
                                 pressed = true;
-                            //std::cout<<"triggered!"<<std::endl;
+                            if (name == "SkillMouseMoved")
+                                std::cout<<"skill move mouse move triggered!"<<std::endl;
                             return true;
                         } else if (is_not && !Command::equalEvent(events[i], startEvent) && !pressed) {
                             if (events[i].type == window::IEvent::KEYBOARD_EVENT && events[i].keyboard.type == window::IEvent::KEY_EVENT_RELEASED
@@ -270,9 +279,17 @@ namespace odfaeg {
             if (!containsEvent) {
                 events.push_back(event);
             }
+            if (!leaf) {
+                leftChild->pushEvent(event);
+                rightChild->pushEvent(event);
+            }
         }
         void Action::clearEvents() {
             events.clear();
+            if (!leaf) {
+                leftChild->clearEvents();
+                rightChild->clearEvents();
+            }
         }
         void Action::removeEvent(window::IEvent& event) {
             std::vector<window::IEvent>::iterator it;

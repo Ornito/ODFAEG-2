@@ -34,10 +34,14 @@ namespace sorrok {
             ar(xp);
             ar(xpReqForNextLevel);
             ar(skills);
+            ar(stuff);
+            std::cout<<"equipement : "<<stuff.size()<<std::endl;
         }
         void addSkill(Skill skill);
         std::vector<Skill> getSkills();
         void addItem(Item item);
+        void addEquipment(Item equipment);
+        std::vector<Item> getEquipment();
         std::map<Item::Type, std::vector<Item>>& getInventory();
         odfaeg::graphic::Entity* clone();
         ~Hero();
@@ -48,6 +52,7 @@ namespace sorrok {
         odfaeg::network::User* user;
         std::vector<Quest> diary;
         std::vector<Skill> skills;
+        std::vector<Item> stuff;
         std::map<Item::Type, std::vector<Item>> inventory;
     };
 }

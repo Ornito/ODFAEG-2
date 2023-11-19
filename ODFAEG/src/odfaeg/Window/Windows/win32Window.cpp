@@ -1065,9 +1065,11 @@ namespace odfaeg {
 
                             // Generate a MouseLeft event
                             IEvent event;
-                            event.type = IEvent::EventType::MOUSE_EVENT_LEAVE;
+                            event.type = IEvent::EventType::MOUSE_MOTION_EVENT;
                             std::chrono::time_point<std::chrono::system_clock> time = std::chrono::system_clock::now();
-                            event.mouseMotion.type = IEvent::EventType::MOUSE_EVENT_LEAVE;
+                            event.mouseMotion.type = IEvent::EventType::MOUSE_MOTION_EVENT;
+                            event.mouseMotion.x = x;
+                            event.mouseMotion.y = y;
                             pushEvent(event);
                         }
                     }

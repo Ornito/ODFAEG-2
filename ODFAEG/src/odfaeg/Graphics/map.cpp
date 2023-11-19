@@ -707,6 +707,7 @@ namespace odfaeg {
         vector<Entity*> Scene::getEntitiesInBox (physic::BoundingBox bx, std::string type) {
              vector<Entity*> entities;
              vector<Entity*> allEntitiesInRect = gridMap->getEntitiesInBox(bx);
+             std::cout<<"entities in rect :"<<allEntitiesInRect.size()<<std::endl;
 
              if (type.at(0) == '*') {
                 if (type.find("-") != string::npos)

@@ -125,6 +125,7 @@ namespace odfaeg {
             }
             virtual void pushEvent(window::IEvent event, RenderWindow &rw) {
                 if (isEventContextActivated()) {
+
                     getListener().pushEvent(event);
                     if (event.type == odfaeg::window::IEvent::WINDOW_EVENT && event.window.type == odfaeg::window::IEvent::WINDOW_EVENT_RESIZED) {
                         if (isRelPosition()) {
