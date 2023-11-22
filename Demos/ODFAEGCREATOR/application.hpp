@@ -105,6 +105,8 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onViewPerspectiveChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onSelectedTextureDroppedDown(odfaeg::graphic::gui::DropDownList* dp);
     void onSelectedTextureNotDroppedDown(odfaeg::graphic::gui::DropDownList* dp);
+    void onSelectedWallTypeDroppedDown(odfaeg::graphic::gui::DropDownList* dp);
+    void onSelectedWallTypeNotDroppedDown(odfaeg::graphic::gui::DropDownList* dp);
     void onObjectOriginChanged(odfaeg::graphic::gui::TextArea* ta);
     std::map<std::string, std::vector<odfaeg::graphic::Entity*>>& getExternals();
     odfaeg::graphic::EntityFactory& getEntityFactory();
@@ -152,12 +154,12 @@ class ODFAEGCreator : public odfaeg::core::Application,
         bool isGuiShown, showGrid, alignToGrid, showRectSelect;
         std::vector<std::unique_ptr<odfaeg::graphic::Shape>> shapes;
         odfaeg::graphic::Transformable* selectedObject;
-        odfaeg::graphic::gui::TextArea *tPosX, *tPosY, *tPosZ, *tRColor, *tGColor, *tBColor, *tAColor, *tSizeW, *tSizeH, *tSizeD,
+        odfaeg::graphic::gui::TextArea *tTexId, *tPosX, *tPosY, *tPosZ, *tRColor, *tGColor, *tBColor, *tAColor, *tSizeW, *tSizeH, *tSizeD,
         *tMoveX, *tMoveY, *tMoveZ, *tScaleX, *tScaleY, *tScaleZ, *tRotAngle, *tTexCoordX, *tTexCoordY, *tTexCoordW, *tTexCoordH, *taName, *taChangeComponentExpression,
         *taXShadowCenter, *taYShadowCenter, *taZShadowCenter, *taXShadowScale, *taYShadowScale, *taZShadowScale, *taShadowRotAngle, *taBoundingBoxColX, *taBoundingBoxColY,
         *taBoundingBoxColZ, *taBoundingBoxColW, *taBoundingBoxColH, *taBoundingBoxColD, *taOriginX, *taOriginY, *taOriginZ;
         odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition, *lColor, *lRColor,
-        *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage, *lParent;
+        *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage, *lParent, *lTexId;
         odfaeg::graphic::gui::TabPane* tabPane;
         odfaeg::graphic::gui::Button* bChooseText, *bAddTexRect, *bCreateComponent, *bCreateScene, *bCreateEntitiesUpdater, *bCreateAppli, *bCreateAnimUpdater, *bCreateEmitter, *bCreateParticleSystemUpdater, *bCreateWindow, *bCreateObject, *bModifyObject,
         *bGenerateTerrain, *bRemoveObject, *bAddTileGround, *bAddWall, *bSetTexRect;

@@ -659,7 +659,11 @@ void ODFAEGCreator::onInit() {
         dpSelectWallType->addItem("top right", 15);
         dpSelectWallType->addItem("top left", 15);
         dpSelectWallType->addItem("bottom right", 15);
+        Command cmdSelectWallTypeDroppeddown (FastDelegate<bool>(&DropDownList::isDroppedDown, dpSelectWallType), FastDelegate<void>(&ODFAEGCreator::onSelectedWallTypeDroppedDown, this, dpSelectWallType));
         getRenderComponentManager().addComponent(dpSelectWallType);
+        dpSelectWallType->getListener().connect("selectWallTypeDroppedDown", cmdSelectWallTypeDroppeddown);
+        Command cmdSelectWallTypeNotDroppedDown(FastDelegate<bool>(&DropDownList::isNotDroppedDown, dpSelectWallType), FastDelegate<void>(&ODFAEGCreator::onSelectedWallTypeNotDroppedDown, this, dpSelectWallType));
+        dpSelectWallType->getListener().connect("selectWallTypeNotDroppedDown", cmdSelectWallTypeNotDroppedDown);
 
         bAddWall = new Button(Vec3f(200, 500, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Add wall", 15, *wGenerateTerrain);
         bAddWall->addActionListener(this);
@@ -1680,13 +1684,22 @@ void ODFAEGCreator::onExec() {
         lastSlash = path.find_last_of("\\");
         #endif // if
         std::string ImgName = path.substr(lastSlash+1);
-        dpSelectTexture->addItem(ImgName,15);
+        if (tTexId->getText() == "")
+            dpSelectTexture->addItem(ImgName,15);
+        else
+            dpSelectTexture->addItem(tTexId->getText(),15);
         fdTexturePath->setVisible(false);
         fdTexturePath->setEventContextActivated(false);
         TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
         if (!tm.exists(path)) {
-            tm.fromFileWithAlias(path, ImgName);
-            textPaths.push_back(ImgName);
+            if (tTexId->getText() == "") {
+                tm.fromFileWithAlias(path, ImgName);
+                textPaths.push_back(ImgName);
+            } else {
+                tm.fromFileWithAlias(path, tTexId->getText());
+                textPaths.push_back(tTexId->getText());
+            }
+
             std::map<std::string, std::string>::iterator it;
             it = cppAppliContent.find(minAppliname+".cpp");
             if (it != cppAppliContent.end()) {
@@ -1767,17 +1780,11 @@ void ODFAEGCreator::onExec() {
                 ITextArchive ia(ifs);
                 std::vector<std::string> paths;
                 ia(paths);
+                ia(textPaths);
                 for (unsigned int i = 0; i < paths.size(); i++) {
                     //std::cout<<"load texture : "<<paths[i]<<std::endl;
-                    unsigned int lastSlash;
-                    #if defined(ODFAEG_SYSTEM_LINUX)
-                    lastSlash = paths[i].find_last_of("/");
-                    #else if defined (ODFAEG_SYSTEM_WINDOWS)
-                    lastSlash = paths[i].find_last_of("\\");
-                    #endif // if
-                    std::string ImgName = paths[i].substr(lastSlash+1);
                     //std::cout<<"alias : "<<ImgName<<std::endl;
-                    tm.fromFileWithAlias(paths[i], ImgName);
+                    tm.fromFileWithAlias(paths[i], textPaths[i]);
                 }
                 ifs.close();
             }
@@ -2171,7 +2178,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         isGeneratingTerrain = true;
         wGenerateTerrain->setVisible(false);
         getRenderComponentManager().setEventContextActivated(false, *wGenerateTerrain);
-        tScriptEdit->setEventContextActivated(true);
+         getRenderComponentManager().setEventContextActivated(true, getRenderWindow());
         Tile* tile = factory.make_entity<Tile>(nullptr, Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50), factory);
         selectedObject = tile;
         ground.push_back(tile);
@@ -2181,7 +2188,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         isGeneratingTerrain = true;
         wGenerateTerrain->setVisible(false);
         getRenderComponentManager().setEventContextActivated(false, *wGenerateTerrain);
-        tScriptEdit->setEventContextActivated(true);
+        getRenderComponentManager().setEventContextActivated(true, getRenderWindow());
         if (dpSelectWallType->getSelectedItem() == "top bottom") {
             Wall* wall = factory.make_entity<g2d::Wall>(factory.make_entity<Tile>(nullptr, Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 0, 100, 100), factory),g2d::Wall::TOP_BOTTOM,&g2d::AmbientLight::getAmbientLight(), factory);
             walls[g2d::Wall::TOP_BOTTOM] = wall;
@@ -3442,6 +3449,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         std::ofstream file(appliname+"\\"+"textures.oc");
         OTextArchive oa(file);
         oa(paths);
+        oa(textPaths);
         file.close();
         std::cout<<"save entities!"<<std::endl;
         //Save entities.
@@ -3601,10 +3609,10 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
             if (walls[i] != nullptr)
                 delete walls[i];
         walls.clear();
-        walls.resize(6);
+        walls.resize(11, nullptr);
         wGenerateTerrain->setVisible(true);
         getRenderComponentManager().setEventContextActivated(true, *wGenerateTerrain);
-        tScriptEdit->setEventContextActivated(false);
+        getRenderComponentManager().setEventContextActivated(false, getRenderWindow());
      }
 }
 /*void ODFAEGCreator::addShape(Shape *shape) {
@@ -4674,6 +4682,15 @@ void ODFAEGCreator::displayTileInfos (Entity* tile) {
         dpSelectTexture->getListener().connect("TextureNotDroppedDown", cmdTxtNotDroppedDown);
         selectTextNode->addOtherComponent(dpSelectTexture, Vec2f(0.75f, 0.025f));
         pMaterial->addChild(dpSelectTexture);
+        lTexId = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 100, 0),fm.getResourceByAlias(Fonts::Serif),"Tex id : ", 15);
+        lTexId->setParent(pMaterial);
+        pMaterial->addChild(lTexId);
+        Node* texIdNode = new Node("TexId", lTexId,Vec2f(0, 0), Vec2f(0.5f, 0.025f), rootMaterialNode.get());
+        tTexId = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 100, 0), fm.getResourceByAlias(Fonts::Serif), "", getRenderWindow());
+        tTexId->setParent(pMaterial);
+        pMaterial->addChild(tTexId);
+        texIdNode->addOtherComponent(tTexId, Vec2f(0.5f, 0.025f));
+
         bChooseText = new Button(Vec3f(0, 0, 0), Vec3f(100, 100, 0), fm.getResourceByAlias(Fonts::Serif), "New texture", 15, getRenderWindow());
         bChooseText->setParent(pMaterial);
         Node* chooseTextNode = new Node("ChooseText", bChooseText, Vec2f(0, 0), Vec2f(0.5f, 0.025f), rootMaterialNode.get());
@@ -6202,6 +6219,12 @@ void ODFAEGCreator::onSelectedTextureDroppedDown(DropDownList* dp) {
 }
 void ODFAEGCreator::onSelectedTextureNotDroppedDown (DropDownList* dp) {
     bChooseText->setEventContextActivated(true);
+}
+void ODFAEGCreator::onSelectedWallTypeDroppedDown(odfaeg::graphic::gui::DropDownList* dp) {
+    bGenerateTerrain->setEventContextActivated(false);
+}
+void ODFAEGCreator::onSelectedWallTypeNotDroppedDown(odfaeg::graphic::gui::DropDownList* dp) {
+    bGenerateTerrain->setEventContextActivated(true);
 }
 void ODFAEGCreator::onObjectOriginChanged(TextArea* ta) {
     if (ta == taOriginX) {
