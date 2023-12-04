@@ -1285,12 +1285,13 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                 while (deltaX < pScriptsFiles->getPosition().x-gridWidth) {
                     deltaX += gridWidth;
                 }
-                deltaX = pScriptsFiles->getPosition().x - deltaX;
+                deltaX = pScriptsFiles->getPosition().x - deltaX - ((int) pMaterial->getDeltas().x % gridWidth);
                 int deltaY = 0;
                 while (deltaY < bChooseText->getPosition().y + bChooseText->getSize().y+10-gridHeight) {
                     deltaY += gridHeight;
                 }
-                deltaY = (bChooseText->getPosition().y + bChooseText->getSize().y+10) - deltaY;
+                deltaY = (bChooseText->getPosition().y + bChooseText->getSize().y+10) - deltaY - ( (int) pMaterial->getDeltas().y % gridHeight);
+
                 mousePosition = Vec3f(x+deltaX, y+deltaY, 0);
             } else {
                 int x = mousePos.x;
@@ -1350,12 +1351,12 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                 while (deltaX < pScriptsFiles->getPosition().x-gridWidth) {
                     deltaX += gridWidth;
                 }
-                deltaX = pScriptsFiles->getPosition().x - deltaX;
+                deltaX = pScriptsFiles->getPosition().x - deltaX - ((int) pMaterial->getDeltas().x % gridWidth);
                 int deltaY = 0;
                 while (deltaY < bChooseText->getPosition().y + bChooseText->getSize().y+10-gridHeight) {
                     deltaY += gridHeight;
                 }
-                deltaY = (bChooseText->getPosition().y + bChooseText->getSize().y+10) - deltaY;
+                deltaY = (bChooseText->getPosition().y + bChooseText->getSize().y+10) - deltaY - ((int) pMaterial->getDeltas().y % gridHeight);
                 int width = x + deltaX - mousePosition.x;
                 int height = y + deltaY - mousePosition.y;
                 if (width > 0 && height > 0 && sTextRect != nullptr) {
@@ -3609,7 +3610,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
             if (walls[i] != nullptr)
                 delete walls[i];
         walls.clear();
-        walls.resize(11, nullptr);
+        walls.resize(g2d::Wall::NB_WALL_TYPES, nullptr);
         wGenerateTerrain->setVisible(true);
         getRenderComponentManager().setEventContextActivated(true, *wGenerateTerrain);
         getRenderComponentManager().setEventContextActivated(false, getRenderWindow());

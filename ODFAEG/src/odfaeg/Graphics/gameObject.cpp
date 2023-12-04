@@ -23,7 +23,7 @@ namespace odfaeg {
         void GameObject::copy(GameObject* gameObject) {
             //std::cout<<"copy entity : "<<getPosition()<<getType()<<std::endl;
             Entity::copy(gameObject);
-            gameObject->parent = parent;
+            //gameObject->parent = parent;
             //std::cout<<"parent : "<<parent<<",this : "<<this<<std::endl;
             gameObject->alreadySerialized = false;
             gameObject->collisionVolume = (collisionVolume == nullptr) ? nullptr : getCollisionVolume()->clone();
@@ -38,6 +38,7 @@ namespace odfaeg {
             gameObject->externalObjectName = externalObjectName;
             gameObject->external = external;
             gameObject->drawMode = drawMode;
+            std::cout<<"type : "<<getType()<<"w global bounds : "<<getGlobalBounds().getPosition()<<gameObject->getGlobalBounds().getPosition();
 
             //std::cout<<"clone id : "<<entity->getId()<<std::endl;
             for (unsigned int i = 0; i < faces.size(); i++) {
@@ -122,7 +123,7 @@ namespace odfaeg {
             std::unique_ptr<Entity> ptr;
             ptr.reset(child);
             children.push_back(std::move(ptr));
-            for (unsigned int i = 0; i < children.size(); i++) {
+            /*for (unsigned int i = 0; i < children.size(); i++) {
                 vecs.push_back(children[i]->getPosition());
                 vecs.push_back(children[i]->getPosition() + children[i]->getSize());
 
@@ -134,7 +135,7 @@ namespace odfaeg {
             math::Vec3f size((int) minsMaxs[0][1] - (int) minsMaxs[0][0], (int) minsMaxs[1][1] - (int) minsMaxs[1][0], (int) minsMaxs[2][1] - (int) minsMaxs[2][0]);
             setLocalBounds(physic::BoundingBox(pos.x, pos.y, pos.z, size.x, size.y, size.z));
 
-            vecs.clear();
+            vecs.clear();*/
         }
         void GameObject::removeChild (Entity *child) {
             std::vector<std::unique_ptr<Entity>>::iterator it;

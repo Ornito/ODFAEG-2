@@ -196,56 +196,69 @@ namespace odfaeg {
                     //std::cout<<"pos : "<<pos<<std::endl;
                     //Mur du coin en haut \E0 gauche.
                     if (x == startX && y == startY && walls.size() >= 11) {
-                        Entity *w = walls[Wall::TOP_LEFT]->clone();
-                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[Wall::TOP_LEFT]->getSize().y * 0.5f));
-                        //std::cout<<"position top right : "<<w->getPosition()<<std::endl;
-                        addEntity(w);
-                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, w->getPosition().z))->setPassable(false);
+                        if (walls[Wall::TOP_LEFT] != nullptr) {
+                            Entity *w = walls[Wall::TOP_LEFT]->clone();
+                            w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[Wall::TOP_LEFT]->getSize().y * 0.5f));
+                            //std::cout<<"position top right : "<<w->getPosition()<<std::endl;
+                            addEntity(w);
+                            gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, w->getPosition().z))->setPassable(false);
+                        }
 
                         //Mur du coin en haut \E0 droite.
                     } else if (x == endX - tileSize.x && y == startY && walls.size() >= 11) {
-                        Entity *w = walls[Wall::TOP_RIGHT]->clone();
-                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[Wall::TOP_RIGHT]->getSize().y * 0.5f));
-                        //std::cout<<"position top right : "<<w->getPosition()<<std::endl;
-                        addEntity(w);
-                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, w->getPosition().z))->setPassable(false);
+                        if (walls[Wall::TOP_RIGHT] != nullptr) {
+                            Entity *w = walls[Wall::TOP_RIGHT]->clone();
+                            w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[Wall::TOP_RIGHT]->getSize().y * 0.5f));
+                            //std::cout<<"position top right : "<<w->getPosition()<<std::endl;
+                            addEntity(w);
+                            gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, w->getPosition().z))->setPassable(false);
+                        }
                         //Mur du coin en bas \E0 droite.
                     } else if (x == endX - tileSize.x && y == endY - tileSize.y && walls.size() >= 11) {
-                        Entity *w = walls[Wall::BOTTOM_RIGHT]->clone();
-                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[Wall::BOTTOM_RIGHT]->getSize().y * 0.5f));
-                        //std::cout<<"position bottom right : "<<w->getPosition()<<std::endl;
-                        addEntity(w);
-                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, w->getPosition().z))->setPassable(false);
+                        if (walls[Wall::BOTTOM_RIGHT] != nullptr) {
+                            Entity *w = walls[Wall::BOTTOM_RIGHT]->clone();
+                            w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[Wall::BOTTOM_RIGHT]->getSize().y * 0.5f));
+                            //std::cout<<"position bottom right : "<<w->getPosition()<<std::endl;
+                            addEntity(w);
+                            gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, w->getPosition().z))->setPassable(false);
+                        }
                     } else if (x == startX && y == endY - tileSize.y && walls.size() >= 11) {
-                        Entity *w = walls[Wall::BOTTOM_LEFT]->clone();
-                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[Wall::BOTTOM_LEFT]->getSize().y * 0.5f));
-                        //std::cout<<"position bottom left : "<<w->getPosition()<<std::endl;
-                        addEntity(w);
-                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, w->getPosition().z))->setPassable(false);
+                        if (walls[Wall::BOTTOM_LEFT] != nullptr) {
+                            Entity *w = walls[Wall::BOTTOM_LEFT]->clone();
+                            w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[Wall::BOTTOM_LEFT]->getSize().y * 0.5f));
+                            //std::cout<<"position bottom left : "<<w->getPosition()<<std::endl;
+                            addEntity(w);
+                            gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, w->getPosition().z))->setPassable(false);
+                        }
                     } else if ((y == startY || y == endY - tileSize.y) && walls.size() >= 11) {
-                        Entity *w = walls[Wall::TOP_BOTTOM]->clone();
-                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[Wall::TOP_BOTTOM]->getSize().y * 0.5f));
-                        //std::cout<<"position top bottom"<<w->getPosition()<<std::endl;
-                        addEntity(w);
-                        if (y == endY - tileSize.y) {
-                            int i = math::Math::random(tGround.size());
-                            Entity *tile = tGround[i]->clone();
-                            tile->setPosition(math::Vec3f(pos.x, pos.y, pos.y + tile->getSize().y * 0.5f));
-                            bt->addTile(tile);
+                        if (walls[Wall::TOP_BOTTOM] != nullptr) {
+                            Entity *w = walls[Wall::TOP_BOTTOM]->clone();
+                            std::cout<<"global bounds : "<<walls[Wall::TOP_BOTTOM]->getGlobalBounds().getPosition()<<std::endl;
+                            std::cout<<"global bounds cloned : "<<w->getGlobalBounds().getPosition()<<std::endl;
+                            w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[Wall::TOP_BOTTOM]->getSize().y * 0.5f));
+                            addEntity(w);
+                            if (y == endY - tileSize.y) {
+                                int i = math::Math::random(tGround.size());
+                                Entity *tile = tGround[i]->clone();
+                                tile->setPosition(math::Vec3f(pos.x, pos.y, pos.y + tile->getSize().y * 0.5f));
+                                bt->addTile(tile);
+                            }
+                            gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, w->getPosition().z))->setPassable(false);
                         }
-                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, w->getPosition().z))->setPassable(false);
                     } else if ((x == startX || x == endX - tileSize.x) && walls.size() >= 11) {
-                        Entity *w = walls[Wall::RIGHT_LEFT]->clone();
+                        if (walls[Wall::RIGHT_LEFT] != nullptr) {
+                            Entity *w = walls[Wall::RIGHT_LEFT]->clone();
 
-                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[Wall::RIGHT_LEFT]->getSize().y * 0.5f));
-                        addEntity(w);
-                        if (x == endX - tileSize.x) {
-                            int i = math::Math::random(tGround.size());
-                            Entity *tile = tGround[i]->clone();
-                            tile->setPosition(math::Vec3f(pos.x, pos.y, pos.y + tile->getSize().y * 0.5f));
-                            bt->addTile(tile);
+                            w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[Wall::RIGHT_LEFT]->getSize().y * 0.5f));
+                            addEntity(w);
+                            if (x == endX - tileSize.x) {
+                                int i = math::Math::random(tGround.size());
+                                Entity *tile = tGround[i]->clone();
+                                tile->setPosition(math::Vec3f(pos.x, pos.y, pos.y + tile->getSize().y * 0.5f));
+                                bt->addTile(tile);
+                            }
+                            gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, w->getPosition().z))->setPassable(false);
                         }
-                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, w->getPosition().z))->setPassable(false);
                     } else {
                         Entity* tile;
                         if (tGround.size() > 0)  {

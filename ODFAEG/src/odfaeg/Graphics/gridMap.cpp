@@ -514,7 +514,8 @@ namespace odfaeg {
         CellMap* GridMap::getGridCellAt (math::Vec3f point) {
             math::Vec3f coordsCaseP = getCoordinatesAt(point);
             unsigned int indice = (math::Math::abs(minX) + coordsCaseP.x) + (math::Math::abs(minY) + coordsCaseP.y) * nbCasesPerRow + (math::Math::abs(minZ) + coordsCaseP.z) * nbCasesPerCol;
-            //std::cout<<"get cell map at "<<point<<coordsCaseP<<minX<<std::endl<<"miny : "<<minY<<std::endl<<"minz : "<<minZ<<std::endl<<"nb cases per row : "<<nbCasesPerRow<<std::endl<<"nb cases per col : "<<nbCasesPerCol<<std::endl<<indice<<std::endl;
+            /*if (point.x == 50 && point.y == 25 && point.z == 75)
+                std::cout<<"get cell map at "<<point<<"coordCaseP : "<<coordsCaseP<<"minX : "<<minX<<std::endl<<"miny : "<<minY<<std::endl<<"minz : "<<minZ<<std::endl<<"nb cases per row : "<<nbCasesPerRow<<std::endl<<"nb cases per col : "<<nbCasesPerCol<<std::endl<<"indice : "<<indice<<std::endl;*/
             if (indice >= 0 && indice < casesMap.size()) {
                 return casesMap[indice];
             }
