@@ -122,6 +122,13 @@ namespace odfaeg {
                         tc->size = tc->localBounds.getSize() * tc->scale;
                         tc->position = tc->globalBounds.getPosition();
                     }
+                    MeshComponent* mc = getComponent<MeshComponent>(entityId);
+                    if (mc != nullptr) {
+                        tc->transformMatrix.update();
+                        for (unsigned int i = 0; i < mc->faces.size(); i++) {
+                            mc->faces[i].setTransformMatrix(tc->transformMatrix);
+                        }
+                    }
                 }
                 template <typename... Components, typename T, class... D, class = typename std::enable_if_t<!core::contains<TransformComponent, Components...>::value>>
                 void operator()(EntityId entityId, T& params) {
@@ -131,18 +138,27 @@ namespace odfaeg {
                 template <typename... Components, typename T, class = typename std::enable_if_t<core::contains<TransformComponent, Components...>::value>>
                 void operator()(EntityId entityId, T& params) {
                     TransformComponent* tc = getComponent<TransformComponent>(entityId);
-                    auto angle = std::get<0>(params);
-                    tc->rotation = angle;
-                    tc->transformMatrix.setRotation(math::Vec3f(0, 0, 1), angle);
-                    tc->localBounds.transform(tc->transformMatrix);
-                    //physic::BoundingBox bounds = getGlobalBounds();
-                    /*std::cout<<"get global bounds : "<<getGlobalBounds().getPosition()<<getGlobalBounds().getSize();
-                    std::cout<<"global bounds : "<<globalBounds.getPosition()<<globalBounds.getSize();*/
-                    /*if (getGlobalBounds().getPosition() != globalBounds.getPosition()
-                        || getGlobalBounds().getSize() != globalBounds.getSize())
-                        std::cout<<"different"<<std::endl;*/
-                    tc->size = tc->globalBounds.getSize();
-                    tc->position = tc->globalBounds.getPosition();
+                    if (tc != nullptr) {
+                        auto angle = std::get<0>(params);
+                        tc->rotation = angle;
+                        tc->transformMatrix.setRotation(math::Vec3f(0, 0, 1), angle);
+                        tc->localBounds.transform(tc->transformMatrix);
+                        //physic::BoundingBox bounds = getGlobalBounds();
+                        /*std::cout<<"get global bounds : "<<getGlobalBounds().getPosition()<<getGlobalBounds().getSize();
+                        std::cout<<"global bounds : "<<globalBounds.getPosition()<<globalBounds.getSize();*/
+                        /*if (getGlobalBounds().getPosition() != globalBounds.getPosition()
+                            || getGlobalBounds().getSize() != globalBounds.getSize())
+                            std::cout<<"different"<<std::endl;*/
+                        tc->size = tc->globalBounds.getSize();
+                        tc->position = tc->globalBounds.getPosition();
+                    }
+                    MeshComponent* mc = getComponent<MeshComponent>(entityId);
+                    if (mc != nullptr) {
+                        tc->transformMatrix.update();
+                        for (unsigned int i = 0; i < mc->faces.size(); i++) {
+                            mc->faces[i].setTransformMatrix(tc->transformMatrix);
+                        }
+                    }
                 }
                 template <typename... Components, typename T, class... D, class = typename std::enable_if_t<!core::contains<TransformComponent, Components...>::value>>
                 void operator()(EntityId entityId, T& params) {
