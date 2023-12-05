@@ -229,14 +229,16 @@ namespace odfaeg {
                 //updateIds();
             }
             Face::Face() {
-                transform = nullptr;
+
             }
-            Face::Face(sf::PrimitiveType primType, TransformMatrix& tm) : transform(&tm) {
+            Face::Face(sf::PrimitiveType primType, TransformMatrix tm) {
+                transform = tm;
                 m_vertices.setPrimitiveType(primType);
                 m_material = Material();
                 m_material.addTexture(nullptr);
             }
-            Face::Face(VertexArray va, Material mat, TransformMatrix& tm) : transform(&tm) {
+            Face::Face(VertexArray va, Material mat, TransformMatrix tm) {
+                transform = tm;
                 m_vertices = va;
                 m_material = mat;
                 //std::cout<<"face created"<<std::endl;
@@ -251,8 +253,8 @@ namespace odfaeg {
                 tm->setMatrix(face.transform->getMatrix());
                 transform = tm;
             }*/
-            TransformMatrix& Face::getTransformMatrix() const {
-                return *transform;
+            TransformMatrix& Face::getTransformMatrix() {
+                return transform;
             }
             void Face::append(Vertex vertex, unsigned int indice) {
                 m_vertices.append(vertex);
@@ -263,8 +265,8 @@ namespace odfaeg {
             void Face::setMaterial (Material& material) {
                 m_material = material;
             }
-            void Face::setTransformMatrix(TransformMatrix& tm) {
-                transform = &tm;
+            void Face::setTransformMatrix(TransformMatrix tm) {
+                transform = tm;
             }
             VertexArray& Face::getVertexArray() {
                 /*if (m_vertices.getEntity() != nullptr && m_vertices.getEntity()->getRootType() == "E_MONSTER")

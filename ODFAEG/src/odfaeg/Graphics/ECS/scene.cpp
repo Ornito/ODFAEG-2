@@ -362,11 +362,6 @@ namespace odfaeg {
                                     clonedTile = componentMapping.clone<EntityInfoComponent, TransformComponent, MeshComponent>(factory, tGround[i]);
                                     MoveSystem moveSystem;
                                     auto transform = getComponent<TransformComponent>(clonedTile);
-                                    auto mesh = getComponent<MeshComponent>(clonedTile);
-                                    for (unsigned int n = 0; n < mesh->faces.size(); n++) {
-                                        mesh->faces[n].setTransformMatrix(transform->transformMatrix);
-
-                                    }
                                     math::Vec3f position = math::Vec3f(pos.x, pos.y, pos.y + transform->size.y * 0.5f);
                                     auto mvparams = std::make_tuple(position);
                                     std::vector<EntityId> tileId(1);

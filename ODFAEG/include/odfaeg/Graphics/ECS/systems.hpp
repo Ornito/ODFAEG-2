@@ -65,6 +65,13 @@ namespace odfaeg {
                         tc->transformMatrix.setTranslation(tc->center);
                         tc->globalBounds = tc->localBounds.transform(tc->transformMatrix);
                     }
+                    MeshComponent* mc = getComponent<MeshComponent>(entityId);
+                    if (mc != nullptr) {
+                        tc->transformMatrix.update();
+                        for (unsigned int i = 0; i < mc->faces.size(); i++) {
+                            mc->faces[i].setTransformMatrix(tc->transformMatrix);
+                        }
+                    }
                 }
                 template <typename... Components, typename T, class... D, class = typename std::enable_if_t<!core::contains<TransformComponent, Components...>::value>>
                 void operator()(EntityId entityId, T& params) {

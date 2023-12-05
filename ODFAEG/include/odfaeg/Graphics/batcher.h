@@ -237,7 +237,7 @@ namespace odfaeg {
             * \param primType : the primitive type.
             * \param tm : the transormation matrix.
             */
-            Face(sf::PrimitiveType primType, TransformMatrix& tm);
+            Face(sf::PrimitiveType primType, TransformMatrix tm);
             /**
             * \fn Face(VertexArray va, Material mat, TransformMatrix& tm)
             * \brief constructor.
@@ -245,14 +245,14 @@ namespace odfaeg {
             * \param tm : the material.
             * \param the transform matrix.
             */
-            Face(VertexArray va, Material mat, TransformMatrix& tm);
+            Face(VertexArray va, Material mat, TransformMatrix tm);
             //Face(const Face& face);
             /**
             * \fn TransformMatrix& getTransformMatrix() const
             * \brief get the transform matrix of the face.
             * \return the transform matrix of the face.
             */
-            TransformMatrix& getTransformMatrix() const;
+            TransformMatrix& getTransformMatrix();
             /**
             * \fn void append(Vertex vertex, unsigned int indice)
             * \brief add a vertex to the face.
@@ -267,7 +267,7 @@ namespace odfaeg {
             */
             Material& getMaterial();
             void setMaterial(Material& material);
-            void setTransformMatrix(TransformMatrix& tm);
+            void setTransformMatrix(TransformMatrix tm);
             /**
             * \fn VertexArray& getVertexArray()
             * \brief get the vertex array.
@@ -320,7 +320,7 @@ namespace odfaeg {
         private :
             VertexArray m_vertices; /**> the vertices.*/
             Material m_material; /**> the material.*/
-            TransformMatrix* transform; /**> the transform.*/
+            TransformMatrix transform; /**> the transform.*/
         };
         /**
           * \file face.h

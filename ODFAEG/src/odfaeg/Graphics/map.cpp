@@ -233,8 +233,6 @@ namespace odfaeg {
                     } else if ((y == startY || y == endY - tileSize.y) && walls.size() >= 11) {
                         if (walls[Wall::TOP_BOTTOM] != nullptr) {
                             Entity *w = walls[Wall::TOP_BOTTOM]->clone();
-                            std::cout<<"global bounds : "<<walls[Wall::TOP_BOTTOM]->getGlobalBounds().getPosition()<<std::endl;
-                            std::cout<<"global bounds cloned : "<<w->getGlobalBounds().getPosition()<<std::endl;
                             w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[Wall::TOP_BOTTOM]->getSize().y * 0.5f));
                             addEntity(w);
                             if (y == endY - tileSize.y) {

@@ -178,6 +178,9 @@ namespace odfaeg {
             }
         }
         void GameObject::onResize(math::Vec3f& s) {
+            for (unsigned int i = 0; i < faces.size(); i++) {
+                faces[i].setTransformMatrix(getTransform());
+            }
             for (unsigned int i = 0; i < children.size(); i++) {
                 children[i]->setSize(s);
             }
@@ -186,6 +189,9 @@ namespace odfaeg {
             /*if (getRootType() == "E_HERO")
                 std::cout<<"matrix : "<<getTransform().getMatrix()<<std::endl;*/
             //std::cout<<"move : "<<getType()<<"t : "<<t<<std::endl;
+            for (unsigned int i = 0; i < faces.size(); i++) {
+                faces[i].setTransformMatrix(getTransform());
+            }
             for (unsigned int i = 0; i < children.size(); i++) {
                 children[i]->move(t);
             }
@@ -194,6 +200,9 @@ namespace odfaeg {
         }
         void GameObject::onScale(math::Vec3f &s) {
             //updateTransform();
+            for (unsigned int i = 0; i < faces.size(); i++) {
+                faces[i].setTransformMatrix(getTransform());
+            }
             for (unsigned int i = 0; i < children.size(); i++) {
                 children[i]->scale(s);
             }
@@ -201,6 +210,9 @@ namespace odfaeg {
         }
         void GameObject::onRotate(float angle) {
             //updateTransform();
+            for (unsigned int i = 0; i < faces.size(); i++) {
+                faces[i].setTransformMatrix(getTransform());
+            }
             for (unsigned int i = 0; i < children.size(); i++) {
                 children[i]->rotate(angle);
             }

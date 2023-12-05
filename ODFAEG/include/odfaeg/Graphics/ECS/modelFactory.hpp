@@ -46,12 +46,12 @@ namespace odfaeg {
                     va[2] = v3;
                     va[3] = v4;
                     Material material;
-                    material.addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
-                    addComponent(tile, tc, entityFactory);
-                    Face face(va, material, getComponent<TransformComponent>(tile)->transformMatrix);
-                    mesh.faces.push_back(face);
-                    addComponent(tile, eic, entityFactory);
+                    material.addTexture(image, sf::IntRect(0, 0, 0, 0));
 
+                    Face face(va, material, tm);
+                    mesh.faces.push_back(face);
+                    addComponent(tile, tc, entityFactory);
+                    addComponent(tile, eic, entityFactory);
                     addComponent(tile, mesh, entityFactory);
                     return tile;
                 }
