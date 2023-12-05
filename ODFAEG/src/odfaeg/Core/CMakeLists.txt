@@ -6,6 +6,8 @@ set(SRC
 	${INCROOT}/archive.h
 	${SRCROOT}/archive.cpp
 	${INCROOT}/serialization.h
+	${INCROOT}/entityFactory.hpp
+	${INCROOT}/ecs.hpp
 	${INCROOT}/erreur.h
 	${INCROOT}/export.hpp
 	${SRCROOT}/erreur.cpp	

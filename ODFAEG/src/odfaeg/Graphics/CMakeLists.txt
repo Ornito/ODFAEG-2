@@ -15,7 +15,7 @@ set(SRC_GRAPHICS
 	${SRCROOT}/viewMatrix.cpp
 	${INCROOT}/projMatrix.h
 	${SRCROOT}/projMatrix.cpp
-	${INCROOT}/entityManager.h
+	${INCROOT}/entityManager.h	
 	${INCROOT}/viewportMatrix.h
 	${SRCROOT}/viewport.cpp
 	${INCROOT}/renderTexture.h
@@ -135,8 +135,18 @@ set(SRC_ECS
 	${INCROOT}/ECS/modelFactory.hpp
 	${INCROOT}/ECS/systems.hpp
 	${INCROOT}/ECS/components.hpp
+	${SRCROOT}/ECS/component.cpp
 	${INCROOT}/ECS/world.hpp
 	${SRCROOT}/ECS/system.cpp
+	${INCROOT}/ECS/scene.hpp
+	${SRCROOT}/ECS/scene.cpp
+	${INCROOT}/ECS/heavyComponent.hpp
+	${INCROOT}/ECS/component.hpp
+	${INCROOT}/ECS/perPixelLinkedList.hpp
+	${SRCROOT}/ECS/perPixelLinkedList.cpp
+	${INCROOT}/ECS/entitiesUpdater.hpp
+	${INCROOT}/ECS/application.hpp
+	${SRCROOT}/ECS/application.cpp	
 	)
 	
 set(SRC_GRAPHICS_2D

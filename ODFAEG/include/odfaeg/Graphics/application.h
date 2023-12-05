@@ -179,11 +179,14 @@ namespace odfaeg {
                     }
                     onRender(componentManager.get());
                     componentManager->clearComponents();
+                    componentManager->clearECSComponents();
                     if (eventContextActivated) {
                        listener->processEvents();
                     }
                     componentManager->updateComponents();
+                    componentManager->updateECSComponents();
                     componentManager->drawRenderComponents();
+                    componentManager->drawECSComponents();
 
                     onDisplay(windows[0].first);
                     componentManager->drawGuiComponents();

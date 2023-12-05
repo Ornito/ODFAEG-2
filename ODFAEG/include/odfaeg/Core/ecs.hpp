@@ -1,356 +1,281 @@
 #ifndef ODFAEG_ECS_HPP
 #define ODFAEG_ECS_HPP
 #include <vector>
-#include <atomic>
+#include "../Graphics/ECS/components.hpp"
 #include <optional>
+#include "entityFactory.hpp"
 namespace odfaeg {
     namespace graphic {
         namespace ecs {
+
+
             template <typename T>
-            struct atomwrapper
-            {
-              std::atomic<T> _a;
-
-              atomwrapper()
-                :_a()
-              {}
-
-              atomwrapper(const std::atomic<T> &a)
-                :_a(a.load())
-              {}
-
-              atomwrapper(const atomwrapper &other)
-                :_a(other._a.load())
-              {}
-
-              atomwrapper &operator=(const atomwrapper &other)
-              {
-                _a.store(other._a.load());
-                return *this;
-              }
-              std::atomic<T>& get() {
-                return _a;
-              }
-            };
+            std::vector<std::optional<T>>& get(){
+                static std::vector<std::optional<T>> tvec;
+                return tvec;
+            }
             template <typename T>
-            struct atomwrapper<T*>
-            {
-              std::atomic<T*> _a;
-
-              atomwrapper()
-                :_a()
-              {}
-              atomwrapper(T a)
-                :_a(a)
-              {}
-
-              atomwrapper(const std::atomic<T> &a)
-                :_a(a.load())
-              {}
-
-              atomwrapper(const atomwrapper &other)
-                :_a(other._a.load())
-              {}
-
-              atomwrapper &operator=(const atomwrapper &other)
-              {
-                _a.store(other._a.load());
-                return *this;
-              }
-              atomwrapper &operator=(T a)
-              {
-                _a.store(a);
-                return *this;
-              }
-              std::atomic<T*>& get() {
-                return _a;
-              }
-              void destroy() {
-                T* ptr = _a.load();
-                delete ptr;
-              }
-            };
-
-
-            using EntityId = atomwrapper<std::size_t*>;
+            void addComponent(EntityId entity, T component, EntityFactory& factory) {
+                get<T>().resize(factory.getNbEntities());
+                get<T>()[entity] = component;
+            }
+            template <typename T>
+            T* getComponent(EntityId entity) {
+                if (entity >= get<T>().size() || !get<T>()[entity].has_value())
+                    return nullptr;
+                else
+                    return &get<T>()[entity].value();
+            }
+            template <typename T>
+            void removeComponent(EntityId entity, EntityFactory& factory) {
+                typename std::vector<T>::iterator it;
+                unsigned int i;
+                for (i = 0, it = get<T>().begin(); it != get<T>().end();i++) {
+                    if (i == entity)
+                        it = get<T>().erase(it);
+                    else
+                        it++;
+                }
+                get<T>().resize(factory.getNbEntities());
+            }
             class ComponentMapping {
-                template <class>
-                friend class World;
-                friend class CloningSystem;
-                friend class MergingSystem;
-                friend class Grid;
-                std::vector<std::vector<std::optional<size_t>>> componentMapping;
+
                 std::vector<std::vector<EntityId>> childrenMapping;
                 std::vector<std::optional<EntityId>> parentMapping;
                 public :
-                template <typename Component, typename DynamicTuple>
-                auto addFlag(DynamicTuple& tuple) {
-                    auto newTuple = tuple.template addType<Component>();
-                    for (unsigned int i = 0; i < componentMapping.size(); i++) {
-                        componentMapping[i].resize(newTuple.nbTypes());
-                    }
-                    return newTuple;
-                }
-                template <typename Component, typename DynamicTuple, typename Factory>
-                auto addFlag(EntityId entity, DynamicTuple& tuple, Component component, Factory& factory) {
-                    auto newTuple = tuple.add(component);
-                    componentMapping.resize(factory.getNbEntities());
+                void updateSize(EntityFactory& factory) {
                     childrenMapping.resize(factory.getNbEntities());
                     parentMapping.resize(factory.getNbEntities());
-                    for (unsigned int i = 0; i < componentMapping.size(); i++) {
-                        componentMapping[i].resize(newTuple.nbTypes());
-                    }
-
-                    componentMapping[*entity.get().load()][newTuple.template getIndexOfTypeT<Component>()] = newTuple.template vectorSize<Component>()-1;
-                    return newTuple;
                 }
-
-                template <typename DynamicTuple, typename Component, typename Factory>
-                void addAgregate(EntityId entityId, DynamicTuple& tuple, Component component, Factory& factory) {
-                    tuple.add(component);
-                    componentMapping.resize(factory.getNbEntities());
+                void addChild(EntityId parentId, EntityId child, EntityFactory& factory) {
                     childrenMapping.resize(factory.getNbEntities());
                     parentMapping.resize(factory.getNbEntities());
-                    for (unsigned int i = 0; i < componentMapping.size(); i++) {
-                        componentMapping[i].resize(tuple.nbTypes());
-                    }
-                    componentMapping[*entityId.get().load()][tuple.template getIndexOfTypeT<Component>()] = tuple.template vectorSize<Component>()-1;
-                }
-                template <typename Factory>
-                void addChild(EntityId parentId, EntityId child, Factory& factory) {
-
-                    for (unsigned int i = 0; i < childrenMapping.size(); i++) {
-                        childrenMapping[*parentId.get().load()].resize(factory.getNbEntities());
-                    }
-
-                    childrenMapping[*parentId.get().load()].push_back(child);
-                    parentMapping.resize(factory.getNbEntities());
-                    parentMapping[*child.get().load()] = parentId;
+                    childrenMapping[parentId].push_back(child);
+                    parentMapping[child] = parentId;
                 }
                 EntityId getRoot(EntityId entityId) {
                     EntityId root = entityId;
-                    while (parentMapping[*root.get().load()].has_value()) {
-                        root = parentMapping[*root.get().load()].value();
+                    if (entityId >= parentMapping.size())
+                        return root;
+                    while (parentMapping[root].has_value()) {
+                        root = parentMapping[root].value();
                     }
-                    return std::move(root);
+                    return root;
                 }
-                void removeMapping(EntityId entityId) {
-                    bool found = false;
-                    std::vector<std::vector<std::optional<size_t>>>::iterator it;
-                    unsigned int i = 0;
-                    for (it = componentMapping.begin(); it != componentMapping.end() && !found;) {
-                        if (*entityId.get().load() == i) {
-                            found =true;
-                            it = componentMapping.erase(it);
-                        } else {
+                std::vector<EntityId> getChildren(EntityId entity) {
+                    if (entity >= childrenMapping.size())
+                        return std::vector<EntityId>();
+                    return childrenMapping[entity];
+                }
+                EntityId getParent(EntityId entity) {
+                    if(parentMapping[entity].has_value());
+                       return parentMapping[entity].value();
+                    return -1;
+                }
+                void setParent(EntityId entity, EntityId parent) {
+                    parentMapping[entity] = parent;
+                }
+                bool remove(EntityId entity) {
+                    for (unsigned int i = 0; i < childrenMapping[entity].size(); i++) {
+                        remove(childrenMapping[entity][i]);
+                    }
+                    childrenMapping[entity].clear();
+                    std::vector<std::optional<EntityId>>::iterator it;
+                    for (it = parentMapping.begin(); it != parentMapping.end();) {
+                        if (it->has_value() && it->value() == entity)
+                            it = parentMapping.erase(it);
+                        else
                             it++;
-                            i++;
-                        }
-                    }
-                    if (found) {
-                        std::vector<std::vector<EntityId>>::iterator it2;
-                        std::vector<EntityId>::iterator it3;
-                        for (it2 = childrenMapping.begin(); it2 != childrenMapping.end(); it2++) {
-                            for (it3 = it2->begin(); it3 != it2->end();) {
-                                if (*entityId.get().load() == *it3->get().load()) {
-                                    it3 = it2->erase(it3);
-                                } else {
-                                    it3++;
-                                }
-                            }
-                        }
-                        std::vector<std::optional<EntityId>>::iterator it4;
-                        for (it4 = parentMapping.begin(); it4 != parentMapping.end(); it4++) {
-                            if (*entityId.get().load() == *it4->value().get().load()) {
-                                it4 = parentMapping.erase(it4);
-                            } else {
-                                it4++;
-                            }
-                        }
                     }
                 }
-                template <typename T, typename DynamicTuple>
-                T* getAgregate(DynamicTuple& tuple, EntityId entityId) {
-                    if (componentMapping[*entityId.get().load()][tuple.template getIndexOfTypeT<T>()].has_value())
-                        return tuple.template get<T>(componentMapping[*entityId.get().load()][tuple.template getIndexOfTypeT<T>()].value());
-                    return nullptr;
+                template <typename... Signature>
+                EntityId clone(EntityFactory& factory, EntityId toClone, EntityId parent = -1) {
+                    EntityId clonedId = factory.createEntity(getComponent<EntityInfoComponent>(toClone)->groupName);
+                    clone_impl<0, Signature...>(toClone, clonedId, factory);
+                    if (parent != -1) {
+                        childrenMapping.resize(factory.getNbEntities());
+                        parentMapping.resize(factory.getNbEntities());
+                        childrenMapping[parent].push_back(clonedId);
+                        parentMapping[clonedId] = parent;
+                    }
+                    for (unsigned int i = 0; i < getChildren(toClone).size(); i++) {
+                        clone(factory, childrenMapping[toClone][i], clonedId);
+                    }
+                    return clonedId;
                 }
-                template <typename... Signature, typename DynamicTuple, typename System, typename... Params>
-                void apply(DynamicTuple& tuple, System& system, std::vector<EntityId>& entities, std::tuple<Params...>& params, bool reverse=false) {
-                  EntityId* tmpRootEntityId;
-                  EntityId* tmpParentEntityId;
-                  EntityId* tmpClonedParentEntityId;
-                  bool first = true;
-                  auto additionnal_params = std::make_tuple(tmpClonedParentEntityId, tmpRootEntityId, tmpParentEntityId, first);
-                  auto cated_params = std::tuple_cat(params, additionnal_params);
+                template <size_t I, typename... Components, class = typename std::enable_if_t<(sizeof...(Components) != 0 && I < sizeof...(Components)-1)>>
+                void clone_impl(EntityId toCloneId, EntityId clonedId, EntityFactory& factory) {
+                    //si l'entité possède le composant en question on le clône.
+                    if (getComponent<std::tuple_element_t<I, std::tuple<Components...>>>(toCloneId)) {
+                        addComponent(clonedId, *getComponent<std::tuple_element_t<I, std::tuple<Components...>>>(toCloneId), factory);
+                    }
+                    clone_impl<I+1, Components...>(toCloneId, clonedId, factory);
+                }
+                template <size_t I, typename... Components, class... D, class = typename std::enable_if_t<(sizeof...(Components) != 0 && I == sizeof...(Components)-1)>>
+                void clone_impl(EntityId toCloneId, EntityId clonedId, EntityFactory& factory) {
+                    if (getComponent<std::tuple_element_t<I, std::tuple<Components...>>>(toCloneId)) {
+                        addComponent(clonedId, *getComponent<std::tuple_element_t<I, std::tuple<Components...>>>(toCloneId), factory);
+                    }
+                }
+                template <size_t I, typename... Components, class... D, class...E, class = typename std::enable_if_t<(sizeof...(Components) == 0)>>
+                void clone_impl(EntityId tocloneId, EntityId clonedId, EntityFactory& factory) {
+                }
+                template <typename... Signature>
+                EntityId merge(EntityFactory& factory, EntityId toMerge1, EntityId toMerge2, std::string groupName, EntityId parent=-1) {
+                    EntityId merged = factory.createEntity(groupName);
+                    EntityId merged1, merged2;
+                    if (parent == -1) {
+                        merged1 = factory.createEntity(getComponent<EntityInfoComponent>(toMerge1)->groupName);
+                        merged2 = factory.createEntity(getComponent<EntityInfoComponent>(toMerge2)->groupName);
+                        merge_node<0, Signature...>(merged, toMerge1, factory);
+                        merge_node<0, Signature...>(merged, toMerge2, factory);
+                        childrenMapping.resize(factory.getNbEntities());
+                        parentMapping.resize(factory.getNbEntities());
+                        childrenMapping[merged].push_back(merged1);
+                        parentMapping[merged1] = merged;
+                        childrenMapping[merged].push_back(merged2);
+                        parentMapping[merged2] = merged;
+                    }
+                    if (parent != -1 && toMerge1 != -1) {
+                        childrenMapping.resize(factory.getNbEntities());
+                        parentMapping.resize(factory.getNbEntities());
+                        childrenMapping[parent].push_back(merged);
+                        parentMapping[merged] = parent;
+                        merge_node<0, Signature...>(merged, toMerge1, factory);
+                    }
+                    if (parent != -1 && toMerge2 != -1) {
+                        childrenMapping.resize(factory.getNbEntities());
+                        parentMapping.resize(factory.getNbEntities());
+                        childrenMapping[parent].push_back(merged);
+                        parentMapping[merged] = parent;
+                        merge_node<0, Signature...>(merged, toMerge2, factory);
+                    }
+                    for (unsigned int i = 0; i < childrenMapping[toMerge1].size(); i++) {
+                        merge(factory, childrenMapping[toMerge1][i], -1, getComponent<EntityInfoComponent>(childrenMapping[toMerge1][i])->groupName, (parent == -1) ? merged1 : merged);
+                    }
+                    for (unsigned int i = 0; i < childrenMapping[toMerge2].size(); i++) {
+                        merge(factory, -1, childrenMapping[toMerge2][i], getComponent<EntityInfoComponent>(childrenMapping[toMerge2][i])->groupName, (parent == -1) ? merged2 : merged);
+                    }
+                    return merged;
+                }
+                template <size_t I, typename... Signature, class = typename std::enable_if_t<(sizeof...(Signature) != 0 && I < sizeof...(Signature)-1)>>
+                void merge_node(EntityId entityId, EntityId toMergeId, EntityFactory& factory) {
+                    //si l'entité possède le composant en question on le clône.
+                    if (getComponent<std::tuple_element_t<I, std::tuple<Signature...>>>(toMergeId)) {
+                        addComponent(entityId, *getComponent<std::tuple_element_t<I, std::tuple<Signature...>>>(toMergeId), factory);
+                    }
+                    merge_node<I+1, Signature...>(entityId, toMergeId, factory);
+                }
+                template < size_t I, typename... Signature, class... D, class = typename std::enable_if_t<(sizeof...(Signature) != 0 && I == sizeof...(Signature)-1)>>
+                void merge_node(EntityId entityId, EntityId toMergeId, EntityFactory& factory) {
+                    if (getComponent<std::tuple_element_t<I, std::tuple<Signature...>>>(toMergeId)) {
+                        addComponent(entityId, *getComponent<std::tuple_element_t<I, std::tuple<Signature...>>>(toMergeId), factory);
+                    }
+                }
+                template <size_t I, typename... Signature, class... D, class...E, class = typename std::enable_if_t<(sizeof...(Signature) == 0)>>
+                void merge_node(EntityId tocloneId, EntityId clonedId, EntityFactory& factory) {
+                }
+                template <typename... Signature, typename System, typename... Params>
+                void apply(System& system, std::vector<EntityId>& entities, std::tuple<Params...>& params, bool reverse=false) {
                   if (reverse) {
                       for (unsigned int i = 0; i < entities.size(); i++) {
-                        std::vector<EntityId> children = childrenMapping[*entities[i].get().load()];
+                        std::vector<EntityId> children = getChildren(entities[i]);
                         std::vector<EntityId> addedChildren;
                         while (children.size() > 0) {
                             for (unsigned int i = 0; i < children.size(); i++) {
                                 addedChildren.push_back(children[i]);
                             }
-                            if (parentMapping[*children[0].get().load()].has_value()) {
-                                EntityId parentId = parentMapping[*children[0].get().load()];
-                                children = childrenMapping[*parentId.get().load()];
+                            if (parentMapping[children[0]].has_value()) {
+                                EntityId parentId = parentMapping[children[0]].value();
+                                children = childrenMapping[parentId];
                             } else {
                                 children.clear();
                             }
                         }
                         for (unsigned i = 0; i < addedChildren.size(); i++) {
-                            this->template apply_impl<Signature...>(addedChildren[i], tuple, system, cated_params, std::index_sequence_for<Signature...>());
+                            this->template apply_impl<Signature...>(addedChildren[i], system, params, std::index_sequence_for<Signature...>());
                         }
-                        this->template apply_impl<Signature...>(entities[i], tuple, system, cated_params, std::index_sequence_for<Signature...>());
+                        this->template apply_impl<Signature...>(entities[i], system, params, std::index_sequence_for<Signature...>());
                       }
                   } else {
                       for (unsigned int i = 0; i < entities.size(); i++) {
-                        this->template apply_impl<Signature...>(entities[i], tuple, system, cated_params, std::index_sequence_for<Signature...>());
-                        std::vector<EntityId> children = childrenMapping[*entities[i].get().load()];
+                        this->template apply_impl<Signature...>(entities[i], system, params, std::index_sequence_for<Signature...>());
+                        std::vector<EntityId> children = getChildren(entities[i]);
                         std::vector<EntityId> addedChildren;
                         while (children.size() > 0) {
                             for (unsigned int i = 0; i < children.size(); i++) {
                                 addedChildren.push_back(children[i]);
                             }
-                            if (parentMapping[*children[0].get().load()].has_value()) {
-                                EntityId parentId = parentMapping[*children[0].get().load()];
-                                children = childrenMapping[*parentId.get().load()];
+                            if (parentMapping[children[0]].has_value()) {
+                                EntityId parentId = parentMapping[children[0]].value();
+                                children = childrenMapping[parentId];
                             } else {
                                 children.clear();
                             }
                         }
                         for (int i = addedChildren.size()-1; i >=0; i++) {
-                            this->template apply_impl<Signature...>(addedChildren[i], tuple, system, cated_params, std::index_sequence_for<Signature...>());
+                            this->template apply_impl<Signature...>(addedChildren[i], system, params, std::index_sequence_for<Signature...>());
                         }
                       }
-                  }
+                    }
                 }
 
-                template <typename... Signature, typename DynamicTuple, typename System, size_t... I, typename... Params>
-                void apply_impl(EntityId entityId, DynamicTuple& tuple, System& system, std::tuple<Params...>& params, std::index_sequence<I...>) {
-                    auto tp = std::make_tuple(getAgregate<std::tuple_element_t<I, std::tuple<Signature...>>>(tuple, entityId)...);
-                    system(tp, entityId, params);
+                template <typename... Signature, typename System, size_t... I, typename... Params>
+                void apply_impl(EntityId entityId, System& system, std::tuple<Params...>& params, std::index_sequence<I...>) {
+                    system.template operator()<Signature...>(entityId, params);
                 }
-                template <typename... Signature, typename DynamicTuple, typename System, typename... Params, class R>
-                void apply(DynamicTuple& tuple, System& system, std::vector<EntityId>& entities, std::tuple<Params...>& params, std::vector<R>& ret, bool reverse=false) {
-                  EntityId* tmpRootEntityId;
-                  EntityId* tmpParentEntityId;
-                  EntityId* tmpClonedParentEntityId;
-                  bool first = true;
-                  auto additionnal_params = std::make_tuple(tmpClonedParentEntityId, tmpRootEntityId, tmpParentEntityId, first);
-                  auto cated_params = std::tuple_cat(params, additionnal_params);
+                template <typename... Signature, typename System, typename... Params, class R>
+                void apply(System& system, std::vector<EntityId>& entities, std::tuple<Params...>& params, std::vector<R>& ret, bool reverse=false) {
                   if (reverse) {
                       for (unsigned int i = 0; i < entities.size(); i++) {
-                        std::vector<EntityId> children = childrenMapping[*entities[i].get().load()];
+                        std::vector<EntityId> children = getChildren(entities[i]);
                         std::vector<EntityId> addedChildren;
                         while (children.size() > 0) {
                             for (unsigned int i = 0; i < children.size(); i++) {
                                 addedChildren.push_back(children[i]);
                             }
-                            if (parentMapping[*children[0].get().load()].has_value()) {
-                                EntityId parentId = parentMapping[*children[0].get().load()];
-                                children = childrenMapping[*parentId.get().load()];
+                            if (parentMapping[children[0]].has_value()) {
+                                EntityId parentId = parentMapping[children[0]];
+                                children = childrenMapping[parentId];
                             } else {
                                 children.clear();
                             }
                         }
                         for (unsigned i = 0; i < addedChildren.size(); i++) {
-                            this->template apply_impl<Signature...>(addedChildren[i], tuple, system, cated_params, std::index_sequence_for<Signature...>(), ret);
+                            this->template apply_impl<Signature...>(addedChildren[i], system, params, std::index_sequence_for<Signature...>(), ret);
                         }
-                        this->template apply_impl<Signature...>(entities[i], tuple, system, cated_params, std::index_sequence_for<Signature...>(), ret);
+                        this->template apply_impl<Signature...>(entities[i], system, params, std::index_sequence_for<Signature...>(), ret);
                       }
                   } else {
                       for (unsigned int i = 0; i < entities.size(); i++) {
-                        this->template apply_impl<Signature...>(entities[i], tuple, system, cated_params, std::index_sequence_for<Signature...>(), ret);
-                        std::vector<EntityId> children = childrenMapping[*entities[i].get().load()];
+                        this->template apply_impl<Signature...>(entities[i], system, params, std::index_sequence_for<Signature...>(), ret);
+                        std::vector<EntityId> children = getChildren(entities[i]);
                         std::vector<EntityId> addedChildren;
                         while (children.size() > 0) {
                             for (unsigned int i = 0; i < children.size(); i++) {
                                 addedChildren.push_back(children[i]);
                             }
-                            if (parentMapping[*children[0].get().load()].has_value()) {
-                                EntityId parentId = parentMapping[*children[0].get().load()];
-                                children = childrenMapping[*parentId.get().load()];
+                            if (parentMapping[children[0]].has_value()) {
+                                EntityId parentId = parentMapping[children[0]];
+                                children = childrenMapping[parentId];
                             } else {
                                 children.clear();
                             }
                         }
                         for (int i = addedChildren.size()-1; i >=0; i++) {
-                            this->template apply_impl<Signature...>(addedChildren[i], tuple, system, cated_params, std::index_sequence_for<Signature...>(), ret);
+                            this->template apply_impl<Signature...>(addedChildren[i], system, params, std::index_sequence_for<Signature...>(), ret);
                         }
                       }
                   }
                 }
                 template <typename... Signature, typename DynamicTuple, typename System, size_t... I, typename... Params, typename R>
                 void apply_impl(EntityId entityId, DynamicTuple& tuple, System& system, std::tuple<Params...>& params, std::index_sequence<I...>, std::vector<R>& rets) {
-                    auto tp = std::make_tuple(getAgregate<std::tuple_element_t<I, std::tuple<Signature...>>>(tuple, entityId)...);
-                    rets.push_back(system(tp, entityId, params));
+
+                    rets.push_back(system.template operator()<Signature...>(entityId, params));
                 }
 
             };
-            struct EntityFactory {
-                size_t nbEntities=0;
-                std::vector<EntityId> ids;
-                EntityId createEntity() {
 
-                    EntityId id;
-                    id.get().store(new size_t(nbEntities));
-                    ids.push_back(id);
-                    nbEntities++;
-                    return id;
-                }
-                size_t getNbEntities() {
-                    return nbEntities;
-                }
-                ~EntityFactory() {
-                    for (unsigned int i = 0; i < ids.size(); i++) {
-                        ids[i].destroy();
-                    }
-                }
-                private :
-                void destroyEntity(EntityId id) {
-                    const auto itToFind =
-                        std::find_if(ids.begin(), ids.end(),
-                                     [&](auto& p) { return p.get().load() == id.get().load(); });
-                    const bool found = (itToFind != ids.end());
-                    if (found) {
-                        for (auto it = itToFind; it != ids.end(); it++) {
-                            *it->get().load() =  *it->get().load() - 1;
-                        }
-                        itToFind->destroy();
-                        ids.erase(itToFind);
-
-                        nbEntities--;
-                    }
-                }
-            };
-            template <typename T>
-            atomwrapper<bool>& getProducerStatus() {
-                static atomwrapper<bool> task;
-                return task;
-            }
-            template <typename T>
-            void setProducerStatus(bool status) {
-                 getProducerStatus<T>().get().store(status);
-            }
-
-            template <typename T>
-            bool isProduced() {
-                 return getProducerStatus<T>().get().load();
-            }
-            template <typename T>
-            atomwrapper<bool>& getConsumerStatus() {
-                static atomwrapper<bool> task(true);
-                return task;
-            }
-            template <typename T>
-            void setConsumerStatus(bool status) {
-                 getConsumerStatus<T>().get().store(status);
-            }
-            template <typename T>
-            bool isConsumed() {
-                 return getConsumerStatus<T>().get().load();
-            }
         }
     }
 }

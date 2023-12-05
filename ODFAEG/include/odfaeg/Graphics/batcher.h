@@ -246,6 +246,7 @@ namespace odfaeg {
             * \param the transform matrix.
             */
             Face(VertexArray va, Material mat, TransformMatrix& tm);
+            //Face(const Face& face);
             /**
             * \fn TransformMatrix& getTransformMatrix() const
             * \brief get the transform matrix of the face.
@@ -272,7 +273,7 @@ namespace odfaeg {
             * \brief get the vertex array.
             * \return the vertex array.
             */
-            VertexArray& getVertexArray();
+            VertexArray& getVertexArray() ;
             void setVertexArray (VertexArray va);
             /**
             * \fn bool useSameMaterial(Face& other)

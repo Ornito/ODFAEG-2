@@ -1,4 +1,5 @@
 #ifndef ODFAEG_COMPONENT_HPP
+#define ODFAEG_COMPONENT_HPP
 #include "drawable.h"
 #include "transformable.h"
 #include "../Window/listener.h"
@@ -108,5 +109,4 @@ namespace odfaeg {
         };
     }
 }
-#define ODFAEG_COMPONENT_HPP
 #endif // ODFAEG_COMPONENT

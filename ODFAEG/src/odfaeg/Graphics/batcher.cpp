@@ -1,6 +1,6 @@
 #include "../../../include/odfaeg/Graphics/batcher.h"
 #include "../../../include/odfaeg/Graphics/entity.h"
-#include "../../../include/odfaeg/Graphics/application.h"
+#include "../../../include/odfaeg/Graphics/ECS/application.hpp"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -48,10 +48,7 @@ namespace odfaeg {
                 reflectable = false;
                 bumpTexture = nullptr;
                 id = 0;
-                if (core::Application::app != nullptr)
-                    core::Application::app->getMaterials().push_back(this);
-                else
-                    materials.push_back(this);
+                materials.push_back(this);
             }
             Material::Material(const Material& material) {
                 texInfos = material.texInfos;
@@ -63,10 +60,7 @@ namespace odfaeg {
                 reflectable = material.reflectable;
                 bumpTexture = material.bumpTexture;
                 //std::cout<<"copy material"<<std::endl;
-                if (core::Application::app != nullptr)
-                    core::Application::app->getMaterials().push_back(this);
-                else
-                    materials.push_back(this);
+                materials.push_back(this);
                 //updateIds();
             }
             Material& Material::operator= (const Material& material) {
@@ -78,25 +72,13 @@ namespace odfaeg {
                 refractable = material.refractable;
                 reflectable = material.reflectable;
                 bumpTexture = material.bumpTexture;
-                if (core::Application::app != nullptr)
-                    core::Application::app->getMaterials().push_back(this);
-                else
-                    materials.push_back(this);
+                materials.push_back(this);
                 return *this;
             }
             bool Material::contains(Material& material) {
-                if (core::Application::app != nullptr) {
-                    std::vector<Material*>& sameMaterials = core::Application::app->getSameMaterials();
-                    for (unsigned int i = 0; i < sameMaterials.size(); i++) {
-                        if (*sameMaterials[i] == material) {
-                            return true;
-                        }
-                    }
-                } else {
-                    for (unsigned int i = 0; i < sameMaterials.size(); i++) {
-                        if (*sameMaterials[i] == material) {
-                            return true;
-                        }
+                for (unsigned int i = 0; i < sameMaterials.size(); i++) {
+                    if (*sameMaterials[i] == material) {
+                        return true;
                     }
                 }
                 return false;
@@ -217,69 +199,32 @@ namespace odfaeg {
                 return !(*this == material);
             }
             void Material::countNbMaterials() {
-                if (core::Application::app != nullptr) {
-                    unsigned int nbMaterials = 0;
-                    std::vector<Material*>& sameMaterials = core::Application::app->getSameMaterials();
-                    std::vector<Material*>& materials = core::Application::app->getMaterials();
-                    sameMaterials.clear();
-                    for (unsigned int i = 0; i < materials.size(); i++) {
-                        if (materials[i] != nullptr && !contains(*materials[i])) {
-                            nbMaterials++;
-                            sameMaterials.push_back(materials[i]);
-                        }
-                    }
-                    core::Application::app->setNbMaterials(nbMaterials);
-                } else {
-                    sameMaterials.clear();
-                    for (unsigned int i = 0; i < materials.size(); i++) {
-                        if (materials[i] != nullptr && !contains(*materials[i])) {
-                            nbMaterials++;
-                            sameMaterials.push_back(materials[i]);
-                        }
+                nbMaterials = 0;
+                sameMaterials.clear();
+                for (unsigned int i = 0; i < materials.size(); i++) {
+                    if (materials[i] != nullptr && !contains(*materials[i])) {
+                        nbMaterials++;
+                        sameMaterials.push_back(materials[i]);
                     }
                 }
             }
             void Material::updateIds() {
                countNbMaterials();
-               if (core::Application::app != nullptr) {
-                   std::vector<Material*>& sameMaterials = core::Application::app->getSameMaterials();
-                   std::vector<Material*>& materials = core::Application::app->getMaterials();
-                   for (unsigned int i = 0; i < sameMaterials.size(); i++) {
-                       for (unsigned int j = 0; j < materials.size(); j++) {
-                            if (materials[j] != nullptr && *sameMaterials[i] == *materials[j]) {
-                                if (name == "border")
-                                    std::cout<<"id : "<<i<<" nb materials : "<<core::Application::app->getNbMaterials()<<std::endl;
-                                materials[j]->id = i;
-                            }
-                       }
-                   }
-               } else {
-                  for (unsigned int i = 0; i < sameMaterials.size(); i++) {
-                       for (unsigned int j = 0; j < materials.size(); j++) {
-                            if (materials[j] != nullptr && *sameMaterials[i] == *materials[j]) {
-                                materials[j]->id = i;
-                            }
-                       }
+              for (unsigned int i = 0; i < sameMaterials.size(); i++) {
+                   for (unsigned int j = 0; j < materials.size(); j++) {
+                        if (materials[j] != nullptr && *sameMaterials[i] == *materials[j]) {
+                            materials[j]->id = i;
+                        }
                    }
                }
             }
             Material::~Material() {
                 std::vector<Material*>::iterator it;
-                if (core::Application::app != nullptr) {
-                    std::vector<Material*>& materials = core::Application::app->getMaterials();
-                    for (it = materials.begin(); it != materials.end();) {
-                        if (*it == this)
-                            it = materials.erase(it);
-                        else
-                            it++;
-                    }
-                } else {
-                    for (it = materials.begin(); it != materials.end();) {
-                        if (*it == this)
-                            it = materials.erase(it);
-                        else
-                            it++;
-                    }
+                for (it = materials.begin(); it != materials.end();) {
+                    if (*it == this)
+                        it = materials.erase(it);
+                    else
+                        it++;
                 }
                 //updateIds();
             }
@@ -292,11 +237,20 @@ namespace odfaeg {
                 m_material.addTexture(nullptr);
             }
             Face::Face(VertexArray va, Material mat, TransformMatrix& tm) : transform(&tm) {
-                //std::cout<<"create face"<<std::endl;
                 m_vertices = va;
                 m_material = mat;
                 //std::cout<<"face created"<<std::endl;
             }
+            /*Face::Face(const Face& face) {
+                m_material = face.m_material;
+                m_vertices = face.m_vertices;
+                TransformMatrix* tm = new TransformMatrix();
+                tm->setTranslation(face.transform->getTranslation());
+                tm->setRotation(math::Vec3f::zAxis,face.transform->getRotation());
+                tm->setScale(face.transform->getScale());
+                tm->setMatrix(face.transform->getMatrix());
+                transform = tm;
+            }*/
             TransformMatrix& Face::getTransformMatrix() const {
                 return *transform;
             }
@@ -365,10 +319,9 @@ namespace odfaeg {
                 //std::cout<<"va pushed"<<std::endl;
                 //m_indexes.push_back(std::vector<unsigned int>());
                 for (unsigned int i = 0; i < va.getVertexCount(); i++) {
-                    /*if (va.getEntity()->getRootType() == "E_HERO")
-                        std::cout<<"transform : "<<tm.getMatrix()<<std::endl;*/
                     math::Vec3f t = tm.transform(math::Vec3f(va[i].position.x, va[i].position.y, va[i].position.z));
                     Vertex v (sf::Vector3f(t.x, t.y, t.z), va[i].color, va[i].texCoords);
+                    //std::cout<<"tm : "<<tm.getMatrix()<<std::endl<<"position : "<<t<<std::endl;
                     /*if (va.getEntity()->getRootType() == "E_HERO")
                         std::cout<<"v : "<<v.position.x<<std::endl;*/
                     vertices.append(v);
@@ -480,14 +433,15 @@ namespace odfaeg {
                 /*if (face->getVertexArray().getEntity() != nullptr && face->getVertexArray().getEntity()->getRootType() == "E_BIGTILE")
                         std::cout<<"add E_TILE : "<<face->getVertexArray().getPrimitiveType() * core::Application::app->getNbMaterials() + face->getMaterial().getId()<<std::endl;*/
 
-                //std::cout<<"get instance"<<std::endl;
-                Instance& instance = instances[face->getVertexArray().getPrimitiveType() * core::Application::app->getNbMaterials() + face->getMaterial().getId()];
+
+                Instance& instance = instances[face->getVertexArray().getPrimitiveType() * Material::getNbMaterials() + face->getMaterial().getId()];
                 //std::cout<<"set primitive type : "<<std::endl;
                 instance.setPrimitiveType(face->getVertexArray().getPrimitiveType());
                 //std::cout<<"set material"<<std::endl;
                 instance.setMaterial(face->getMaterial());
                 //std::cout<<"add vertex array"<<std::endl;
                 instance.addVertexArray(face->getVertexArray(),face->getTransformMatrix());
+
                 //std::cout<<"vertex array added"<<std::endl;
                 //std::cout<<"size : "<<instances.size()<<" id : "<<face->getVertexArray().getPrimitiveType() * core::Application::app->getNbMaterials() + face->getMaterial().getId()<<std::endl;
                 /*if (face->getVertexArray().getEntity() != nullptr && face->getVertexArray().getEntity()->getRootType() == "E_MONSTER")
@@ -535,7 +489,7 @@ namespace odfaeg {
             }
             void Batcher::addShadowFace(Face* face, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix) {
 
-                Instance& instance = instances[face->getVertexArray().getPrimitiveType() * core::Application::app->getNbMaterials() + face->getMaterial().getId()];
+                Instance& instance = instances[face->getVertexArray().getPrimitiveType() * Material::getNbMaterials() + face->getMaterial().getId()];
                 instance.setPrimitiveType(face->getVertexArray().getPrimitiveType());
                 instance.setMaterial(face->getMaterial());
                 instance.addVertexShadowArray(face->getVertexArray(),face->getTransformMatrix(), viewMatrix, shadowProjMatrix);
@@ -573,13 +527,13 @@ namespace odfaeg {
             }
             void Batcher::resize() {
 
-                instances.resize(nbPrimitiveTypes * core::Application::app->getNbMaterials());
+                instances.resize(nbPrimitiveTypes * Material::getNbMaterials());
             }
             void Batcher::clear() {
                 instances.clear();
                 //std::cout<<"nb instances : "<<nbPrimitiveTypes * Material::getNbMaterials()<<std::endl;
 
-                instances.resize(nbPrimitiveTypes * core::Application::app->getNbMaterials());
+                instances.resize(nbPrimitiveTypes * Material::getNbMaterials());
                 nbLayers = 0;
                 //tmpZPos.clear();
             }

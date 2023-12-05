@@ -2,6 +2,7 @@
 #define ODFAEG_ECS_CELL_HPP
 #include "../../Physics/boundingPolyhedron.h"
 #include "../../Core/ecs.hpp"
+#include "../../Core/entityFactory.hpp"
 #include <vector>
 namespace odfaeg {
     namespace graphic {
@@ -68,6 +69,7 @@ namespace odfaeg {
                     * \param entity : the entity to remove.
                     */
                     bool removeEntity (EntityId entity);
+                    bool removeEntity (std::string type);
                     /**
                     * \fn void setStateChanged (bool b);
                     * \brief set if the state of the cells have been changed. (This happens when the cell become passable or not passable)

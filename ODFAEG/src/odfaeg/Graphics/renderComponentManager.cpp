@@ -14,6 +14,11 @@ namespace odfaeg {
             ptr.reset(component);
             components.insert(std::make_pair(component->getPriority(), std::move(ptr)));
         }
+        void RenderComponentManager::addECSComponent(ecs::Component* component) {
+            std::unique_ptr<ecs::Component> ptr;
+            ptr.reset(component);
+            ecs_components.insert(std::make_pair(component->getPriority(), std::move(ptr)));
+        }
         void RenderComponentManager::setEventContextActivated(bool activated, RenderWindow& window) {
             std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::iterator it;
             for (it = components.begin();it != components.end(); it++) {
@@ -34,15 +39,43 @@ namespace odfaeg {
             }
             return false;
         }
+        bool RenderComponentManager::removeECSComponent(unsigned int layer) {
+            std::multimap<int, std::unique_ptr<ecs::Component>, std::greater<int>>::iterator it;
+            for (it = ecs_components.begin(); it != ecs_components.end();) {
+                if (it->second->getId() == layer) {
+                    it = ecs_components.erase(it);
+                    return true;
+                } else {
+                    it++;
+                }
+            }
+            return false;
+        }
         RenderWindow& RenderComponentManager::getWindow() {
             return *windows[0];
         }
         unsigned int RenderComponentManager::getNbComponents() {
             return components.size();
         }
+        unsigned int RenderComponentManager::getNbECSComponents() {
+            return ecs_components.size();
+        }
         void RenderComponentManager::drawRenderComponents() {
             std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::reverse_iterator it;
             for (it = components.rbegin(); it != components.rend(); it++) {
+                if (it->second->getComponentType() == 0 && it->second->isVisible()) {
+                    for (unsigned int i = 0; i < windows.size(); i++) {
+                        if (windows[i] == &it->second->getWindow()) {
+                            windows[i]->clearDepth();
+                            it->second->getWindow().draw(*it->second.get());
+                        }
+                    }
+                }
+            }
+        }
+        void RenderComponentManager::drawECSComponents() {
+            std::multimap<int, std::unique_ptr<ecs::Component>, std::greater<int>>::reverse_iterator it;
+            for (it = ecs_components.rbegin(); it != ecs_components.rend(); it++) {
                 if (it->second->getComponentType() == 0 && it->second->isVisible()) {
                     for (unsigned int i = 0; i < windows.size(); i++) {
                         if (windows[i] == &it->second->getWindow()) {
@@ -89,9 +122,27 @@ namespace odfaeg {
             }
             return nullptr;
         }
+        ecs::Component* RenderComponentManager::getECSComponent(unsigned int layer) {
+            std::multimap<int, std::unique_ptr<ecs::Component>, std::greater<int>>::iterator it;
+            for (it = ecs_components.begin(); it != ecs_components.end(); it++) {
+               if (it->second->getComponentType() == 0 && it->second->getPriority() == layer) {
+                   return it->second.get();
+               }
+            }
+            return nullptr;
+        }
         bool RenderComponentManager::isComponentAdded(unsigned int layer) {
            std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::iterator it;
            for (it = components.begin(); it != components.end(); it++) {
+               if (it->second->getPriority() == layer) {
+                   return true;
+               }
+           }
+           return false;
+        }
+        bool RenderComponentManager::isECSComponentAdded(unsigned int layer) {
+           std::multimap<int, std::unique_ptr<ecs::Component>, std::greater<int>>::iterator it;
+           for (it = ecs_components.begin(); it != ecs_components.end(); it++) {
                if (it->second->getPriority() == layer) {
                    return true;
                }
@@ -125,9 +176,25 @@ namespace odfaeg {
             }
             return cpnts;
         }
+        std::vector<ecs::Component*> RenderComponentManager::getECSComponents() {
+            std::multimap<int, std::unique_ptr<ecs::Component>, std::greater<int>>::iterator it;
+            std::vector<ecs::Component*> cpnts;
+            for (it = ecs_components.begin(); it != ecs_components.end(); it++) {
+                cpnts.push_back(it->second.get());
+            }
+            return cpnts;
+        }
         void RenderComponentManager::clearComponents() {
             std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::iterator it;
             for (it = components.begin(); it != components.end(); it++) {
+                if (it->second->isVisible()) {
+                    it->second->clear();
+                }
+            }
+        }
+        void RenderComponentManager::clearECSComponents() {
+            std::multimap<int, std::unique_ptr<ecs::Component>, std::greater<int>>::iterator it;
+            for (it = ecs_components.begin(); it != ecs_components.end(); it++) {
                 if (it->second->isVisible()) {
                     it->second->clear();
                 }
@@ -137,8 +204,16 @@ namespace odfaeg {
            std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::iterator it;
            for (it = components.begin(); it != components.end(); it++) {
                if (it->second->isEventContextActivated() && it->second->isVisible()) {
-                   if (it->second->getName() == "PMATERIAL")
-                       std::cout<<"process event material"<<std::endl;
+                   it->second->processEvents();
+                   it->second->recomputeSize();
+               }
+           }
+           //core::Command::clearEventsStack();
+        }
+        void RenderComponentManager::updateECSComponents() {
+           std::multimap<int, std::unique_ptr<ecs::Component>, std::greater<int>>::iterator it;
+           for (it = ecs_components.begin(); it != ecs_components.end(); it++) {
+               if (it->second->isEventContextActivated() && it->second->isVisible()) {
                    it->second->processEvents();
                    it->second->recomputeSize();
                }

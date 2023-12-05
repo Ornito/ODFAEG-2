@@ -49,6 +49,7 @@ namespace odfaeg {
                 int endY = (y + globalBounds.getHeight());
                 int endZ = (z + globalBounds.getDepth());
                 bool added = false;
+                //std::cout<<"global bounds : "<<globalBounds.getPosition()<<globalBounds.getSize()<<std::endl;
                 /*std::array<math::Vec2f, 4> pos;
                 pos[0] = math::Vec2f(x, y);
                 pos[1] = math::Vec2f(x, y + endY);
@@ -73,8 +74,6 @@ namespace odfaeg {
                         for (int k = z; k <= endZ; k+= offsetZ) {
 
                             math::Vec3f pos (i, j, k);
-                            //std::cout<<"pos : "<<pos<<std::endl;
-
 
                             if (!(containsEntity(entity, pos))) {
                                 //std::cout<<"get cell map"<<std::endl;
@@ -133,7 +132,7 @@ namespace odfaeg {
                     if (cm != nullptr) {
                         for (unsigned int j = 0; j < cm->getEntitiesInside().size(); j++) {
                             EntityId entity = cm->getEntityInside(j);
-                            if (*entity.get().load() == id) {
+                            if (entity == id) {
                                 return entity;
                             }
                         }
@@ -385,8 +384,52 @@ namespace odfaeg {
                 }
                 return cells;
             }
+            vector<Cell*> Grid::getNeightbours(EntityId entity, Cell *cell, bool getCellOnPassable) {
+                math::Vec3f coords = cell->getCoords();
+                vector<Cell*> neightbours;
+                for (int i = coords.x - 1; i <= coords.x + 1; i++) {
+                    for (int j = coords.y - 1; j <= coords.y + 1; j++) {
+                        for (int k = coords.z - 1; k <= coords.z + 1; k++) {
+                            if (!(i == coords.x && j == coords.y && k == coords.z)) {
+                                math::Vec2f neightbourCoords(i, j);
+                                Cell* neightbour = getGridCellAtFromCoords(neightbourCoords);
+                                if (neightbour != nullptr) {
+                                    if (getCellOnPassable)
+                                        neightbours.push_back(neightbour);
+                                    else {
+                                        if (getComponent<ColliderComponent>(entity)->boundingVolume != nullptr) {
+                                            bool collide = false;
+                                            math::Vec3f t = neightbour->getCenter() - getComponent<ColliderComponent>(entity)->boundingVolume->getCenter();
+                                            std::unique_ptr<physic::BoundingVolume> cv = getComponent<ColliderComponent>(entity)->boundingVolume->clone();
+                                            cv->move(t);
+                                            for (unsigned int k = 0; k < neightbour->getEntitiesInside().size() && !collide; k++) {
+                                                if (getComponent<ColliderComponent>(neightbour->getEntitiesInside()[k])->boundingVolume != nullptr && neightbour->getEntitiesInside()[k] != entity) {
+                                                    physic::CollisionResultSet::Info info;
+                                                    if (cv->intersects(*getComponent<ColliderComponent>(neightbour->getEntitiesInside()[k])->boundingVolume, info)) {
+                                                        if (cv->getChildren().size() == 0) {
+                                                            collide = true;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            if (!collide) {
+                                                neightbours.push_back(neightbour);
+                                            }
+                                        } else {
+                                            if (neightbour->isPassable()) {
+                                                neightbours.push_back(neightbour);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
-            /*vector<EntityId> Grid::getEntitiesInBox(ComponentMapping mapping, physic::BoundingBox box) {
+                return neightbours;
+            }
+            vector<EntityId> Grid::getEntitiesInBox(ComponentMapping& mapping, physic::BoundingBox box) {
                 vector<EntityId> entities;
                 int x = box.getPosition().x;
                 int y = box.getPosition().y;
@@ -402,7 +445,8 @@ namespace odfaeg {
                             Cell* cell = getGridCellAt(point);
                             if (cell != nullptr) {
                                 for (unsigned int n = 0; n < cell->getEntitiesInside().size(); n++) {
-                                   Entity* entity = cell->getEntityInside(n);
+                                   EntityId entity = cell->getEntityInside(n);
+                                   physic::BoundingBox globalBounds = getComponent<TransformComponent>(entity)->globalBounds;
                                    bool contains = false;
                                    for (unsigned int k = 0; k < entities.size() && !contains; k++) {
                                         if (entities[k] == entity)
@@ -418,8 +462,66 @@ namespace odfaeg {
                     }
                 }
                 return entities;
-            }*/
-
+            }
+            bool Grid::collideWithEntity(ComponentMapping& componentMapping, EntityId entity, math::Vec3f position) {
+            Cell* cell = getGridCellAt(position);
+            if (cell != nullptr) {
+                if (!cell->isPassable())
+                    return true;
+                std::vector<Cell*> neightbours = getNeightbours(entity,cell,true);
+                for (unsigned int i = 0; i < neightbours.size(); i++) {
+                    if (!neightbours[i]->isPassable()) {
+                        return true;
+                    }
+                }
+                if (getComponent<ColliderComponent>(componentMapping.getRoot(entity))->boundingVolume != nullptr) {
+                    math::Vec3f t = position - getComponent<ColliderComponent>(componentMapping.getRoot(entity))->boundingVolume->getCenter();
+                    physic::BoundingVolume* cv = getComponent<ColliderComponent>(componentMapping.getRoot(entity))->boundingVolume->clone().release();
+                    cv->move(t);
+                    for (unsigned int k = 0; k < cell->getEntitiesInside().size(); k++)  {
+                        if (getComponent<ColliderComponent>(componentMapping.getRoot(cell->getEntitiesInside()[k]))->boundingVolume != nullptr && componentMapping.getRoot(cell->getEntitiesInside()[k]) != entity) {
+                            physic::CollisionResultSet::Info info;
+                            if (cv->intersects(*getComponent<ColliderComponent>(componentMapping.getRoot(cell->getEntitiesInside()[k]))->boundingVolume, info)) {
+                                /*info.entity = cell->getEntitiesInside()[k]->getRootEntity();
+                                info.center = cv->getCenter();
+                                physic::CollisionResultSet::pushCollisionInfo(info);*/
+                                if (cv->getChildren().size() == 0) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        bool Grid::collideWithEntity(ComponentMapping& componentMapping, EntityId entity) {
+            std::unique_ptr<physic::BoundingVolume> bv1;
+            physic::BoundingBox bx = getComponent<TransformComponent>(entity)->globalBounds;
+            if (getComponent<ColliderComponent>(entity)->boundingVolume != nullptr) {
+                bv1 = getComponent<ColliderComponent>(entity)->boundingVolume->clone();
+            }
+            std::vector<Cell*> cells = getCellsInBox(bx);
+            for (unsigned int i = 0; i < cells.size(); i++) {
+                for (unsigned int j = 0; j < cells[i]->getEntitiesInside().size(); j++) {
+                    EntityId entity2 = componentMapping.getRoot(cells[i]->getEntitiesInside()[j]);
+                    if (entity2 != entity) {
+                        physic::BoundingVolume* bv2 = getComponent<ColliderComponent>(entity2)->boundingVolume;
+                        physic::CollisionResultSet::Info info;
+                        if (bv1 != nullptr && bv2 != nullptr) {
+                            if (bv1->intersects(*bv2, info)) {
+                                /*info.entity = entity2;
+                                physic::CollisionResultSet::pushCollisionInfo(info);*/
+                                return true;
+                            }
+                        }
+                    }
+                }
+                if (!cells[i]->isPassable())
+                        return true;
+            }
+            return false;
+        }
             vector<EntityId> Grid::getEntities () {
                 vector<EntityId> allEntities;
                 for (unsigned int i = 0; i < cells.size(); i++) {
@@ -428,7 +530,7 @@ namespace odfaeg {
                          for (unsigned int n = 0; n < cell->getNbEntitiesInside(); n++) {
                             bool contains = false;
                             for (unsigned int j = 0; j < allEntities.size(); j++) {
-                                if (allEntities[j].get().load() == cell->getEntityInside(n).get().load())
+                                if (allEntities[j] == cell->getEntityInside(n))
                                     contains = true;
                             }
                             if (!contains) {

@@ -1,37 +1,66 @@
 #ifndef ODFAEG_ECS_APPLICATION_HPP
 #define ODFAEG_ECS_APPLICATION_HPP
-#include <string>
-#include "../../Network/network.hpp"
+#ifndef VULKAN
+#include "GL/glew.h"
+#endif
+#include "GLFW/glfw3.h"
+#include "../../Network/network.h"
 #include "../renderWindow.h"
 #include "../renderStates.h"
 #include "../renderComponentManager.h"
 #include "world.hpp"
-#include "../../Window/listener.h"
+#include "../export.hpp"
 
-#include "../../Window/iEvent.hpp"
-#include "../../Core/erreur.h"
+#include "../../../../include/odfaeg/Window/iEvent.hpp"
+#include <thread>
+#include <mutex>
+/**
+  *\namespace odfaeg
+  * the namespace of the Opensource Development Framework Adapted for Every Games.
+  */
 namespace odfaeg {
-    namespace graphic {
+    namespace core {
         namespace ecs {
-            template <typename D, typename Alias=std::string>
-            class Application {
-                public :
+            /**
+            * \file application.h
+            * \class Application
+            * \brief base class dedicated for all ODFAEG applications.
+            * \author Duroisin.L
+            * \version 1.0
+            * \date 1/02/2014
+            */
+            class ODFAEG_API_EXPORT Application {
+            public :
+                std::string name;
+                /** \fn Application(sf::VideoMode, std::string title, int nbComponents, bool depthDepth, sf::Uint32 style, sf::ContetSettings settings)
+                *   \brief create a graphic odfaeg application.
+                *   \param sf::VideoMode : the video mode. (the size of the window)
+                *   \param std::string : the title of the window.
+                *   \param sf::Uint32 : the window's style.
+                *   \param ContextSettings : advanced opengl settings.
+                */
                 Application(sf::VideoMode vm, std::string title, sf::Uint32 style = sf::Style::Default, window::ContextSettings settings = window::ContextSettings())
 
                 {
+                    clearColor = sf::Color::Black;
                     graphic::RenderWindow* window = new graphic::RenderWindow (vm, title, style, settings);
                     windows.push_back(std::make_pair(window, true));
                     componentManager = std::make_unique<graphic::RenderComponentManager>(*window);
+                    app = this;
                     running = false;
                     sf::Clock loopSpeed;
                     addClock(loopSpeed, "LoopTime");
                     sf::Clock timeClock;
                     addClock(timeClock, "TimeClock");
-                    listener = std::make_unique<core::Listener>();
+                    listener = std::make_unique<Listener>();
                     eventContextActivated = true;
                     nbEntities = nbEntitiesTypes = nbComponents = nbMaterials = 0;
                 }
+                /** \fn Application()
+                *   \brief create a console odfaeg application.
+                */
                 Application () {
+                    app = this;
                     running = false;
                     sf::Clock loopTime;
                     addClock(loopTime, "LoopTime");
@@ -96,21 +125,18 @@ namespace odfaeg {
                 *   \brief main loop of the odfaeg application.
                 *   \return true if the application runs without errors, false otherwise.
                 */
-                template <typename SystemArray, typename SceneArray, typename RendererArray, typename EntityComponentArray>
-                int exec(SystemArray& sya, SceneArray& sa, RendererArray& ra, EntityComponentArray& eca) {
-                    if (!running) {
-                        load();
-                        init(sya, sa, ra, eca);
-                        running = true;
-                    }
+                int exec() {
+                    load();
+                    init();
+                    running = true;
                     while (running) {
                         /*for (unsigned int i = 0; i < windows.size(); i++) {
                             windows[i].first->setActive(false);
                         }*/
                         if (windows.size() != 0 && windows[0].first->isOpen()) {
                             //rendering_thread = std::thread(Application::render, this);
-                            render(sya, sa, ra, eca);
-                            update(sya, sa, ra, eca);
+                            render();
+                            update();
                         }
                         if (network::Network::getCliInstance().isRunning()) {
                             network::Network::getCliInstance().checkMessages();
@@ -118,7 +144,7 @@ namespace odfaeg {
                         if (network::Network::getSrvInstance().isRunning()) {
                             network::Network::getSrvInstance().checkMessages();
                         }
-                        static_cast<D&>(*this).onExec(sya, sa, ra, eca);
+                        onExec();
                         getClock("LoopTime").restart();
                     }
                     return EXIT_SUCCESS;
@@ -136,33 +162,34 @@ namespace odfaeg {
                 *   \brief call the onLoad function, this is where all resources used by the application are loaded.
                 */
                 void load() {
-                    static_cast<D&>(*this).onLoad();
+                    onLoad();
                 }
                 /** \fn void init()
                 *   \brief call the onInit function, this is where all the entities used by the application are initialized.
                 */
-                template <typename SystemArray, typename SceneArray, typename RendererArray, typename EntityComponentArray>
-                void init(SystemArray& sya, SceneArray& sa, RendererArray& ra, EntityComponentArray& eca) {
-                    auto sya2 = world.initSystems(sya);
-                    static_cast<D&>(*this).onInit(sya2, sa, ra, eca);
+                void init() {
+                    onInit();
                 }
                 /** \fn void render()
                 *   \brief call the rendering functions used to render entities on components or on the window.
                 */
-                template <typename SystemArray, typename SceneArray, typename RendererArray, typename EntityComponentArray>
-                void render(SystemArray& sya, SceneArray& sa, RendererArray& ra, EntityComponentArray& eca) {
+                void render() {
                     if (windows.size() != 0 && windows[0].first->isOpen()) {
                         for (unsigned int i = 0; i < windows.size(); i++) {
                             windows[i].first->clear(clearColor);
                         }
-                        static_cast<D&>(*this).onRender(sya, sa, ra, eca, componentManager.get());
+                        onRender(componentManager.get());
                         componentManager->clearComponents();
+                        componentManager->clearECSComponents();
                         if (eventContextActivated) {
                            listener->processEvents();
                         }
-                        world.draw(sya, ra);
+                        componentManager->updateComponents();
+                        componentManager->updateECSComponents();
+                        componentManager->drawRenderComponents();
+                        componentManager->drawECSComponents();
 
-                        static_cast<D&>(*this).onDisplay(sya, sa, ra, eca, windows[0].first);
+                        onDisplay(windows[0].first);
                         componentManager->drawGuiComponents();
                         for (unsigned int i = 0; i < windows.size(); i++)
                             windows[i].first->display();
@@ -180,8 +207,7 @@ namespace odfaeg {
                 *   \brief call the updates functions to update the entities
                 *   filter the window::IEvents and pass window events which are generated to the listener.
                 */
-                template <typename SystemArray, typename SceneArray, typename RendererArray, typename EntityComponentArray>
-                void update(SystemArray& sya, SceneArray& sa, RendererArray& ra, EntityComponentArray& eca) {
+                void update() {
                     if (windows.size() != 0) {
                         window::IEvent event;
                         events.clear();
@@ -192,7 +218,7 @@ namespace odfaeg {
                         }
                         if (events.size() > 0) {
                             for (it = events.begin(); it != events.end(); it++) {
-                                static_cast<D&>(*this).onUpdate(sya, sa, ra, eca, it->first, it->second);
+                                onUpdate(it->first, it->second);
                                 if (eventContextActivated) {
                                     listener->pushEvent(it->second);
                                 }
@@ -205,46 +231,41 @@ namespace odfaeg {
                             }
                         }
                     }
-                    //world.updateTimers();
+                    world.updateTimers();
                 }
                 /**
                 * \fn void onLoad()
                 * \brief function which can be redefined if the application have to load resources at the start.
                 */
-                void onLoad (){}
+                virtual void onLoad (){}
                 /**
                 * \fn void onLoad()
                 * \brief function which can be redefined if the application have to init entities at the start.
                 */
-                template <typename SystemArray, typename SceneArray, typename RendererArray, typename EntityComponentArray>
-                void onInit(SystemArray& sya, SceneArray& sa, RendererArray& ra, EntityComponentArray& eca) {}
+                virtual void onInit() {}
                 /**
                 * \fn void onLoad()
                 * \brief function which can be redefined if the application have to render entities on components.
                 * \param RenderComponentManager : the manager of all render components.
                 */
-                template <typename SystemArray, typename SceneArray, typename RendererArray, typename EntityComponentArray>
-                void onRender (SystemArray& sya, SceneArray& sa, RendererArray& ra, EntityComponentArray& eca, graphic::RenderComponentManager* cm){}
+                virtual void onRender (graphic::RenderComponentManager* cm){}
                 /**
                 * \fn void onLoad()
                 * \brief function which can be redefined if the application have to render entities on the window.
                 */
-                template <typename SystemArray, typename SceneArray, typename RendererArray, typename EntityComponentArray>
-                void onDisplay(SystemArray& sya, SceneArray& sa, RendererArray& ra, EntityComponentArray& eca, graphic::RenderWindow *rw){}
+                virtual void onDisplay(graphic::RenderWindow *rw){}
                 /**
                 * \fn void onUpdate()
                 * \brief function which can be redefined if the application have to update entities when window's events are generated.
                 * \param the generated event.
                 */
-                template <typename SystemArray, typename SceneArray, typename RendererArray, typename EntityComponentArray>
-                void onUpdate (SystemArray& sya, SceneArray& sa, RendererArray& ra, EntityComponentArray& eca, graphic::RenderWindow* window, window::IEvent& event) {}
+                virtual void onUpdate (graphic::RenderWindow* window, window::IEvent& event) {}
                 /**
                 * \fn void onExec()
                 * \brief function which can be redefined if the application need to do something at each loop.
                 * by example if the application need to do something when a networking message is arrived.
                 */
-                template <typename SystemArray, typename SceneArray, typename RendererArray, typename EntityComponentArray>
-                void onExec(SystemArray& sya, SceneArray& sa, RendererArray& ra, EntityComponentArray& eca) {}
+                virtual void onExec() {}
                 /** \fn void addClock(sf::Clock clock, std::string name)
                 *   \brief add a clock to the application, the clock is so accessible everywhere in the source code.
                 *   \param Clock : the clock to add.
@@ -262,7 +283,7 @@ namespace odfaeg {
                 sf::Clock& getClock(std::string name) {
                     std::map<std::string, sf::Clock>::iterator it = clocks.find(name);
                     if (it == clocks.end())
-                        throw core::Erreur (14, "Clock not found!", 0);
+                        throw Erreur (14, "Clock not found!", 0);
                     return it->second;
                 }
                 /** \fn RenderWindow& getRenderWindow()
@@ -304,7 +325,7 @@ namespace odfaeg {
                 void setClearColor(sf::Color clearColor) {
                     this->clearColor = clearColor;
                 }
-                core::Listener& getListener() {
+                Listener& getListener() {
                     return *listener;
                 }
                 /** \fn ~Application()
@@ -312,7 +333,7 @@ namespace odfaeg {
                 */
                 virtual void onDisconnected(network::User* user) {
                 }
-                World<Alias>* getWorld() {
+                graphic::ecs::World* getWorld() {
                     return &world;
                 }
                 virtual ~Application() {
@@ -322,8 +343,11 @@ namespace odfaeg {
                             delete windows[i].first;
                     }
                 }
+                static sf::Clock& getTimeClk() {
+                    return timeClk;
+                }
                 /** > a pointer to the current odfaeg application*/
-                 World<Alias> world;
+                static Application* app;
             private :
                 std::vector<std::pair<graphic::RenderWindow*, bool>> windows; /** > the render window*/
                 std::unique_ptr<graphic::RenderComponentManager> componentManager; /** > the render component manager which draw components on the window*/
@@ -332,11 +356,12 @@ namespace odfaeg {
                 sf::Color clearColor; /** > keep the clear color of the window*/
                 std::multimap<graphic::RenderWindow*, window::IEvent> events; /** > store the windows events generated by the application*/
                 std::multimap<graphic::RenderWindow*, window::IEvent>::iterator it; /** > an iterator to the window::IEvents generated by the application*/
-                std::unique_ptr<core::Listener> listener;
+                std::unique_ptr<Listener> listener;
                 bool eventContextActivated;
+                static sf::Clock timeClk;
                 /*std::thread rendering_thread;
                 std::recursive_mutex rec_mutex;*/
-
+                graphic::ecs::World world;
                 unsigned int nbEntities, nbEntitiesTypes, nbComponents, nbMaterials;
                 std::vector<graphic::Material*> materials;
                 std::vector<graphic::Material*> sameMaterials;
@@ -346,3 +371,4 @@ namespace odfaeg {
     }
 }
 #endif
+

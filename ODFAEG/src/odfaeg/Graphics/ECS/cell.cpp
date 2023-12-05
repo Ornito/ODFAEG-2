@@ -37,7 +37,7 @@ namespace odfaeg {
             bool Cell::removeEntity (EntityId entity) {
                 typename vector<EntityId>::iterator it;
                 for (it = entitiesInside.begin(); it != entitiesInside.end();) {
-                    if (entity.get().load() == it->get().load()) {
+                    if (entity == *it) {
                         //std::cout<<"remove entity : "<<it->get()<<std::endl;
                         //std::cout<<"old size : "<<entitiesInside.size()<<std::endl;
                         it = entitiesInside.erase(it);
@@ -86,13 +86,12 @@ namespace odfaeg {
                 return entitiesInside.size();
             }
             bool Cell::containsEntity (EntityId entity) {
-                /*for (unsigned int i = 0; i < entitiesInside.size(); i++) {
-                    if (*entitiesInside[i] == *entity) {
+                for (unsigned int i = 0; i < entitiesInside.size(); i++) {
+                    if (entitiesInside[i] == entity) {
                         return true;
                     }
                 }
-                return false;*/
-                return true;
+                return false;
             }
 
             bool Cell::isPassable () {
@@ -113,6 +112,17 @@ namespace odfaeg {
 
             bool Cell::operator== (const Cell &Cell) {
                 return cellVolume == cellVolume;
+            }
+            bool Cell::removeEntity (std::string type) {
+                typename vector<EntityId>::iterator it;
+                for (it = entitiesInside.begin(); it != entitiesInside.end();) {
+                    if (getComponent<EntityInfoComponent>(*it)->groupName == type) {
+                        it = entitiesInside.erase(it);
+                        return true;
+                    } else
+                        it++;
+                }
+                return false;
             }
         }
     }
