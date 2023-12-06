@@ -494,9 +494,9 @@ namespace odfaeg {
                             glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                             if (m_instances[i].getVertexArrays().size() > 0) {
-                                Entity* entity = m_instances[i].getVertexArrays()[0]->getEntity();
+                                EntityId entity = m_instances[i].getVertexArrays()[0]->getEntityId();
                                 for (unsigned int j = 0; j < m_instances[i].getVertexArrays().size(); j++) {
-                                    if (entity == m_instances[i].getVertexArrays()[j]->getEntity()) {
+                                    if (entity == m_instances[i].getVertexArrays()[j]->getEntityId()) {
                                         unsigned int p = m_instances[i].getVertexArrays()[j]->getPrimitiveType();
                                         for (unsigned int k = 0; k < m_instances[i].getVertexArrays()[j]->getVertexCount(); k++) {
                                             vbBindlessTex[p].append((*m_instances[i].getVertexArrays()[j])[k], (m_instances[i].getMaterial().getTexture() != nullptr) ? m_instances[i].getMaterial().getTexture()->getId() : 0);

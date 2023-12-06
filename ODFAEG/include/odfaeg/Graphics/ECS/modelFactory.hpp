@@ -29,7 +29,7 @@ namespace odfaeg {
                     tc.globalBounds = tc.localBounds.transform(tm);
                     tc.transformMatrix = tm;
                     MeshComponent mesh;
-                    VertexArray va(sf::Quads, 4);
+                    VertexArray va(sf::Quads, 4, nullptr, tile);
                     Vertex v1(sf::Vector3f(0, 0, 0), color);
                     Vertex v2(sf::Vector3f(size.x, 0, 0), color);
                     Vertex v3(sf::Vector3f(size.x, size.y, 0), color);

@@ -11,7 +11,8 @@ namespace odfaeg {
         VertexArray::VertexArray() :
         m_vertices     (),
         m_primitiveType(Points),
-        m_entity(nullptr)
+        m_entity(nullptr),
+        m_entityId(-1)
         {
             vboVertexBuffer = 0;
             vboNormalBuffer = 0;
@@ -25,6 +26,7 @@ namespace odfaeg {
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
             m_entity = va.m_entity;
+            m_entityId = va.m_entityId;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
             m_vertices = va.m_vertices;
@@ -53,6 +55,7 @@ namespace odfaeg {
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
             m_entity = va.m_entity;
+            m_entityId = va.m_entityId;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
             m_vertices = va.m_vertices;
@@ -81,6 +84,7 @@ namespace odfaeg {
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
             m_entity = va.m_entity;
+            m_entityId = va.m_entityId;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
             m_vertices = va.m_vertices;
@@ -110,6 +114,7 @@ namespace odfaeg {
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
             m_entity = va.m_entity;
+            m_entityId = va.m_entityId;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
             m_vertices = va.m_vertices;
@@ -151,10 +156,11 @@ namespace odfaeg {
             needToUpdateVBOBuffer = true;
         }
         ////////////////////////////////////////////////////////////
-        VertexArray::VertexArray(PrimitiveType type, unsigned int vertexCount, Entity* entity) :
+        VertexArray::VertexArray(PrimitiveType type, unsigned int vertexCount, Entity* entity, ecs::EntityId entityId) :
         m_vertices     (vertexCount),
         m_primitiveType(type),
-        m_entity(entity)
+        m_entity(entity),
+        m_entityId(entityId)
         {
 
         }
@@ -163,6 +169,12 @@ namespace odfaeg {
         }
         Entity* VertexArray::getEntity() {
             return m_entity;
+        }
+        void VertexArray::setEntityId(ecs::EntityId entity) {
+            m_entityId = entity;
+        }
+        ecs::EntityId VertexArray::getEntityId() {
+            return m_entityId;
         }
         void VertexArray::addInstancedRenderingInfos(unsigned int numIndexes, unsigned int baseVertex, unsigned int baseIndex) {
             m_numIndexes.push_back(numIndexes);

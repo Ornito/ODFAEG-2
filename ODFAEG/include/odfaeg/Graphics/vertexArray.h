@@ -14,6 +14,7 @@
 #include <SFML/Window/Context.hpp>
 #include "../Physics/boundingBox.h"
 #include "vbo.h"
+#include "../Core/entityFactory.hpp"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -54,9 +55,11 @@ namespace odfaeg {
             /// \param vertexCount Initial number of vertices in the array
             ///
             ////////////////////////////////////////////////////////////
-            explicit VertexArray(sf::PrimitiveType type, unsigned int vertexCount = 0, Entity* entity = nullptr);
+            explicit VertexArray(sf::PrimitiveType type, unsigned int vertexCount = 0, Entity* entity = nullptr, ecs::EntityId entityId = -1);
             Entity* getEntity();
+            ecs::EntityId getEntityId();
             void setEntity(Entity* entity);
+            void setEntityId(ecs::EntityId id);
             ////////////////////////////////////////////////////////////
             /// \brief Return the vertex count
             ///
@@ -210,6 +213,7 @@ namespace odfaeg {
             unsigned int nbVerticesPerFace;
             bool loop;
             Entity* m_entity;
+            ecs::EntityId m_entityId;
         };
     }
 } // namespace sf
