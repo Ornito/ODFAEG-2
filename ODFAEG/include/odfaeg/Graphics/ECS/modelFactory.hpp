@@ -5,6 +5,7 @@
 #include "../rectangleShape.h"
 #include <GLFW/glfw3.h>
 #include <set>
+#include "world.hpp"
 namespace odfaeg {
     namespace graphic {
         namespace ecs {
@@ -50,9 +51,9 @@ namespace odfaeg {
 
                     Face face(va, material, tm);
                     mesh.faces.push_back(face);
-                    addComponent(tile, tc, entityFactory);
-                    addComponent(tile, eic, entityFactory);
-                    addComponent(tile, mesh, entityFactory);
+                    addComponent(tile, tc);
+                    addComponent(tile, eic);
+                    addComponent(tile, mesh);
                     return tile;
                 }
                 static EntityId createBigTileModel(EntityFactory& factory, math::Vec3f position) {
@@ -72,9 +73,34 @@ namespace odfaeg {
                     tm.setScale(scale);
                     tc.globalBounds = tc.localBounds.transform(tm);
                     tc.transformMatrix = tm;
-                    addComponent(bigTile, eic, factory);
-                    addComponent(bigTile, tc, factory);
+                    addComponent(bigTile, eic);
+                    addComponent(bigTile, tc);
                     return bigTile;
+                }
+                static EntityId createWallModel(EntityFactory& factory, WallType type, EntityId tile, World& world) {
+                    EntityId wall = factory.createEntity("E_WALL");
+                    EntityInfoComponent eic;
+                    eic.groupName = "E_WALL";
+                    TransformMatrix tm;
+                    TransformComponent tc;
+                    tc.localBounds = physic::BoundingBox(0, 0, 0, 0, 0, 0);
+                    tc.position = math::Vec3f(0, 0, 0);
+                    tc.origin = tc.size * 0.5f;
+                    tc.center = tc.position + tc.origin;
+                    tm.setOrigin(tc.origin);
+                    tm.setRotation(math::Vec3f::zAxis, 0);
+                    tm.setTranslation(tc.center);
+                    math::Vec3f scale(1.f, 1.f, 1.f);
+                    tm.setScale(scale);
+                    tc.globalBounds = tc.localBounds.transform(tm);
+                    tc.transformMatrix = tm;
+                    WallTypeComponent wtc;
+                    wtc.wallType = type;
+                    addComponent(wall, eic);
+                    addComponent(wall, tc);
+                    addComponent(wall, wtc);
+                    world.addChild(wall, tile);
+                    return wall;
                 }
             };
         }

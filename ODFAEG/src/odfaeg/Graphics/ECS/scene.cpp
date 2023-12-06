@@ -1,4 +1,5 @@
 #include "../../../../include/odfaeg/Graphics/ECS/scene.hpp"
+#include "../../../../include/odfaeg/Graphics/ECS/application.hpp"
 using namespace std;
 namespace odfaeg {
     namespace graphic {
@@ -278,20 +279,28 @@ namespace odfaeg {
                             if (x == startX && y == startY && walls.size() >= 11) {
                                 EntityId wall = walls[WallType::TOP_LEFT];
                                 EntityId clonedWall;
-                                clonedWall = componentMapping.clone<EntityInfoComponent, TransformComponent>(factory, wall);
+                                clonedWall = componentMapping.clone<EntityInfoComponent, TransformComponent, WallTypeComponent, MeshComponent>(factory, wall);
+                                /*std::vector<EntityId> children = componentMapping.getChildren(clonedWall);
+                                for (unsigned int i = 0; i < children.size(); i++) {
+                                    if (getComponent<MeshComponent>(children[i]) != nullptr)
+                                        std::cout<<"mesh component"<<std::endl;
+                                }*/
                                 MoveSystem moveSystem;
                                 auto transform = getComponent<TransformComponent>(clonedWall);
                                 math::Vec3f position = math::Vec3f(pos.x, pos.y, pos.y + transform->size.y * 0.5f);
                                 auto mvparams = std::make_tuple(position);
                                 std::vector<EntityId> wallId(1);
                                 wallId[0] = clonedWall;
+
                                 componentMapping.template apply<TransformComponent>(moveSystem, wallId, mvparams);
+
                                 addEntity(componentMapping,wallId[0]);
                                 gridMap->getGridCellAt(math::Vec3f(transform->position.x, transform->position.y, 0))->setPassable(false);
+
                             } else if (x == endX - tileSize.x && y == startY && walls.size() >= 11) {
                                 EntityId wall = walls[WallType::TOP_RIGHT];
                                 EntityId clonedWall;
-                                clonedWall = componentMapping.clone<EntityInfoComponent, TransformComponent>(factory, wall);
+                                clonedWall = componentMapping.clone<EntityInfoComponent, TransformComponent, WallTypeComponent, MeshComponent>(factory, wall);
                                 MoveSystem moveSystem;
                                 auto transform = getComponent<TransformComponent>(clonedWall);
                                 math::Vec3f position = math::Vec3f(pos.x, pos.y, pos.y + transform->size.y * 0.5f);
@@ -305,7 +314,7 @@ namespace odfaeg {
                             } else if (x == endX - tileSize.x && y == endY - tileSize.y && walls.size() >= 11) {
                                 EntityId wall = walls[WallType::BOTTOM_RIGHT];
                                 EntityId clonedWall;
-                                clonedWall = componentMapping.clone<EntityInfoComponent, TransformComponent>(factory, wall);
+                                clonedWall = componentMapping.clone<EntityInfoComponent, TransformComponent, WallTypeComponent, MeshComponent>(factory, wall);
                                 MoveSystem moveSystem;
                                 auto transform = getComponent<TransformComponent>(clonedWall);
                                 math::Vec3f position = math::Vec3f(pos.x, pos.y, pos.y + transform->size.y * 0.5f);
@@ -318,7 +327,7 @@ namespace odfaeg {
                             } else if (x == startX && y == endY - tileSize.y && walls.size() >= 11) {
                                 EntityId wall = walls[WallType::BOTTOM_LEFT];
                                 EntityId clonedWall;
-                                clonedWall = componentMapping.clone<EntityInfoComponent, TransformComponent>(factory, wall);
+                                clonedWall = componentMapping.clone<EntityInfoComponent, TransformComponent, WallTypeComponent, MeshComponent>(factory, wall);
                                 MoveSystem moveSystem;
                                 auto transform = getComponent<TransformComponent>(clonedWall);
                                 math::Vec3f position = math::Vec3f(pos.x, pos.y, pos.y + transform->size.y * 0.5f);
@@ -331,7 +340,7 @@ namespace odfaeg {
                             } else if ((y == startY || y == endY - tileSize.y) && walls.size() >= 11) {
                                 EntityId wall = walls[WallType::TOP_BOTTOM];
                                 EntityId clonedWall;
-                                clonedWall = componentMapping.clone<EntityInfoComponent, TransformComponent>(factory, wall);
+                                clonedWall = componentMapping.clone<EntityInfoComponent, TransformComponent, WallTypeComponent, MeshComponent>(factory, wall);
                                 MoveSystem moveSystem;
                                 auto transform = getComponent<TransformComponent>(clonedWall);
                                 math::Vec3f position = math::Vec3f(pos.x, pos.y, pos.y + transform->size.y * 0.5f);
@@ -344,7 +353,7 @@ namespace odfaeg {
                             } else if ((x == startX || x == endX - tileSize.x) && walls.size() >= 11) {
                                 EntityId wall = walls[WallType::RIGHT_LEFT];
                                 EntityId clonedWall;
-                                clonedWall = componentMapping.clone<EntityInfoComponent, TransformComponent>(factory, wall);
+                                clonedWall = componentMapping.clone<EntityInfoComponent, TransformComponent, WallTypeComponent, MeshComponent>(factory, wall);
                                 MoveSystem moveSystem;
                                 auto transform = getComponent<TransformComponent>(clonedWall);
                                 math::Vec3f position = math::Vec3f(pos.x, pos.y, pos.y + transform->size.y * 0.5f);
@@ -384,7 +393,7 @@ namespace odfaeg {
                                 if (rect.getSize().z != 0) {
 
                                 } else {
-                                    componentMapping.addChild(bt, tile, factory);
+                                    componentMapping.addChild(bt, tile);
                                 }
                             }
                         }
@@ -440,6 +449,8 @@ namespace odfaeg {
 
             }
             bool Scene::addEntity(ComponentMapping& componentMapping, EntityId entity) {
+                /*if (getComponent<MeshComponent>(entity) && getComponent<EntityInfoComponent>(componentMapping.getRoot(entity)))
+                    std::cout<<"add wall"<<std::endl;*/
                 if (getComponent<AnimationComponent>(entity)) {
                         //std::cout<<"position of current frame : "<<entity->getCurrentFrame()->getPosition()<<std::endl;
                     addEntity(componentMapping, getComponent<AnimationComponent>(entity)->interpolatedFrame);
@@ -456,7 +467,14 @@ namespace odfaeg {
                          }
                     }
                 }
-                return gridMap->addEntity(getComponent<TransformComponent>(entity)->globalBounds, entity);
+                /*if(getComponent<MeshComponent>(entity) != nullptr && getComponent<TransformComponent>(entity) != nullptr && getComponent<EntityInfoComponent>(entity) != nullptr && getComponent<EntityInfoComponent>(componentMapping.getRoot(entity))->groupName == "E_WALL")
+                    std::cout<<"add tile wall"<<std::endl;*/
+                if (getComponent<TransformComponent>(entity) != nullptr) {
+                    /*if (getComponent<MeshComponent>(entity) != nullptr && getComponent<EntityInfoComponent>(componentMapping.getRoot(entity))->groupName == "E_WALL")
+                        std::cout<<"add wall tile!"<<std::endl;*/
+                    return gridMap->addEntity(getComponent<TransformComponent>(entity)->globalBounds, entity);
+                }
+                return false;
             }
             bool Scene::removeEntity (ComponentMapping& componentMapping, EntityId entity) {
                 if (getComponent<AnimationComponent>(entity)) {
@@ -837,9 +855,12 @@ namespace odfaeg {
                                         if (getComponent<SelectedAnimationComponent>(ba)->selectedAnimIndex == getComponent<EntityInfoComponent>(visibleEntitiesType[i])->animIndex) {
                                             entities.push_back(visibleEntitiesType[i]);
                                         }
-                                    } else {
-                                        entities.push_back(visibleEntitiesType[i]);
-                                    }
+                                } else {
+                                    ComponentMapping& cm = core::ecs::Application::app->getWorld()->getComponentMapping();
+                                    /*if (getComponent<MeshComponent>(visibleEntitiesType[i]) != nullptr && getComponent<EntityInfoComponent>(cm.getRoot(visibleEntitiesType[i]))->groupName == "E_WALL")
+                                        std::cout<<"get visible entity add wall"<<std::endl;*/
+                                    entities.push_back(visibleEntitiesType[i]);
+                                }
                             }
                         }
                     }

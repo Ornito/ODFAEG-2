@@ -2,7 +2,6 @@
 #define ODFAEG_ECS_SYSTEM_HPP
 #include "../../Core/tmp.hpp"
 #include "../../Core/ecs.hpp"
-#include "modelFactory.hpp"
 #include <thread>
 namespace odfaeg {
     namespace graphic {

@@ -32,6 +32,9 @@ namespace odfaeg {
                 size_t animIndex;
                 DrawMode drawMode = NORMAL;
             };
+            struct WallTypeComponent {
+                WallType wallType;
+            };
             struct TransformComponent {
                 math::Vec3f position, size, center, scale, rotationAxis, origin;
                 float rotation;

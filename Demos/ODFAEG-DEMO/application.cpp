@@ -157,7 +157,7 @@ namespace sorrok {
         walls.resize(g2d::Wall::NB_WALL_TYPES, nullptr);
         //tiles.push_back(new Tile(tm.getResourceByAlias("GRASS"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
         walls[g2d::Wall::TOP_BOTTOM] = entityFactory.make_entity<g2d::Wall>(entityFactory.make_entity<Tile>(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 0, 100, 100), entityFactory),g2d::Wall::TOP_BOTTOM,&g2d::AmbientLight::getAmbientLight(), entityFactory);
-        std::cout<<"global bounds : "<<walls[g2d::Wall::TOP_BOTTOM]->getGlobalBounds().getPosition()<<std::endl;
+        //std::cout<<"global bounds : "<<walls[g2d::Wall::TOP_BOTTOM]->getGlobalBounds().getPosition()<<std::endl;
         walls[g2d::Wall::RIGHT_LEFT] = entityFactory.make_entity<g2d::Wall>(entityFactory.make_entity<Tile>(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 100, 100, 100), entityFactory),g2d::Wall::RIGHT_LEFT,&g2d::AmbientLight::getAmbientLight(), entityFactory);
         walls[g2d::Wall::BOTTOM_LEFT] = entityFactory.make_entity<g2d::Wall>(entityFactory.make_entity<Tile>(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 200, 100, 100), entityFactory),g2d::Wall::BOTTOM_LEFT,&g2d::AmbientLight::getAmbientLight(), entityFactory);
         walls[g2d::Wall::TOP_RIGHT] = entityFactory.make_entity<g2d::Wall>(entityFactory.make_entity<Tile>(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 300, 100, 100), entityFactory),g2d::Wall::TOP_RIGHT,&g2d::AmbientLight::getAmbientLight(), entityFactory);
@@ -309,7 +309,7 @@ namespace sorrok {
         ReflectRefractRenderComponent *rrrc = new ReflectRefractRenderComponent(getRenderWindow(), 2, "E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
         ShadowRenderComponent *src = new ShadowRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 4, 4, 6));
         LightRenderComponent *lrc = new LightRenderComponent(getRenderWindow(), 4, "E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", ContextSettings(0, 0, 4, 4, 6));
-        std::cout<<"component created"<<std::endl;
+        //std::cout<<"component created"<<std::endl;
         /*frc1->setVisible(false);
         frc2->setVisible(false);
         rrrc->setVisible(false);

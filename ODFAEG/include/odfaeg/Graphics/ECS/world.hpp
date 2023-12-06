@@ -24,6 +24,9 @@ namespace odfaeg {
                     nbEntitiesTypes = 0;*/
                     currentEntityManager = nullptr;
                 }
+                ComponentMapping& getComponentMapping() {
+                    return componentMapping;
+                }
                 template <typename System>
                 void addSystem ( System system, SystemsQueues queue, EntityFactory& factory) {
                     EntityId systemId = factory.createEntity();
@@ -75,12 +78,14 @@ namespace odfaeg {
                         entity->setTypeInt(iType);
                     }
                 }*/
-                bool addEntity (EntityId entity, EntityFactory& factory) {
+                bool addEntity (EntityId entity) {
                     if (currentEntityManager != nullptr) {
-                        componentMapping.updateSize(factory);
                         return currentEntityManager->addEntity(componentMapping, entity);
                     }
                     return false;
+                }
+                void addChild (EntityId parent, EntityId child) {
+                    componentMapping.addChild(parent, child);
                 }
                 bool removeEntity(EntityId entity) {
                     if (currentEntityManager != nullptr)

@@ -1,6 +1,7 @@
 #ifndef ODFAEG_ECS_SCENE_HPP
 #define ODFAEG_ECS_SCENE_HPP
 #include "sceneManager.hpp"
+#include "modelFactory.hpp"
 namespace odfaeg {
     namespace graphic {
         namespace ecs {

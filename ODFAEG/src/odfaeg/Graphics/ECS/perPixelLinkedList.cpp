@@ -1,6 +1,6 @@
 #include "../../../../include/odfaeg/Graphics/ECS/perPixelLinkedList.hpp"
 #include "../../../../include/odfaeg/Physics/particuleSystem.h"
-#include "../../../../include/odfaeg/Graphics/application.h"
+#include "../../../../include/odfaeg/Graphics/ECS/application.hpp"
 #ifndef VULKAN
 #include "../glCheck.h"
 #endif
@@ -477,8 +477,8 @@ namespace odfaeg {
                             } else {
                                 perPixelLinkedList.setParameter("water", 0.0f);
                             }
-                            if (core::Application::app != nullptr) {
-                                float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
+                            if (core::ecs::Application::app != nullptr) {
+                                float time = core::ecs::Application::getTimeClk().getElapsedTime().asSeconds();
                                 perPixelLinkedList.setParameter("time", time);
                             }
                             matrices.clear();
@@ -547,8 +547,8 @@ namespace odfaeg {
                             } else {
                                 perPixelLinkedList2.setParameter("water", 0.0f);
                             }
-                            if (core::Application::app != nullptr) {
-                                float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
+                            if (core::ecs::Application::app != nullptr) {
+                                float time = core::ecs::Application::getTimeClk().getElapsedTime().asSeconds();
                                 perPixelLinkedList2.setParameter("time", time);
                             }
                             unsigned int p = m_normals[i].getAllVertices().getPrimitiveType();
@@ -588,8 +588,8 @@ namespace odfaeg {
                             } else {
                                 perPixelLinkedList2.setParameter("water", 0.0f);
                             }
-                            if (core::Application::app != nullptr) {
-                                float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
+                            if (core::ecs::Application::app != nullptr) {
+                                float time = core::ecs::Application::getTimeClk().getElapsedTime().asSeconds();
                                 perPixelLinkedList2.setParameter("time", time);
                             }
                             unsigned int p = m_selected[i].getAllVertices().getPrimitiveType();
@@ -621,8 +621,8 @@ namespace odfaeg {
                             } else {
                                 perPixelLinkedList2.setParameter("water", 0.0f);
                             }
-                            if (core::Application::app != nullptr) {
-                                float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
+                            if (core::ecs::Application::app != nullptr) {
+                                float time = core::ecs::Application::getTimeClk().getElapsedTime().asSeconds();
                                 perPixelLinkedList2.setParameter("time", time);
                             }
                             unsigned int p = m_selectedScale[i].getAllVertices().getPrimitiveType();
@@ -769,7 +769,11 @@ namespace odfaeg {
 
 
                 for (unsigned int i = 0; i < vEntities.size(); i++) {
+                    ComponentMapping& cm = core::ecs::Application::app->getWorld()->getComponentMapping();
+
                     if (getComponent<MeshComponent>(vEntities[i]) != nullptr) {
+
+
                         for (unsigned int j = 0; j <  getComponent<MeshComponent>(vEntities[i])->faces.size(); j++) {
                              if (getComponent<EntityInfoComponent>(vEntities[i])->drawMode == INSTANCED) {
                                 batcher.addFace( &getComponent<MeshComponent>(vEntities[i])->faces[j]);
