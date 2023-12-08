@@ -844,7 +844,7 @@ namespace odfaeg {
                                     vb.append((*m_light_instances[i].getVertexArrays()[j])[n]);
                                 }
                                 vb.update();
-                                math::Matrix4f m = m_light_instances[i].getTransforms()[j]->getMatrix().transpose();
+                                math::Matrix4f m = m_light_instances[i].getPerVaTransforms()[j]->getMatrix().transpose();
                                 lightMapGenerator.setParameter("worldMatrix", m);
                                 Entity* el = m_light_instances[i].getVertexArrays()[j]->getEntity();
                                 //std::cout<<"add light : "<<el<<std::endl;

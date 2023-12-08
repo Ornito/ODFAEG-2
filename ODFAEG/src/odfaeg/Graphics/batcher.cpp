@@ -315,7 +315,14 @@ namespace odfaeg {
             }
             void Instance::addVertexArray(VertexArray& va, TransformMatrix& tm) {
                 //std::cout<<"push transform"<<std::endl;
-                m_transforms.push_back(&tm);
+                m_perVaTransforms.push_back(&tm);
+                if (!containsEntity(va.getEntity(), va.getEntityId())) {
+                    m_transforms.push_back(&tm);
+                    if (va.getEntity() != nullptr)
+                        m_entities.push_back(va.getEntity());
+                    if (va.getEntityId() != -1)
+                        m_entitiesId.push_back(va.getEntityId());
+                }
                 //std::cout<<"transform pushed"<<std::endl;
                 m_vertexArrays.push_back(&va);
                 //std::cout<<"va pushed"<<std::endl;
@@ -338,10 +345,16 @@ namespace odfaeg {
                 //std::cout<<"vertices transformed"<<std::endl;
             }
             void Instance::addVertexShadowArray (VertexArray& va, TransformMatrix& tm, ViewMatrix& viewMatrix, TransformMatrix shadowProjMatrix) {
-                m_transforms.push_back(&tm);
+                m_perVaTransforms.push_back(&tm);
+                if (!containsEntity(va.getEntity(), va.getEntityId())) {
+                    m_transforms.push_back(&tm);
+                    m_shadowProjMatrix.push_back(shadowProjMatrix);
+                    if (va.getEntity() != nullptr)
+                        m_entities.push_back(va.getEntity());
+                    if (va.getEntityId() != -1)
+                        m_entitiesId.push_back(va.getEntityId());
+                }
                 m_vertexArrays.push_back(&va);
-                m_shadowProjMatrix.push_back(shadowProjMatrix);
-
                 //shadowProjMatrix.combine(viewMatrix.getMatrix());
                 shadowProjMatrix.combine(tm.getMatrix());
                 for (unsigned int i = 0; i < va.getVertexCount(); i++) {
@@ -349,6 +362,20 @@ namespace odfaeg {
                     Vertex v (sf::Vector3f(t.x, t.y, t.z), va[i].color, va[i].texCoords);
                     vertices.append(v);
                 }
+            }
+            bool Instance::containsEntity(Entity* entity, ecs::EntityId entityId) {
+                for (unsigned int i = 0; i < m_entities.size(); i++) {
+                    if (m_entities[i] == entity)
+                        return true;
+                }
+                for (unsigned int i = 0; i < m_entitiesId.size(); i++) {
+                    if (m_entitiesId[i] == entityId)
+                        return true;
+                }
+                return false;
+            }
+            std::vector<TransformMatrix*> Instance::getPerVaTransforms() {
+                return m_perVaTransforms;
             }
             void Instance::sortVertexArrays(View& view) {
                 vertices.clear();

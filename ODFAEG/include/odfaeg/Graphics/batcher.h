@@ -3,12 +3,14 @@
 #include "vertexArray.h"
 #include "view.h"
 #include <map>
+#include "../Core/entityFactory.hpp"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
   */
 namespace odfaeg {
     namespace graphic {
+        class Entity;
         /**
           * \file material.h
           * \class Material
@@ -370,6 +372,7 @@ namespace odfaeg {
             */
             std::vector<TransformMatrix*> getTransforms();
             std::vector<TransformMatrix> getShadowProjMatrix();
+            std::vector<TransformMatrix*> getPerVaTransforms();
             /** \fn Material& getMaterial()
             * \brief get the material of the instance.
             * \return the material.
@@ -394,17 +397,22 @@ namespace odfaeg {
             * \brief destructor.
             */
             VertexArray& getAllVertices();
+            bool containsEntity(Entity* entity, ecs::EntityId entityId);
+
             ~Instance();
         private:
             Material* material; /**> the material of the instance.*/
             std::vector<VertexArray*> m_vertexArrays; /**> the vertex arrays of the instance.*/
             std::vector<TransformMatrix*> m_transforms; /**> the transformations of the instance.*/
+            std::vector<TransformMatrix*> m_perVaTransforms;
             std::vector<TransformMatrix> m_shadowProjMatrix;
             sf::PrimitiveType primType; /**>The primitive type of the instance.*/
             unsigned int numInstances; /**>The number of instances.*/
             VertexArray vertices;
             std::vector<unsigned int> allIndexes;
             std::vector<std::vector<unsigned int>> m_indexes;
+            std::vector<Entity*> m_entities;
+            std::vector<ecs::EntityId> m_entitiesId;
         };
         /**
           * \file face.h

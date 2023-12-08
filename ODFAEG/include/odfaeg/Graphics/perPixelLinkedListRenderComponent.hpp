@@ -21,6 +21,12 @@ namespace odfaeg {
             struct Samplers {
                 uint64_to_uint128 tex[200];
             };
+            struct DrawArraysIndirectCommand {
+                unsigned int  count;
+                unsigned int  instanceCount;
+                unsigned int  firstIndex;
+                unsigned int  baseInstance;
+            };
             PerPixelLinkedListRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings);
             void onVisibilityChanged(bool visible);
             void loadTextureIndexes();
@@ -103,7 +109,7 @@ namespace odfaeg {
             bool update;
             GLuint maxNodes;
             sf::Vector3i resolution;
-            unsigned int atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex, vboWorldMatrices, ubo;
+            unsigned int atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex, vboWorldMatrices, ubo, vboIndirect;
             Sprite frameBufferSprite;
             VertexBuffer vb;
             std::array<VertexBuffer ,Batcher::nbPrimitiveTypes> vbBindlessTex;

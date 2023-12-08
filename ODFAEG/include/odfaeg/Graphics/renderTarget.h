@@ -407,6 +407,7 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             math::Vec3f mapCoordsToPixel(const math::Vec3f& point, View& view);
+            void drawIndirect(VertexBuffer& vertexBuffer, enum sf::PrimitiveType type, unsigned int nbIndirectCommands, RenderStates states, unsigned int vboIndirect, unsigned int vboMatrix1=0, unsigned int vboMatrix2=0);
             void drawInstanced(VertexBuffer& vertexBuffer, enum sf::PrimitiveType type, unsigned int start, unsigned int nb, unsigned int nbInstances, RenderStates states, unsigned int vboMatrix1=0, unsigned int vboMatrix2=0);
 
             ////////////////////////////////////////////////////////////

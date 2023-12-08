@@ -51,7 +51,8 @@ namespace odfaeg {
             getListener().connect("UPDATE", cmd);
 
             if (settings.versionMajor >= 4 && settings.versionMinor >= 3) {
-                glGenBuffers(1, &vboWorldMatrices);
+                glCheck(glGenBuffers(1, &vboWorldMatrices));
+                glCheck(glGenBuffers(1, &vboIndirect));
                 compileShaders();
             } else {
                 const std::string  simpleVertexShader =
@@ -468,8 +469,11 @@ namespace odfaeg {
                 for (unsigned int i = 0; i < Batcher::nbPrimitiveTypes; i++) {
                     vbBindlessTex[i].clear();
                 }
-                std::vector<TransformMatrix*> tm;
+                matrices.clear();
+                std::vector<DrawArraysIndirectCommand> drawArraysIndirectCommands;
+                unsigned int firstIndex = 0, baseInstance = 0;
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
+                    DrawArraysIndirectCommand drawArraysIndirectCommand;
                     if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                         if (m_instances[i].getMaterial().getType() == Material::WATER) {
                             perPixelLinkedList.setParameter("water", 1.0f);
@@ -480,8 +484,7 @@ namespace odfaeg {
                             float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
                             perPixelLinkedList.setParameter("time", time);
                         }
-                        matrices.clear();
-                        tm = m_instances[i].getTransforms();
+                        std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
                         for (unsigned int j = 0; j < tm.size(); j++) {
                             tm[j]->update();
                             std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
@@ -489,20 +492,26 @@ namespace odfaeg {
                                 matrices.push_back(matrix[n]);
                             }
                         }
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
-                        glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        unsigned int vertexCount = 0;
                         if (m_instances[i].getVertexArrays().size() > 0) {
                             Entity* entity = m_instances[i].getVertexArrays()[0]->getEntity();
                             for (unsigned int j = 0; j < m_instances[i].getVertexArrays().size(); j++) {
                                 if (entity == m_instances[i].getVertexArrays()[j]->getEntity()) {
                                     unsigned int p = m_instances[i].getVertexArrays()[j]->getPrimitiveType();
                                     for (unsigned int k = 0; k < m_instances[i].getVertexArrays()[j]->getVertexCount(); k++) {
+                                        vertexCount++;
                                         vbBindlessTex[p].append((*m_instances[i].getVertexArrays()[j])[k], (m_instances[i].getMaterial().getTexture() != nullptr) ? m_instances[i].getMaterial().getTexture()->getId() : 0);
                                     }
                                 }
                             }
                         }
+                        drawArraysIndirectCommand.count = vertexCount;
+                        drawArraysIndirectCommand.firstIndex = firstIndex;
+                        drawArraysIndirectCommand.baseInstance = baseInstance;
+                        drawArraysIndirectCommand.instanceCount = tm.size();
+                        drawArraysIndirectCommands.push_back(drawArraysIndirectCommand);
+                        firstIndex += vertexCount;
+                        baseInstance++;
                         //std::cout<<"texture : "<<m_instances[i].getMaterial().getTexture()<<std::endl;
                         //std::cout<<"entity : "<<m_instances[i].getVertexArrays()[0]->getEntity()->getRootEntity()->getType()<<std::endl;
                         if (m_instances[i].getMaterial().getTexture() != nullptr) {
@@ -519,13 +528,19 @@ namespace odfaeg {
                         }
                     }
                 }
+                glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+                glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+                glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                glCheck(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, vboIndirect));
+                glCheck(glBufferData(GL_DRAW_INDIRECT_BUFFER, drawArraysIndirectCommands.size() * sizeof(DrawArraysIndirectCommand), &drawArraysIndirectCommands[0], GL_DYNAMIC_DRAW));
+                glCheck(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0));
                 currentStates.blendMode = sf::BlendNone;
                 currentStates.shader = &perPixelLinkedList;
                 currentStates.texture = nullptr;
                 for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
                     if (vbBindlessTex[p].getVertexCount() > 0) {
                         vbBindlessTex[p].update();
-                        frameBuffer.drawInstanced(vbBindlessTex[p], vbBindlessTex[p].getPrimitiveType(), 0, vbBindlessTex[p].getVertexCount(), tm.size(), currentStates, vboWorldMatrices);
+                        frameBuffer.drawIndirect(vbBindlessTex[p], vbBindlessTex[p].getPrimitiveType(), drawArraysIndirectCommands.size(), currentStates, vboIndirect, vboWorldMatrices);
                         vbBindlessTex[p].clear();
                     }
                 }

@@ -490,6 +490,139 @@ namespace odfaeg {
             coords = vpm.toViewportCoordinates(coords);
             return coords;
         }
+        void RenderTarget::drawIndirect(VertexBuffer& vertexBuffer, enum sf::PrimitiveType type, unsigned int nbIndirectCommands, RenderStates states, unsigned int vboIndirect, unsigned int vboMatrix1, unsigned int vboMatrix2) {
+            if (vertexBuffer.getVertexCount() == 0) {
+                return;
+            }
+
+            if (activate(true))
+            {
+                if (!m_cache.glStatesSet)
+                    resetGLStates();
+                // Apply the view
+                if (m_cache.viewChanged)
+                    applyCurrentView();
+
+                if (states.blendMode != m_cache.lastBlendMode)
+                    applyBlendMode(states.blendMode);
+
+                // Apply the texture
+                sf::Uint64 textureId = states.texture ? states.texture->getNativeHandle() : 0;
+                if (textureId != m_cache.lastTextureId)
+                    applyTexture(states.texture);
+                // Apply the shader
+                if (states.shader)
+                    applyShader(states.shader);
+                if (m_versionMajor > 3 || m_versionMajor == 3 && m_versionMinor >= 3)
+                    glCheck(glBindVertexArray(m_vao));
+                if (m_cache.lastVboBuffer != &vertexBuffer) {
+                    if (m_versionMajor > 3 || m_versionMajor == 3 && m_versionMinor >= 3) {
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
+                        glCheck(glEnableVertexAttribArray(0));
+                        glCheck(glEnableVertexAttribArray(1));
+                        glCheck(glEnableVertexAttribArray(2));
+                        glCheck(glVertexAttribPointer(0, 3,GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*) 0));
+                        glCheck(glVertexAttribPointer(1, 4,GL_UNSIGNED_BYTE,GL_TRUE,sizeof(Vertex),(GLvoid*) 12));
+                        glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) 16));
+                        glCheck(glEnableVertexAttribArray(3));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboNormalBuffer));
+                        glCheck(glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(sf::Vector3f), (GLvoid*) 0));
+                        glCheck(glDisableVertexAttribArray(0));
+                        glCheck(glDisableVertexAttribArray(1));
+                        glCheck(glDisableVertexAttribArray(2));
+                        glCheck(glDisableVertexAttribArray(3));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+                        /*va_list args;
+                        va_start(args, n);
+                        for (unsigned int i = 0; i < n; i++) {
+                            unsigned int vboMatrices = va_arg(args, unsigned int);
+                            for (unsigned int j = 0; j < 4; j++) {
+                                glCheck(glEnableVertexAttribArray(i * 4 + j + 3));
+                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboMatrices));
+                                glCheck(glVertexAttribPointer(i * 4 + j + 3, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                                                        (const GLvoid*)(sizeof(GLfloat) * i * 4)));
+                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                                glCheck(glVertexAttribDivisor(i * 4 + j + 3, 1));
+                                glCheck(glDisableVertexAttribArray(i * 4 + j + 3));
+                            }
+                        }
+                        va_end(args);*/
+                        if (vboMatrix1 != 0) {
+                            for (unsigned int i = 0; i < 4; i++) {
+                                glCheck(glEnableVertexAttribArray(i + 4));
+                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboMatrix1));
+                                glCheck(glVertexAttribPointer(i + 4, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                                                        (const GLvoid*)(sizeof(GLfloat) * i * 4)));
+                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                                glCheck(glVertexAttribDivisor(i + 4, 1));
+                                glCheck(glDisableVertexAttribArray(i + 4));
+                            }
+                        }
+                        if (vboMatrix2 != 0) {
+                            for (unsigned int i = 0; i < 4; i++) {
+                                glCheck(glEnableVertexAttribArray(i + 8));
+                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboMatrix2));
+                                glCheck(glVertexAttribPointer(i + 8, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                                                        (const GLvoid*)(sizeof(GLfloat) * i * 4)));
+                                glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                                glCheck(glVertexAttribDivisor(i + 8, 1));
+                                glCheck(glDisableVertexAttribArray(i + 8));
+                            }
+                        }
+                        glCheck(glEnableVertexAttribArray(12));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboTextureIndexesBuffer));
+                        glCheck(glVertexAttribIPointer(12, 1, GL_UNSIGNED_INT, sizeof(GLuint), (GLvoid*) 0));
+                        glCheck(glDisableVertexAttribArray(12));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                    }
+                    m_cache.lastVboBuffer = &vertexBuffer;
+
+                }
+                if (m_versionMajor > 3 || m_versionMajor == 3 && m_versionMinor >= 3) {
+                    glCheck(glEnableVertexAttribArray(0));
+                    glCheck(glEnableVertexAttribArray(1));
+                    glCheck(glEnableVertexAttribArray(2));
+                    glCheck(glEnableVertexAttribArray(3));
+                    if (vboMatrix1 != 0) {
+                        for (unsigned int i = 0; i < 4 ; i++) {
+                            glCheck(glEnableVertexAttribArray(4 + i));
+                        }
+                    }
+                    if (vboMatrix2 != 0) {
+                        for (unsigned int i = 0; i < 4 ; i++) {
+                            glCheck(glEnableVertexAttribArray(8 + i));
+                        }
+                    }
+                    glCheck(glEnableVertexAttribArray(12));
+                    static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
+                                                       GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
+                    GLenum mode = modes[type];
+                    glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferId));
+                    glCheck(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, vboIndirect));
+                    glCheck(glMultiDrawArraysIndirect(mode,0,nbIndirectCommands,0));
+                    glCheck(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0));
+                    glCheck(glDisableVertexAttribArray(0));
+                    glCheck(glDisableVertexAttribArray(1));
+                    glCheck(glDisableVertexAttribArray(2));
+                    glCheck(glDisableVertexAttribArray(3));
+                    if (vboMatrix1 != 0) {
+                        for (unsigned int i = 0; i < 4 ; i++) {
+                            glCheck(glDisableVertexAttribArray(4 + i));
+                        }
+                    }
+                    if (vboMatrix2 != 0) {
+                        for (unsigned int i = 0; i < 4 ; i++) {
+                            glCheck(glDisableVertexAttribArray(8 + i));
+                        }
+                    }
+                    glCheck(glDisableVertexAttribArray(12));
+                    glCheck(glBindVertexArray(0));
+                }
+            }
+            applyTexture(nullptr);
+            applyShader(nullptr);
+        }
         void RenderTarget::drawInstanced(VertexBuffer& vertexBuffer, enum sf::PrimitiveType type, unsigned int start, unsigned int nb, unsigned int nbInstances, RenderStates states, unsigned int vboMatrix1, unsigned int vboMatrix2) {
             if (vertexBuffer.getVertexCount() == 0) {
                 return;
