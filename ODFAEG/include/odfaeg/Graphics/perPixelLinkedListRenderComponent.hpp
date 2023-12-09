@@ -27,6 +27,13 @@ namespace odfaeg {
                 unsigned int  firstIndex;
                 unsigned int  baseInstance;
             };
+            struct DrawElementsIndirectCommand {
+                    unsigned index_count;
+                    unsigned instance_count;
+                    unsigned first_index;       // cf parametre offset de glDrawElements()
+                    unsigned vertex_base;
+                    unsigned instance_base;
+            };
             PerPixelLinkedListRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings);
             void onVisibilityChanged(bool visible);
             void loadTextureIndexes();
@@ -55,6 +62,15 @@ namespace odfaeg {
             * \brief draw the next frame of the component.
             */
             void drawNextFrame();
+            void drawInstances();
+            void drawInstancesIndexed();
+            void drawNormals();
+            void drawNormalsIndexed();
+
+            void drawSelectedInstances();
+            void drawSelectedInstancesIndexed();
+            void drawSelected();
+            void drawSelectedIndexed();
             void setExpression (std::string expression);
             /**
             * \fn draw(Drawable& drawable, RenderStates states = RenderStates::Default);
@@ -98,9 +114,12 @@ namespace odfaeg {
             std::vector<std::pair<std::reference_wrapper<Drawable>, RenderStates>> drawables;
             Batcher batcher, normalBatcher, selectedScaleBatcher, selectedBatcher; /**> A group of faces using the same materials and primitive type.*/
             sf::Color backgroundColor; /**> The background color.*/
-            std::vector<Instance> m_instances, m_normals, m_selectedScale, m_selected; /**> Instances to draw. (Instanced rendering.) */
+            std::vector<Instance> m_instances, m_normals, m_instancesIndexed, m_normalIndexed,
+            m_selectedScale, m_selected, m_selectedScaleIndexed, m_selectedIndexed,
+            m_selectedScaleInstance, m_selectedInstance, m_selectedScaleInstanceIndexed, m_selectedInstanceIndexed; /**> Instances to draw. (Instanced rendering.) */
             std::vector<std::unique_ptr<Face>> additionalFaces;
-            std::vector<Entity*> visibleEntities; /**> Entities loaded*/
+            std::vector<Entity*> visibleEntities;
+            std::vector<std::unique_ptr<Entity*>> visibleSelectedEntities, visibleSelectedScaleEntities; /**> Entities loaded*/
             RenderTexture frameBuffer; /**> the frame buffer.*/
             Shader perPixelLinkedList, perPixelLinkedListP2, perPixelLinkedList2, filterNotOpaque, initialize;
             RenderStates currentStates; /**> the current render states.*/

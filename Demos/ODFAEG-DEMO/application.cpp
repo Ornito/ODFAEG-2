@@ -83,7 +83,7 @@ namespace sorrok {
     void MyAppli::leftMouseButtonPressed(sf::Vector2f mousePos) {
         Vec2f mouse(mousePos.x, mousePos.y);
         Vec3f finalPos = getRenderWindow().mapPixelToCoords(Vec3f(mouse.x, getRenderWindow().getSize().y-mouse.y, 0));
-        std::cout<<mouse.x<<" "<<mouse.y<<std::endl;
+        //std::cout<<mouse.x<<" "<<mouse.y<<std::endl;
         point.clear();
         point.append(Vertex(sf::Vector3f(finalPos.x, finalPos.y, finalPos.y), sf::Color(255, 0, 0)));
         std::vector<Vec2f> path = getWorld()->getPath(caracter, finalPos);
@@ -228,9 +228,7 @@ namespace sorrok {
         } else {
             std::cout<<"not read serialisation file"<<std::endl;
             BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
-            std::cout<<"generate map"<<std::endl;
             getWorld()->generate_map(tiles, walls, Vec2f(100, 50), mapZone, false, entityFactory);
-            std::cout<<"map generated"<<std::endl;
             Tile* thouse = entityFactory.make_entity<Tile>(tm.getResourceByAlias("HOUSE"), Vec3f(0, 0, 0), Vec3f(250, 300, 0), sf::IntRect(0, 0, 250, 300), entityFactory);
             thouse->setLayer(1);
             thouse->getFace(0)->getMaterial().setTexId("HOUSE");
@@ -240,10 +238,10 @@ namespace sorrok {
             decor->getGlobalBounds().getSize().x, decor->getGlobalBounds().getSize().y * 0.25f, 0);
             //std::cout<<bb->getPosition()<<" "<<bb->getSize()<<std::endl;
             decor->setCollisionVolume(bb);
-            decor->setShadowCenter(Vec3f(0, 500, 250));
+            decor->setShadowScale(Vec3f(1, -1, 1));
+            decor->setShadowCenter(Vec3f(0, 400, 0));
             thouse->getFace(0)->getMaterial().setSpecularPower(10);
             thouse->getFace(0)->getMaterial().setSpecularIntensity(100);
-            std::cout<<"add house"<<std::endl;
             getWorld()->addEntity(decor);
             Anim* fire = entityFactory.make_entity<Anim>(0.1f, Vec3f(0, 0, 0), Vec3f(100, 100, 0), entityFactory);
             Tile* tf1 = entityFactory.make_entity<Tile>(tm.getResourceByAlias("FIRE1"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200), entityFactory);
@@ -365,7 +363,7 @@ namespace sorrok {
         BoundingVolume* bb2 = new BoundingBox(caracter->getGlobalBounds().getPosition().x, caracter->getGlobalBounds().getPosition().y + caracter->getGlobalBounds().getSize().y * 0.4f, 0,
         caracter->getGlobalBounds().getSize().x, caracter->getGlobalBounds().getSize().y * 0.25f, 0);
         caracter->setCollisionVolume(bb2);
-        caracter->setCenter(Vec3f(getView().getPosition().x, getView().getPosition().y, 300));
+        caracter->setCenter(Vec3f(getView().getPosition().x, getView().getPosition().y, getView().getPosition().y));
         caracter->setShadowScale(Vec3f(1, -1, 1));
         caracter->setShadowCenter(Vec3f(0, 280, -140));
         //std::cout<<bb2->getPosition()<<" "<<bb2->getSize()<<std::endl;
@@ -531,7 +529,9 @@ namespace sorrok {
                 Vec2f pos = Computer::getPosOnPathFromTime(actualPos, caracter->getPath(),t,caracter->getSpeed());
                 Vec2f d = pos - actualPos;
                 Vec2f dir = d.normalize();
+                //std::cout<<"position : "<<caracter->getPosition().z<<" dy : "<<d.y<<std::endl;
                 getWorld()->moveEntity(caracter, d.x, d.y, d.y);
+                //std::cout<<"position : "<<caracter->getPosition().z<<std::endl;
                 if (dir != caracter->getDir())
                     caracter->setDir(dir);
                 for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {

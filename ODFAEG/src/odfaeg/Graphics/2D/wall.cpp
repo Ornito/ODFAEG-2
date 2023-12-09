@@ -18,7 +18,6 @@ namespace odfaeg {
             Entity* Wall::clone() {
                 Wall* w = factory.make_entity<Wall>(factory);
                 GameObject::copy(w);
-                std::cout<<"type : "<<w->getType()<<"w global bounds : "<<getGlobalBounds().getPosition()<<w->getGlobalBounds().getPosition();
                 w->type = type;
                 return w;
             }

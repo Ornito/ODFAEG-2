@@ -38,7 +38,6 @@ namespace odfaeg {
             gameObject->externalObjectName = externalObjectName;
             gameObject->external = external;
             gameObject->drawMode = drawMode;
-            std::cout<<"type : "<<getType()<<"w global bounds : "<<getGlobalBounds().getPosition()<<gameObject->getGlobalBounds().getPosition();
 
             //std::cout<<"clone id : "<<entity->getId()<<std::endl;
             for (unsigned int i = 0; i < faces.size(); i++) {
@@ -190,6 +189,7 @@ namespace odfaeg {
                 std::cout<<"matrix : "<<getTransform().getMatrix()<<std::endl;*/
             //std::cout<<"move : "<<getType()<<"t : "<<t<<std::endl;
             for (unsigned int i = 0; i < faces.size(); i++) {
+                getTransform().update();
                 faces[i].setTransformMatrix(getTransform());
             }
             for (unsigned int i = 0; i < children.size(); i++) {

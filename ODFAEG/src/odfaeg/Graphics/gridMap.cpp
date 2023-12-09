@@ -557,12 +557,12 @@ namespace odfaeg {
             if (cell != nullptr) {
                 if (!cell->isPassable())
                     return true;
-                std::vector<CellMap*> neightbours = getNeightbours(entity,cell,true);
+                /*std::vector<CellMap*> neightbours = getNeightbours(entity,cell,true);
                 for (unsigned int i = 0; i < neightbours.size(); i++) {
                     if (!neightbours[i]->isPassable()) {
                         return true;
                     }
-                }
+                }*/
                 if (entity->getRootEntity()->getCollisionVolume() != nullptr) {
                     math::Vec3f t = position - entity->getRootEntity()->getCollisionVolume()->getCenter();
                     physic::BoundingVolume* cv = entity->getRootEntity()->getCollisionVolume()->clone().release();

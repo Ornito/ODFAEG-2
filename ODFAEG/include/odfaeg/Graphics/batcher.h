@@ -193,6 +193,7 @@ namespace odfaeg {
                 ar(reflectable);
                 ar(refractable);
                 ar(refractionFactor);
+                ar(type);
                 if (ar.isInputArchive()) {
                     onLoad();
                 }

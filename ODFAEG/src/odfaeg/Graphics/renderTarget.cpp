@@ -575,6 +575,12 @@ namespace odfaeg {
                         glCheck(glVertexAttribIPointer(12, 1, GL_UNSIGNED_INT, sizeof(GLuint), (GLvoid*) 0));
                         glCheck(glDisableVertexAttribArray(12));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        if (vertexBuffer.vboMaterialType != 0) {
+                            glCheck(glEnableVertexAttribArray(13));
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboMaterialType));
+                            glCheck(glVertexAttribIPointer(13, 1, GL_UNSIGNED_INT, sizeof(GLuint), (GLvoid*) 0));
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        }
                     }
                     m_cache.lastVboBuffer = &vertexBuffer;
 
@@ -600,7 +606,13 @@ namespace odfaeg {
                     GLenum mode = modes[type];
                     glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferId));
                     glCheck(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, vboIndirect));
-                    glCheck(glMultiDrawArraysIndirect(mode,0,nbIndirectCommands,0));
+                    if (vertexBuffer.getIndexes().size() == 0) {
+                        glCheck(glMultiDrawArraysIndirect(mode,0,nbIndirectCommands,0));
+                    } else {
+                        glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexBuffer.vboIndexBuffer));
+                        glCheck(glMultiDrawElementsIndirect(mode, GL_UNSIGNED_INT, 0, nbIndirectCommands, 0));
+                        glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+                    }
                     glCheck(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0));
                     glCheck(glDisableVertexAttribArray(0));
                     glCheck(glDisableVertexAttribArray(1));
@@ -617,6 +629,9 @@ namespace odfaeg {
                         }
                     }
                     glCheck(glDisableVertexAttribArray(12));
+                    if (vertexBuffer.vboMaterialType != 0) {
+                        glCheck(glDisableVertexAttribArray(13));
+                    }
                     glCheck(glBindVertexArray(0));
                 }
             }
@@ -894,11 +909,19 @@ namespace odfaeg {
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboTextureIndexesBuffer));
 
                         glCheck(glVertexAttribIPointer(4, 1, GL_UNSIGNED_INT/*,GL_FALSE*/,sizeof(GLuint),(GLvoid*) 0));
+                        if (vertexBuffer.vboMaterialType != 0) {
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboMaterialType));
+
+                            glCheck(glVertexAttribIPointer(5, 1, GL_UNSIGNED_INT/*,GL_FALSE*/,sizeof(GLuint),(GLvoid*) 0));
+                        }
                         glCheck(glDisableVertexAttribArray(0));
                         glCheck(glDisableVertexAttribArray(1));
                         glCheck(glDisableVertexAttribArray(2));
                         glCheck(glDisableVertexAttribArray(3));
                         glCheck(glDisableVertexAttribArray(4));
+                        if (vertexBuffer.vboMaterialType != 0) {
+                            glCheck(glDisableVertexAttribArray(5));
+                        }
 
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                     } else {

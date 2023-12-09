@@ -48,6 +48,7 @@ namespace odfaeg {
                 reflectable = false;
                 bumpTexture = nullptr;
                 id = 0;
+                type = Type::AIR;
                 materials.push_back(this);
             }
             Material::Material(const Material& material) {
@@ -59,6 +60,7 @@ namespace odfaeg {
                 refractable = material.refractable;
                 reflectable = material.reflectable;
                 bumpTexture = material.bumpTexture;
+                type = material.type;
                 //std::cout<<"copy material"<<std::endl;
                 materials.push_back(this);
                 //updateIds();
@@ -72,6 +74,7 @@ namespace odfaeg {
                 refractable = material.refractable;
                 reflectable = material.reflectable;
                 bumpTexture = material.bumpTexture;
+                type = material.type;
                 materials.push_back(this);
                 return *this;
             }
@@ -170,6 +173,7 @@ namespace odfaeg {
                 } else {
                     refractionFactor = 1.f / 2.42f;
                 }
+                this->type = type;
             }
             Material::Type Material::getType() {
                 return type;
@@ -332,7 +336,7 @@ namespace odfaeg {
                     Vertex v (sf::Vector3f(t.x, t.y, t.z), va[i].color, va[i].texCoords);
                     //std::cout<<"tm : "<<tm.getMatrix()<<std::endl<<"position : "<<t<<std::endl;
                     /*if (va.getEntity()->getRootType() == "E_HERO")
-                        std::cout<<"v : "<<v.position.x<<std::endl;*/
+                        std::cout<<"v : "<<v.position.x<<","<<v.position.y<<","<<v.position.z<<std::endl;*/
                     vertices.append(v);
 
                     //std::cout<<"nb indexes : "<<nbIndexes<<std::endl;
@@ -466,7 +470,6 @@ namespace odfaeg {
                 Instance& instance = instances[face->getVertexArray().getPrimitiveType() * Material::getNbMaterials() + face->getMaterial().getId()];
                 //std::cout<<"set primitive type : "<<std::endl;
                 instance.setPrimitiveType(face->getVertexArray().getPrimitiveType());
-                //std::cout<<"set material"<<std::endl;
                 instance.setMaterial(face->getMaterial());
                 //std::cout<<"add vertex array"<<std::endl;
                 instance.addVertexArray(face->getVertexArray(),face->getTransformMatrix());

@@ -124,7 +124,6 @@ namespace odfaeg {
             entity->m_center = m_center;
             entity->localBounds = localBounds;
             entity->globalBounds = globalBounds;
-            std::cout<<"global bounds : "<<entity->globalBounds.getPosition()<<globalBounds.getPosition()<<std::endl;
             entity->tm = tm;
             entity->name = name;
             entity->type = type;

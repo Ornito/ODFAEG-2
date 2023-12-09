@@ -166,6 +166,7 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             void append(const Vertex& vertex, unsigned int textureIndex = 0);
+            void addMaterialType(unsigned int materialType);
             ////////////////////////////////////////////////////////////
             /// \brief Set the type of primitives to draw
             ///
@@ -228,14 +229,15 @@ namespace odfaeg {
             std::vector<math::Vec3f> m_locals;
             std::vector<Vertex> m_vertices;      ///< Vertices contained in the array
             sf::PrimitiveType       m_primitiveType; ///< Type of primitives to draw
-            unsigned int oldVerticesSize, oldIndexesSize;
-            bool needToUpdateVertexBuffer, needToUpdateIndexBuffer;
+            unsigned int oldVerticesSize, oldIndexesSize, oldMaterialTypeSize;
+            bool needToUpdateVertexBuffer, needToUpdateIndexBuffer, needToUpdateMaterialTypeBuffer;
             public :
-            unsigned int vboVertexBuffer,vboNormalBuffer, vboIndexBuffer, vboTextureIndexesBuffer;
+            unsigned int vboVertexBuffer,vboNormalBuffer, vboIndexBuffer, vboTextureIndexesBuffer, vboMaterialType;
             std::vector<unsigned int> m_numIndexes;
             std::vector<unsigned int> m_baseVertices;
             std::vector<unsigned int> m_baseIndexes;
             std::vector<unsigned int> m_indexes;
+            std::vector<unsigned int> m_MaterialType;
             //For bindless texturing.
             std::vector<unsigned int> m_texturesIndexes;
             std::vector<float> m_vPosX, m_vPosY, m_vPosZ, m_vPosW;

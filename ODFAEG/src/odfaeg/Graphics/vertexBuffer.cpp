@@ -159,18 +159,21 @@ namespace odfaeg {
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
             vboTextureIndexesBuffer = 0;
+            vboMaterialType = 0;
             needToUpdateVertexBuffer = false;
             needToUpdateIndexBuffer = false;
             nbVerticesPerFace = 4;
             loop = true;
             oldVerticesSize = 0;
             oldIndexesSize = 0;
+            oldMaterialTypeSize = 0;
         }
         VertexBuffer::VertexBuffer(const VertexBuffer& va) {
             vboVertexBuffer = 0;
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
             vboTextureIndexesBuffer = 0;
+            vboMaterialType = 0;
             m_entity = va.m_entity;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
@@ -178,6 +181,7 @@ namespace odfaeg {
             m_primitiveType = va.m_primitiveType;
             oldVerticesSize = va.oldVerticesSize;
             oldIndexesSize = va.oldIndexesSize;
+            oldMaterialTypeSize = va.oldMaterialTypeSize;
             m_numIndexes = va.m_numIndexes;
             m_baseIndexes = va.m_baseIndexes;
             m_baseVertices = va.m_baseVertices;
@@ -202,6 +206,7 @@ namespace odfaeg {
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
             vboTextureIndexesBuffer = 0;
+            vboMaterialType = 0;
             m_entity = va.m_entity;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
@@ -209,6 +214,7 @@ namespace odfaeg {
             m_primitiveType = va.m_primitiveType;
             oldVerticesSize = va.oldVerticesSize;
             oldIndexesSize = va.oldIndexesSize;
+            oldMaterialTypeSize = va.oldMaterialTypeSize;
             m_numIndexes = va.m_numIndexes;
             m_baseIndexes = va.m_baseIndexes;
             m_baseVertices = va.m_baseVertices;
@@ -233,6 +239,7 @@ namespace odfaeg {
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
             vboTextureIndexesBuffer = 0;
+            vboMaterialType = 0;
             m_entity = va.m_entity;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
@@ -240,6 +247,7 @@ namespace odfaeg {
             m_primitiveType = va.m_primitiveType;
             oldVerticesSize = va.oldVerticesSize;
             oldIndexesSize = va.oldIndexesSize;
+            oldMaterialTypeSize = va.oldMaterialTypeSize;
             m_numIndexes = va.m_numIndexes;
             m_baseIndexes = va.m_baseIndexes;
             m_baseVertices = va.m_baseVertices;
@@ -265,6 +273,7 @@ namespace odfaeg {
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
             vboTextureIndexesBuffer = 0;
+            vboMaterialType = 0;
             m_entity = va.m_entity;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
@@ -272,6 +281,7 @@ namespace odfaeg {
             m_primitiveType = va.m_primitiveType;
             oldVerticesSize = va.oldVerticesSize;
             oldIndexesSize = va.oldIndexesSize;
+            oldMaterialTypeSize = va.oldMaterialTypeSize;
             m_numIndexes = va.m_numIndexes;
             m_baseIndexes = va.m_baseIndexes;
             m_baseVertices = va.m_baseVertices;
@@ -430,6 +440,7 @@ namespace odfaeg {
             vboIndexBuffer = 0;
             oldVerticesSize = 0;
             oldIndexesSize = 0;
+            vboMaterialType = 0;
             needToUpdateVertexBuffer = true;
             needToUpdateIndexBuffer = true;
             loop = true;
@@ -532,6 +543,7 @@ namespace odfaeg {
             m_normals.clear();
             m_locals.clear();
             m_texturesIndexes.clear();
+            m_MaterialType.clear();
         }
         void VertexBuffer::resetIndexes(std::vector<unsigned int> indexes) {
             m_indexes = indexes;
@@ -567,6 +579,10 @@ namespace odfaeg {
                 m_locals.push_back(math::Vec3f(vertex.position.x, vertex.position.y, vertex.position.z));*/
                 if (!needToUpdateVertexBuffer)
                     needToUpdateVertexBuffer = true;            //
+        }
+        void VertexBuffer::addMaterialType(unsigned int materialType) {
+            m_MaterialType.push_back(materialType);
+            needToUpdateMaterialTypeBuffer = true;
         }
         math::Vec3f VertexBuffer::getLocal(unsigned int index) const {
             return m_locals[index];
@@ -702,8 +718,34 @@ namespace odfaeg {
                         }
                         needToUpdateIndexBuffer = false;
                     }
+                    if (needToUpdateMaterialTypeBuffer) {
+                        if (vboMaterialType == 0) {
+                            GLuint vbo;
+                            glCheck(glGenBuffers(1, &vbo));
+                            vboMaterialType = static_cast<unsigned int>(vbo);
+                        }
+                        if (oldMaterialTypeSize != m_MaterialType.size()) {
+                            //std::cout<<"size changed : update index vbo buffer"<<std::endl;
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboMaterialType));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, m_MaterialType.size() * sizeof(unsigned int), &m_MaterialType[0], GL_DYNAMIC_DRAW));
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        } else {
+                            //std::cout<<"update index vbo buffer"<<std::endl;
+                            GLvoid *pos_vbo = nullptr;
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboMaterialType));
+                            glCheck(pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
+                            if (pos_vbo != nullptr) {
+                                memcpy(pos_vbo,&m_MaterialType[0],  m_MaterialType.size() * sizeof(unsigned int));
+                                glCheck(glUnmapBuffer(GL_ARRAY_BUFFER));
+                                pos_vbo = nullptr;
+                            }
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        }
+                        needToUpdateMaterialTypeBuffer = false;
+                    }
                     oldVerticesSize = m_vertices.size();
                     oldIndexesSize = m_indexes.size();
+                    oldMaterialTypeSize = m_MaterialType.size();
                 }
             }
         }
