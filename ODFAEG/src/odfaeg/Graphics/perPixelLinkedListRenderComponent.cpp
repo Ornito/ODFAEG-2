@@ -378,12 +378,6 @@ namespace odfaeg {
             for (unsigned int i = 0; i < m_selectedScale.size(); i++) {
                 if (m_selectedScale[i].getAllVertices().getVertexCount() > 0) {
                     //std::cout<<"next frame draw normal"<<std::endl;
-                    perPixelLinkedList2.setParameter("haveTexture", 0.f);
-                    if (m_selectedScale[i].getMaterial().getType() == Material::WATER) {
-                        perPixelLinkedList2.setParameter("water", 1.0f);
-                    } else {
-                        perPixelLinkedList2.setParameter("water", 0.0f);
-                    }
                     if (core::Application::app != nullptr) {
                         float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
                         perPixelLinkedList2.setParameter("time", time);
@@ -408,6 +402,339 @@ namespace odfaeg {
             }
             glCheck(glDisable(GL_STENCIL_TEST));
         }
+        void PerPixelLinkedListRenderComponent::drawSelectedIndexed() {
+            for (unsigned int i = 0; i < Batcher::nbPrimitiveTypes; i++) {
+                vbBindlessTex[i].clear();
+            }
+            for (unsigned int i = 0; i < m_selected.size(); i++) {
+                if (m_selected[i].getAllVertices().getVertexCount() > 0) {
+                    //std::cout<<"next frame draw normal"<<std::endl;
+                    if (core::Application::app != nullptr) {
+                        float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
+                        perPixelLinkedList2.setParameter("time", time);
+                    }
+                    unsigned int p = m_selectedIndexed[i].getAllVertices().getPrimitiveType();
+
+                    for (unsigned int j = 0; j < m_selectedIndexed[i].getAllVertices().getVertexCount(); j++) {
+
+                        vbBindlessTex[p].append(m_selectedIndexed[i].getAllVertices()[j],(m_selectedIndexed[i].getMaterial().getTexture() != nullptr) ? m_selectedIndexed[i].getMaterial().getTexture()->getId() : 0);
+                        vbBindlessTex[p].addMaterialType(m_selectedIndexed[i].getMaterial().getType());
+                    }
+                    for (unsigned int j = 0; j < m_selectedIndexed[i].getAllVertices().getIndexes().size(); j++) {
+                        vbBindlessTex[p].addIndex(m_selectedIndexed[i].getAllVertices().getIndexes()[j]);
+                    }
+                }
+            }
+            currentStates.blendMode = sf::BlendNone;
+            currentStates.shader = &perPixelLinkedList2;
+            currentStates.texture = nullptr;
+            glCheck(glEnable(GL_STENCIL_TEST));
+            glCheck(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilMask(0xFF);
+            for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                    vbBindlessTex[p].update();
+                    frameBuffer.drawVertexBuffer(vbBindlessTex[p], currentStates);
+                    vbBindlessTex[p].clear();
+            }
+            for (unsigned int i = 0; i < m_selectedScaleIndexed.size(); i++) {
+                if (m_selectedScaleIndexed[i].getAllVertices().getVertexCount() > 0) {
+                    //std::cout<<"next frame draw normal"<<std::endl;
+                    unsigned int p = m_selectedScaleIndexed[i].getAllVertices().getPrimitiveType();
+
+                    for (unsigned int j = 0; j < m_selectedScaleIndexed[i].getAllVertices().getVertexCount(); j++) {
+
+                        vbBindlessTex[p].append(m_selectedScaleIndexed[i].getAllVertices()[j], 0);
+                        vbBindlessTex[p].addMaterialType(m_selectedScaleIndexed[i].getMaterial().getType());
+                    }
+                    for (unsigned int j = 0; j < m_selectedScaleIndexed[i].getAllVertices().getIndexes().size(); j++) {
+                        vbBindlessTex[p].addIndex(m_selectedScaleIndexed[i].getAllVertices().getIndexes()[j]);
+                    }
+                }
+            }
+            currentStates.blendMode = sf::BlendNone;
+            currentStates.shader = &perPixelLinkedList2;
+            currentStates.texture = nullptr;
+            glCheck(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
+            glCheck(glStencilMask(0x00));
+            for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                vbBindlessTex[p].update();
+                frameBuffer.drawVertexBuffer(vbBindlessTex[p], currentStates);
+            }
+            glCheck(glDisable(GL_STENCIL_TEST));
+        }
+        void PerPixelLinkedListRenderComponent::drawSelectedInstances() {
+            for (unsigned int i = 0; i < Batcher::nbPrimitiveTypes; i++) {
+                vbBindlessTex[i].clear();
+            }
+            matrices.clear();
+            std::vector<DrawArraysIndirectCommand> drawArraysIndirectCommands;
+            unsigned int firstIndex = 0, baseInstance = 0;
+            for (unsigned int i = 0; i < m_selectedInstance.size(); i++) {
+                DrawArraysIndirectCommand drawArraysIndirectCommand;
+                if (m_selectedInstance[i].getAllVertices().getVertexCount() > 0) {
+                    if (core::Application::app != nullptr) {
+                        float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
+                        perPixelLinkedList.setParameter("time", time);
+                    }
+                    std::vector<TransformMatrix*> tm = m_selectedInstance[i].getTransforms();
+                    for (unsigned int j = 0; j < tm.size(); j++) {
+                        tm[j]->update();
+                        std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
+                        for (unsigned int n = 0; n < 16; n++) {
+                            matrices.push_back(matrix[n]);
+                        }
+                    }
+                    unsigned int vertexCount = 0;
+                    if (m_selectedInstance[i].getVertexArrays().size() > 0) {
+                        Entity* entity = m_selectedInstance[i].getVertexArrays()[0]->getEntity();
+                        for (unsigned int j = 0; j < m_selectedInstance[i].getVertexArrays().size(); j++) {
+                            if (entity == m_selectedInstance[i].getVertexArrays()[j]->getEntity()) {
+                                unsigned int p = m_selectedInstance[i].getVertexArrays()[j]->getPrimitiveType();
+                                for (unsigned int k = 0; k < m_selectedInstance[i].getVertexArrays()[j]->getVertexCount(); k++) {
+                                    vertexCount++;
+                                    vbBindlessTex[p].append((*m_selectedInstance[i].getVertexArrays()[j])[k], (m_selectedInstance[i].getMaterial().getTexture() != nullptr) ? m_selectedInstance[i].getMaterial().getTexture()->getId() : 0);
+                                    vbBindlessTex[p].addMaterialType(m_selectedInstance[i].getMaterial().getType());
+                                }
+                            }
+                        }
+                    }
+                    drawArraysIndirectCommand.count = vertexCount;
+                    drawArraysIndirectCommand.firstIndex = firstIndex;
+                    drawArraysIndirectCommand.baseInstance = baseInstance;
+                    drawArraysIndirectCommand.instanceCount = tm.size();
+                    drawArraysIndirectCommands.push_back(drawArraysIndirectCommand);
+                    firstIndex += vertexCount;
+                    baseInstance += tm.size();
+                    //std::cout<<"texture : "<<m_instances[i].getMaterial().getTexture()<<std::endl;
+                    //std::cout<<"entity : "<<m_instances[i].getVertexArrays()[0]->getEntity()->getRootEntity()->getType()<<std::endl;
+
+                }
+            }
+            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+            glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+            glCheck(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, vboIndirect));
+            glCheck(glBufferData(GL_DRAW_INDIRECT_BUFFER, drawArraysIndirectCommands.size() * sizeof(DrawArraysIndirectCommand), &drawArraysIndirectCommands[0], GL_DYNAMIC_DRAW));
+            glCheck(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0));
+            currentStates.blendMode = sf::BlendNone;
+            currentStates.shader = &perPixelLinkedList;
+            currentStates.texture = nullptr;
+            glCheck(glEnable(GL_STENCIL_TEST));
+            glCheck(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilMask(0xFF);
+            for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                if (vbBindlessTex[p].getVertexCount() > 0) {
+                    vbBindlessTex[p].update();
+                    frameBuffer.drawIndirect(vbBindlessTex[p], vbBindlessTex[p].getPrimitiveType(), drawArraysIndirectCommands.size(), currentStates, vboIndirect, vboWorldMatrices);
+                    vbBindlessTex[p].clear();
+                }
+            }
+            matrices.clear();
+            drawArraysIndirectCommands.clear();
+            firstIndex = 0;
+            baseInstance = 0;
+            for (unsigned int i = 0; i < m_selectedScaleInstance.size(); i++) {
+                DrawArraysIndirectCommand drawArraysIndirectCommand;
+                if (m_selectedScaleInstance[i].getAllVertices().getVertexCount() > 0) {
+                    if (core::Application::app != nullptr) {
+                        float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
+                        perPixelLinkedList.setParameter("time", time);
+                    }
+                    std::vector<TransformMatrix*> tm = m_selectedScaleInstance[i].getTransforms();
+                    for (unsigned int j = 0; j < tm.size(); j++) {
+                        tm[j]->update();
+                        std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
+                        for (unsigned int n = 0; n < 16; n++) {
+                            matrices.push_back(matrix[n]);
+                        }
+                    }
+                    unsigned int vertexCount = 0;
+                    if (m_selectedScaleInstance[i].getVertexArrays().size() > 0) {
+                        Entity* entity = m_selectedScaleInstance[i].getVertexArrays()[0]->getEntity();
+                        for (unsigned int j = 0; j < m_selectedScaleInstance[i].getVertexArrays().size(); j++) {
+                            if (entity == m_selectedScaleInstance[i].getVertexArrays()[j]->getEntity()) {
+                                unsigned int p = m_selectedScaleInstance[i].getVertexArrays()[j]->getPrimitiveType();
+                                for (unsigned int k = 0; k < m_selectedScaleInstance[i].getVertexArrays()[j]->getVertexCount(); k++) {
+                                    vertexCount++;
+                                    vbBindlessTex[p].append((*m_selectedScaleInstance[i].getVertexArrays()[j])[k], 0);
+                                    vbBindlessTex[p].addMaterialType(m_selectedScaleInstance[i].getMaterial().getType());
+                                }
+                            }
+                        }
+                    }
+                    drawArraysIndirectCommand.count = vertexCount;
+                    drawArraysIndirectCommand.firstIndex = firstIndex;
+                    drawArraysIndirectCommand.baseInstance = baseInstance;
+                    drawArraysIndirectCommand.instanceCount = tm.size();
+                    drawArraysIndirectCommands.push_back(drawArraysIndirectCommand);
+                    firstIndex += vertexCount;
+                    baseInstance += tm.size();
+                    //std::cout<<"texture : "<<m_instances[i].getMaterial().getTexture()<<std::endl;
+                    //std::cout<<"entity : "<<m_instances[i].getVertexArrays()[0]->getEntity()->getRootEntity()->getType()<<std::endl;
+
+                }
+            }
+            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+            glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+            glCheck(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, vboIndirect));
+            glCheck(glBufferData(GL_DRAW_INDIRECT_BUFFER, drawArraysIndirectCommands.size() * sizeof(DrawArraysIndirectCommand), &drawArraysIndirectCommands[0], GL_DYNAMIC_DRAW));
+            glCheck(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0));
+            currentStates.blendMode = sf::BlendNone;
+            currentStates.shader = &perPixelLinkedList;
+            currentStates.texture = nullptr;
+            glCheck(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
+            glCheck(glStencilMask(0x00));
+            for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                if (vbBindlessTex[p].getVertexCount() > 0) {
+                    vbBindlessTex[p].update();
+                    frameBuffer.drawIndirect(vbBindlessTex[p], vbBindlessTex[p].getPrimitiveType(), drawArraysIndirectCommands.size(), currentStates, vboIndirect, vboWorldMatrices);
+                }
+            }
+            glCheck(glDisable(GL_STENCIL_TEST));
+        }
+        void PerPixelLinkedListRenderComponent::drawSelectedInstancesIndexed() {
+            for (unsigned int i = 0; i < Batcher::nbPrimitiveTypes; i++) {
+                vbBindlessTex[i].clear();
+            }
+            matrices.clear();
+            std::vector<DrawElementsIndirectCommand> drawElementsIndirectCommands;
+            unsigned int firstIndex = 0, baseInstance = 0, baseVertex = 0;
+            for (unsigned int i = 0; i < m_selectedInstanceIndexed.size(); i++) {
+                DrawElementsIndirectCommand drawElementsIndirectCommand;
+                if (m_selectedInstanceIndexed[i].getAllVertices().getVertexCount() > 0) {
+                    if (core::Application::app != nullptr) {
+                        float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
+                        perPixelLinkedList.setParameter("time", time);
+                    }
+                    std::vector<TransformMatrix*> tm = m_selectedInstanceIndexed[i].getTransforms();
+                    for (unsigned int j = 0; j < tm.size(); j++) {
+                        tm[j]->update();
+                        std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
+                        for (unsigned int n = 0; n < 16; n++) {
+                            matrices.push_back(matrix[n]);
+                        }
+                    }
+                    unsigned int indexCount = 0, vertexCount = 0;
+                    if (m_selectedInstanceIndexed[i].getVertexArrays().size() > 0) {
+                        Entity* entity = m_selectedInstanceIndexed[i].getVertexArrays()[0]->getEntity();
+                        for (unsigned int j = 0; j < m_selectedInstanceIndexed[i].getVertexArrays().size(); j++) {
+                            if (entity == m_selectedInstanceIndexed[i].getVertexArrays()[j]->getEntity()) {
+                                unsigned int p = m_selectedInstanceIndexed[i].getVertexArrays()[j]->getPrimitiveType();
+                                for (unsigned int k = 0; k < m_selectedInstanceIndexed[i].getVertexArrays()[j]->getVertexCount(); k++) {
+                                    vertexCount++;
+                                    vbBindlessTex[p].append((*m_selectedInstanceIndexed[i].getVertexArrays()[j])[k], (m_selectedInstanceIndexed[i].getMaterial().getTexture() != nullptr) ? m_selectedInstanceIndexed[i].getMaterial().getTexture()->getId() : 0);
+                                    vbBindlessTex[p].addMaterialType(m_selectedInstanceIndexed[i].getMaterial().getType());
+                                }
+                                for (unsigned int k = 0; k < m_selectedInstanceIndexed[i].getVertexArrays()[j]->getIndexes().size(); k++) {
+                                    indexCount++;
+                                    vbBindlessTex[p].addIndex(m_selectedInstanceIndexed[i].getVertexArrays()[j]->getIndexes()[k]);
+                                }
+                            }
+                        }
+                    }
+                    drawElementsIndirectCommand.index_count = indexCount;
+                    drawElementsIndirectCommand.first_index = firstIndex;
+                    drawElementsIndirectCommand.instance_base = baseInstance;
+                    drawElementsIndirectCommand.vertex_base = baseVertex;
+                    drawElementsIndirectCommand.instance_count = tm.size();
+                    drawElementsIndirectCommands.push_back(drawElementsIndirectCommand);
+                    firstIndex += indexCount;
+                    baseVertex += vertexCount;
+                    baseInstance += tm.size();
+                    //std::cout<<"texture : "<<m_instances[i].getMaterial().getTexture()<<std::endl;
+                    //std::cout<<"entity : "<<m_instances[i].getVertexArrays()[0]->getEntity()->getRootEntity()->getType()<<std::endl;
+                }
+            }
+            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+            glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+            glCheck(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, vboIndirect));
+            glCheck(glBufferData(GL_DRAW_INDIRECT_BUFFER, drawElementsIndirectCommands.size() * sizeof(DrawElementsIndirectCommand), &drawElementsIndirectCommands[0], GL_DYNAMIC_DRAW));
+            glCheck(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0));
+            currentStates.blendMode = sf::BlendNone;
+            currentStates.shader = &perPixelLinkedList;
+            currentStates.texture = nullptr;
+             glCheck(glEnable(GL_STENCIL_TEST));
+            glCheck(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilMask(0xFF);
+            for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                if (vbBindlessTex[p].getVertexCount() > 0) {
+                    vbBindlessTex[p].update();
+                    frameBuffer.drawIndirect(vbBindlessTex[p], vbBindlessTex[p].getPrimitiveType(), drawElementsIndirectCommands.size(), currentStates, vboIndirect, vboWorldMatrices);
+                    vbBindlessTex[p].clear();
+                }
+            }
+            matrices.clear();
+            drawElementsIndirectCommands.clear();
+            firstIndex = 0; baseInstance = 0; baseVertex = 0;
+            for (unsigned int i = 0; i < m_selectedScaleInstanceIndexed.size(); i++) {
+                DrawElementsIndirectCommand drawElementsIndirectCommand;
+                if (m_selectedScaleInstanceIndexed[i].getAllVertices().getVertexCount() > 0) {
+                    if (core::Application::app != nullptr) {
+                        float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
+                        perPixelLinkedList.setParameter("time", time);
+                    }
+                    std::vector<TransformMatrix*> tm = m_selectedScaleInstanceIndexed[i].getTransforms();
+                    for (unsigned int j = 0; j < tm.size(); j++) {
+                        tm[j]->update();
+                        std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
+                        for (unsigned int n = 0; n < 16; n++) {
+                            matrices.push_back(matrix[n]);
+                        }
+                    }
+                    unsigned int indexCount = 0, vertexCount = 0;
+                    if (m_selectedScaleInstanceIndexed[i].getVertexArrays().size() > 0) {
+                        Entity* entity = m_selectedScaleInstanceIndexed[i].getVertexArrays()[0]->getEntity();
+                        for (unsigned int j = 0; j < m_selectedScaleInstanceIndexed[i].getVertexArrays().size(); j++) {
+                            if (entity == m_selectedScaleInstanceIndexed[i].getVertexArrays()[j]->getEntity()) {
+                                unsigned int p = m_selectedScaleInstanceIndexed[i].getVertexArrays()[j]->getPrimitiveType();
+                                for (unsigned int k = 0; k < m_selectedScaleInstanceIndexed[i].getVertexArrays()[j]->getVertexCount(); k++) {
+                                    vertexCount++;
+                                    vbBindlessTex[p].append((*m_selectedScaleInstanceIndexed[i].getVertexArrays()[j])[k], (m_selectedScaleInstanceIndexed[i].getMaterial().getTexture() != nullptr) ? m_selectedInstanceIndexed[i].getMaterial().getTexture()->getId() : 0);
+                                    vbBindlessTex[p].addMaterialType(m_selectedScaleInstanceIndexed[i].getMaterial().getType());
+                                }
+                                for (unsigned int k = 0; k < m_selectedScaleInstanceIndexed[i].getVertexArrays()[j]->getIndexes().size(); k++) {
+                                    indexCount++;
+                                    vbBindlessTex[p].addIndex(m_selectedScaleInstanceIndexed[i].getVertexArrays()[j]->getIndexes()[k]);
+                                }
+                            }
+                        }
+                    }
+                    drawElementsIndirectCommand.index_count = indexCount;
+                    drawElementsIndirectCommand.first_index = firstIndex;
+                    drawElementsIndirectCommand.instance_base = baseInstance;
+                    drawElementsIndirectCommand.vertex_base = baseVertex;
+                    drawElementsIndirectCommand.instance_count = tm.size();
+                    drawElementsIndirectCommands.push_back(drawElementsIndirectCommand);
+                    firstIndex += indexCount;
+                    baseVertex += vertexCount;
+                    baseInstance += tm.size();
+                    //std::cout<<"texture : "<<m_instances[i].getMaterial().getTexture()<<std::endl;
+                    //std::cout<<"entity : "<<m_instances[i].getVertexArrays()[0]->getEntity()->getRootEntity()->getType()<<std::endl;
+                }
+            }
+            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+            glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+            glCheck(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, vboIndirect));
+            glCheck(glBufferData(GL_DRAW_INDIRECT_BUFFER, drawElementsIndirectCommands.size() * sizeof(DrawElementsIndirectCommand), &drawElementsIndirectCommands[0], GL_DYNAMIC_DRAW));
+            glCheck(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0));
+            currentStates.blendMode = sf::BlendNone;
+            currentStates.shader = &perPixelLinkedList;
+            currentStates.texture = nullptr;
+            glCheck(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
+            glCheck(glStencilMask(0x00));
+            for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                if (vbBindlessTex[p].getVertexCount() > 0) {
+                    vbBindlessTex[p].update();
+                    frameBuffer.drawIndirect(vbBindlessTex[p], vbBindlessTex[p].getPrimitiveType(), drawElementsIndirectCommands.size(), currentStates, vboIndirect, vboWorldMatrices);
+                }
+            }
+        }
         void PerPixelLinkedListRenderComponent::drawNextFrame() {
 
             /*glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
@@ -426,6 +753,9 @@ namespace odfaeg {
             drawNormals();
             drawNormalsIndexed();
             drawSelected();
+            drawSelectedIndexed();
+            drawSelectedInstances();
+            drawSelectedInstancesIndexed();
             //std::cout<<"nb instances : "<<m_normals.size()<<std::endl;
 
 
@@ -549,7 +879,7 @@ namespace odfaeg {
                                 unsigned int p = m_instancesIndexed[i].getVertexArrays()[j]->getPrimitiveType();
                                 for (unsigned int k = 0; k < m_instancesIndexed[i].getVertexArrays()[j]->getVertexCount(); k++) {
                                     vertexCount++;
-                                    vbBindlessTex[p].append((*m_instancesIndexed[i].getVertexArrays()[j])[k], (m_instances[i].getMaterial().getTexture() != nullptr) ? m_instances[i].getMaterial().getTexture()->getId() : 0);
+                                    vbBindlessTex[p].append((*m_instancesIndexed[i].getVertexArrays()[j])[k], (m_instancesIndexed[i].getMaterial().getTexture() != nullptr) ? m_instancesIndexed[i].getMaterial().getTexture()->getId() : 0);
                                     vbBindlessTex[p].addMaterialType(m_instancesIndexed[i].getMaterial().getType());
                                 }
                                 for (unsigned int k = 0; k < m_instancesIndexed[i].getVertexArrays()[j]->getIndexes().size(); k++) {
