@@ -366,6 +366,7 @@ namespace sorrok {
         caracter->setCenter(Vec3f(getView().getPosition().x, getView().getPosition().y, getView().getPosition().y));
         caracter->setShadowScale(Vec3f(1, -1, 1));
         caracter->setShadowCenter(Vec3f(0, 280, -140));
+        caracter->setSelected(true);
         //std::cout<<bb2->getPosition()<<" "<<bb2->getSize()<<std::endl;
         g2d::PonctualLight* light1 = entityFactory.make_entity<g2d::PonctualLight>(Vec3f(-50, 420, 420), 100, 50, 0, 255, sf::Color::Yellow, 16, entityFactory);
         g2d::PonctualLight* light2 = entityFactory.make_entity<g2d::PonctualLight>(Vec3f(50, 160, 160), 100, 50, 0, 255, sf::Color::Yellow, 16, entityFactory);

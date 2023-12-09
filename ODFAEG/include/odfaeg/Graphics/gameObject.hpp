@@ -236,6 +236,7 @@ namespace odfaeg {
             float getLayer();
             static float getNbLayers();
             void copy (GameObject* entity);
+            virtual void setSelected(bool selected);
             virtual Entity* clone() = 0;
             void setExternal(bool external);
             bool isExternal();

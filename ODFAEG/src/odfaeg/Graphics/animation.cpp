@@ -79,6 +79,9 @@ namespace odfaeg {
                 this->loop = loop;
             }
         }
+        void Anim::setSelected(bool selected) {
+            interpolatedFrame->setSelected(selected);
+        }
         void Anim::stop (){
             if (running) {
 

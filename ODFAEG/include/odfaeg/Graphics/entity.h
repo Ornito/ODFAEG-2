@@ -399,7 +399,7 @@ namespace odfaeg {
                 virtual void detachChildren();
                 virtual Entity* getCurrentFrame() const;
 
-                void setSelected(bool selected);
+                virtual void setSelected(bool selected);
                 bool isSelected();
                 virtual int getIntensity();
                 virtual void onFrameChanged();

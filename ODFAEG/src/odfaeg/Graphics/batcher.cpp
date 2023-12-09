@@ -213,7 +213,7 @@ namespace odfaeg {
                 }
             }
             void Material::updateIds() {
-               countNbMaterials();
+              countNbMaterials();
               for (unsigned int i = 0; i < sameMaterials.size(); i++) {
                    for (unsigned int j = 0; j < materials.size(); j++) {
                         if (materials[j] != nullptr && *sameMaterials[i] == *materials[j]) {

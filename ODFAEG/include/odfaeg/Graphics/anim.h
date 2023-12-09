@@ -66,6 +66,7 @@ namespace odfaeg {
                 *  \brief add a frame into the animation.
                 *  \param Entity* entity : the frame to remove.
                 */
+                void setSelected(bool selected);
                 void addFrame (Entity *entity);
                 /**
                 *  \fn removeEntity(Entity* entity)

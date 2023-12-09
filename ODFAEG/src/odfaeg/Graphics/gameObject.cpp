@@ -110,7 +110,13 @@ namespace odfaeg {
                 children[i]->draw(target, states);
             }
         }
+        void GameObject::setSelected(bool selected) {
 
+            Entity::setSelected(selected);
+            for (unsigned int i = 0; i < children.size(); i++) {
+                children[i]->setSelected(selected);
+            }
+        }
         Entity* GameObject::getChild(unsigned int n) {
             if (n >= 0 && n < children.size())
                 return children[n].get();

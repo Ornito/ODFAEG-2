@@ -343,41 +343,13 @@ namespace odfaeg {
             //getWindow().resetGLStates();
 
         }
-
-        void PerPixelLinkedListRenderComponent::drawNextFrame() {
-
-            /*glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
-            glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer));
-            glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer));*/
-            //std::cout<<"draw nex frame"<<std::endl;
-            math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
-            math::Matrix4f projMatrix = view.getProjMatrix().getMatrix().transpose();
-            perPixelLinkedList.setParameter("projectionMatrix", projMatrix);
-            perPixelLinkedList.setParameter("viewMatrix", viewMatrix);
-            perPixelLinkedList2.setParameter("projectionMatrix", projMatrix);
-            perPixelLinkedList2.setParameter("viewMatrix", viewMatrix);
-
-            drawInstances();
-            drawInstancesIndexed();
-            drawNormals();
-            drawNormalsIndexed();
-            //std::cout<<"nb instances : "<<m_normals.size()<<std::endl;
-
+        void PerPixelLinkedListRenderComponent::drawSelected() {
+            for (unsigned int i = 0; i < Batcher::nbPrimitiveTypes; i++) {
+                vbBindlessTex[i].clear();
+            }
             for (unsigned int i = 0; i < m_selected.size(); i++) {
                 if (m_selected[i].getAllVertices().getVertexCount() > 0) {
                     //std::cout<<"next frame draw normal"<<std::endl;
-                    if (m_selected[i].getMaterial().getTexture() == nullptr) {
-                        perPixelLinkedList2.setParameter("haveTexture", 0.f);
-                    } else {
-                        math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
-                        //perPixelLinkedList2.setParameter("textureMatrix", texMatrix);
-                        perPixelLinkedList2.setParameter("haveTexture", 1.f);
-                    }
-                    if (m_selected[i].getMaterial().getType() == Material::WATER) {
-                        perPixelLinkedList2.setParameter("water", 1.0f);
-                    } else {
-                        perPixelLinkedList2.setParameter("water", 0.0f);
-                    }
                     if (core::Application::app != nullptr) {
                         float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
                         perPixelLinkedList2.setParameter("time", time);
@@ -387,6 +359,7 @@ namespace odfaeg {
                     for (unsigned int j = 0; j < m_selected[i].getAllVertices().getVertexCount(); j++) {
 
                         vbBindlessTex[p].append(m_selected[i].getAllVertices()[j],(m_selected[i].getMaterial().getTexture() != nullptr) ? m_selected[i].getMaterial().getTexture()->getId() : 0);
+                        vbBindlessTex[p].addMaterialType(m_selected[i].getMaterial().getType());
                     }
                 }
             }
@@ -419,7 +392,8 @@ namespace odfaeg {
 
                     for (unsigned int j = 0; j < m_selectedScale[i].getAllVertices().getVertexCount(); j++) {
 
-                        vbBindlessTex[p].append(m_selectedScale[i].getAllVertices()[j],(m_selectedScale[i].getMaterial().getTexture() != nullptr) ? m_selectedScale[i].getMaterial().getTexture()->getId() : 0);
+                        vbBindlessTex[p].append(m_selectedScale[i].getAllVertices()[j], 0);
+                        vbBindlessTex[p].addMaterialType(m_selectedScale[i].getMaterial().getType());
                     }
                 }
             }
@@ -433,6 +407,28 @@ namespace odfaeg {
                 frameBuffer.drawVertexBuffer(vbBindlessTex[p], currentStates);
             }
             glCheck(glDisable(GL_STENCIL_TEST));
+        }
+        void PerPixelLinkedListRenderComponent::drawNextFrame() {
+
+            /*glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
+            glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer));
+            glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer));*/
+            //std::cout<<"draw nex frame"<<std::endl;
+            math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
+            math::Matrix4f projMatrix = view.getProjMatrix().getMatrix().transpose();
+            perPixelLinkedList.setParameter("projectionMatrix", projMatrix);
+            perPixelLinkedList.setParameter("viewMatrix", viewMatrix);
+            perPixelLinkedList2.setParameter("projectionMatrix", projMatrix);
+            perPixelLinkedList2.setParameter("viewMatrix", viewMatrix);
+
+            drawInstances();
+            drawInstancesIndexed();
+            drawNormals();
+            drawNormalsIndexed();
+            drawSelected();
+            //std::cout<<"nb instances : "<<m_normals.size()<<std::endl;
+
+
             glCheck(glFinish());
             glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -735,50 +731,129 @@ namespace odfaeg {
         bool PerPixelLinkedListRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities) {
             batcher.clear();
             normalBatcher.clear();
+            batcherIndexed.clear();
+            normalBatcherIndexed.clear();
             selectedBatcher.clear();
             selectedScaleBatcher.clear();
+            selectedIndexBatcher.clear();
+            selectedIndexScaleBatcher.clear();
+            selectedInstanceBatcher.clear();
+            selectedInstanceScaleBatcher.clear();
+            selectedInstanceIndexBatcher.clear();
+            selectedInstanceIndexScaleBatcher.clear();
 
             //std::cout<<"load tile"<<std::endl;
             for (unsigned int i = 0; i < vEntities.size(); i++) {
                 if ( vEntities[i]->isLeaf()) {
-                    /*Entity* border;
+
+                    Entity* border;
                     if (vEntities[i]->isSelected())
-                        border = vEntities[i]->clone();*/
+                        border = vEntities[i]->clone();
                     for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
-                         if (vEntities[i]->getDrawMode() == Entity::INSTANCED/* && !vEntities[i]->isSelected()*/) {
-                            batcher.addFace( vEntities[i]->getFace(j));
-                         /*} else if (vEntities[i]->isSelected()) {
+                         if (vEntities[i]->getDrawMode() == Entity::INSTANCED && !vEntities[i]->isSelected()) {
+                            if (vEntities[i]->getFace(j)->getVertexArray().getIndexes().size() == 0)
+                                batcher.addFace( vEntities[i]->getFace(j));
+                            else
+                                batcherIndexed.addFace(vEntities[i]->getFace(j));
+                         } else if (vEntities[i]->getDrawMode() == Entity::NORMAL && !vEntities[i]->isSelected()) {
+                             if (vEntities[i]->getFace(j)->getVertexArray().getIndexes().size() == 0)
+                                normalBatcher.addFace( vEntities[i]->getFace(j));
+                             else
+                                normalBatcherIndexed.addFace( vEntities[i]->getFace(j));
+                        } else if (vEntities[i]->getDrawMode() == Entity::INSTANCED && vEntities[i]->isSelected()) {
                            // std::cout<<"selected add face"<<std::endl;
-                            selectedBatcher.addFace(vEntities[i]->getFace(j));
+                            if (vEntities[i]->getFace(j)->getVertexArray().getIndexes().size() == 0) {
+                                selectedInstanceBatcher.addFace(vEntities[i]->getFace(j));
                            // std::cout<<"remove texture"<<std::endl;
-                            border->getFace(j)->getMaterial().name = "border";
-                            if (border->getFace(j)->getMaterial().getTexture() != nullptr) {
-                                border->getFace(j)->getMaterial().clearTextures();
-                                border->getFace(j)->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
-                            }
+
                             //std::cout<<"get va"<<std::endl;
-                            VertexArray& va = border->getFace(j)->getVertexArray();
-                            //std::cout<<"change color"<<std::endl;
-                            for (unsigned int j = 0; j < va.getVertexCount(); j++) {
+                                VertexArray& va = border->getFace(j)->getVertexArray();
+                                //std::cout<<"change color"<<std::endl;
+                                for (unsigned int j = 0; j < va.getVertexCount(); j++) {
 
-                                va[j].color = sf::Color::Cyan;
-                            }
+                                    va[j].color = sf::Color::Cyan;
+                                }
 
-                            border->setOrigin(border->getSize() * 0.5f);
-                            border->setScale(math::Vec3f(1.1f, 1.1f, 1.1f));
-                           // std::cout<<"add to batcher"<<std::endl;
-                            selectedScaleBatcher.addFace(border->getFace(j));*/
+                                border->setOrigin(border->getSize() * 0.5f);
+                                border->setScale(math::Vec3f(1.1f, 1.1f, 1.1f));
+                               // std::cout<<"add to batcher"<<std::endl;
+                                selectedInstanceScaleBatcher.addFace(border->getFace(j));
                            // std::cout<<"face added"<<std::endl;
-                         } else {
-                            normalBatcher.addFace(vEntities[i]->getFace(j));
-                         }
+                             } else {
+                                 selectedInstanceIndexBatcher.addFace(vEntities[i]->getFace(j));
+                               // std::cout<<"remove texture"<<std::endl;
+
+                            //std::cout<<"get va"<<std::endl;
+                                VertexArray& va = border->getFace(j)->getVertexArray();
+                                //std::cout<<"change color"<<std::endl;
+                                for (unsigned int j = 0; j < va.getVertexCount(); j++) {
+
+                                    va[j].color = sf::Color::Cyan;
+                                }
+
+                                border->setOrigin(border->getSize() * 0.5f);
+                                border->setScale(math::Vec3f(1.1f, 1.1f, 1.1f));
+                               // std::cout<<"add to batcher"<<std::endl;
+                                selectedInstanceIndexScaleBatcher.addFace(border->getFace(j));
+                             }
+                        } else {
+                            if (vEntities[i]->getFace(j)->getVertexArray().getIndexes().size() == 0) {
+                                selectedBatcher.addFace(vEntities[i]->getFace(j));
+                           // std::cout<<"remove texture"<<std::endl;
+
+                            //std::cout<<"get va"<<std::endl;
+                                VertexArray& va = border->getFace(j)->getVertexArray();
+                                //std::cout<<"change color"<<std::endl;
+                                for (unsigned int j = 0; j < va.getVertexCount(); j++) {
+
+                                    va[j].color = sf::Color::Cyan;
+                                }
+
+                                border->setOrigin(border->getSize() * 0.5f);
+                                border->setScale(math::Vec3f(1.1f, 1.1f, 1.1f));
+                               // std::cout<<"add to batcher"<<std::endl;
+                                selectedScaleBatcher.addFace(border->getFace(j));
+
+                               // std::cout<<"face added"<<std::endl;
+                             } else {
+                                 selectedIndexBatcher.addFace(vEntities[i]->getFace(j));
+                               // std::cout<<"remove texture"<<std::endl;
+
+                            //std::cout<<"get va"<<std::endl;
+                                VertexArray& va = border->getFace(j)->getVertexArray();
+                                //std::cout<<"change color"<<std::endl;
+                                for (unsigned int j = 0; j < va.getVertexCount(); j++) {
+
+                                    va[j].color = sf::Color::Cyan;
+                                }
+
+                                border->setOrigin(border->getSize() * 0.5f);
+                                border->setScale(math::Vec3f(1.1f, 1.1f, 1.1f));
+                               // std::cout<<"add to batcher"<<std::endl;
+                                selectedIndexScaleBatcher.addFace(border->getFace(j));
+                             }
+                        }
+                    }
+                    if (vEntities[i]->isSelected()) {
+                        std::unique_ptr<Entity> ptr;
+                        ptr.reset(border);
+                        visibleSelectedScaleEntities.push_back(std::move(ptr));
                     }
                 }
+
             }
             m_instances = batcher.getInstances();
             m_normals = normalBatcher.getInstances();
-            /*m_selected = selectedBatcher.getInstances();
-            m_selectedScale = selectedScaleBatcher.getInstances();*/
+            m_instancesIndexed = batcherIndexed.getInstances();
+            m_normalIndexed = normalBatcherIndexed.getInstances();
+            m_selected = selectedBatcher.getInstances();
+            m_selectedScale = selectedScaleBatcher.getInstances();
+            m_selectedIndexed = selectedIndexBatcher.getInstances();
+            m_selectedScaleIndexed = selectedIndexScaleBatcher.getInstances();
+            m_selectedInstance = selectedInstanceBatcher.getInstances();
+            m_selectedScaleInstance = selectedInstanceScaleBatcher.getInstances();
+            m_selectedInstanceIndexed = selectedInstanceIndexBatcher.getInstances();
+            m_selectedScaleInstanceIndexed = selectedInstanceIndexScaleBatcher.getInstances();
             //std::cout<<"instances added"<<std::endl;
             visibleEntities = vEntities;
             update = true;
