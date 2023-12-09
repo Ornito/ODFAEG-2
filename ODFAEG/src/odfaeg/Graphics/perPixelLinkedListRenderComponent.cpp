@@ -511,7 +511,7 @@ namespace odfaeg {
                         drawArraysIndirectCommand.instanceCount = tm.size();
                         drawArraysIndirectCommands.push_back(drawArraysIndirectCommand);
                         firstIndex += vertexCount;
-                        baseInstance++;
+                        baseInstance += tm.size();
                         //std::cout<<"texture : "<<m_instances[i].getMaterial().getTexture()<<std::endl;
                         //std::cout<<"entity : "<<m_instances[i].getVertexArrays()[0]->getEntity()->getRootEntity()->getType()<<std::endl;
                         if (m_instances[i].getMaterial().getTexture() != nullptr) {
