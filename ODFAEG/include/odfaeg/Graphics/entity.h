@@ -387,10 +387,10 @@ namespace odfaeg {
                 virtual unsigned int getBoneAnimationIndex();
                 virtual DrawMode getDrawMode();
                 virtual void setDrawMode (DrawMode);
-                virtual void setLayer(float layer);
+                virtual void setLayer(unsigned int layer);
                 virtual void changeVerticesHeights(float h1, float h2, float h3, float h4);
                 virtual float getHeight(math::Vec2f point);
-                virtual float getLayer();
+                virtual unsigned int getLayer();
                 virtual Entity* clone() = 0;
                 virtual void setExternal(bool external);
                 virtual bool isExternal();

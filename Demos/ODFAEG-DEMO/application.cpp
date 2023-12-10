@@ -271,7 +271,7 @@ namespace sorrok {
             fire->play(true);
             fire->setShadowScale(Vec3f(1, -1, 1));
             fire->setShadowCenter(Vec3f(0, 350, -150));
-            std::cout<<"add fire"<<std::endl;
+
             getWorld()->addEntity(fire);
             au->addAnim(fire);
             w = entityFactory.make_entity<g2d::Wall>(entityFactory.make_entity<Tile>(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 200, 100, 100), entityFactory),g2d::Wall::TOP_LEFT, &g2d::AmbientLight::getAmbientLight(), entityFactory);
@@ -296,6 +296,7 @@ namespace sorrok {
         ForceAffector affector(acceleration);
         billboard->getParticleSystem().addAffector(affector);*/
         ps->addEmitter(refEmitter(emitter));
+        ps->setLayer(1);
         psu->addParticleSystem(ps);
         psu->setName("ParticlesSystemUpdater");
         getWorld()->addEntity(ps);

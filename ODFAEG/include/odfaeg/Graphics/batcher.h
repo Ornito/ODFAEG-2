@@ -181,6 +181,10 @@ namespace odfaeg {
             void updateIds();
             bool contains(Material& material);
             void countNbMaterials();
+            void setInstanceGroup (unsigned int instanceGroup);
+            void setLayer (unsigned int layer);
+            unsigned int getInstanceGroup();
+            unsigned int getLayer();
             Material& operator=(const Material& material);
             template <typename Archive>
             void serialize(Archive & ar) {
@@ -194,6 +198,7 @@ namespace odfaeg {
                 ar(refractable);
                 ar(refractionFactor);
                 ar(type);
+                ar(instanceGroup);
                 if (ar.isInputArchive()) {
                     onLoad();
                 }
@@ -210,7 +215,7 @@ namespace odfaeg {
             std::vector<TextureInfo*> texInfos; /**> The informations about the textures. */
             float specularIntensity, specularPower, refractionFactor;
             static unsigned int nbMaterials;
-            unsigned int id;
+            unsigned int id, instanceGroup, layer;
             const Texture* bumpTexture;
             static std::vector<Material*> materials;
             static std::vector<Material*> sameMaterials;

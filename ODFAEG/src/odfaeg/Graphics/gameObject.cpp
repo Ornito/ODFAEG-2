@@ -1,7 +1,7 @@
 #include "../../../include/odfaeg/Graphics/gameObject.hpp"
 namespace odfaeg {
     namespace graphic {
-        float GameObject::nbLayers = 1;
+        unsigned int GameObject::nbLayers = 1;
         GameObject::GameObject (math::Vec3f position, math::Vec3f size, math::Vec3f origin, std::string sType,  EntityFactory& factory, std::string name, Entity *parent) :
             Entity (position, size, origin, sType, factory, name) {
             this->parent = parent;
@@ -65,15 +65,22 @@ namespace odfaeg {
         bool GameObject::isExternal() {
             return external;
         }
-        void GameObject::setLayer(float layer) {
-            if (layer > nbLayers)
-                nbLayers = layer;
+        void GameObject::setLayer(unsigned int layer) {
             this->layer = layer;
+            if (layer >= nbLayers) {
+                nbLayers = layer+1;
+            }
+            for (unsigned int i = 0; i < faces.size(); i++) {
+                faces[i].getMaterial().setLayer(layer);
+            }
+            for (unsigned int i = 0; i < children.size(); i++) {
+                children[i]->setLayer(layer);
+            }
         }
-        float GameObject::getLayer() {
+        unsigned int GameObject::getLayer() {
             return layer;
         }
-        float GameObject::getNbLayers() {
+        unsigned int GameObject::getNbLayers() {
             return nbLayers;
         }
         void GameObject::setDrawMode(DrawMode dm) {

@@ -82,6 +82,9 @@ namespace odfaeg {
         void Anim::setSelected(bool selected) {
             interpolatedFrame->setSelected(selected);
         }
+        void Anim::setLayer(unsigned int layer) {
+            interpolatedFrame->setLayer(layer);
+        }
         void Anim::stop (){
             if (running) {
 

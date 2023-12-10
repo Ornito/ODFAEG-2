@@ -147,11 +147,11 @@ namespace odfaeg {
             return false;
         }
         //Do nothing by default.
-        void Entity::setLayer(float layer) {
+        void Entity::setLayer(unsigned int layer) {
 
         }
         //Returns 0 by default.
-        float Entity::getLayer() {
+        unsigned int Entity::getLayer() {
             return 0;
         }
         //Do nothing by default.

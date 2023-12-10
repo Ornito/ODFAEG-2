@@ -245,8 +245,8 @@ namespace odfaeg {
                                                                           };
                                                                           uniform sampler2D texture;
                                                                           uniform float haveTexture;
-                                                                          uniform float layer;
-                                                                          uniform float nbLayers;
+                                                                          uniform uint layer;
+                                                                          uniform uint nbLayers;
 
                                                                           layout(binding = 0, rgba32f) uniform image2D depthBuffer;
                                                                           layout (location = 0) out vec4 fColor;
@@ -274,8 +274,8 @@ namespace odfaeg {
                                                                       uniform sampler2D texture;
                                                                       uniform sampler2D depthBuffer;
                                                                       uniform float haveTexture;
-                                                                      uniform float layer;
-                                                                      uniform float nbLayers;
+                                                                      uniform uint layer;
+                                                                      uniform uint nbLayers;
                                                                       uniform vec3 resolution;
                                                                       in vec4 frontColor;
                                                                       in vec2 fTexCoords;

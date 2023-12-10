@@ -67,6 +67,7 @@ namespace odfaeg {
                 *  \param Entity* entity : the frame to remove.
                 */
                 void setSelected(bool selected);
+                void setLayer(unsigned int layer);
                 void addFrame (Entity *entity);
                 /**
                 *  \fn removeEntity(Entity* entity)

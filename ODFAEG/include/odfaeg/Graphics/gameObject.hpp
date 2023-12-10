@@ -232,9 +232,9 @@ namespace odfaeg {
             unsigned int getBoneIndex();
             DrawMode getDrawMode();
             void setDrawMode (DrawMode);
-            void setLayer(float layer);
-            float getLayer();
-            static float getNbLayers();
+            virtual void setLayer(unsigned int layer);
+            unsigned int getLayer();
+            static unsigned int getNbLayers();
             void copy (GameObject* entity);
             virtual void setSelected(bool selected);
             virtual Entity* clone() = 0;
@@ -257,10 +257,10 @@ namespace odfaeg {
             bool alreadySerialized;
             unsigned int boneIndex;
             float layer;
-            static float nbLayers;
             DrawMode drawMode;
             bool external, selected;
             std::string externalObjectName;
+            static unsigned int nbLayers;
         };
     }
 }

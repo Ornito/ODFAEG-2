@@ -49,6 +49,8 @@ namespace odfaeg {
                 bumpTexture = nullptr;
                 id = 0;
                 type = Type::AIR;
+                instanceGroup = 0;
+                layer = 0;
                 materials.push_back(this);
             }
             Material::Material(const Material& material) {
@@ -61,6 +63,8 @@ namespace odfaeg {
                 reflectable = material.reflectable;
                 bumpTexture = material.bumpTexture;
                 type = material.type;
+                instanceGroup = material.instanceGroup;
+                layer = material.layer;
                 //std::cout<<"copy material"<<std::endl;
                 materials.push_back(this);
                 //updateIds();
@@ -75,8 +79,22 @@ namespace odfaeg {
                 reflectable = material.reflectable;
                 bumpTexture = material.bumpTexture;
                 type = material.type;
+                instanceGroup = material.instanceGroup;
+                layer = material.layer;
                 materials.push_back(this);
                 return *this;
+            }
+            void Material::setInstanceGroup(unsigned int instanceGroup) {
+                this->instanceGroup = instanceGroup;
+            }
+            unsigned int Material::getInstanceGroup() {
+                return instanceGroup;
+            }
+            void Material::setLayer(unsigned int layer) {
+                this->layer = layer;
+            }
+            unsigned int Material::getLayer() {
+                return layer;
             }
             bool Material::contains(Material& material) {
                 for (unsigned int i = 0; i < sameMaterials.size(); i++) {
@@ -197,7 +215,9 @@ namespace odfaeg {
                        && bumpTexture == material.bumpTexture
                        && refractionFactor == material.refractionFactor
                        && refractable == material.refractable
-                       && reflectable == material.reflectable;
+                       && reflectable == material.reflectable
+                       && instanceGroup == material.instanceGroup
+                       && layer == material.layer;
             }
             bool Material::operator!= (Material& material) {
                 return !(*this == material);
