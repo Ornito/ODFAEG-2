@@ -8,7 +8,7 @@ using namespace odfaeg::physic;
 namespace sorrok {
     MyECSAppli::MyECSAppli(sf::VideoMode vm, std::string title) : Application(vm, title, sf::Style::Default, ContextSettings(0, 0, 4, 4, 6)) {
         fpsCounter = 0;
-        getView().move(0, 400, 400);
+        //getView().move(0, 400, 400);
         addClock(sf::Clock(), "FPS");
     }
     void MyECSAppli::onLoad() {
@@ -31,16 +31,16 @@ namespace sorrok {
         walls[WallType::RIGHT_LEFT] = ModelFactory::createWallModel(factory, WallType::RIGHT_LEFT, tileWRightLeft, *getWorld());
 
         EntityId tileWBotLeft = ModelFactory::createTileModel(factory, tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 200, 100, 100));
-        walls[WallType::BOTTOM_LEFT] = ModelFactory::createWallModel(factory, WallType::BOTTOM_LEFT, tileWBotLeft, *getWorld());
+        walls[WallType::BOTTOM_RIGHT] = ModelFactory::createWallModel(factory, WallType::BOTTOM_RIGHT, tileWBotLeft, *getWorld());
 
         EntityId tileWTopRight = ModelFactory::createTileModel(factory, tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 300, 100, 100));
-        walls[WallType::TOP_RIGHT] = ModelFactory::createWallModel(factory, WallType::TOP_RIGHT, tileWTopRight, *getWorld());
+        walls[WallType::TOP_LEFT] = ModelFactory::createWallModel(factory, WallType::TOP_LEFT, tileWTopRight, *getWorld());
 
         EntityId tileWTopLeft = ModelFactory::createTileModel(factory, tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 400, 100, 100));
-        walls[WallType::TOP_LEFT] = ModelFactory::createWallModel(factory, WallType::TOP_LEFT, tileWTopLeft, *getWorld());
+        walls[WallType::TOP_RIGHT] = ModelFactory::createWallModel(factory, WallType::TOP_RIGHT, tileWTopLeft, *getWorld());
 
         EntityId tileWBotRight = ModelFactory::createTileModel(factory, tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 500, 100, 100));
-        walls[WallType::BOTTOM_RIGHT] = ModelFactory::createWallModel(factory, WallType::BOTTOM_RIGHT, tileWBotRight, *getWorld());
+        walls[WallType::BOTTOM_LEFT] = ModelFactory::createWallModel(factory, WallType::BOTTOM_LEFT, tileWBotRight, *getWorld());
 
         scene = new Scene(&getRenderComponentManager(), "Map test", 100, 50, 0);
         BaseChangementMatrix bm;

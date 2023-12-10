@@ -218,7 +218,6 @@ namespace odfaeg {
                         if (walls[Wall::BOTTOM_RIGHT] != nullptr) {
                             Entity *w = walls[Wall::BOTTOM_RIGHT]->clone();
                             w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[Wall::BOTTOM_RIGHT]->getSize().y * 0.5f));
-                            //std::cout<<"position bottom right : "<<w->getPosition()<<std::endl;
                             addEntity(w);
                             gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, w->getPosition().z))->setPassable(false);
                         }
