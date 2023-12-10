@@ -171,7 +171,7 @@ namespace sorrok {
         if (moving != b) {
             this->moving = b;
             if (moving) {
-                std::cout<<"play moving"<<std::endl;
+
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 baseAnimIndex = WALKING;
 

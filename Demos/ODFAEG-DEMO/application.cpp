@@ -350,13 +350,13 @@ namespace sorrok {
                 g2d::Decor *frame = entityFactory.make_entity<g2d::Decor>(tile, &g2d::AmbientLight::getAmbientLight(), entityFactory);
                 frame->setShadowCenter(Vec3f(0, 200, 200));
                 textRectX += textRectWidth;
-                if (textRectX + textRectWidth >= textWidth) {
+                if (textRectX >= textWidth) {
                     textRectX = 0;
                     textRectY += textRectHeight;
                 }
                 animation->addFrame(frame);
-                animation->getCurrentFrame()->setBoneIndex(i);
             }
+            animation->getCurrentFrame()->setBoneIndex(i);
             caracter->addAnimation(animation);
             au->addAnim(animation);
         }
