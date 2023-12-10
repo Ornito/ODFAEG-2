@@ -309,7 +309,7 @@ namespace odfaeg {
                                                                           layout (location = 0) out vec4 fColor;
                                                                           void main() {
                                                                             vec2 position = (gl_FragCoord.xy / resolution.xy);
-                                                                            vec4 depth = texture2D(depthBuffer, shadowCoords.xy);
+                                                                            vec4 depth = texture2D(depthBuffer, position);
                                                                             vec4 alpha = texture2D(alphaBuffer, position);
                                                                             vec4 texel = (texIndex != 0) ? frontColor * texture2D(textures[texIndex-1], fTexCoords) : frontColor;
 
@@ -319,7 +319,7 @@ namespace odfaeg {
                                                                             vec4 visibility;
                                                                             uint l = layer;
                                                                             if (l < stencil.y || l == stencil.y && stencil.z < shadowCoords.z) {
-                                                                                if (depth.z >= shadowCoords.z) {
+                                                                                if (depth.z >= z) {
                                                                                     visibility = vec4 (1, 1, 1, alpha.a);
                                                                                 } else {
                                                                                     visibility = vec4 (0.5, 0.5, 0.5, color);
@@ -416,6 +416,8 @@ namespace odfaeg {
                         stencilBuffer.setActive();
                         glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
                         shadowMap.setActive();
+                        glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
+                        depthBuffer.setActive();
                         glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
                         //std::cout<<"size : "<<sizeof(Samplers)<<" "<<alignof (alignas(16) uint64_t[200])<<std::endl;
 
@@ -1082,6 +1084,7 @@ namespace odfaeg {
                         tm.setRotation(shadowRotationAxis, shadowRotationAngle);
                         tm.setTranslation(shadowTranslation);
                         for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
+
                              if(vEntities[i]->getDrawMode() == Entity::INSTANCED) {
                                 if (vEntities[i]->getFace(j)->getVertexArray().getIndexes().size() == 0) {
                                     batcher.addFace( vEntities[i]->getFace(j));

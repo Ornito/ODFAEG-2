@@ -214,6 +214,7 @@ namespace odfaeg {
         void GameObject::onScale(math::Vec3f &s) {
             //updateTransform();
             for (unsigned int i = 0; i < faces.size(); i++) {
+                getTransform().update();
                 faces[i].setTransformMatrix(getTransform());
             }
             for (unsigned int i = 0; i < children.size(); i++) {
@@ -224,6 +225,7 @@ namespace odfaeg {
         void GameObject::onRotate(float angle) {
             //updateTransform();
             for (unsigned int i = 0; i < faces.size(); i++) {
+                getTransform().update();
                 faces[i].setTransformMatrix(getTransform());
             }
             for (unsigned int i = 0; i < children.size(); i++) {

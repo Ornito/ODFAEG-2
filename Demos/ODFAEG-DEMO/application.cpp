@@ -18,7 +18,7 @@ namespace sorrok {
         getView().move(0, 400, 400);
         fpsCounter = 0;
         addClock(sf::Clock(), "FPS");
-        day = false;
+        day = true;
         sf::Listener::setUpVector(0.f, 0.f, 1.f);
         ps = entityFactory.make_entity<ParticleSystem>(Vec3f(0, 0, 150),Vec3f(100, 100, 0), entityFactory);
         Tile* tile;
@@ -229,17 +229,16 @@ namespace sorrok {
             std::cout<<"not read serialisation file"<<std::endl;
             BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
             getWorld()->generate_map(tiles, walls, Vec2f(100, 50), mapZone, false, entityFactory);
-            Tile* thouse = entityFactory.make_entity<Tile>(tm.getResourceByAlias("HOUSE"), Vec3f(0, 0, 0), Vec3f(250, 300, 0), sf::IntRect(0, 0, 250, 300), entityFactory);
+            Tile* thouse = entityFactory.make_entity<Tile>(tm.getResourceByAlias("HOUSE"), Vec3f(-100, 250, 400), Vec3f(250, 300, 0), sf::IntRect(0, 0, 250, 300), entityFactory);
             thouse->setLayer(1);
             thouse->getFace(0)->getMaterial().setTexId("HOUSE");
             g2d::Decor* decor = entityFactory.make_entity<g2d::Decor>(thouse, &g2d::AmbientLight::getAmbientLight(), entityFactory);
-            decor->setPosition(Vec3f(-100, 250, 400));
+
             BoundingVolume *bb = new BoundingBox(decor->getGlobalBounds().getPosition().x, decor->getGlobalBounds().getPosition().y + decor->getGlobalBounds().getSize().y * 0.4f, 0,
             decor->getGlobalBounds().getSize().x, decor->getGlobalBounds().getSize().y * 0.25f, 0);
             //std::cout<<bb->getPosition()<<" "<<bb->getSize()<<std::endl;
             decor->setCollisionVolume(bb);
-            decor->setShadowScale(Vec3f(1, -1, 1));
-            decor->setShadowCenter(Vec3f(0, 400, 0));
+            decor->setShadowCenter(Vec3f(0, 400, -400));
             thouse->getFace(0)->getMaterial().setSpecularPower(10);
             thouse->getFace(0)->getMaterial().setSpecularIntensity(100);
             getWorld()->addEntity(decor);
