@@ -55,6 +55,7 @@ namespace odfaeg {
                 void setView(View view);
                 void setExpression(std::string expression);
                 void drawNextFrame();
+                void drawNormals();
                 std::vector<Entity*> getEntities();
                 void draw(RenderTarget& target, RenderStates states);
                 void draw(Drawable& drawable, RenderStates states) {
@@ -72,17 +73,19 @@ namespace odfaeg {
                 RenderTexture bumpTexture;
                 RenderTexture specularTexture;
                 RenderTexture lightMap;
+                RenderTexture lightDepthBuffer;
                 RenderTexture alphaBuffer;
                 Sprite  depthBufferTile, normalMapTile, bumpMapTile, specularBufferTile, lightMapTile; /**> the stencil and shadow map buffer.*/
                 Shader depthBufferGenerator, depthBufferNormalGenerator; /**> the shader to generate the stencil buffer.*/
                 Shader normalMapGenerator; /**> the shader to generate the shadow map.*/
-                Shader specularTextureGenerator;
-                Shader bumpTextureGenerator;
+                Shader specularTextureGenerator, specularTextureNormalGenerator;
+                Shader bumpTextureGenerator, bumpTextureNormalGenerator;
                 Shader lightMapGenerator;
+                Shader buildAlphaBufferGenerator, buildAlphaBufferNormalGenerator;
                 View view; /**> the view of the component.*/
                 std::string expression;
                 bool update;
-                unsigned int vboWorldMatrices, ubo, lightDepthBufferTex, alphaBufferTex, depthBufferTex, clearBuf1, clearBuf2;
+                unsigned int vboWorldMatrices, ubo, lightDepthTex, alphaTex, depthTex, clearBuf, clearBuf2, clearBuf3;
                 std::array<VertexBuffer ,Batcher::nbPrimitiveTypes> vbBindlessTex;
                 VertexBuffer vb;
                 std::vector<float> matrices;

@@ -161,15 +161,18 @@ namespace odfaeg {
             vboTextureIndexesBuffer = 0;
             vboMaterialType = 0;
             vboLayer = 0;
+            vboSpecular = 0;
             needToUpdateVertexBuffer = false;
             needToUpdateIndexBuffer = false;
             needToUpdateLayersBuffer  = false;
+            needToUpdateSpecularBuffer = false;
             nbVerticesPerFace = 4;
             loop = true;
             oldVerticesSize = 0;
             oldIndexesSize = 0;
             oldMaterialTypeSize = 0;
             oldLayerSize = 0;
+            oldSpecularSize = 0;
         }
         VertexBuffer::VertexBuffer(const VertexBuffer& va) {
             vboVertexBuffer = 0;
@@ -178,16 +181,19 @@ namespace odfaeg {
             vboTextureIndexesBuffer = 0;
             vboMaterialType = 0;
             vboLayer = 0;
+            vboSpecular = 0;
             m_entity = va.m_entity;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
             m_vertices = va.m_vertices;
             m_layers = va.m_layers;
+            m_specular = va.m_specular;
             m_primitiveType = va.m_primitiveType;
-            oldVerticesSize = va.oldVerticesSize;
-            oldIndexesSize = va.oldIndexesSize;
-            oldMaterialTypeSize = va.oldMaterialTypeSize;
-            oldLayerSize = va.oldLayerSize;
+            oldVerticesSize = 0;
+            oldIndexesSize = 0;
+            oldMaterialTypeSize = 0;
+            oldLayerSize = 0;
+            oldSpecularSize = 0;
             m_numIndexes = va.m_numIndexes;
             m_baseIndexes = va.m_baseIndexes;
             m_baseVertices = va.m_baseVertices;
@@ -209,6 +215,7 @@ namespace odfaeg {
             needToUpdateIndexBuffer = true;
             needToUpdateMaterialTypeBuffer = true;
             needToUpdateLayersBuffer = true;
+            needToUpdateSpecularBuffer = true;
         }
         VertexBuffer::VertexBuffer(const VertexBuffer&& va) {
             vboVertexBuffer = 0;
@@ -216,16 +223,19 @@ namespace odfaeg {
             vboIndexBuffer = 0;
             vboTextureIndexesBuffer = 0;
             vboMaterialType = 0;
+            vboSpecular = 0;
             m_entity = va.m_entity;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
             m_vertices = va.m_vertices;
             m_primitiveType = va.m_primitiveType;
             m_layers = va.m_layers;
-            oldVerticesSize = va.oldVerticesSize;
-            oldIndexesSize = va.oldIndexesSize;
-            oldMaterialTypeSize = va.oldMaterialTypeSize;
-            oldLayerSize = va.oldLayerSize;
+            m_specular = va.m_specular;
+            oldVerticesSize = 0;
+            oldIndexesSize = 0;
+            oldMaterialTypeSize = 0;
+            oldLayerSize = 0;
+            oldSpecularSize = 0;
             m_numIndexes = va.m_numIndexes;
             m_baseIndexes = va.m_baseIndexes;
             m_baseVertices = va.m_baseVertices;
@@ -246,6 +256,7 @@ namespace odfaeg {
             needToUpdateIndexBuffer = true;
             needToUpdateMaterialTypeBuffer = true;
             needToUpdateLayersBuffer = true;
+            needToUpdateSpecularBuffer = true;
         }
         VertexBuffer& VertexBuffer::operator= (const VertexBuffer& va) {
             vboVertexBuffer = 0;
@@ -254,16 +265,19 @@ namespace odfaeg {
             vboTextureIndexesBuffer = 0;
             vboMaterialType = 0;
             vboLayer = 0;
+            vboSpecular = 0;
             m_entity = va.m_entity;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
             m_vertices = va.m_vertices;
             m_layers = va.m_layers;
+            m_specular = va.m_specular;
             m_primitiveType = va.m_primitiveType;
-            oldVerticesSize = va.oldVerticesSize;
-            oldIndexesSize = va.oldIndexesSize;
-            oldMaterialTypeSize = va.oldMaterialTypeSize;
-            oldLayerSize = va.oldLayerSize;
+            oldVerticesSize = 0;
+            oldIndexesSize = 0;
+            oldMaterialTypeSize = 0;
+            oldLayerSize = 0;
+            oldSpecularSize = 0;
             m_numIndexes = va.m_numIndexes;
             m_baseIndexes = va.m_baseIndexes;
             m_baseVertices = va.m_baseVertices;
@@ -284,6 +298,7 @@ namespace odfaeg {
             needToUpdateIndexBuffer = true;
             needToUpdateMaterialTypeBuffer = true;
             needToUpdateLayersBuffer = true;
+            needToUpdateSpecularBuffer = true;
             return *this;
         }
         VertexBuffer& VertexBuffer::operator= (const VertexBuffer&& va) {
@@ -293,16 +308,19 @@ namespace odfaeg {
             vboTextureIndexesBuffer = 0;
             vboMaterialType = 0;
             vboLayer = 0;
+            vboSpecular = 0;
             m_entity = va.m_entity;
             m_normals = va.m_normals;
             m_locals = va.m_locals;
             m_vertices = va.m_vertices;
             m_layers = va.m_layers;
+            m_specular = va.m_specular;
             m_primitiveType = va.m_primitiveType;
-            oldVerticesSize = va.oldVerticesSize;
-            oldIndexesSize = va.oldIndexesSize;
-            oldMaterialTypeSize = va.oldMaterialTypeSize;
-            oldLayerSize = va.oldLayerSize;
+            oldVerticesSize = 0;
+            oldIndexesSize = 0;
+            oldMaterialTypeSize = 0;
+            oldLayerSize = 0;
+            oldSpecularSize = 0;
             m_numIndexes = va.m_numIndexes;
             m_baseIndexes = va.m_baseIndexes;
             m_baseVertices = va.m_baseVertices;
@@ -323,6 +341,7 @@ namespace odfaeg {
             needToUpdateIndexBuffer = true;
             needToUpdateMaterialTypeBuffer = true;
             needToUpdateLayersBuffer = true;
+            needToUpdateSpecularBuffer = true;
             return *this;
         }
         void VertexBuffer::computeNormals() {
@@ -463,12 +482,17 @@ namespace odfaeg {
             vboIndexBuffer = 0;
             oldVerticesSize = 0;
             oldIndexesSize = 0;
+            oldMaterialTypeSize = 0;
+            oldLayerSize = 0;
+            oldSpecularSize = 0;
             vboMaterialType = 0;
             vboLayer = 0;
+            vboSpecular = 0;
             needToUpdateVertexBuffer = true;
             needToUpdateIndexBuffer = true;
             needToUpdateMaterialTypeBuffer = true;
             needToUpdateLayersBuffer = true;
+            needToUpdateSpecularBuffer = true;
             loop = true;
             nbVerticesPerFace = 4;
         }
@@ -571,6 +595,7 @@ namespace odfaeg {
             m_texturesIndexes.clear();
             m_MaterialType.clear();
             m_layers.clear();
+            m_specular.clear();
         }
         void VertexBuffer::resetIndexes(std::vector<unsigned int> indexes) {
             m_indexes = indexes;
@@ -614,6 +639,10 @@ namespace odfaeg {
         void VertexBuffer::addLayer(unsigned int layer) {
             m_layers.push_back(layer);
             needToUpdateLayersBuffer = true;
+        }
+        void VertexBuffer::addSpecular(float specularIntensity, float specularPower) {
+            m_specular.push_back(math::Vec2f(specularIntensity, specularPower));
+            needToUpdateSpecularBuffer = true;
         }
         math::Vec3f VertexBuffer::getLocal(unsigned int index) const {
             return m_locals[index];
@@ -774,7 +803,7 @@ namespace odfaeg {
                         }
                         needToUpdateMaterialTypeBuffer = false;
                     }
-                    if (needToUpdateMaterialTypeBuffer) {
+                    if (needToUpdateLayersBuffer) {
                         if (vboLayer == 0) {
                             GLuint vbo;
                             glCheck(glGenBuffers(1, &vbo));
@@ -799,10 +828,34 @@ namespace odfaeg {
                         }
                         needToUpdateLayersBuffer = false;
                     }
+                    if (needToUpdateSpecularBuffer) {
+                        if (vboSpecular == 0) {
+                            GLuint vbo;
+                            glCheck(glGenBuffers(1, &vbo));
+                            vboSpecular = static_cast<unsigned int>(vbo);
+                        }
+                        if (oldSpecularSize != m_specular.size()) {
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboSpecular));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, m_specular.size() * sizeof(math::Vec2f), &m_specular[0], GL_DYNAMIC_DRAW));
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                         } else {
+                            //std::cout<<"update index vbo buffer"<<std::endl;
+                            GLvoid *pos_vbo = nullptr;
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboSpecular));
+                            glCheck(pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
+                            if (pos_vbo != nullptr) {
+                                memcpy(pos_vbo,&m_specular[0],  m_specular.size() * sizeof(math::Vec2f));
+                                glCheck(glUnmapBuffer(GL_ARRAY_BUFFER));
+                                pos_vbo = nullptr;
+                            }
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        }
+                    }
                     oldVerticesSize = m_vertices.size();
                     oldIndexesSize = m_indexes.size();
                     oldMaterialTypeSize = m_MaterialType.size();
                     oldLayerSize = m_layers.size();
+                    oldSpecularSize = m_specular.size();
                 }
             }
         }

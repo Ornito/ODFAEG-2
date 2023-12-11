@@ -21,8 +21,47 @@ namespace odfaeg {
                     expression(expression) {
                     update = false;
                     sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
-                    settings.depthBits = 24;
+
                     depthBuffer.create(resolution.x, resolution.y,settings);
+                    glCheck(glGenTextures(1, &depthTex));
+                    glCheck(glBindTexture(GL_TEXTURE_2D, depthTex));
+                    glCheck(glTexStorage2D(GL_TEXTURE_2D,1,GL_RGBA32F,window.getView().getSize().x, window.getView().getSize().y));
+                    glCheck(glBindImageTexture(0, depthTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F));
+                    glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+                    std::vector<GLfloat> depthClearBuf(window.getView().getSize().x*window.getView().getSize().y*4, 0);
+                    glCheck(glGenBuffers(1, &clearBuf));
+                    glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf));
+                    glCheck(glBufferData(GL_PIXEL_UNPACK_BUFFER, depthClearBuf.size() * sizeof(GLfloat),
+                    &depthClearBuf[0], GL_STATIC_COPY));
+                    glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
+
+                    lightDepthBuffer.create(resolution.x, resolution.y,settings);
+                    glCheck(glGenTextures(1, &lightDepthTex));
+                    glCheck(glBindTexture(GL_TEXTURE_2D, lightDepthTex));
+                    glCheck(glTexStorage2D(GL_TEXTURE_2D,1,GL_RGBA32F,window.getView().getSize().x, window.getView().getSize().y));
+                    glCheck(glBindImageTexture(0, lightDepthTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F));
+                    glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+                    std::vector<GLfloat> lDepthClearBuf(window.getView().getSize().x*window.getView().getSize().y*4, 0);
+                    glCheck(glGenBuffers(1, &clearBuf2));
+                    glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf2));
+                    glCheck(glBufferData(GL_PIXEL_UNPACK_BUFFER, lDepthClearBuf.size() * sizeof(GLfloat),
+                    &lDepthClearBuf[0], GL_STATIC_COPY));
+                    glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
+
+                    alphaBuffer.create(resolution.x, resolution.y,settings);
+                    glCheck(glGenTextures(1, &alphaTex));
+                    glCheck(glBindTexture(GL_TEXTURE_2D, alphaTex));
+                    glCheck(glTexStorage2D(GL_TEXTURE_2D,1,GL_RGBA32F,window.getView().getSize().x, window.getView().getSize().y));
+                    glCheck(glBindImageTexture(0, alphaTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F));
+                    glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+                    std::vector<GLfloat> lAlphaClearBuf(window.getView().getSize().x*window.getView().getSize().y*4, 0);
+                    glCheck(glGenBuffers(1, &clearBuf3));
+                    glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf3));
+                    glCheck(glBufferData(GL_PIXEL_UNPACK_BUFFER, lAlphaClearBuf.size() * sizeof(GLfloat),
+                    &lAlphaClearBuf[0], GL_STATIC_COPY));
+                    glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
+
+
                     specularTexture.create(resolution.x, resolution.y,settings);
                     bumpTexture.create(resolution.x, resolution.y,settings);
                     settings.depthBits = 0;
@@ -38,6 +77,8 @@ namespace odfaeg {
                     normalMapTile = Sprite(normalMap.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
                     specularBufferTile = Sprite(specularTexture.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
                     bumpMapTile = Sprite(bumpTexture.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+
+
                     core::FastDelegate<bool> signal (&LightRenderComponent::needToUpdate, this);
                     core::FastDelegate<void> slot (&LightRenderComponent::drawNextFrame, this);
                     core::Command cmd(signal, slot);
@@ -50,17 +91,20 @@ namespace odfaeg {
                                                                 layout (location = 2) in vec2 texCoords;
                                                                 layout (location = 3) in vec3 normals;
                                                                 layout (location = 4) in uint textureIndex;
+                                                                layout (location = 6) in uint l;
                                                                 uniform mat4 projectionMatrix;
                                                                 uniform mat4 viewMatrix;
                                                                 uniform mat4 textureMatrix[)"+core::conversionUIntString(Texture::getAllTextures().size())+R"(];
                                                                 out vec2 fTexCoords;
                                                                 out vec4 frontColor;
                                                                 out uint texIndex;
+                                                                out uint layer;
                                                                 void main() {
                                                                     gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.f);
                                                                     fTexCoords = (textureIndex != 0) ? (textureMatrix[textureIndex-1] * vec4(texCoords, 1.f, 1.f)).xy : texCoords;
                                                                     frontColor = color;
                                                                     texIndex = textureIndex;
+                                                                    layer = l;
                                                                 }
                                                                 )";
                         const std::string vertexShader = R"(#version 460
@@ -70,17 +114,71 @@ namespace odfaeg {
                                                         layout (location = 3) in vec3 normals;
                                                         layout (location = 4) in mat4 worldMat;
                                                         layout (location = 12) in uint textureIndex;
+                                                        layout (location = 14) in uint l;
                                                         uniform mat4 projectionMatrix;
                                                         uniform mat4 viewMatrix;
                                                         uniform mat4 textureMatrix[)"+core::conversionUIntString(Texture::getAllTextures().size())+R"(];
                                                         out vec2 fTexCoords;
                                                         out vec4 frontColor;
                                                         out uint texIndex;
+                                                        out uint layer;
                                                         void main() {
                                                             gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
                                                             fTexCoords = (textureIndex != 0) ? (textureMatrix[textureIndex-1] * vec4(texCoords, 1.f, 1.f)).xy : texCoords;
                                                             frontColor = color;
                                                             texIndex = textureIndex;
+                                                            layer = l;
+                                                        }
+                                                        )";
+                        const std::string normalSpecularVertexShader = R"(#version 460
+                                                                layout (location = 0) in vec3 position;
+                                                                layout (location = 1) in vec4 color;
+                                                                layout (location = 2) in vec2 texCoords;
+                                                                layout (location = 3) in vec3 normals;
+                                                                layout (location = 4) in uint textureIndex;
+                                                                layout (location = 6) in uint l;
+                                                                layout (location = 7) in vec2 spec;
+                                                                uniform mat4 projectionMatrix;
+                                                                uniform mat4 viewMatrix;
+                                                                uniform mat4 textureMatrix[)"+core::conversionUIntString(Texture::getAllTextures().size())+R"(];
+                                                                out vec2 fTexCoords;
+                                                                out vec4 frontColor;
+                                                                out uint texIndex;
+                                                                out uint layer;
+                                                                out vec2 specular;
+                                                                void main() {
+                                                                    gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.f);
+                                                                    fTexCoords = (textureIndex != 0) ? (textureMatrix[textureIndex-1] * vec4(texCoords, 1.f, 1.f)).xy : texCoords;
+                                                                    frontColor = color;
+                                                                    texIndex = textureIndex;
+                                                                    layer = l;
+                                                                    specular = spec;
+                                                                }
+                                                                )";
+                        const std::string specularVertexShader = R"(#version 460
+                                                        layout (location = 0) in vec3 position;
+                                                        layout (location = 1) in vec4 color;
+                                                        layout (location = 2) in vec2 texCoords;
+                                                        layout (location = 3) in vec3 normals;
+                                                        layout (location = 4) in mat4 worldMat;
+                                                        layout (location = 12) in uint textureIndex;
+                                                        layout (location = 14) in uint l;
+                                                        layout (location = 15) in vec2 spec;
+                                                        uniform mat4 projectionMatrix;
+                                                        uniform mat4 viewMatrix;
+                                                        uniform mat4 textureMatrix[)"+core::conversionUIntString(Texture::getAllTextures().size())+R"(];
+                                                        out vec2 fTexCoords;
+                                                        out vec4 frontColor;
+                                                        out uint texIndex;
+                                                        out uint layer;
+                                                        out vec2 specular;
+                                                        void main() {
+                                                            gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
+                                                            fTexCoords = (textureIndex != 0) ? (textureMatrix[textureIndex-1] * vec4(texCoords, 1.f, 1.f)).xy : texCoords;
+                                                            frontColor = color;
+                                                            texIndex = textureIndex;
+                                                            layer = l;
+                                                            specular = spec;
                                                         }
                                                         )";
                         const std::string buildNormalMapVertexShader = R"(#version 460
@@ -100,6 +198,26 @@ namespace odfaeg {
                                                                         frontColor = color;
                                                                     }
                                                                     )";
+                        const std::string buildPerPixMapVertexShader = R"(#version 460
+                                                                layout (location = 0) in vec3 position;
+                                                                layout (location = 1) in vec4 color;
+                                                                layout (location = 2) in vec2 texCoords;
+                                                                layout (location = 3) in vec3 normals;
+                                                                layout (location = 6) in uint l;
+                                                                uniform mat4 projectionMatrix;
+                                                                uniform mat4 viewMatrix;
+                                                                uniform mat4 worldMatrix;
+                                                                uniform mat4 textureMatrix;
+                                                                out vec2 fTexCoords;
+                                                                out vec4 frontColor;
+                                                                out uint layer;
+                                                                void main() {
+                                                                    gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(position, 1.f);
+                                                                    fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                                                    frontColor = color;
+                                                                    layer = l;
+                                                                }
+                                                                )";
                         const std::string buildNormalMapFragmentShader = R"(#version 460
                                                                             in vec4 frontColor;
                                                                             in vec2 fTexCoords;
@@ -119,72 +237,138 @@ namespace odfaeg {
                                                                             }
                                                                             )";
                         const std::string depthGenFragShader = R"(#version 460
-                                                                  #extension GL_ARB_bindless_texture : enable
-                                                                  in vec4 frontColor;
-                                                                  in vec2 fTexCoords;
-                                                                  in flat uint texIndex;
-                                                                  uniform sampler2D texture;
-                                                                  uniform float haveTexture;
-                                                                  layout (std140, binding = 0) uniform ALL_TEXTURES {
-                                                                      sampler2D textures[200];
-                                                                  };
-                                                                  layout (location = 0) out vec4 fColor;
-                                                                  void main () {
-                                                                      vec4 texel = (texIndex != 0) ? frontColor * texture2D(textures[texIndex-1], fTexCoords) : frontColor;
-                                                                      float current_alpha = texel.a;
-                                                                      float z = gl_FragCoord.z;
-                                                                      fColor = vec4(0, 0, z, current_alpha);
-                                                                  }
-                                                                  )";
+                                                                          #extension GL_ARB_bindless_texture : enable
+                                                                          in vec4 frontColor;
+                                                                          in vec2 fTexCoords;
+                                                                          in flat uint texIndex;
+                                                                          in flat uint layer;
+                                                                          layout(std140, binding=0) uniform ALL_TEXTURES {
+                                                                              sampler2D textures[200];
+                                                                          };
+
+                                                                          layout(binding = 0, rgba32f) uniform image2D depthBuffer;
+                                                                          layout (location = 0) out vec4 fColor;
+
+                                                                          void main () {
+                                                                              vec4 texel = (texIndex != 0) ? frontColor * texture2D(textures[texIndex-1], fTexCoords.xy) : frontColor;
+                                                                              float z = gl_FragCoord.z;
+                                                                              float l = layer;
+                                                                              vec4 depth = imageLoad(depthBuffer,ivec2(gl_FragCoord.xy));
+                                                                              if (l > depth.y || l == depth.y && z > depth.z) {
+                                                                                fColor = vec4(0, l, z, texel.a);
+                                                                                imageStore(depthBuffer,ivec2(gl_FragCoord.xy),vec4(0,l,z,texel.a));
+                                                                              } else {
+                                                                                fColor = depth;
+                                                                              }
+                                                                          }
+                                                                        )";
+                        const std::string buildAlphaBufferFragmentShader = R"(#version 460
+                                                                      #extension GL_ARB_bindless_texture : enable
+                                                                      layout(std140, binding=0) uniform ALL_TEXTURES {
+                                                                        sampler2D textures[200];
+                                                                      };
+                                                                      layout(binding = 0, rgba32f) uniform image2D alphaBuffer;
+                                                                      layout (location = 0) out vec4 fColor;
+                                                                      uniform sampler2D lightDepthBuffer;
+                                                                      uniform vec3 resolution;
+                                                                      uniform mat4 lviewMatrix;
+                                                                      uniform mat4 lprojectionMatrix;
+                                                                      in vec4 frontColor;
+                                                                      in vec2 fTexCoords;
+                                                                      in flat uint texIndex;
+                                                                      in flat uint layer;
+                                                                      void main() {
+                                                                          vec4 texel = (texIndex != 0) ? frontColor * texture2D(textures[texIndex-1], fTexCoords.xy) : frontColor;
+                                                                          float current_alpha = texel.a;
+                                                                          vec2 position = (gl_FragCoord.xy / resolution.xy);
+                                                                          vec4 depth = texture2D (lightDepthBuffer, position);
+                                                                          vec4 alpha = imageLoad(alphaBuffer,ivec2(gl_FragCoord.xy));
+                                                                          float l = layer;
+                                                                          float z = gl_FragCoord.z;
+                                                                          if (l > depth.y || l == depth.y && depth.z >= z && current_alpha > alpha.a) {
+                                                                              imageStore(alphaBuffer,ivec2(gl_FragCoord.xy),vec4(0, l, z, current_alpha));
+                                                                          } else {
+                                                                              fColor = alpha;
+                                                                          }
+                                                                      }
+                                                                      )";
                         const std::string specularGenFragShader = R"(#version 460
+                                                                     #extension GL_ARB_bindless_texture : enable
+                                                                     layout(std140, binding=0) uniform ALL_TEXTURES {
+                                                                        sampler2D textures[200];
+                                                                     };
                                                                      in vec4 frontColor;
                                                                      in vec2 fTexCoords;
-                                                                     uniform sampler2D texture;
+                                                                     in flat uint texIndex;
+                                                                     in flat uint layer;
+                                                                     in flat vec2 specular;
                                                                      uniform float maxM;
                                                                      uniform float maxP;
-                                                                     uniform float m;
-                                                                     uniform float p;
-                                                                     uniform float haveTexture;
+                                                                     uniform sampler2D depthBuffer;
+                                                                     uniform sampler2D specularBuffer;
+                                                                     uniform vec3 resolution;
                                                                      layout (location = 0) out vec4 fColor;
                                                                      void main() {
-                                                                        vec4 texel = texture2D(texture, fTexCoords);
+                                                                        vec4 texel = (texIndex != 0) ? frontColor * texture2D(textures[texIndex-1], fTexCoords.xy) : frontColor;
+                                                                        vec4 depth = texture2D(depthBuffer, (gl_FragCoord.xy / resolution.xy));
+                                                                        vec4 specular = texture2D(specularBuffer,(gl_FragCoord.xy / resolution.xy));
                                                                         vec4 colors[2];
                                                                         colors[1] = texel * frontColor;
                                                                         colors[0] = frontColor;
-                                                                        bool b = (haveTexture > 0.9);
+                                                                        bool b = (texIndex != 0);
                                                                         vec4 color = colors[int(b)];
                                                                         float z = gl_FragCoord.z;
-                                                                        float intensity = (maxM != 0.f) ? m / maxM : 0.f;
-                                                                        float power = (maxP != 0.f) ? p / maxP : 0.f;
-                                                                        fColor = vec4(intensity, power, z, color.a);
+                                                                        float intensity = (maxM != 0.f) ? specular.x / maxM : 0.f;
+                                                                        float power = (maxP != 0.f) ? specular.y / maxP : 0.f;
+                                                                        if (layer > depth.y || layer == depth.y && z > depth.z)
+                                                                            fColor = vec4(intensity, power, z, color.a);
+                                                                        else
+                                                                            fColor = specular;
                                                                      }
                                                                   )";
                         const std::string bumpGenFragShader =    R"(#version 460
+                                                                 #extension GL_ARB_bindless_texture : enable
+                                                                 layout(std140, binding=0) uniform ALL_TEXTURES {
+                                                                    sampler2D textures[200];
+                                                                 };
                                                                  in vec4 frontColor;
                                                                  in vec2 fTexCoords;
-                                                                 uniform sampler2D texture;
-                                                                 uniform float haveTexture;
+                                                                 in flat uint texIndex;
+                                                                 in flat uint layer;
+                                                                 uniform sampler2D depthBuffer;
+                                                                 uniform sampler2D bumpMap;
+                                                                 uniform vec3 resolution;
+
                                                                  layout (location = 0) out vec4 fColor;
                                                                  void main() {
-                                                                     vec4 texel = texture2D(texture, fTexCoords);
+                                                                     vec4 texel = (texIndex != 0) ? texture2D(textures[texIndex-1], fTexCoords.xy) : vec4(0, 0, 0, 0);
+                                                                     vec2 position = gl_FragCoord.xy / resolution.xy;
+                                                                     vec4 depth = texture2D(depthBuffer, position);
+                                                                     vec4 bump = texture2D(bumpMap, position);
                                                                      vec4 colors[2];
                                                                      colors[1] = texel * frontColor;
                                                                      colors[0] = frontColor;
-                                                                     bool b = (haveTexture > 0.9);
+                                                                     bool b = (texIndex != 0);
                                                                      vec4 color = colors[int(b)];
-                                                                     fColor = color;
+                                                                     if (layer > depth.y || layer == depth.y && gl_FragCoord.z > depth.z) {
+                                                                        fColor = color;
+                                                                     } else {
+                                                                        fColor = bump;
+                                                                     }
                                                                  }
                                                                  )";
                         const std::string perPixLightingFragmentShader =
                                                                  R"(#version 460
                                                                  in vec4 frontColor;
                                                                  in vec2 fTexCoords;
+                                                                 in flat uint layer;
                                                                  const vec2 size = vec2(2.0,0.0);
                                                                  const ivec3 off = ivec3(-1,0,1);
                                                                  uniform sampler2D depthTexture;
                                                                  uniform sampler2D lightMap;
                                                                  uniform sampler2D specularTexture;
                                                                  uniform sampler2D bumpMap;
+                                                                 uniform sampler2D alphaMap;
                                                                  uniform vec3 resolution;
                                                                  uniform vec4 lightColor;
                                                                  uniform vec4 lightPos;
@@ -192,6 +376,7 @@ namespace odfaeg {
                                                                  void main () {
                                                                      vec2 position = (gl_FragCoord.xy / resolution.xy);
                                                                      vec4 depth = texture2D(depthTexture, position);
+                                                                     vec4 alpha = texture2D(alphaMap, position);
                                                                      float s01 = textureOffset(depthTexture, position, off.xy).z;
                                                                      float s21 = textureOffset(depthTexture, position, off.zy).z;
                                                                      float s10 = textureOffset(depthTexture, position, off.yx).z;
@@ -208,7 +393,7 @@ namespace odfaeg {
                                                                      vec3 viewPos = vec3(resolution.x * 0.5f, resolution.y * 0.5f, 0);
                                                                      float z = gl_FragCoord.z;
                                                                      vec3 vertexToLight = sLightPos - pixPos;
-                                                                     if (bump.x != 0 || bump.y != 0 || bump.z != 0) {
+                                                                     /*if (bump.x != 0 || bump.y != 0 || bump.z != 0) {
                                                                          float s01 = textureOffset(depthTexture, position, off.xy).z;
                                                                          float s21 = textureOffset(depthTexture, position, off.zy).z;
                                                                          float s10 = textureOffset(depthTexture, position, off.yx).z;
@@ -220,8 +405,8 @@ namespace odfaeg {
                                                                          normal.y = dot(bump.xyz, binomial);
                                                                          normal.z = dot(bump.xyz, tmpNormal);
                                                                          normal.w = bump.w;
-                                                                     }
-                                                                     if (z >= normal.w) {
+                                                                     }*/
+                                                                     if (layer > depth.y || layer == depth.y && z >= normal.w) {
                                                                          vec4 specularColor = vec4(0, 0, 0, 0);
                                                                          float attenuation = 1.f - length(vertexToLight) / radius;
                                                                          vec3 pixToView = pixPos - viewPos;
@@ -250,27 +435,44 @@ namespace odfaeg {
                             throw core::Erreur(50, "Failed to load depth buffer generator shader", 0);
                         if (!depthBufferNormalGenerator.loadFromMemory(normalVertexShader, depthGenFragShader))
                             throw core::Erreur(55, "Failed to load depth buffer normal generator shader", 0);
-                        std::cout<<"depth buffer generator compiled"<<std::endl;
+
                         if (!normalMapGenerator.loadFromMemory(buildNormalMapVertexShader, buildNormalMapFragmentShader))
                             throw core::Erreur(51, "Failed to load normal generator shader", 0);
-                        std::cout<<"normal map generator compiled"<<std::endl;
-                        if (!specularTextureGenerator.loadFromMemory(vertexShader, specularGenFragShader))
+
+                        if (!specularTextureGenerator.loadFromMemory(specularVertexShader, specularGenFragShader))
                             throw core::Erreur(52, "Failed to load specular texture generator shader", 0);
-                        std::cout<<"specular texture generator compiled"<<std::endl;
+                        if (!specularTextureNormalGenerator.loadFromMemory(normalSpecularVertexShader, specularGenFragShader))
+                            throw core::Erreur(52, "Failed to load specular texture normal generator shader", 0);
+
                         if (!bumpTextureGenerator.loadFromMemory(vertexShader, bumpGenFragShader))
                             throw core::Erreur(53, "Failed to load bump texture generator shader", 0);
-                        std::cout<<"bump texture generator compiled"<<std::endl;
-                        if (!lightMapGenerator.loadFromMemory(buildNormalMapVertexShader, perPixLightingFragmentShader))
+                        if (!bumpTextureNormalGenerator.loadFromMemory(normalVertexShader, bumpGenFragShader))
+                            throw core::Erreur(53, "Failed to load bump texture normal generator shader", 0);
+                        if (!buildAlphaBufferGenerator.loadFromMemory(vertexShader, buildAlphaBufferFragmentShader))
+                            throw core::Erreur(53, "Failed to load build alpha buffer generator shader", 0);
+                        if (!buildAlphaBufferNormalGenerator.loadFromMemory(normalVertexShader, buildAlphaBufferFragmentShader))
+                            throw core::Erreur(53, "Failed to load build alpha buffer normal generator shader", 0);
+
+                        if (!lightMapGenerator.loadFromMemory(buildPerPixMapVertexShader, perPixLightingFragmentShader))
                             throw core::Erreur(54, "Failed to load light map generator shader", 0);
                         normalMapGenerator.setParameter("texture", Shader::CurrentTexture);
-                        depthBufferGenerator.setParameter("texture", Shader::CurrentTexture);
-                        depthBufferNormalGenerator.setParameter("texture", Shader::CurrentTexture);
-                        specularTextureGenerator.setParameter("texture",Shader::CurrentTexture);
-                        /*specularTextureGenerator.setParameter("maxM", Material::getMaxSpecularIntensity());
-                        specularTextureGenerator.setParameter("maxP", Material::getMaxSpecularPower());*/
-                        bumpTextureGenerator.setParameter("texture",Shader::CurrentTexture);
+                        bumpTextureGenerator.setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                        bumpTextureGenerator.setParameter("depthBuffer", depthBuffer.getTexture());
+                        bumpTextureGenerator.setParameter("bumpMap", bumpTexture.getTexture());
+                        bumpTextureNormalGenerator.setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                        bumpTextureNormalGenerator.setParameter("depthBuffer", depthBuffer.getTexture());
+                        bumpTextureNormalGenerator.setParameter("bumpMap", bumpTexture.getTexture());
+                        specularTextureGenerator.setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                        specularTextureGenerator.setParameter("depthBuffer", depthBuffer.getTexture());
+                        specularTextureGenerator.setParameter("specularBuffer", specularTexture.getTexture());
+                        specularTextureNormalGenerator.setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                        specularTextureNormalGenerator.setParameter("depthBuffer", depthBuffer.getTexture());
+                        specularTextureNormalGenerator.setParameter("specularBuffer", specularTexture.getTexture());
+                        buildAlphaBufferGenerator.setParameter("lightDepthBuffer", lightDepthBuffer.getTexture());
+                        buildAlphaBufferNormalGenerator.setParameter("lightDepthBuffer", lightDepthBuffer.getTexture());
                         lightMapGenerator.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                         lightMapGenerator.setParameter("depthTexture", depthBuffer.getTexture());
+                        lightMapGenerator.setParameter("alphaMap", alphaBuffer.getTexture());
                         lightMapGenerator.setParameter("specularTexture",specularTexture.getTexture());
                         lightMapGenerator.setParameter("bumpMap",bumpTexture.getTexture());
                         lightMapGenerator.setParameter("lightMap",lightMap.getTexture());
@@ -286,6 +488,10 @@ namespace odfaeg {
                         }
                         depthBufferGenerator.setParameter("textureMatrix", textureMatrices);
                         depthBufferNormalGenerator.setParameter("textureMatrix", textureMatrices);
+                        specularTextureGenerator.setParameter("textureMatrix", textureMatrices);
+                        specularTextureNormalGenerator.setParameter("textureMatrix", textureMatrices);
+                        bumpTextureGenerator.setParameter("textureMatrix", textureMatrices);
+                        bumpTextureNormalGenerator.setParameter("textureMatrix", textureMatrices);
                         depthBuffer.setActive();
                         glCheck(glGenBuffers(1, &ubo));
                         unsigned int ubid;
@@ -299,6 +505,16 @@ namespace odfaeg {
 
                         glCheck(glBindBuffer(GL_UNIFORM_BUFFER, 0));
                         glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
+                        lightDepthBuffer.setActive(true);
+                        glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
+                        alphaBuffer.setActive(true);
+                        glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
+                        specularTexture.setActive(true);
+                        glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
+                        bumpTexture.setActive(true);
+                        glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
+
+
                         for (unsigned int i = 0; i < Batcher::nbPrimitiveTypes; i++) {
                             vbBindlessTex[i].setPrimitiveType(static_cast<sf::PrimitiveType>(i));
                         }
@@ -612,6 +828,26 @@ namespace odfaeg {
         }
         void LightRenderComponent::clear() {
              depthBuffer.clear(sf::Color::Transparent);
+             glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf));
+             glCheck(glBindTexture(GL_TEXTURE_2D, depthTex));
+             glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, view.getSize().x, view.getSize().y, GL_RGBA,
+             GL_FLOAT, NULL));
+             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+             glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
+             lightDepthBuffer.clear(sf::Color::Transparent);
+             glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf2));
+             glCheck(glBindTexture(GL_TEXTURE_2D, lightDepthTex));
+             glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, view.getSize().x, view.getSize().y, GL_RGBA,
+             GL_FLOAT, NULL));
+             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+             glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
+             alphaBuffer.clear(sf::Color::Transparent);
+             glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf3));
+             glCheck(glBindTexture(GL_TEXTURE_2D, alphaTex));
+             glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, view.getSize().x, view.getSize().y, GL_RGBA,
+             GL_FLOAT, NULL));
+             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+             glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
              normalMap.clear(sf::Color::Transparent);
              specularTexture.clear(sf::Color::Transparent);
              bumpTexture.clear(sf::Color::Transparent);
@@ -697,16 +933,83 @@ namespace odfaeg {
                 glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, 0));
             }
         }
-        void LightRenderComponent::drawNextFrame() {
-            update = false;
-            RenderStates states;
-            states.blendMode = sf::BlendNone;
-            physic::BoundingBox viewArea = view.getViewVolume();
-            math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
-            math::Vec3f size (viewArea.getWidth(), viewArea.getHeight(), 0);
+        void LightRenderComponent::drawNormals () {
             for (unsigned int i = 0; i < Batcher::nbPrimitiveTypes; i++) {
                 vbBindlessTex[i].clear();
             }
+            for (unsigned int i = 0; i < m_normals.size(); i++) {
+               if (m_normals[i].getAllVertices().getVertexCount() > 0) {
+                    unsigned int p = m_normals[i].getAllVertices().getPrimitiveType();
+                    for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
+                        vbBindlessTex[p].append(m_normals[i].getAllVertices()[j],(m_normals[i].getMaterial().getTexture() != nullptr) ? m_normals[i].getMaterial().getTexture()->getNativeHandle() : 0);
+                        vbBindlessTex[p].addLayer(m_normals[i].getMaterial().getLayer());
+                    }
+                }
+            }
+            RenderStates states;
+            states.blendMode = sf::BlendNone;
+            states.shader = &depthBufferNormalGenerator;
+            states.texture = nullptr;
+            for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                if (vbBindlessTex[p].getVertexCount() > 0) {
+                    vbBindlessTex[p].update();
+                    depthBuffer.drawVertexBuffer(vbBindlessTex[p], states);
+                }
+            }
+            glCheck(glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT));
+            states.shader = &buildAlphaBufferNormalGenerator;
+            for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                if (vbBindlessTex[p].getVertexCount() > 0) {
+                    vbBindlessTex[p].update();
+                    alphaBuffer.drawVertexBuffer(vbBindlessTex[p], states);
+                    vbBindlessTex[p].clear();
+                }
+            }
+            glCheck(glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT));
+            for (unsigned int i = 0; i < m_normals.size(); i++) {
+               if (m_normals[i].getAllVertices().getVertexCount() > 0) {
+                    unsigned int p = m_normals[i].getAllVertices().getPrimitiveType();
+                    for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
+                        vbBindlessTex[p].append(m_normals[i].getAllVertices()[j],(m_normals[i].getMaterial().getBumpTexture() != nullptr) ? m_normals[i].getMaterial().getBumpTexture()->getNativeHandle() : 0);
+                        vbBindlessTex[p].addLayer(m_normals[i].getMaterial().getLayer());
+                    }
+                }
+            }
+            states.shader = &bumpTextureNormalGenerator;
+            for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                if (vbBindlessTex[p].getVertexCount() > 0) {
+                    vbBindlessTex[p].update();
+                    bumpTexture.drawVertexBuffer(vbBindlessTex[p], states);
+                    vbBindlessTex[p].clear();
+                }
+            }
+
+            for (unsigned int i = 0; i < m_normals.size(); i++) {
+               if (m_normals[i].getAllVertices().getVertexCount() > 0) {
+                    unsigned int p = m_normals[i].getAllVertices().getPrimitiveType();
+                    for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
+                        vbBindlessTex[p].append(m_normals[i].getAllVertices()[j],(m_normals[i].getMaterial().getTexture() != nullptr) ? m_normals[i].getMaterial().getTexture()->getNativeHandle() : 0);
+                        vbBindlessTex[p].addLayer(m_normals[i].getMaterial().getLayer());
+                        vbBindlessTex[p].addSpecular(m_normals[i].getMaterial().getSpecularIntensity(), m_normals[i].getMaterial().getSpecularPower());
+                    }
+                }
+            }
+            states.shader = &specularTextureNormalGenerator;
+            for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
+                if (vbBindlessTex[p].getVertexCount() > 0) {
+                    vbBindlessTex[p].update();
+                    specularTexture.drawVertexBuffer(vbBindlessTex[p], states);
+                    vbBindlessTex[p].clear();
+                }
+            }
+
+        }
+        void LightRenderComponent::drawNextFrame() {
+            update = false;
+            physic::BoundingBox viewArea = view.getViewVolume();
+            math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
+            math::Vec3f size (viewArea.getWidth(), viewArea.getHeight(), 0);
+
             if (lightMap.getSettings().versionMajor >= 3 && lightMap.getSettings().versionMinor >= 3) {
                     //glCheck(glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo));
                     math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
@@ -715,10 +1018,37 @@ namespace odfaeg {
                     depthBufferGenerator.setParameter("viewMatrix", viewMatrix);
                     specularTextureGenerator.setParameter("projectionMatrix", projMatrix);
                     specularTextureGenerator.setParameter("viewMatrix", viewMatrix);
+                    specularTextureNormalGenerator.setParameter("projectionMatrix", projMatrix);
+                    specularTextureNormalGenerator.setParameter("viewMatrix", viewMatrix);
                     bumpTextureGenerator.setParameter("projectionMatrix", projMatrix);
                     bumpTextureGenerator.setParameter("viewMatrix", viewMatrix);
+                    bumpTextureNormalGenerator.setParameter("projectionMatrix", projMatrix);
+                    bumpTextureNormalGenerator.setParameter("viewMatrix", viewMatrix);
                     depthBufferNormalGenerator.setParameter("projectionMatrix", projMatrix);
                     depthBufferNormalGenerator.setParameter("viewMatrix", viewMatrix);
+                    normalMapGenerator.setParameter("viewMatrix", viewMatrix);
+                    normalMapGenerator.setParameter("projectionMatrix", projMatrix);
+                    buildAlphaBufferGenerator.setParameter("projectionMatrix", projMatrix);
+                    buildAlphaBufferGenerator.setParameter("viewMatrix", viewMatrix);
+                    buildAlphaBufferNormalGenerator.setParameter("projectionMatrix", projMatrix);
+                    buildAlphaBufferNormalGenerator.setParameter("viewMatrix", viewMatrix);
+                    for (unsigned int i = 0; i < m_light_instances.size(); i++) {
+                        if (m_light_instances[i].getAllVertices().getVertexCount() > 0) {
+                            vb.clear();
+                            vb.setPrimitiveType( m_light_instances[i].getAllVertices().getPrimitiveType());
+                            for (unsigned int n = 0; n < m_light_instances[i].getAllVertices().getVertexCount(); n++) {
+                                vb.append(m_light_instances[i].getAllVertices()[n]);
+                                vb.addLayer(m_light_instances[i].getMaterial().getLayer());
+                            }
+                            vb.update();
+                            RenderStates states;
+                            states.blendMode = sf::BlendNone;
+                            states.shader = &depthBufferNormalGenerator;
+                            lightDepthBuffer.drawVertexBuffer(vb, states);
+                        }
+                    }
+                    lightDepthBuffer.display();
+                    drawNormals();
                     for (unsigned int i = 0; i < m_instances.size(); i++) {
 
                         if (m_instances[i].getAllVertices().getVertexCount() > 0) {
@@ -775,6 +1105,7 @@ namespace odfaeg {
                                 }
                                 vb.update();
                             }
+                            RenderStates states;
                             states.texture = m_instances[i].getMaterial().getTexture();
                             states.shader = &depthBufferGenerator;
                             depthBuffer.drawInstanced(vb, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states, vboWorldMatrices);
@@ -785,35 +1116,11 @@ namespace odfaeg {
                             bumpTexture.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), states);*/
                         }
                     }
-                    for (unsigned int i = 0; i < m_normals.size(); i++) {
-                       if (m_normals[i].getAllVertices().getVertexCount() > 0) {
-                            if (m_normals[i].getMaterial().getTexture() != nullptr) {
-                                math::Matrix4f texMatrix = m_normals[i].getMaterial().getTexture()->getTextureMatrix();
-                                //depthBufferNormalGenerator.setParameter("textureMatrix", texMatrix);
-                                depthBufferNormalGenerator.setParameter("haveTexture", 1.f);
-                            } else {
-                                depthBufferNormalGenerator.setParameter("haveTexture", 0.f);
-                            }
-
-                            unsigned int p = m_normals[i].getAllVertices().getPrimitiveType();
-                            for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
-                                vbBindlessTex[p].append(m_normals[i].getAllVertices()[j],(m_normals[i].getMaterial().getTexture() != nullptr) ? m_normals[i].getMaterial().getTexture()->getNativeHandle() : 0);
-                            }
-                        }
-                    }
-                    states.blendMode = sf::BlendNone;
-                    states.shader = &depthBufferNormalGenerator;
-                    states.texture = nullptr;
-                    for (unsigned int p = 0; p < Batcher::nbPrimitiveTypes; p++) {
-                        if (vbBindlessTex[p].getVertexCount() > 0) {
-                            vbBindlessTex[p].update();
-                            depthBuffer.drawVertexBuffer(vbBindlessTex[p], states);
-                        }
-                    }
-                    depthBuffer.display();
+                    RenderStates states;
                     specularTexture.display();
                     bumpTexture.display();
-                    /*states.shader = &normalMapGenerator;
+                    depthBuffer.display();
+                    states.shader = &normalMapGenerator;
                     VertexArray va = depthBufferTile.getVertexArray();
                     depthBufferTile.setCenter(view.getPosition());
                     vb.clear();
@@ -830,7 +1137,7 @@ namespace odfaeg {
                     normalMapGenerator.setParameter("worldMatrix", worldMatrix);
                     states.texture = depthBufferTile.getTexture();
                     normalMap.drawVertexBuffer(vb, states);
-                    normalMap.display();*/
+                    normalMap.display();
                     states.shader = &lightMapGenerator;
                     states.blendMode = sf::BlendAdd;
                     lightMapGenerator.setParameter("projectionMatrix", projMatrix);
@@ -842,6 +1149,7 @@ namespace odfaeg {
                                 vb.setPrimitiveType( m_light_instances[i].getVertexArrays()[j]->getPrimitiveType());
                                 for (unsigned int n = 0; n < m_light_instances[i].getVertexArrays()[j]->getVertexCount(); n++) {
                                     vb.append((*m_light_instances[i].getVertexArrays()[j])[n]);
+                                    vb.addLayer(m_light_instances[i].getMaterial().getLayer());
                                 }
                                 vb.update();
                                 math::Matrix4f m = m_light_instances[i].getPerVaTransforms()[j]->getMatrix().transpose();
@@ -877,16 +1185,14 @@ namespace odfaeg {
                         } else {
                             bumpTextureGenerator.setParameter("haveTexture", 0.f);
                         }
+                        RenderStates states;
                         states.texture = m_instances[i].getMaterial().getTexture();
                         states.shader = &depthBufferGenerator;
                         depthBuffer.draw(m_instances[i].getAllVertices(), states);
-                        /*states.shader = &specularTextureGenerator;
-                        specularTexture.draw(m_instances[i].getAllVertices(), states);
-                        states.shader = &bumpTextureGenerator;
-                        states.texture = m_instances[i].getMaterial().getBumpTexture();
-                        bumpTexture.draw(m_instances[i].getAllVertices(), states);*/
+
                     }
                 }
+                RenderStates states;
                 states.shader = &normalMapGenerator;
                 depthBufferTile.setCenter(view.getPosition());
                 depthBuffer.display();

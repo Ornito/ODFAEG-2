@@ -1135,7 +1135,7 @@ namespace odfaeg {
                  glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
                  alphaBuffer.clear(sf::Color::Transparent);
                  glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf3));
-                 glCheck(glBindTexture(GL_TEXTURE_2D, depthTex));
+                 glCheck(glBindTexture(GL_TEXTURE_2D, alphaTex));
                  glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, view.getSize().x, view.getSize().y, GL_RGBA,
                  GL_FLOAT, NULL));
                  glCheck(glBindTexture(GL_TEXTURE_2D, 0));

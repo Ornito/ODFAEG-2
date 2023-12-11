@@ -18,7 +18,7 @@ namespace sorrok {
         getView().move(0, 400, 400);
         fpsCounter = 0;
         addClock(sf::Clock(), "FPS");
-        day = true;
+        day = false;
         sf::Listener::setUpVector(0.f, 0.f, 1.f);
         ps = entityFactory.make_entity<ParticleSystem>(Vec3f(0, 0, 150),Vec3f(100, 100, 0), entityFactory);
         Tile* tile;
@@ -369,7 +369,9 @@ namespace sorrok {
         caracter->setSelected(true);
         //std::cout<<bb2->getPosition()<<" "<<bb2->getSize()<<std::endl;
         g2d::PonctualLight* light1 = entityFactory.make_entity<g2d::PonctualLight>(Vec3f(-50, 420, 420), 100, 50, 0, 255, sf::Color::Yellow, 16, entityFactory);
+        light1->setLayer(1);
         g2d::PonctualLight* light2 = entityFactory.make_entity<g2d::PonctualLight>(Vec3f(50, 160, 160), 100, 50, 0, 255, sf::Color::Yellow, 16, entityFactory);
+        light2->setLayer(1);
         getWorld()->addEntity(light1);
         getWorld()->addEntity(light2);
         //getView().move(d.x * 0.5f, d.y * 0.5f, 0);
