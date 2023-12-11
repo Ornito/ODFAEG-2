@@ -163,12 +163,12 @@ namespace odfaeg {
                                                                           vec4 texel = (texIndex != 0) ? frontColor * texture2D(textures[texIndex-1], fTexCoords.xy) : frontColor;
                                                                           float current_alpha = texel.a;
                                                                           vec2 position = (gl_FragCoord.xy / resolution.xy);
-                                                                          vec4 depth = texture2D (depthBuffer, shadowCoords.xy);
+                                                                          vec4 depth = texture2D (depthBuffer, position);
                                                                           vec4 alpha = imageLoad(alphaBuffer,ivec2(gl_FragCoord.xy));
                                                                           vec4 stencil = texture2D (stencilBuffer, shadowCoords.xy);
                                                                           float l = layer;
                                                                           float z = gl_FragCoord.z;
-                                                                          if (l < stencil.y || l == stencil.z && stencil.z < shadowCoords.z && depth.z >= shadowCoords.z && current_alpha > alpha.a) {
+                                                                          if (l < stencil.y || l == stencil.z && stencil.z < shadowCoords.z && depth.z >= z && current_alpha > alpha.a) {
                                                                               imageStore(alphaBuffer,ivec2(gl_FragCoord.xy),vec4(0, l, z, current_alpha));
                                                                           } else {
                                                                               fColor = alpha;
