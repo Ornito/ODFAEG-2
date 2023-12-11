@@ -341,15 +341,10 @@ namespace odfaeg {
 
                                                                  layout (location = 0) out vec4 fColor;
                                                                  void main() {
-                                                                     vec4 texel = (texIndex != 0) ? texture2D(textures[texIndex-1], fTexCoords.xy) : vec4(0, 0, 0, 0);
+                                                                     vec4 color = (texIndex != 0) ? texture2D(textures[texIndex-1], fTexCoords.xy) : vec4(0, 0, 0, 0);
                                                                      vec2 position = gl_FragCoord.xy / resolution.xy;
                                                                      vec4 depth = texture2D(depthBuffer, position);
                                                                      vec4 bump = texture2D(bumpMap, position);
-                                                                     vec4 colors[2];
-                                                                     colors[1] = texel * frontColor;
-                                                                     colors[0] = frontColor;
-                                                                     bool b = (texIndex != 0);
-                                                                     vec4 color = colors[int(b)];
                                                                      if (layer > depth.y || layer == depth.y && gl_FragCoord.z > depth.z) {
                                                                         fColor = color;
                                                                      } else {
@@ -393,7 +388,7 @@ namespace odfaeg {
                                                                      vec3 viewPos = vec3(resolution.x * 0.5f, resolution.y * 0.5f, 0);
                                                                      float z = gl_FragCoord.z;
                                                                      vec3 vertexToLight = sLightPos - pixPos;
-                                                                     /*if (bump.x != 0 || bump.y != 0 || bump.z != 0) {
+                                                                     if (bump.x != 0 || bump.y != 0 || bump.z != 0) {
                                                                          float s01 = textureOffset(depthTexture, position, off.xy).z;
                                                                          float s21 = textureOffset(depthTexture, position, off.zy).z;
                                                                          float s10 = textureOffset(depthTexture, position, off.yx).z;
@@ -405,7 +400,7 @@ namespace odfaeg {
                                                                          normal.y = dot(bump.xyz, binomial);
                                                                          normal.z = dot(bump.xyz, tmpNormal);
                                                                          normal.w = bump.w;
-                                                                     }*/
+                                                                     }
                                                                      if (layer > depth.y || layer == depth.y && z >= normal.w) {
                                                                          vec4 specularColor = vec4(0, 0, 0, 0);
                                                                          float attenuation = 1.f - length(vertexToLight) / radius;
