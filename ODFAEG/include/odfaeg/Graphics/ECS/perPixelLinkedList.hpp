@@ -8,7 +8,6 @@
 #include "../renderTexture.h"
 #include "../sprite.h"
 #include "../rectangleShape.h"
-#include "../../Core/ecs.hpp"
 namespace odfaeg {
     namespace graphic {
         namespace ecs {
@@ -23,6 +22,19 @@ namespace odfaeg {
                 struct Samplers {
                     uint64_to_uint128 tex[200];
                 };
+                struct DrawArraysIndirectCommand {
+                    unsigned int  count;
+                    unsigned int  instanceCount;
+                    unsigned int  firstIndex;
+                    unsigned int  baseInstance;
+                };
+                struct DrawElementsIndirectCommand {
+                        unsigned index_count;
+                        unsigned instance_count;
+                        unsigned first_index;       // cf parametre offset de glDrawElements()
+                        unsigned vertex_base;
+                        unsigned instance_base;
+                };
                 PerPixelLinkedListRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings);
                 void onVisibilityChanged(bool visible);
                 void loadTextureIndexes();
@@ -33,7 +45,7 @@ namespace odfaeg {
                 * \return if the loading was sucessfull.
                 */
                 std::vector<EntityId> getEntities();
-                bool loadEntitiesOnComponent(std::vector<EntityId> visibleEntities);
+                bool loadEntitiesOnComponent(ComponentMapping& componentMapping, EntityFactory& factory,std::vector<EntityId> entities);
                 bool needToUpdate();
                 /**
                 * \fn void clearBufferBits()
@@ -51,6 +63,15 @@ namespace odfaeg {
                 * \brief draw the next frame of the component.
                 */
                 void drawNextFrame();
+                void drawInstances();
+                void drawInstancesIndexed();
+                void drawNormals();
+                void drawNormalsIndexed();
+
+                void drawSelectedInstances();
+                void drawSelectedInstancesIndexed();
+                void drawSelected();
+                void drawSelectedIndexed();
                 void setExpression (std::string expression);
                 /**
                 * \fn draw(Drawable& drawable, RenderStates states = RenderStates::Default);
@@ -92,11 +113,16 @@ namespace odfaeg {
                 void compileShaders();
                 RectangleShape quad;
                 std::vector<std::pair<std::reference_wrapper<Drawable>, RenderStates>> drawables;
-                Batcher batcher, normalBatcher, selectedScaleBatcher, selectedBatcher; /**> A group of faces using the same materials and primitive type.*/
+                Batcher batcher, batcherIndexed, normalBatcher, normalBatcherIndexed,
+                selectedInstanceBatcher, selectedInstanceScaleBatcher, selectedInstanceIndexBatcher, selectedInstanceIndexScaleBatcher,
+                selectedBatcher, selectedScaleBatcher, selectedIndexBatcher, selectedIndexScaleBatcher; /**> A group of faces using the same materials and primitive type.*/
                 sf::Color backgroundColor; /**> The background color.*/
-                std::vector<Instance> m_instances, m_normals, m_selectedScale, m_selected; /**> Instances to draw. (Instanced rendering.) */
+                std::vector<Instance> m_instances, m_normals, m_instancesIndexed, m_normalIndexed,
+                m_selectedScale, m_selected, m_selectedScaleIndexed, m_selectedIndexed,
+                m_selectedScaleInstance, m_selectedInstance, m_selectedScaleInstanceIndexed, m_selectedInstanceIndexed; /**> Instances to draw. (Instanced rendering.) */
                 std::vector<std::unique_ptr<Face>> additionalFaces;
-                std::vector<EntityId> visibleEntities; /**> Entities loaded*/
+                std::vector<EntityId> visibleEntities;
+                 /**> Entities loaded*/
                 RenderTexture frameBuffer; /**> the frame buffer.*/
                 Shader perPixelLinkedList, perPixelLinkedListP2, perPixelLinkedList2, filterNotOpaque, initialize;
                 RenderStates currentStates; /**> the current render states.*/
@@ -105,7 +131,7 @@ namespace odfaeg {
                 bool update;
                 GLuint maxNodes;
                 sf::Vector3i resolution;
-                unsigned int atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex, vboWorldMatrices, ubo;
+                unsigned int atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex, vboWorldMatrices, ubo, vboIndirect;
                 Sprite frameBufferSprite;
                 VertexBuffer vb;
                 std::array<VertexBuffer ,Batcher::nbPrimitiveTypes> vbBindlessTex;

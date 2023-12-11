@@ -8,7 +8,7 @@ using namespace odfaeg::physic;
 namespace sorrok {
     MyECSAppli::MyECSAppli(sf::VideoMode vm, std::string title) : Application(vm, title, sf::Style::Default, ContextSettings(0, 0, 4, 4, 6)) {
         fpsCounter = 0;
-        //getView().move(0, 400, 400);
+        getView().move(0, 400, 400);
         addClock(sf::Clock(), "FPS");
     }
     void MyECSAppli::onLoad() {

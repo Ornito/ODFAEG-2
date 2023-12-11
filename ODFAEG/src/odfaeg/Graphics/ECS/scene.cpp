@@ -595,7 +595,7 @@ namespace odfaeg {
                     }
                     if (c < frcm->getNbECSComponents() && frcm->getECSComponent(c) != nullptr) {
                         std::vector<EntityId> entities = getVisibleEntities(frcm->getECSComponent(c)->getExpression(), factory, componentMapping);
-                        frcm->getECSComponent(c)->loadEntitiesOnComponent(entities);
+                        frcm->getECSComponent(c)->loadEntitiesOnComponent(componentMapping, factory, entities);
                     }
                 }
             }

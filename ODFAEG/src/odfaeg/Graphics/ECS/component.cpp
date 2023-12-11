@@ -56,7 +56,7 @@ namespace odfaeg {
             }
             void Component::setExpression(std::string expression) {
             }
-            bool Component::loadEntitiesOnComponent (std::vector<EntityId> entities) {
+            bool Component::loadEntitiesOnComponent (ComponentMapping& componentMapping, EntityFactory& entityFactory, std::vector<EntityId> entities) {
             }
             void Component::draw(Drawable& drawable, RenderStates states) {
             }

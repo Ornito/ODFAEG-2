@@ -400,6 +400,7 @@ namespace sorrok {
         pfire.setAttenuation(10.f);
         pfire.play(true);
         sf::Listener::setPosition(caracter->getCenter().x, caracter->getCenter().y, 0);
+        std::cout<<"appli initialised"<<std::endl;
     }
     void MyAppli::onRender(RenderComponentManager *cm) {
         // draw everything here...
@@ -461,6 +462,7 @@ namespace sorrok {
     void MyAppli::onUpdate (RenderWindow* rw, IEvent& event) {
         // check all the window's events that were triggered since the last iteration of the loop
         if (rw == &getRenderWindow() && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
+            std::cout<<"close"<<std::endl;
             stop();
             /*eu->stop();
             au->stop();*/

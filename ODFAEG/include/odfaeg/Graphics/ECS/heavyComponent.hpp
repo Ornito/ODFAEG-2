@@ -27,7 +27,7 @@ namespace odfaeg {
                 virtual void loadShaders() {}
                 virtual void updateTransformMatrices() {}
                 virtual void updateSceneVertices() {}
-                virtual bool loadEntitiesOnComponent(std::vector<EntityId> entity) = 0;
+                virtual bool loadEntitiesOnComponent(ComponentMapping& componentMapping, EntityFactory& entityFactory, std::vector<EntityId> entity) = 0;
                 virtual std::vector<EntityId> getEntities() = 0;
                 virtual std::string getExpression() = 0;
                 virtual void setExpression(std::string expression) = 0;

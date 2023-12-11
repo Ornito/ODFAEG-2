@@ -13,7 +13,7 @@
 #include "../renderWindow.h"
 #include "../view.h"
 #include "../rectangleShape.h"
-#include "../../Core/entityFactory.hpp"
+#include "../../Core/ecs.hpp"
 
 namespace odfaeg {
     namespace graphic {
@@ -28,9 +28,10 @@ namespace odfaeg {
                 physic::BoundingVolume* boundingVolume;
             };
             struct EntityInfoComponent {
-                std::string groupName;
-                size_t animIndex;
+                std::string groupName="";
+                size_t animIndex=0;
                 DrawMode drawMode = NORMAL;
+                bool isSelected = false;
             };
             struct WallTypeComponent {
                 WallType wallType;

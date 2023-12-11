@@ -72,6 +72,7 @@ namespace odfaeg {
                 RenderTexture bumpTexture;
                 RenderTexture specularTexture;
                 RenderTexture lightMap;
+                RenderTexture alphaBuffer;
                 Sprite  depthBufferTile, normalMapTile, bumpMapTile, specularBufferTile, lightMapTile; /**> the stencil and shadow map buffer.*/
                 Shader depthBufferGenerator, depthBufferNormalGenerator; /**> the shader to generate the stencil buffer.*/
                 Shader normalMapGenerator; /**> the shader to generate the shadow map.*/
@@ -81,7 +82,7 @@ namespace odfaeg {
                 View view; /**> the view of the component.*/
                 std::string expression;
                 bool update;
-                unsigned int vboWorldMatrices, ubo;
+                unsigned int vboWorldMatrices, ubo, lightDepthBufferTex, alphaBufferTex, depthBufferTex, clearBuf1, clearBuf2;
                 std::array<VertexBuffer ,Batcher::nbPrimitiveTypes> vbBindlessTex;
                 VertexBuffer vb;
                 std::vector<float> matrices;

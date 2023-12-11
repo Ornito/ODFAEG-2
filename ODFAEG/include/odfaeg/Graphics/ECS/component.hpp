@@ -4,7 +4,7 @@
 #include "../transformable.h"
 #include "../../Window/listener.h"
 #include "../renderWindow.h"
-#include "../../Core/entityFactory.hpp"
+#include "../../Core/ecs.hpp"
 namespace odfaeg {
     namespace graphic {
         namespace ecs {
@@ -94,7 +94,7 @@ namespace odfaeg {
                 virtual View& getView();
                 virtual std::string getExpression();
                 virtual void setExpression(std::string expression);
-                virtual bool loadEntitiesOnComponent(std::vector<EntityId> entities);
+                virtual bool loadEntitiesOnComponent(ComponentMapping& componentMapping, EntityFactory& factory, std::vector<EntityId> entities);
                 virtual void setView(View view);
                 virtual void draw(Drawable& drawable, RenderStates states);
                 virtual void loadTextureIndexes();
