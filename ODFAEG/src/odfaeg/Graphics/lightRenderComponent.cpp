@@ -251,13 +251,13 @@ namespace odfaeg {
                                                                               vec4 texel = (texIndex != 0) ? frontColor * texture2D(textures[texIndex-1], fTexCoords.xy) : frontColor;
                                                                               float z = gl_FragCoord.z;
                                                                               float l = layer;
-                                                                              //vec4 depth = imageLoad(depthBuffer,ivec2(gl_FragCoord.xy));
-                                                                              /*if (l > depth.y || l == depth.y && z > depth.z) {
+                                                                              vec4 depth = imageLoad(depthBuffer,ivec2(gl_FragCoord.xy));
+                                                                              if (l > depth.y || l == depth.y && z > depth.z) {
                                                                                 fColor = vec4(0, l, z, texel.a);
                                                                                 imageStore(depthBuffer,ivec2(gl_FragCoord.xy),vec4(0,l,z,texel.a));
-                                                                              } else {*/
-                                                                                fColor = vec4(0, 0, z, texel.a);
-                                                                              //}
+                                                                              } else {
+                                                                                fColor = depth;
+                                                                              }
                                                                           }
                                                                         )";
                         const std::string buildAlphaBufferFragmentShader = R"(#version 460
