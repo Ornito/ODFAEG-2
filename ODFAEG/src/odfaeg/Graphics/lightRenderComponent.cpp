@@ -21,7 +21,7 @@ namespace odfaeg {
                     expression(expression) {
                     update = false;
                     sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
-
+                    settings.depthBits = 24;
                     depthBuffer.create(resolution.x, resolution.y,settings);
                     glCheck(glGenTextures(1, &depthTex));
                     glCheck(glBindTexture(GL_TEXTURE_2D, depthTex));
@@ -47,7 +47,7 @@ namespace odfaeg {
                     glCheck(glBufferData(GL_PIXEL_UNPACK_BUFFER, lDepthClearBuf.size() * sizeof(GLfloat),
                     &lDepthClearBuf[0], GL_STATIC_COPY));
                     glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
-
+                    settings.depthBits = 0;
                     alphaBuffer.create(resolution.x, resolution.y,settings);
                     glCheck(glGenTextures(1, &alphaTex));
                     glCheck(glBindTexture(GL_TEXTURE_2D, alphaTex));
@@ -64,7 +64,6 @@ namespace odfaeg {
 
                     specularTexture.create(resolution.x, resolution.y,settings);
                     bumpTexture.create(resolution.x, resolution.y,settings);
-                    settings.depthBits = 0;
                     lightMap.create(resolution.x, resolution.y,settings);
                     normalMap.create(resolution.x, resolution.y,settings);
                     normalMap.setView(window.getView());
@@ -248,18 +247,17 @@ namespace odfaeg {
 
                                                                           layout(binding = 0, rgba32f) uniform image2D depthBuffer;
                                                                           layout (location = 0) out vec4 fColor;
-
                                                                           void main () {
                                                                               vec4 texel = (texIndex != 0) ? frontColor * texture2D(textures[texIndex-1], fTexCoords.xy) : frontColor;
                                                                               float z = gl_FragCoord.z;
                                                                               float l = layer;
-                                                                              vec4 depth = imageLoad(depthBuffer,ivec2(gl_FragCoord.xy));
-                                                                              if (l > depth.y || l == depth.y && z > depth.z) {
+                                                                              //vec4 depth = imageLoad(depthBuffer,ivec2(gl_FragCoord.xy));
+                                                                              /*if (l > depth.y || l == depth.y && z > depth.z) {
                                                                                 fColor = vec4(0, l, z, texel.a);
                                                                                 imageStore(depthBuffer,ivec2(gl_FragCoord.xy),vec4(0,l,z,texel.a));
-                                                                              } else {
-                                                                                fColor = depth;
-                                                                              }
+                                                                              } else {*/
+                                                                                fColor = vec4(0, 0, z, texel.a);
+                                                                              //}
                                                                           }
                                                                         )";
                         const std::string buildAlphaBufferFragmentShader = R"(#version 460
@@ -282,6 +280,7 @@ namespace odfaeg {
                                                                           float current_alpha = texel.a;
                                                                           vec2 position = (gl_FragCoord.xy / resolution.xy);
                                                                           vec4 depth = texture2D (lightDepthBuffer, position);
+
                                                                           vec4 alpha = imageLoad(alphaBuffer,ivec2(gl_FragCoord.xy));
                                                                           float l = layer;
                                                                           float z = gl_FragCoord.z;
@@ -370,7 +369,9 @@ namespace odfaeg {
                                                                  layout (location = 0) out vec4 fColor;
                                                                  void main () {
                                                                      vec2 position = (gl_FragCoord.xy / resolution.xy);
+                                                                     vec2 invPosition = vec2(position.x, 1 - position.y);
                                                                      vec4 depth = texture2D(depthTexture, position);
+                                                                     vec4 invDepth = texture2D (depthTexture, invPosition);
                                                                      vec4 alpha = texture2D(alphaMap, position);
                                                                      float s01 = textureOffset(depthTexture, position, off.xy).z;
                                                                      float s21 = textureOffset(depthTexture, position, off.zy).z;
@@ -378,30 +379,25 @@ namespace odfaeg {
                                                                      float s12 = textureOffset(depthTexture, position, off.yz).z;
                                                                      vec3 va = normalize (vec3(size.xy, s21 - s01));
                                                                      vec3 vb = normalize (vec3(size.yx, s12 - s10));
-                                                                     vec4 normal = vec4(cross(va, vb), depth.z);
+                                                                     vec3 normal = vec3(cross(va, vb));
                                                                      vec4 bump = texture2D(bumpMap, position);
                                                                      vec4 specularInfos = texture2D(specularTexture, position);
                                                                      vec3 sLightPos = vec3 (lightPos.x, lightPos.y, -lightPos.z * (gl_DepthRange.far - gl_DepthRange.near));
                                                                      float radius = lightPos.w;
-                                                                     vec3 pixPos = vec3 (gl_FragCoord.x, gl_FragCoord.y, -normal.w * (gl_DepthRange.far - gl_DepthRange.near));
+                                                                     vec3 pixPos = vec3 (gl_FragCoord.x, gl_FragCoord.y, -depth.z * (gl_DepthRange.far - gl_DepthRange.near));
                                                                      vec4 lightMapColor = texture2D(lightMap, position);
                                                                      vec3 viewPos = vec3(resolution.x * 0.5f, resolution.y * 0.5f, 0);
                                                                      float z = gl_FragCoord.z;
                                                                      vec3 vertexToLight = sLightPos - pixPos;
                                                                      if (bump.x != 0 || bump.y != 0 || bump.z != 0) {
-                                                                         float s01 = textureOffset(depthTexture, position, off.xy).z;
-                                                                         float s21 = textureOffset(depthTexture, position, off.zy).z;
-                                                                         float s10 = textureOffset(depthTexture, position, off.yx).z;
-                                                                         float s12 = textureOffset(depthTexture, position, off.yz).z;
                                                                          vec3 tmpNormal = (normal.xyz);
                                                                          vec3 tangeant = normalize (vec3(size.xy, s21 - s01));
                                                                          vec3 binomial = normalize (vec3(size.yx, s12 - s10));
                                                                          normal.x = dot(bump.xyz, tangeant);
                                                                          normal.y = dot(bump.xyz, binomial);
                                                                          normal.z = dot(bump.xyz, tmpNormal);
-                                                                         normal.w = bump.w;
                                                                      }
-                                                                     if (layer > depth.y || layer == depth.y && z >= normal.w) {
+                                                                     if (layer > depth.y || layer == depth.y && z >= depth.z) {
                                                                          vec4 specularColor = vec4(0, 0, 0, 0);
                                                                          float attenuation = 1.f - length(vertexToLight) / radius;
                                                                          vec3 pixToView = pixPos - viewPos;
@@ -420,7 +416,7 @@ namespace odfaeg {
                                                                              attenuation *= nDotl;
 
                                                                          }
-                                                                         fColor = vec4(lightColor.xyz, 1) * max(0.0f, attenuation) + specularColor;
+                                                                         fColor = vec4(lightColor.xyz, 1) * max(0.0f, attenuation) + specularColor * (1 - alpha.a);
                                                                      } else {
                                                                          fColor = lightMapColor;
                                                                      }
@@ -916,6 +912,7 @@ namespace odfaeg {
             specularTexture.setView(view);
             bumpTexture.setView(view);
             lightMap.setView(view);
+            lightDepthBuffer.setView(view);
         }
         void LightRenderComponent::setExpression(std::string expression) {
             update = true;
