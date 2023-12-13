@@ -117,7 +117,7 @@ namespace odfaeg {
                 selectedInstanceBatcher, selectedInstanceScaleBatcher, selectedInstanceIndexBatcher, selectedInstanceIndexScaleBatcher,
                 selectedBatcher, selectedScaleBatcher, selectedIndexBatcher, selectedIndexScaleBatcher; /**> A group of faces using the same materials and primitive type.*/
                 sf::Color backgroundColor; /**> The background color.*/
-                std::vector<Instance> m_instances, m_normals, m_instancesIndexed, m_normalIndexed,
+                std::vector<Instance> m_instances, m_normals, m_instancesIndexed, m_normalsIndexed,
                 m_selectedScale, m_selected, m_selectedScaleIndexed, m_selectedIndexed,
                 m_selectedScaleInstance, m_selectedInstance, m_selectedScaleInstanceIndexed, m_selectedInstanceIndexed; /**> Instances to draw. (Instanced rendering.) */
                 std::vector<std::unique_ptr<Face>> additionalFaces;
