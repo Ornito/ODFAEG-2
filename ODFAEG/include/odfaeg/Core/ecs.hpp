@@ -199,48 +199,33 @@ namespace odfaeg {
                 template <typename... Signature, typename System, typename... Params>
                 void apply(System& system, std::vector<EntityId>& entities, std::tuple<Params...>& params) {
                   for (unsigned int i = 0; i < entities.size(); i++) {
-                    this->template apply_impl<Signature...>(entities[i], system, params);
-                    std::vector<EntityId> children = getChildren(entities[i]);
-                    std::vector<EntityId> addedChildren;
-                    while (children.size() > 0) {
-                        for (unsigned int i = 0; i < children.size(); i++) {
-                            addedChildren.push_back(children[i]);
-                            children = getChildren(children[i]);
-                        }
-                        for (unsigned int i = 0; i < children.size(); i++) {
-                            children.pop_back();
-                        }
-                    }
-                    for (unsigned int i = 0; i < addedChildren.size(); i++) {
-                        this->template apply_impl<Signature...>(addedChildren[i], system, params);
-                    }
+                        apply<Signature...>(system, entities[i], params);
                   }
                 }
-
+                template <typename... Signature, typename System, typename... Params>
+                void apply(System& system, EntityId entity, std::tuple<Params...>& params) {
+                    this->template apply_impl<Signature...>(entity, system, params);
+                    for (unsigned int i = 0; i < getChildren(entity).size(); i++) {
+                        apply<Signature...>(system, getChildren(entity)[i], params);
+                    }
+                }
                 template <typename... Signature, typename System, typename... Params>
                 void apply_impl(EntityId entityId, System& system, std::tuple<Params...>& params) {
                     system.template operator()<Signature...>(entityId, params);
                 }
-                template <typename... Signature, typename System, typename... Params, class R>
+                template <typename... Signature, typename System, typename... Params, typename R>
                 void apply(System& system, std::vector<EntityId>& entities, std::tuple<Params...>& params, std::vector<R>& ret) {
 
                   for (unsigned int i = 0; i < entities.size(); i++) {
-                    this->template apply_impl<Signature...>(entities[i], system, params, ret);
-                    std::vector<EntityId> children = getChildren(entities[i]);
-                    std::vector<EntityId> addedChildren;
-                    while (addedChildren.size() > 0) {
-                        for (unsigned int i = 0; i < children.size(); i++) {
-                            addedChildren.push_back(children[i]);
-                            children = getChildren(children[i]);
-                        }
-                        for (unsigned int i = 0; i < children.size(); i++) {
-                            children.pop_back();
-                        }
-                    }
-                    for (unsigned int i = 0; i < addedChildren.size(); i++) {
-                        this->template apply_impl<Signature...>(addedChildren[i], system, params, ret);
-                    }
+                        apply<Signature...>(system, entities[i], params, ret);
                   }
+                }
+                template <typename... Signature, typename System, typename... Params, typename R>
+                void apply(System& system, EntityId entity, std::tuple<Params...>& params, std::vector<R>& ret) {
+                    this->template apply_impl<Signature...>(entity, system, params, ret);
+                    for (unsigned int i = 0; i < getChildren(entity).size(); i++) {
+                        apply<Signature...>(system, getChildren(entity)[i], params, ret);
+                    }
                 }
                 template <typename... Signature, typename System, typename... Params, typename R>
                 void apply_impl(EntityId entityId, System& system, std::tuple<Params...>& params, std::vector<R>& rets) {
