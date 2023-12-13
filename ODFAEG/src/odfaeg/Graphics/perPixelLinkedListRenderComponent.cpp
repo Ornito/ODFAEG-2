@@ -972,23 +972,23 @@ namespace odfaeg {
             }
              for (unsigned int i = 0; i < m_normals.size(); i++) {
 
-               if (m_normals[i].getAllVertices().getVertexCount() > 0) {
+               if (m_normalsIndexed[i].getAllVertices().getVertexCount() > 0) {
                     //std::cout<<"next frame draw normal"<<std::endl;
                     if (core::Application::app != nullptr) {
                         float time = core::Application::getTimeClk().getElapsedTime().asSeconds();
                         perPixelLinkedList2.setParameter("time", time);
                     }
-                    unsigned int p = m_normals[i].getAllVertices().getPrimitiveType();
+                    unsigned int p = m_normalsIndexed[i].getAllVertices().getPrimitiveType();
                     /*if (m_normals[i].getVertexArrays()[0]->getEntity()->getRootType() == "E_MONSTER") {
                             std::cout<<"tex coords : "<<(*m_normals[i].getVertexArrays()[0])[0].texCoords.x<<","<<(*m_normals[i].getVertexArrays()[0])[0].texCoords.y<<std::endl;
                         }*/
-                    for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
+                    for (unsigned int j = 0; j < m_normalsIndexed[i].getAllVertices().getVertexCount(); j++) {
 
-                        vbBindlessTex[p].append(m_normals[i].getAllVertices()[j],(m_normals[i].getMaterial().getTexture() != nullptr) ? m_normals[i].getMaterial().getTexture()->getId() : 0);
-                        vbBindlessTex[p].addMaterialType(m_normals[i].getMaterial().getType());
+                        vbBindlessTex[p].append(m_normalsIndexed[i].getAllVertices()[j],(m_normalsIndexed[i].getMaterial().getTexture() != nullptr) ? m_normalsIndexed[i].getMaterial().getTexture()->getId() : 0);
+                        vbBindlessTex[p].addMaterialType(m_normalsIndexed[i].getMaterial().getType());
                     }
-                    for (unsigned int j = 0; j < m_normals[i].getAllVertices().getIndexes().size(); j++) {
-                        vbBindlessTex[p].addIndex(m_normals[i].getAllVertices().getIndexes()[j]);
+                    for (unsigned int j = 0; j < m_normalsIndexed[i].getAllVertices().getIndexes().size(); j++) {
+                        vbBindlessTex[p].addIndex(m_normalsIndexed[i].getAllVertices().getIndexes()[j]);
                     }
 
                 }
@@ -1183,7 +1183,7 @@ namespace odfaeg {
             m_instances = batcher.getInstances();
             m_normals = normalBatcher.getInstances();
             m_instancesIndexed = batcherIndexed.getInstances();
-            m_normalIndexed = normalBatcherIndexed.getInstances();
+            m_normalsIndexed = normalBatcherIndexed.getInstances();
             m_selected = selectedBatcher.getInstances();
             m_selectedScale = selectedScaleBatcher.getInstances();
             m_selectedIndexed = selectedIndexBatcher.getInstances();

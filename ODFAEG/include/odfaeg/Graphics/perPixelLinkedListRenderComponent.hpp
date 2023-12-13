@@ -34,6 +34,9 @@ namespace odfaeg {
                     unsigned vertex_base;
                     unsigned instance_base;
             };
+            struct Matrix {
+                math::Matrix4f worldMat;
+            };
             PerPixelLinkedListRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings);
             void onVisibilityChanged(bool visible);
             void loadTextureIndexes();
@@ -116,21 +119,21 @@ namespace odfaeg {
             selectedInstanceBatcher, selectedInstanceScaleBatcher, selectedInstanceIndexBatcher, selectedInstanceIndexScaleBatcher,
             selectedBatcher, selectedScaleBatcher, selectedIndexBatcher, selectedIndexScaleBatcher; /**> A group of faces using the same materials and primitive type.*/
             sf::Color backgroundColor; /**> The background color.*/
-            std::vector<Instance> m_instances, m_normals, m_instancesIndexed, m_normalIndexed,
+            std::vector<Instance> m_instances, m_normals, m_instancesIndexed, m_normalsIndexed,
             m_selectedScale, m_selected, m_selectedScaleIndexed, m_selectedIndexed,
             m_selectedScaleInstance, m_selectedInstance, m_selectedScaleInstanceIndexed, m_selectedInstanceIndexed; /**> Instances to draw. (Instanced rendering.) */
             std::vector<std::unique_ptr<Face>> additionalFaces;
             std::vector<Entity*> visibleEntities;
             std::vector<std::unique_ptr<Entity>> visibleSelectedScaleEntities; /**> Entities loaded*/
             RenderTexture frameBuffer; /**> the frame buffer.*/
-            Shader perPixelLinkedList, perPixelLinkedListP2, perPixelLinkedList2, filterNotOpaque, initialize;
+            Shader perPixelLinkedList, perPixelLinkedListP2, perPixelLinkedList2, filterNotOpaque, initialize, indirectRenderingShader;
             RenderStates currentStates; /**> the current render states.*/
             View view; /**> the view of the component.*/
             std::string expression;
             bool update;
             GLuint maxNodes;
             sf::Vector3i resolution;
-            unsigned int atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex, vboWorldMatrices, ubo, vboIndirect;
+            unsigned int atomicBuffer, linkedListBuffer, matricesBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex, vboWorldMatrices, ubo, vboIndirect;
             Sprite frameBufferSprite;
             VertexBuffer vb;
             std::array<VertexBuffer ,Batcher::nbPrimitiveTypes> vbBindlessTex;

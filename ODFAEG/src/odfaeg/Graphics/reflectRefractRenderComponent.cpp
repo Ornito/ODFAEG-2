@@ -40,6 +40,7 @@ namespace odfaeg {
             &depthClearBuf[0], GL_STATIC_COPY));
             glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
             depthBufferSprite = Sprite(depthBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            settings.depthBits = 0;
             alphaBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
             glCheck(glGenTextures(1, &alphaTex));
             glCheck(glBindTexture(GL_TEXTURE_2D, alphaTex));
