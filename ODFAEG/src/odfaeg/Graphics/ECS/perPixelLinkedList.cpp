@@ -1082,6 +1082,8 @@ namespace odfaeg {
 
                 //std::cout<<"load tile"<<std::endl;
                 for (unsigned int i = 0; i < vEntities.size(); i++) {
+                    /*if (getComponent<EntityInfoComponent>(componentMapping.getRoot(vEntities[i]))->groupName == "E_DECOR")
+                        std::cout<<"add E_DECOR"<<std::endl;*/
                     if (getComponent<MeshComponent>(vEntities[i]) != nullptr) {
                         EntityInfoComponent* eci = getComponent<EntityInfoComponent>(vEntities[i]);
                         MeshComponent* mc = getComponent<MeshComponent>(vEntities[i]);

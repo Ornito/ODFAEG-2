@@ -90,7 +90,7 @@ namespace odfaeg {
                     world.addChild(wall, tile);
                     return wall;
                 }
-                static EntityId createDecorModel(EntityFactory& factory, WallType type, EntityId tile, World& world) {
+                static EntityId createDecorModel(EntityFactory& factory, EntityId tile, World& world) {
                     EntityId decor = factory.createEntity("E_DECOR");
                     EntityInfoComponent eic;
                     eic.groupName = "E_DECOR";
@@ -118,11 +118,13 @@ namespace odfaeg {
                     tc.globalBounds = tc.localBounds.transform(tm);
                     tc.transformMatrix = tm;
                     AnimationComponent ac;
+                    ac.playing = true;
+                    ac.loop = loop;
                     if (frames.size() > 0) {
                         ac.currentFrame = frames[ac.currentFrameIndex];
                         ac.previousFrame = (ac.currentFrameIndex - 1 < 0) ? frames[frames.size()-1] : frames[ac.currentFrameIndex-1];
                         ac.nextFrame = (ac.currentFrameIndex >= frames.size()) ? frames[0] : frames[ac.currentFrameIndex+1];
-                        ac.interpolatedFrame = world.getComponentMapping().clone(factory, frames[ac.currentFrameIndex]);
+                        ac.interpolatedFrame = world.getComponentMapping().clone<EntityInfoComponent, TransformComponent, MeshComponent, ColliderComponent>(factory, frames[ac.currentFrameIndex]);
                         for (unsigned int i = 0; i < frames.size(); i++) {
                             world.addChild(animation, frames[i]);
                         }

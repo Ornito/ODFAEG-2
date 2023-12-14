@@ -46,7 +46,7 @@ namespace odfaeg {
                 bool playing, loop;
                 EntityId previousFrame, currentFrame, nextFrame;
                 std::size_t currentFrameIndex = 0;
-                std::size_t interpLevels, interpPerc;
+                std::size_t interpLevels=1, interpPerc=0;
                 EntityId interpolatedFrame;
                 float fr;
                 sf::Clock clock;

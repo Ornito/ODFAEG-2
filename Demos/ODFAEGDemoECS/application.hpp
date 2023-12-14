@@ -6,6 +6,7 @@
 #include "odfaeg/Core/ecs.hpp"
 #include "odfaeg/Graphics/ECS/modelFactory.hpp"
 #include "odfaeg/Graphics/ECS/entitiesUpdater.hpp"
+#include "odfaeg/Graphics/ECS/animationUpdater.hpp"
 #include "odfaeg/Window/command.h"
 #include "odfaeg/Window/iKeyboard.hpp"
 #include "odfaeg/Window/iMouse.hpp"

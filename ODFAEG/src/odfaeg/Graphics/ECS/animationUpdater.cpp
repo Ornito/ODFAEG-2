@@ -10,11 +10,12 @@ namespace odfaeg {
             void AnimationUpdater::onUpdate() {
                 for (unsigned int i = 0; i < anims.size(); i++) {
                     AnimationComponent* ac = getComponent<AnimationComponent>(anims[i]);
+
                     if (ac->playing && ac->clock.getElapsedTime().asSeconds() > ac->fr) {
                         if (world.getComponentMapping().getChildren(anims[i]).size() > 2) {
                             ac->interpPerc++;
                             if (ac->interpPerc >= ac->interpLevels) {
-                                ac->previousFrame = world.getComponentMapping().getChildren(anims[i])[ac->currentFrame];
+                                ac->previousFrame = world.getComponentMapping().getChildren(anims[i])[ac->currentFrameIndex];
                                 ac->currentFrameIndex++;
                                 if (ac->currentFrameIndex >= world.getComponentMapping().getChildren(anims[i]).size()) {
                                     ac->currentFrameIndex = 0;
@@ -22,24 +23,29 @@ namespace odfaeg {
                                         ac->playing = false;
                                     }
                                 }
-                                ac->currentFrame = world.getComponentMapping().getChildren(anims[i])[ac->currentFrame];
+                                ac->currentFrame = world.getComponentMapping().getChildren(anims[i])[ac->currentFrameIndex];
                                 ac->nextFrame = world.getComponentMapping().getChildren(anims[i])[(ac->currentFrameIndex + 1 >= world.getComponentMapping().getChildren(anims[i]).size()) ? 0 : ac->currentFrameIndex+1];
-                                getComponent<MeshComponent>(ac->interpolatedFrame)->faces[i].setMaterial(getComponent<MeshComponent>(ac->currentFrame)->faces[i].getMaterial());
-                                getComponent<MeshComponent>(ac->interpolatedFrame)->faces[i].setTransformMatrix(getComponent<MeshComponent>(ac->currentFrame)->faces[i].getTransformMatrix());
+                                ac->interpPerc = 0;
                             }
                             interpolate(ac->currentFrame, ac->nextFrame, ac->interpolatedFrame, ac->interpPerc, ac->interpLevels);
                         }
+                        ac->clock.restart();
                     }
                 }
             }
             void AnimationUpdater::interpolate(EntityId currentFrame, EntityId nextFrame, EntityId interpolatedFrame, std::size_t interpPerc, std::size_t interpLevels) {
-                if (world.getComponentMapping().getChildren(currentFrame) == world.getComponentMapping().getChildren(nextFrame)) {
+
+                if (world.getComponentMapping().getChildren(currentFrame).size() == world.getComponentMapping().getChildren(nextFrame).size()) {
+
                     for (unsigned int i = 0; i < world.getComponentMapping().getChildren(currentFrame).size(); i++) {
                         interpolate(world.getComponentMapping().getChildren(currentFrame)[i], world.getComponentMapping().getChildren(nextFrame)[i], world.getComponentMapping().getChildren(interpolatedFrame)[i], interpPerc, interpLevels);
                     }
                 }
+
+
                 if (getComponent<MeshComponent>(currentFrame) != nullptr && getComponent<MeshComponent>(nextFrame) != nullptr
                     && getComponent<MeshComponent>(currentFrame)->faces.size() == getComponent<MeshComponent>(nextFrame)->faces.size()) {
+
                     for (unsigned int i = 0; i < getComponent<MeshComponent>(currentFrame)->faces.size(); i++) {
                         const VertexArray& cva = getComponent<MeshComponent>(currentFrame)->faces[i].getVertexArray();
                         VertexArray& iva = getComponent<MeshComponent>(interpolatedFrame)->faces[i].getVertexArray();
@@ -53,6 +59,9 @@ namespace odfaeg {
                                 iva[j].texCoords = cva[j].texCoords;
                             }
                         }
+                        //std::cout<<"current frame : "<<currentFrame<<" matérial : "<<getComponent<MeshComponent>(currentFrame)->faces[i].getMaterial().getTexture()<<std::endl;
+                        getComponent<MeshComponent>(interpolatedFrame)->faces[i].setMaterial(getComponent<MeshComponent>(currentFrame)->faces[i].getMaterial());
+                        getComponent<MeshComponent>(interpolatedFrame)->faces[i].setTransformMatrix(getComponent<MeshComponent>(currentFrame)->faces[i].getTransformMatrix());
                     }
                 }
             }

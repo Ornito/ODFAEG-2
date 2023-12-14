@@ -15,6 +15,10 @@ namespace sorrok {
         TextureManager<> tm;
         tm.fromFileWithAlias("tilesets/herbe.png", "GRASS");
         tm.fromFileWithAlias("tilesets/murs.png", "WALLS");
+        tm.fromFileWithAlias("tilesets/maison.png", "HOUSE");
+        tm.fromFileWithAlias("tilesets/flemmes1.png", "FIRE1");
+        tm.fromFileWithAlias("tilesets/flemmes2.png", "FIRE2");
+        tm.fromFileWithAlias("tilesets/flemmes3.png", "FIRE3");
         cache.addResourceManager(tm, "TextureManager");
     }
     void MyECSAppli::onInit () {
@@ -53,15 +57,35 @@ namespace sorrok {
         getWorld()->addWorker(eu);
         BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
         getWorld()->generate_map(tiles, walls, Vec2f(100, 50), mapZone, factory);
+
+        std::vector<EntityId> frames;
+        EntityId tf1 = ModelFactory::createTileModel(factory, tm.getResourceByAlias("FIRE1"),  Vec3f(0, 100, 150), Vec3f(100, 100, 0),sf::IntRect(0, 0, 150 , 200));
+        EntityId fire1 = ModelFactory::createDecorModel(factory, tf1, *getWorld());
+        frames.push_back(fire1);
+
+        EntityId tf2 = ModelFactory::createTileModel(factory, tm.getResourceByAlias("FIRE2"),  Vec3f(0, 100, 150), Vec3f(100, 100, 0),sf::IntRect(0, 0, 150 , 200));
+        EntityId fire2 = ModelFactory::createDecorModel(factory, tf2, *getWorld());
+        frames.push_back(fire2);
+
+        EntityId tf3 = ModelFactory::createTileModel(factory, tm.getResourceByAlias("FIRE3"),  Vec3f(0, 100, 150), Vec3f(100, 100, 0),sf::IntRect(0, 0, 150 , 200));
+        EntityId fire3 = ModelFactory::createDecorModel(factory, tf3, *getWorld());
+        frames.push_back(fire3);
+
+        EntityId animation = ModelFactory::createAnimationModel(factory, 0.1f, Vec3f(0, 0, 0), Vec3f(100, 100, 0), true, frames, *getWorld());
+        AnimationUpdater* animUpdater = new AnimationUpdater(*getWorld(), factory);
+        animUpdater->addAnim(animation);
+        getWorld()->addTimer(animUpdater);
+        getWorld()->addEntity(animation);
+
         PerPixelLinkedListRenderComponent *frc1 = new PerPixelLinkedListRenderComponent(getRenderWindow(),0, "E_BIGTILE", ContextSettings(0, 0, 4, 4, 6));
-        PerPixelLinkedListRenderComponent *frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(),1, "E_WALL", ContextSettings(0, 0, 4, 4, 6));
+        PerPixelLinkedListRenderComponent *frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(),1, "E_WALL+E_DECOR", ContextSettings(0, 0, 4, 4, 6));
         getRenderComponentManager().addECSComponent(frc1);
         getRenderComponentManager().addECSComponent(frc2);
 
     }
     void MyECSAppli::onRender(odfaeg::graphic::RenderComponentManager *cm) {
         getWorld()->drawOnComponents("E_BIGTILE", 0);
-        getWorld()->drawOnComponents("E_WALL", 1);
+        getWorld()->drawOnComponents("E_WALL+E_DECOR", 1);
     }
     void MyECSAppli::onDisplay(odfaeg::graphic::RenderWindow* window){
     }
