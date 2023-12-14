@@ -262,13 +262,13 @@ namespace odfaeg {
                     bool collide(ComponentMapping& componentMapping, EntityId entity);
                     bool collide(ComponentMapping& componentMapping, EntityId entity, math::Vec3f position);
                     bool collide(ComponentMapping& componentMapping, EntityId entity, math::Ray ray);
-                    void generate_labyrinthe(ComponentMapping& mapping, std::vector<EntityId> tGround, std::vector<EntityId> walls, math::Vec2f tileSize, physic::BoundingBox &box, bool terrain3D, EntityFactory& factory);
+                    void generate_labyrinthe(ComponentMapping& mapping, std::vector<EntityId> tGround, std::vector<EntityId> walls, math::Vec2f tileSize, physic::BoundingBox &box, EntityFactory& factory);
                     /** \fn generate_map(std::vector<Tile*> tGround, std::vector<Tile*> walls, BoundingBox &box)
                     *   \brief generate a map in the given zone, which the given tiles for the ground and the given tiles for the walls.
                     *   \param std::vector<Tile*> tGround : the tiles used for the ground.
                     *   \param std::vector<Tile*> walls : the tiles used for the walls. (The walls are placed to the edges of the map)
                     */
-                    void generate_map(ComponentMapping& mapping, std::vector<EntityId> tGround, std::vector<EntityId> walls, math::Vec2f tileSize, physic::BoundingBox &box, bool terrain3D, EntityFactory& factory);
+                    void generate_map(ComponentMapping& mapping, std::vector<EntityId> tGround, std::vector<EntityId> walls, math::Vec2f tileSize, physic::BoundingBox &box, EntityFactory& factory);
                     /**
                     *   \fn void getChildren (Entity *entity, std::vector<Entity*> &entities, std::string type);
                     *   \brief get the children of a kind of types from an entity.

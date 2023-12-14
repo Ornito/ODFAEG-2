@@ -53,7 +53,7 @@ namespace odfaeg {
             * \param std::vector<Tile*> tWalls : the tiles of the walls to generate.
             * \param BoundingZone& zone : the zone of the area where to generate the map.
             */
-            virtual void generate_map(ComponentMapping& componentMapping,std::vector<EntityId> tGrounds, std::vector<EntityId> tWalls, math::Vec2f tileSize, physic::BoundingBox& zone, bool terrain3D, EntityFactory& factory) = 0;
+            virtual void generate_map(ComponentMapping& componentMapping,std::vector<EntityId> tGrounds, std::vector<EntityId> tWalls, math::Vec2f tileSize, physic::BoundingBox& zone, EntityFactory& factory) = 0;
             /**
             * \fn void moveEntity(Entity* entity, float x, float y, float z)
             * \brief virtual method to redefine to move an entity to the world.

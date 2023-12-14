@@ -26,12 +26,12 @@ namespace odfaeg {
             int Scene::getCellHeight() {
                 return cellHeight;
             }
-            void Scene::generate_labyrinthe (ComponentMapping& componentMapping, std::vector<EntityId> tGround, std::vector<EntityId> walls, math::Vec2f tileSize, physic::BoundingBox &rect, bool laby3D, EntityFactory& factory) {
+            void Scene::generate_labyrinthe (ComponentMapping& componentMapping, std::vector<EntityId> tGround, std::vector<EntityId> walls, math::Vec2f tileSize, physic::BoundingBox &rect, EntityFactory& factory) {
                 int startX = rect.getPosition().x / tileSize.x * tileSize.x;
                 int startY = rect.getPosition().y / tileSize.y * tileSize.y;
                 int endX = (rect.getPosition().x + rect.getWidth()) / tileSize.x * tileSize.x;
                 int endY = (rect.getPosition().y + rect.getHeight()) / tileSize.y * tileSize.y;
-                EntityId bt = ModelFactory::createBigTileModel(factory, math::Vec3f(startX, startY, startY + endY * 0.5f));
+                EntityId bt = ModelFactory::createBigTileModel(factory, math::Vec3f(startX, startY, startY + endY * 0.5f), math::Vec3f(endX - startX, endY - startY, 0));
                 addEntity(componentMapping, bt);
                 unsigned int i, j;
                  for (int y = startY, j = 0; y < endY; y+= tileSize.y, j++) {
@@ -259,18 +259,15 @@ namespace odfaeg {
                         }
                     }
              }
-            void Scene::generate_map(ComponentMapping& componentMapping, std::vector<EntityId> tGround, std::vector<EntityId> walls, math::Vec2f tileSize, physic::BoundingBox &rect, bool terrain3D, EntityFactory& factory) {
+            void Scene::generate_map(ComponentMapping& componentMapping, std::vector<EntityId> tGround, std::vector<EntityId> walls, math::Vec2f tileSize, physic::BoundingBox &rect, EntityFactory& factory) {
                     int startX = rect.getPosition().x / tileSize.x * tileSize.x;
                     int startY = rect.getPosition().y / tileSize.y * tileSize.y;
                     int endX = (rect.getPosition().x + rect.getWidth()) / tileSize.x * tileSize.x;
                     int endY = (rect.getPosition().y + rect.getHeight()) / tileSize.y * tileSize.y;
-                    EntityId bt = ModelFactory::createBigTileModel(factory, math::Vec3f(startX, startY, startY + (endY - startY) * 0.5f));
-                    auto szparams = std::make_tuple(rect.getSize());
-                    ResizeSystem resizeSystem;
+                    EntityId bt = ModelFactory::createBigTileModel(factory, math::Vec3f(startX, startY, startY + (endY - startY) * 0.5f), math::Vec3f(endX - startX, endY - startY, 0));
                     std::vector<EntityId> bigTileId;
                     bigTileId.push_back(bt);
                     addEntity(componentMapping, bt);
-                    componentMapping.template apply<ResizeSystem>(resizeSystem, bigTileId, szparams);
                     for (int y = startY; y < endY;  y+=tileSize.y) {
                         for (int x = startX; x < endX; x+=tileSize.x) {
                             //On projete les positions en fonction de la projection du jeux.

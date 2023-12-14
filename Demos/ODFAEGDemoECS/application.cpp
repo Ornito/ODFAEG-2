@@ -52,7 +52,7 @@ namespace sorrok {
         eu->setName("EntitiesUpdater");
         getWorld()->addWorker(eu);
         BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
-        getWorld()->generate_map(tiles, walls, Vec2f(100, 50), mapZone, false, factory);
+        getWorld()->generate_map(tiles, walls, Vec2f(100, 50), mapZone, factory);
         PerPixelLinkedListRenderComponent *frc1 = new PerPixelLinkedListRenderComponent(getRenderWindow(),0, "E_BIGTILE", ContextSettings(0, 0, 4, 4, 6));
         PerPixelLinkedListRenderComponent *frc2 = new PerPixelLinkedListRenderComponent(getRenderWindow(),1, "E_WALL", ContextSettings(0, 0, 4, 4, 6));
         getRenderComponentManager().addECSComponent(frc1);

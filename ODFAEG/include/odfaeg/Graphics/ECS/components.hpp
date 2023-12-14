@@ -45,10 +45,11 @@ namespace odfaeg {
             struct AnimationComponent {
                 bool playing, loop;
                 EntityId previousFrame, currentFrame, nextFrame;
-                std::size_t nbFrames;
+                std::size_t currentFrameIndex = 0;
                 std::size_t interpLevels, interpPerc;
                 EntityId interpolatedFrame;
-                std::vector<EntityId> frames;
+                float fr;
+                sf::Clock clock;
             };
             struct SelectedAnimationComponent {
                 size_t selectedAnimIndex;

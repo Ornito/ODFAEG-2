@@ -146,7 +146,9 @@ set(SRC_ECS
 	${SRCROOT}/ECS/perPixelLinkedList.cpp
 	${INCROOT}/ECS/entitiesUpdater.hpp
 	${INCROOT}/ECS/application.hpp
-	${SRCROOT}/ECS/application.cpp	
+	${SRCROOT}/ECS/application.cpp
+	${INCROOT}/ECS/animationUpdater.hpp
+	${SRCROOT}/ECS/animationUpdater.cpp	
 	)
 	
 set(SRC_GRAPHICS_2D

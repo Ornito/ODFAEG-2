@@ -68,10 +68,10 @@ namespace odfaeg {
         // Helper to parse OpenGL version strings
         bool ContextImpl::parseVersionString(const char* version, const char* prefix, unsigned int &major, unsigned int &minor)
         {
-            std::size_t prefixLength = std::strlen(prefix);
+            std::size_t prefixLength = strlen(prefix);
 
-            if ((std::strlen(version) >= (prefixLength + 3)) &&
-                (std::strncmp(version, prefix, prefixLength) == 0) &&
+            if ((strlen(version) >= (prefixLength + 3)) &&
+                (strncmp(version, prefix, prefixLength) == 0) &&
                 std::isdigit(version[prefixLength]) &&
                 (version[prefixLength + 1] == '.') &&
                 std::isdigit(version[prefixLength + 2]))
@@ -471,7 +471,7 @@ namespace odfaeg {
                         {
                             const char* extensionString = reinterpret_cast<const char*>(glGetStringiFunc(GL_EXTENSIONS, i));
 
-                            if (std::strstr(extensionString, "GL_ARB_compatibility"))
+                            if (strstr(extensionString, "GL_ARB_compatibility"))
                             {
                                 m_settings.attributeFlags &= ~static_cast<Uint32>(ContextSettings::Core);
                                 break;
@@ -528,7 +528,7 @@ namespace odfaeg {
 
             if (vendorName && rendererName)
             {
-                if ((std::strcmp(vendorName, "Microsoft Corporation") == 0) && (std::strcmp(rendererName, "GDI Generic") == 0))
+                if ((strcmp(vendorName, "Microsoft Corporation") == 0) && (strcmp(rendererName, "GDI Generic") == 0))
                 {
                     err() << "Warning: Detected \"Microsoft Corporation GDI Generic\" OpenGL implementation" << std::endl
                           << "The current OpenGL implementation is not hardware-accelerated" << std::endl;

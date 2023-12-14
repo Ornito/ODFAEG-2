@@ -1,6 +1,6 @@
 #ifndef ODFAEG_ECS_WORLD_HPP
 #define ODFAEG_ECS_WORLD_HPP
-#include "components.hpp"
+#include "../../Core/ecs.hpp"
 #include "systems.hpp"
 #include "sceneManager.hpp"
 
@@ -167,10 +167,10 @@ namespace odfaeg {
                 *  \param std::vector<E*> tWalls : the tiles of the wall to generate.
                 *  \param BoundingBox zone : the zone of the map to generate.
                 */
-                void generate_map(std::vector<EntityId> tGround, std::vector<EntityId> tWall, math::Vec2f tileSize, physic::BoundingBox zone, bool terrain3D, EntityFactory& factory) {
+                void generate_map(std::vector<EntityId> tGround, std::vector<EntityId> tWall, math::Vec2f tileSize, physic::BoundingBox zone, EntityFactory& factory) {
 
                     if (currentEntityManager != nullptr) {
-                        currentEntityManager->generate_map(componentMapping, tGround, tWall, tileSize, zone, terrain3D, factory);
+                        currentEntityManager->generate_map(componentMapping, tGround, tWall, tileSize, zone, factory);
                     }
                 }
                 /** \fn void drawOnComponents(std::string expression, int layer, sf::BlendMode mode = sf::BlendMode::BlendAlpha)
