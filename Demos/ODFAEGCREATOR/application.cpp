@@ -36,9 +36,9 @@ Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 8
     viewPos = getRenderWindow().getView().getPosition();
     rtc.addOption("std=c++17");
     rtc.addMacro("ODFAEG_STATIC");
-    rtc.addIncludeDir("\"..\\..\\..\\..\\Program Files (x86)\\ODFAEG\\include\"");
+    rtc.addIncludeDir("\"C:\\Program Files (x86)\\ODFAEG\\include\"");
     rtc.addIncludeDir("..\\..\\Windows\\ODFAEG\\extlibs\\headers");
-    rtc.addLibraryDir("\"..\\..\\..\\..\\Program Files (x86)\\ODFAEG\\lib\"");
+    rtc.addLibraryDir("\"C:\\Program Files (x86)\\ODFAEG\\lib\"");
     rtc.addLibraryDir("..\\..\\Windows\\ODFAEG\\extlibs\\libs-mingw\\x86");
     rtc.addLibrary("odfaeg-network-s");
 	rtc.addLibrary("odfaeg-audio-s");
@@ -684,17 +684,17 @@ void ODFAEGCreator::onInit() {
         pProjects->setBackgroundColor(sf::Color::White);
         pProjects->setBorderThickness(5);
         unsigned int i = 0;
-        Label* lab = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 35, 0), fm.getResourceByAlias(Fonts::Serif), "GUI", 15);
+        Label* lab = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 35, 0), fm.getResourceByAlias(Fonts::Serif), "Scenes", 15);
         lab->setBackgroundColor(sf::Color::White);
-        Node* node = new Node("GUI", lab, Vec2f(0.f, 0.f), Vec2f(1.f, 0.05f), rootNode.get());
+        rootScenesNode = std::make_unique<Node>("Scenes", lab, Vec2f(0.f, 0.f), Vec2f(1.f, 0.025f), rootNode.get());
         lab->setForegroundColor(sf::Color::Red);
         lab->setParent(pProjects);
         pProjects->addChild(lab);
         Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
         //std::cout<<"label : "<<lab<<std::endl;
 
-        Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, lab), FastDelegate<void>(&ODFAEGCreator::showGUI, this, lab));
-        lab->getListener().connect("SHOWGUI", cmd);
+        Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, lab), FastDelegate<void>(&ODFAEGCreator::showScenes, this, lab));
+        lab->getListener().connect("SHOWSCENES", cmd);
         //system("PAUSE");
         getRenderComponentManager().addComponent(pProjects);
         pScriptsEdit = new Panel(getRenderWindow(), Vec3f(200, 10, 0), Vec3f(800, 700, 0));
@@ -913,15 +913,15 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
                 delete selectionBorders[i];
             }
             selectionBorders.clear();*/
-            std::vector<Transformable*> entities = rectSelect.getItems();
+            //std::vector<Transformable*> entities = rectSelect.getItems();
             //std::cout<<"create borders"<<std::endl;
-            for (unsigned int i = 0; i < entities.size(); i++) {
+            /*for (unsigned int i = 0; i < entities.size(); i++) {
                 RectangleShape rect(entities[i]->getSize());
                 rect.setPosition(entities[i]->getPosition());
                 rect.setFillColor(sf::Color::Transparent);
                 rect.setOutlineThickness(5);
                 rect.setOutlineColor(sf::Color::Cyan);
-                window->draw(rect);
+                window->draw(rect);*/
                 /*if (dynamic_cast<Entity*>(entities[i])) {
                     Entity* border = dynamic_cast<Entity*>(entities[i])->clone();
                     for (unsigned int f = 0; f < border->getNbFaces(); f++) {
@@ -942,7 +942,7 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
                     border->setScale(Vec3f(1.1f, 1.1f, 1.1f));
                     selectionBorders.push_back(border);
                 }*/
-            }
+            //}
             //std::cout<<"tiles size : "<<tiles.size()<<std::endl;
             /*glCheck(glEnable(GL_STENCIL_TEST));
             glCheck(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
@@ -1101,10 +1101,10 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
             }
         }
         rectSelect.getItems().clear();
-        for (unsigned int i = 0; i < selectionBorders.size(); i++) {
+        /*for (unsigned int i = 0; i < selectionBorders.size(); i++) {
             delete selectionBorders[i];
         }
-        selectionBorders.clear();
+        selectionBorders.clear();*/
     }
     if (&getRenderWindow() == window && event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED) {
         getListener().setCommandSlotParams("MoveAction", this, static_cast<IKeyboard::Key>(event.keyboard.code));
@@ -1129,6 +1129,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                     getWorld()->addEntity(entity);
                     selectedObject = entity;
                     Entity* selectedEntity = dynamic_cast<Entity*>(selectedObject);
+                    selectedEntity->setSelected(true);
                     if (selectedEntity->getType() == "E_TILE") {
                         displayTileInfos(selectedEntity);
                     } else if (selectedEntity->getType() == "E_BIGTILE") {
@@ -1145,7 +1146,10 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                         displayPonctualLightInfos(selectedEntity);
                     } else {
                         displayExternalEntityInfo(selectedEntity);
+                        std::map<std::string, std::vector<Entity*>>::iterator it = externals.find(selectedEntity->getClassName());
+                        it->second.push_back(selectedEntity);
                     }
+
                 }
             }
         }
@@ -1196,12 +1200,15 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     }
 
     if (&getRenderWindow() == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
-        std::ifstream fexist("sourceCode.cpp");
+        std::ifstream fexist(appliname+"\\sourceCode.cpp");
         if (fexist && openedProjects.size() > 0) {
-            std::ofstream file("sourceCode.cpp");
+            std::ofstream file(appliname+"\\sourceCode.cpp");
             file<<pluginSourceCode;
         }
         stop();
+    }
+    if (window != &getRenderWindow() && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
+        window->setVisible(false);
     }
     if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_PRESSED && event.mouseButton.button == IMouse::Left) {
         sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
@@ -1473,16 +1480,6 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
             tTexCoordH->setText(conversionIntString(sTextRect->getSize().y));
         }
     }
-    if (wApplicationNew == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
-        wApplicationNew->setVisible(false);
-        getRenderComponentManager().setEventContextActivated(false, *wApplicationNew);
-        tScriptEdit->setEventContextActivated(true);
-    }
-    if (wNewEntitiesUpdater == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
-        wNewEntitiesUpdater->setVisible(false);
-        getRenderComponentManager().setEventContextActivated(false, *wNewEntitiesUpdater);
-        tScriptEdit->setEventContextActivated(true);
-    }
     if (&getRenderWindow() == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_RESIZED) {
         getRenderWindow().getDefaultView().reset(BoundingBox(0, 0, getRenderWindow().getDefaultView().getPosition().z, event.window.data1, event.window.data2, getRenderWindow().getDefaultView().getDepth()));
         getRenderWindow().getDefaultView().setPerspective(-event.window.data1 * 0.5f, event.window.data1 * 0.5f, -event.window.data2 * 0.5f, event.window.data2 * 0.5f, getRenderWindow().getDefaultView().getViewport().getPosition().z, getRenderWindow().getDefaultView().getViewport().getSize().z);
@@ -1749,6 +1746,7 @@ void ODFAEGCreator::onExec() {
             }
         }
         if (!opened) {
+            rtc.setOutputDir(appliname);
             const char* lcars = appliname.c_str();
             char* ucars = new char[appliname.size()];
             for (unsigned int i = 0; i < appliname.length(); i++) {
@@ -1801,6 +1799,17 @@ void ODFAEGCreator::onExec() {
                     //std::cout<<"add map "<<maps[i]->getName()<<std::endl;
                     maps[i]->setRenderComponentManager(&getRenderComponentManager());
                     getWorld()->addSceneManager(maps[i]);
+                    Label* lab = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 35, 0), fm.getResourceByAlias(Fonts::Serif), maps[i]->getName(), 15);
+                    lab->setBackgroundColor(sf::Color::White);
+                    Node* node = new Node(maps[i]->getName(), lab, Vec2f(0.f, 0.f), Vec2f(1.f, 0.025f), rootScenesNode.get());
+                    lab->setForegroundColor(sf::Color::Blue);
+                    lab->setParent(pProjects);
+                    pProjects->addChild(lab);
+
+                    Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+                    Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, lab), FastDelegate<void>(&ODFAEGCreator::showScene, this, lab));
+                    lab->getListener().connect("SHOWSCENE"+maps[i]->getName(), cmd);
+
                     getWorld()->setCurrentSceneManager(maps[i]->getName());
                 }
                 ifs2.close();
@@ -1849,7 +1858,6 @@ void ODFAEGCreator::onExec() {
                 for (unsigned int f = 0; f < entities[i]->getNbFaces(); f++) {
                     Face* face = entities[i]->getFace(f);
                     std::string alias = face->getMaterial().getTexId();
-                    std::cout<<"alias : "<<alias<<std::endl;
                     if (alias != "") {
                         face->getMaterial().clearTextures();
                         face->getMaterial().addTexture(tm.getResourceByAlias(alias), face->getMaterial().getTexRect());
@@ -2024,13 +2032,39 @@ void ODFAEGCreator::onExec() {
             findFiles(".cpp", scriptSourceFiles, startDir);
             for (unsigned int i = 0; i < scriptSourceFiles.size(); i++) {
                 int pos = scriptSourceFiles[i].find(".cpp");
-                std::string path = scriptSourceFiles[i].erase(pos);
+                std::string path = scriptSourceFiles[i];
+                path.erase(pos);
                 rtc.addSourceFile(path);
+                std::ifstream source (scriptSourceFiles[i]);
+                std::string fileContent;
+                std::string line;
+                while(getline(source, line)) {
+                    fileContent += line+"\n";
+                }
+                source.close();
+                pos = scriptSourceFiles[i].find_last_of("\\");
+                scriptSourceFiles[i].erase(0, pos+1);
+                cppAppliContent.insert(std::make_pair(scriptSourceFiles[i], fileContent));
             }
+            scriptSourceFiles.clear();
+            findFiles(".hpp", scriptSourceFiles, startDir);
+            for (unsigned int i = 0; i < scriptSourceFiles.size(); i++) {
+                std::ifstream source (scriptSourceFiles[i]);
+                std::string fileContent;
+                std::string line;
+                while(getline(source, line)) {
+                    fileContent += line+"\n";
+                }
+                source.close();
+                int pos = scriptSourceFiles[i].find_last_of("\\");
+                scriptSourceFiles[i].erase(0, pos+1);
+                cppAppliContent.insert(std::make_pair(scriptSourceFiles[i], fileContent));
+            }
+
             rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/application");
             rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/odfaegCreatorStateExecutor");
             rtc.addSourceFile("../../Windows/Demos/ODFAEGCREATOR/rectangularSelection");
-            std::ifstream file("sourceCode.cpp");
+            std::ifstream file(appliname+"\\sourceCode.cpp");
             if (file) {
                 std::string line;
                 while (getline(file, line)) {
@@ -2039,12 +2073,12 @@ void ODFAEGCreator::onExec() {
                 }
                 if (pluginSourceCode != "") {
                     //std::cout<<"compile!"<<std::endl;
-                    rtc.addSourceFile("sourceCode");
+                    rtc.addSourceFile(appliname+"\\sourceCode");
                     rtc.compile();
                     rtc.run<void>("readObjects", this);
                 }
             }
-            std::ifstream file9("otherData.oc");
+            std::ifstream file9(appliname+"\\otherData.oc");
             if (file9) {
                 ITextArchive ia(file9);
                 ia(callIds);
@@ -2059,7 +2093,15 @@ void ODFAEGCreator::onExec() {
     }
     getWorld()->update();
 }
-void ODFAEGCreator::showGUI(Label* label) {
+void ODFAEGCreator::showScenes(Label* label) {
+    if (rootScenesNode->getNodes().size() > 0 && rootScenesNode->isNodeVisible()) {
+        rootScenesNode->hideAllNodes();
+    } else if (rootScenesNode->getNodes().size() > 0 && !rootScenesNode->isNodeVisible()) {
+        rootScenesNode->showAllNodes();
+    }
+}
+void ODFAEGCreator::showScene(Label* label) {
+    getWorld()->setCurrentSceneManager(label->getText());
     isGuiShown = true;
     pScriptsEdit->setVisible(false);
 }
@@ -2237,7 +2279,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
     }
     if (button->getText() == "Create") {
         appliname = ta->getText();
-        std::ofstream applis(appliname+".poc");
+        std::ofstream applis(appliname+"\\"+appliname+".poc");
         applis<<appliname<<std::endl;
         applitype = dpList->getSelectedItem();
         #if defined (ODFAEG_SYSTEM_LINUX)
@@ -2316,216 +2358,12 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             oss<<"Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0, 0, 3, 0)) {"<<std::endl;
             oss<<"}"<<std::endl;
             oss<<"void "<<appliname<<"::onLoad() {"<<std::endl;
-            oss<<"  TextureManager<> tm;"<<std::endl;
-            oss<<"  cache.addResourceManager(tm, \"TextureManager\");"<<std::endl;
-            oss<<"  std::ifstream ifs(appliname+\"\\textures.oc\");"<<std::endl;
-            oss<<"  if (ifs) {"<<std::endl;
-            oss<<"      ITextArchive ia(ifs);"<<std::endl;
-            oss<<"      std::vector<std::string> paths;"<<std::endl;
-            oss<<"      ia(paths);"<<std::endl;
-            oss<<"      for (unsigned int i = 0; i < paths.size(); i++) {"<<std::endl;
-            oss<<"          unsigned int lastSlash;"<<std::endl;
-            oss<<"          #if defined(ODFAEG_SYSTEM_LINUX)"<<std::endl;
-            oss<<"              lastSlash = paths[i].find_last_of(\"/\");"<<std::endl;
-            oss<<"          #else if defined (ODFAEG_SYSTEM_WINDOWS)"<<std::endl;
-            oss<<"              lastSlash = paths[i].find_last_of(\"\\\");"<<std::endl;
-            oss<<"          #endif // if"<<std::endl;
-            oss<<"          std::string ImgName = paths[i].substr(lastSlash+1);"<<std::endl;
-            oss<<"          tm.fromFileWithAlias(paths[i], ImgName);"<<std::endl;
-            oss<<"      }"<<std::endl;
-            oss<<"      ifs.close();"<<std::endl;
-            oss<<"  }"<<std::endl;
             oss<<"}"<<std::endl;
             oss<<"void "<<appliname<<"::onInit() {"<<std::endl;
-            oss<<"  TextureManager<>& tm = cache.resourceManager<Texture, std::string>(\"TextureManager\");"<<std::endl;
-            oss<<R"(std::ifstream ifs2(appliname+"\\"+"scenes.oc");
-                if (ifs2) {
-                    ITextArchive ia2(ifs2);
-                    std::vector<Map*> maps;
-                    //std::cout<<"read map"<<std::endl;
-                    ia2(maps);
-                    //std::cout<<"maps : "<<std::endl;
-                    for (unsigned int i = 0; i < maps.size(); i++) {
-                        //std::cout<<"add map "<<maps[i]->getName()<<std::endl;
-                        maps[i]->setRenderComponentManager(&getRenderComponentManager());
-                        World::addEntityManager(maps[i]);
-                        World::setCurrentEntityManager(maps[i]->getName());
-                    }
-                    ifs2.close();
-                }
-                std::vector<Entity*> entities=World::getChildrenEntities("*");
-                for (unsigned int i = 0; i < entities.size(); i++) {
-                    std::cout<<"load entities"<<std::endl;
-                    for (unsigned int f = 0; f < entities[i]->getNbFaces(); f++) {
-                        Face* face = entities[i]->getFace(f);
-                        std::string alias = face->getMaterial().getTexId();
-                        std::cout<<"alias : "<<alias<<std::endl;
-                        if (alias != "") {
-                            face->getMaterial().clearTextures();
-                            face->getMaterial().addTexture(tm.getResourceByAlias(alias), face->getMaterial().getTexRect());
-                        } else {
-                            face->getMaterial().clearTextures();
-                            face->getMaterial().addTexture(nullptr, sf::IntRect(0, 0, 0, 0));
-                        }
-                    }
-                }
-
-                std::ifstream ifs4(appliname+"\\"+"timers.oc");
-                unsigned int size;
-                if (ifs4) {
-                    ITextArchive ia4(ifs4);
-                    ia4(size);
-                    for (unsigned int i  = 0; i < size; i++) {
-                        std::string name;
-                        std::string type;
-                        ia4(name);
-                        ia4(type);
-                        std::vector<int> animsIds;
-                        ia4(animsIds);
-                        if (type == "AnimationUpdater") {
-                            AnimUpdater* au = new AnimUpdater();
-                            au->setName(name);
-                            for (unsigned int a = 0; a < animsIds.size(); a++) {
-                                Entity* entity = World::getEntity(animsIds[a]);
-                                if (entity != nullptr && dynamic_cast<Anim*>(entity)) {
-                                    au->addAnim(static_cast<Anim*>(entity));
-                                }
-                            }
-                            World::addTimer(au);
-                        }
-                    }
-                    ifs4.close();
-                }
-                std::ifstream ifs5(appliname+"\\"+"components.oc");
-                if (ifs5) {
-                    ITextArchive ia5(ifs5);
-                    ia5(size);
-                    for (unsigned int i = 0; i < size; i++) {
-                        std::string name;
-                        std::string type;
-                        ia5(name);
-                        ia5(type);
-                        if (type == "PerPixelLinkedList") {
-                            std::cout<<"load components"<<std::endl;
-                            int layer;
-                            ia5(layer);
-                            std::string expression;
-                            ia5(expression);
-                            std::cout<<"layer : "<<layer<<std::endl;
-                            PerPixelLinkedListRenderComponent* ppll = new PerPixelLinkedListRenderComponent(getRenderWindow(),layer,expression,ContextSettings(0, 0, 4, 4, 6));
-                            ppll->setName(name);
-                            getRenderComponentManager().addComponent(ppll);
-                            dpSelectComponent->addItem(name, 15);
-                        }
-                    }
-                    ifs5.close();
-                }
-                std::ifstream ifs6(appliname+"\\"+"workers.oc");
-                if (ifs6) {
-                    ITextArchive ia6(ifs6);
-                    ia6(size);
-                    for (unsigned int i = 0; i < size; i++) {
-                        std::string name;
-                        std::string type;
-                        ia6(name);
-                        ia6(type);
-                        std::vector<int> psIds;
-                        ia6(psIds);
-                        std::cout<<"name : "<<name<<"type : "<<type<<std::endl;
-                        if (type == "EntityUpdater") {
-                            //std::cout<<"load entities updater"<<std::endl;
-                            EntitiesUpdater* eu = new EntitiesUpdater();
-                            eu->setName(name);
-                            World::addWorker(eu);
-                            std::cout<<"entities updater added"<<std::endl;
-                        }
-                        if (type == "ParticleSystemUpdater") {
-                            //std::cout<<"add particle systme updater"<<std::endl;
-                            ParticleSystemUpdater* psu = new ParticleSystemUpdater();
-                            psu->setName(name);
-
-                            for (unsigned int p = 0; p < psIds.size(); p++) {
-
-                                Entity* entity = World::getEntity(psIds[p]);
-                                if (entity != nullptr && dynamic_cast<ParticleSystem*>(entity)) {
-                                    //std::cout<<"add particle system"<<std::endl;
-                                    psu->addParticleSystem(static_cast<ParticleSystem*>(entity));
-                                }
-                            }
-                            World::addWorker(psu);
-                        }
-                    }
-                    ifs6.close();
-                }
-                std::ifstream ifs7(appliname+"\\"+"emitters.oc");
-                if (ifs7) {
-                    ITextArchive ia7(ifs7);
-                    std::vector<std::string> parameters;
-                    ia7(parameters);
-                    int i = 0;
-                    while (i < parameters.size()) {
-                        std::string psName = parameters[i];
-                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<std::endl;
-                        i++;
-                        UniversalEmitter emitter;
-                        emitter.setEmissionRate(conversionStringFloat(parameters[i]));
-                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<std::endl;
-                        i++;
-                        emitter.setParticleLifetime(Distributions::uniform(sf::seconds(conversionStringFloat(parameters[i])), sf::seconds(conversionStringFloat(parameters[i+1]))));
-                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<std::endl;
-                        i+=2;
-                        std::string type = parameters[i];
-                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<std::endl;
-                        i++;
-                        if (type == "Rect") {
-                            emitter.setParticlePosition(Distributions::rect(Vec3f(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1]), conversionStringFloat(parameters[i+2])),
-                                                                           Vec3f(conversionStringFloat(parameters[i+3]), conversionStringFloat(parameters[i+4]), conversionStringFloat(parameters[i+5]))));
-                            //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+2]<<","<<parameters[i+3]<<","<<parameters[i+4]<<","<<parameters[i+5]<<std::endl;
-                            i += 6;
-                        } else {
-                            emitter.setParticlePosition(Distributions::circle(Vec3f(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1]), conversionStringFloat(parameters[i+2])),
-                                                                             conversionStringFloat(parameters[i+3])));
-                            //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+2]<<std::endl;
-                            i += 4;
-                        }
-                        emitter.setParticleVelocity(Distributions::deflect(Vec3f(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1]), conversionStringFloat(parameters[i+2])), conversionStringFloat(parameters[i+3])));
-                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+3]<<std::endl;
-                        i += 4;
-                        emitter.setParticleRotation(Distributions::uniform(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1])));
-                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<std::endl;
-                        i += 2;
-                        emitter.setParticleTextureIndex(Distributions::uniformui(conversionStringInt(parameters[i]),conversionStringInt(parameters[i+1])));
-                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<std::endl;
-                        i += 2;
-                        emitter.setParticleScale(Distributions::rect(Vec3f(conversionStringFloat(parameters[i]), conversionStringFloat(parameters[i+1]), conversionStringFloat(parameters[i+2])),
-                                                                           Vec3f(conversionStringFloat(parameters[i+3]), conversionStringFloat(parameters[i+4]), conversionStringFloat(parameters[i+5]))));
-                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+2]<<","<<parameters[i+3]<<","<<parameters[i+4]<<","<<parameters[i+5]<<std::endl;
-                        i += 6;
-                        std::vector<std::string> color1 = split(parameters[i], ";");
-                        std::vector<std::string> color2 = split(parameters[i+1], ";");
-                        Vec3f c1(conversionStringInt(color1[0]), conversionStringInt(color1[1]), conversionStringInt(color1[2]), conversionStringInt(color1[3]));
-                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+3]<<std::endl;
-
-                        Vec3f c2(conversionStringInt(color2[0]), conversionStringInt(color2[1]), conversionStringInt(color2[2]), conversionStringInt(color2[3]));
-                        emitter.setParticleColor(Distributions::color(c1, c2));
-                        //std::cout<<"i : "<<i<<std::endl<<"size : "<<parameters.size()<<std::endl<<"psname : "<<parameters[i]<<","<<parameters[i+1]<<","<<parameters[i+2]<<","<<parameters[i+3]<<std::endl;
-                        i += 2;
-                        Entity* ps = World::getEntity(psName);
-                        if (dynamic_cast<ParticleSystem*>(ps)) {
-                            //std::cout<<"add emitter"<<std::endl;
-                            static_cast<ParticleSystem*>(ps)->addEmitter(emitter);
-                        }
-                    }
-                })";
             oss<<"}"<<std::endl;
             oss<<"void "<<appliname<<"::onRender(RenderComponentManager *cm) {"<<std::endl;
             oss<<"}"<<std::endl;
             oss<<"void "<<appliname<<"::onDisplay(RenderWindow* window) {"<<std::endl;
-            oss<<"   if (&getRenderWindow() == window) {"<<std::endl;
-            oss<<"       for (unsigned int i = 0; i < drawables.size(); i++) {"<<std::endl;
-            oss<<"           window->draw(*drawable[i]);"<<std::endl;
-            oss<<"       }"<<std::endl;
-            oss<<"   }"<<std::endl;
             oss<<"}"<<std::endl;
             oss<<"void "<<appliname<<"::onUpdate (RenderWindow* window, IEvent& event) {"<<std::endl;
             oss<<" if (&getRenderWindow() == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {"<<std::endl;
@@ -2590,6 +2428,16 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         theMap->setBaseChangementMatrix(bcm);
         getWorld()->addSceneManager(theMap);
         getWorld()->setCurrentSceneManager(taMapName->getText());
+        FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+        Label* lab = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),taMapName->getText(), 15);
+        Node* node = new Node(taMapName->getText(),lab,Vec2f(0, 0),Vec2f(1.f, 0.025f),rootScenesNode.get());
+        lab->setParent(pProjects);
+        lab->setForegroundColor(sf::Color::Blue);
+        lab->setBackgroundColor(sf::Color::White);
+        pProjects->addChild(lab);
+        Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+        Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, lab), FastDelegate<void>(&ODFAEGCreator::showScene, this, lab));
+        lab->getListener().connect("SHOWPFILES", cmd);
         cshapes.clear();
         for (int i = 0; i < getRenderWindow().getSize().x; i+=100) {
             for (int j = 0; j < getRenderWindow().getSize().y; j+=50) {
@@ -2618,7 +2466,6 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         wNewComponent->setVisible(false);
         getRenderComponentManager().setEventContextActivated(false, *wNewComponent);
         tScriptEdit->setEventContextActivated(true);
-        std::cout<<"Create component"<<std::endl;
         if (dpComponentType->getSelectedItem() == "LinkedList") {
             PerPixelLinkedListRenderComponent* ppll = new PerPixelLinkedListRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 4, 6));
             getRenderComponentManager().addComponent(ppll);
@@ -2721,7 +2568,6 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         emitterParams.push_back(taColor2->getText());
         Entity* ps = getWorld()->getEntity(psName);
         if (dynamic_cast<ParticleSystem*>(ps)) {
-            std::cout<<"add emitter"<<std::endl;
             static_cast<ParticleSystem*>(ps)->addEmitter(emitter);
         }
         wNewEmitter->setVisible(false);
@@ -2729,7 +2575,6 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         tScriptEdit->setEventContextActivated(true);
     }
     if (button == bCreateParticleSystemUpdater) {
-        std::cout<<"add particle system"<<std::endl;
         std::string name = taParticleSystemUpdaterName->getText();
         ParticleSystemUpdater* psu = new ParticleSystemUpdater();
         psu->setName(name);
@@ -2742,7 +2587,6 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         }
     }
     if (button == bAddTexRect) {
-        std::cout<<"add text rect"<<std::endl;
         sf::IntRect rect;
         rect.left = conversionStringInt(tTexCoordX->getText());
         rect.top = conversionStringInt(tTexCoordY->getText());
@@ -2760,7 +2604,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         system("PAUSE");*/
         convertSlash(headerFile);
         //std::cout<<"header file : "<<headerFile<<std::endl;
-        std::ifstream ifs("sourceCode.cpp");
+        std::ifstream ifs(appliname+"\\sourceCode.cpp");
         std::string sourceCode="";
         if (pluginSourceCode != "") {
             //fileExist = true;
@@ -2776,7 +2620,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             sourceCode += "#include <string>\n";
             sourceCode += "#include \"odfaeg/Core/archive.h\"\n";
             sourceCode += "#include \"odfaeg/Core/class.hpp\"\n";
-            sourceCode += "#include \"../../Windows/Demos/ODFAEGCREATOR/application.hpp\"\n";
+            sourceCode += "#include \"../../../Windows/Demos/ODFAEGCREATOR/application.hpp\"\n";
             sourceCode += "extern \"C\" {\n";
             sourceCode += "    void createObject(ODFAEGCreator* c, bool save);\n";
             sourceCode += "    void readObjects (ODFAEGCreator* c);\n";
@@ -2809,9 +2653,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         bool found = false;
         while (superClasses.size() > 0 && !found) {
             for (unsigned int i = 0; i < superClasses.size() && !found; i++) {
-                std::cout<<"super class name : "<<superClasses[i].getName()<<std::endl;
                 if (superClasses[i].getName() == "Entity") {
-                    std::cout<<"found entity!"<<std::endl;
                     found = true;
                 }
                 std::vector<odfaeg::core::Class> tmpSuperClasses = superClasses[i].getSuperClasses();
@@ -2968,11 +2810,11 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             sourceCode.insert(pos, toInsert);
         }
         //std::cout<<"source code : "<<sourceCode<<std::endl;
-        std::ofstream file("sourceCode.cpp");
+        std::ofstream file(appliname+"\\sourceCode.cpp");
         file<<sourceCode;
         file.close();
 
-        rtc.addSourceFile("sourceCode");
+        rtc.addSourceFile(appliname+"\\sourceCode");
         rtc.compile();
         std::string errors = rtc.getCompileErrors();
         //std::cout<<"errors : "<<rtc.getCompileErrors();
@@ -3028,10 +2870,16 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             }
             if (found) {
                 std::vector<std::string> parts2 = split(dpSelectMFunction->getSelectedItem(), " ");
+                std::string name;
+                if (cl.getNamespace() != "") {
+                    name = cl.getNamespace()+"::"+cl.getName();
+                } else {
+                    name = cl.getName();
+                }
                 toInsert += "   if(c->getCurrentId() == "+conversionIntString(currentId)+") {\n";
                 toInsert += "       for(unsigned int i = 0; i < it"+cl.getName()+"->second.size(); i++) {\n";
                 toInsert += "           if(it"+cl.getName()+"->second[i]->getExternalObjectName() == \""+taMObjectName->getText()+"\") {\n";
-                toInsert += "               it"+cl.getName()+"->second[i]->"+parts2[1]+"("+args+");\n";
+                toInsert += "               static_cast<"+name+"*>(it"+cl.getName()+"->second[i])->"+parts2[1]+"("+args+");\n";
                 toInsert += "           }\n";
                 toInsert += "       }\n";
                 toInsert += "   }\n";
@@ -3046,10 +2894,10 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 sourceCode.insert(pos, toInsert);
             }
         }
-        std::ofstream file("sourceCode.cpp");
+        std::ofstream file(appliname+"\\sourceCode.cpp");
         file<<sourceCode;
         file.close();
-        rtc.addSourceFile("sourceCode");
+        rtc.addSourceFile(appliname+"\\sourceCode");
         rtc.compile();
         std::string errors = rtc.getCompileErrors();
         //std::cout<<"errors : "<<rtc.getCompileErrors();
@@ -3115,10 +2963,10 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                     }
                 }
             }
-            std::ofstream file("sourceCode.cpp");
+            std::ofstream file(appliname+"\\sourceCode.cpp");
             file<<sourceCode;
             file.close();
-            rtc.addSourceFile("sourceCode");
+            rtc.addSourceFile(appliname+"\\sourceCode");
             rtc.compile();
             std::string errors = rtc.getCompileErrors();
             //std::cout<<"errors : "<<rtc.getCompileErrors();
@@ -3142,7 +2990,6 @@ void ODFAEGCreator::updateNb(std::string name, unsigned int nb) {
     nbs.insert(std::make_pair(name, nb));
 }
 void ODFAEGCreator::addExternalEntity(Entity* entity, std::string type) {
-    //std::cout<<"add entity : "<<entity<<std::endl;
     /*Command::sname = "EXTERNAL";
     name = "EXTERNAL";*/
     /*entity->setExternal(true);
@@ -3154,6 +3001,7 @@ void ODFAEGCreator::addExternalEntity(Entity* entity, std::string type) {
     if (it == toAdd.end()) {
         Vec3f position = getRenderWindow().mapPixelToCoords(Vec3f(cursor.getPosition().x, getRenderWindow().getSize().y - cursor.getPosition().y, 0))+getRenderWindow().getView().getSize()*0.5f;
         entity->setPosition(position);
+        entity->setClassName(type);
         toAdd.insert(std::make_pair(type, std::vector<Entity*>()));
         it = toAdd.find(type);
         it->second.push_back(entity);
@@ -3445,14 +3293,11 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         //Save textures.
         TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
         std::vector<std::string> paths = tm.getPaths();
-        for (unsigned int i = 0; i < paths.size(); i++)
-            std::cout<<"path : "<<paths[i]<<std::endl;
         std::ofstream file(appliname+"\\"+"textures.oc");
         OTextArchive oa(file);
         oa(paths);
         oa(textPaths);
         file.close();
-        std::cout<<"save entities!"<<std::endl;
         //Save entities.
         /*std::vector<Entity*> entities = World::getEntities("*");
         std::ofstream file2(appliname+"\\"+"entities.oc");
@@ -3520,11 +3365,9 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
                 workerType = "ParticleSystemUpdater";
                 std::vector<Entity*> ps = static_cast<ParticleSystemUpdater*>(workers[i])->getParticleSystems();
                 for (unsigned int j = 0; j < ps.size(); j++) {
-                    std::cout<<"ps id  : "<<ps[j]->getId()<<std::endl;
                     psIds.push_back(ps[j]->getId());
                 }
             }
-            std::cout<<"name : "<<&name<<std::endl<<"worker type : "<<&workerType<<std::endl;
             oa5(name);
             oa5(workerType);
             oa5(psIds);
@@ -3568,7 +3411,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         OTextArchive oa7(file7);
         oa7(emitterParams);
         file7.close();
-        std::ifstream file8("sourceCode.cpp");
+        std::ifstream file8(appliname+"\\sourceCode.cpp");
         if (file8) {
             rtc.run<void>("createObject", this, true);
             pluginSourceCode = "";
@@ -3577,14 +3420,13 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
                 pluginSourceCode += line + "\n";
             }
         }
-        std::ofstream file9("otherData.oc");
+        std::ofstream file9(appliname+"\\otherData.oc");
         OTextArchive oa8(file9);
         oa8(callIds);
         oa8(currentId);
         oa8(tmpBps);
         oa8(currentBp);
         file9.close();
-        std::cout<<"saved!"<<std::endl;
      }
      if (item == item18) {
         wNewParticleSystemUpdater->setVisible(true);

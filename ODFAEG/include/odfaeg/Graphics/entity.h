@@ -267,6 +267,8 @@ namespace odfaeg {
                 *   \param type : the type's name of the entity.
                 */
                 void setType (std::string type);
+                void setClassName(std::string className);
+                std::string getClassName();
                 //Destructor.
                 /** \fn void addAttribute (std::string name, T value)
                 *   \brief add an attribute to the entity.
@@ -433,6 +435,7 @@ namespace odfaeg {
                 Entity (math::Vec3f position, math::Vec3f size, math::Vec3f origin, std::string type, EntityFactory& factory, std::string name = "");
                 EntityFactory& factory;
             private :
+                std::string className;
                 static std::map<int, std::string> types; /** A list of the type's id and name's of the entities. */
                 std::pair<int, std::string> type; /** The type's id and the type's name of the entity.*/
                 int id; /** the id of the entity.*/

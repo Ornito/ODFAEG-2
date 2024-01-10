@@ -50,7 +50,8 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void showProjectsFiles(odfaeg::graphic::gui::Label* label);
     void showSourcesFiles(odfaeg::graphic::gui::Label* label);
     void showHeadersFiles(odfaeg::graphic::gui::Label* label);
-    void showGUI(odfaeg::graphic::gui::Label* label);
+    void showScenes(odfaeg::graphic::gui::Label* label);
+    void showScene(odfaeg::graphic::gui::Label* label);
     void showFileContent(odfaeg::graphic::gui::Label* lab);
     void displayInfos(odfaeg::graphic::Shape* shape);
     void displayExternalEntityInfo(odfaeg::graphic::Entity* entity);
@@ -148,7 +149,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::vector<std::string> openedProjects;
         std::vector<std::string> textPaths;
         std::vector<odfaeg::graphic::gui::TextArea*> tmpTextAreas;
-        std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode, rootMaterialNode, rootInfosNode, rootShadowsNode, rootCollisionNode, rootObjectParams, rootMObjectParams;
+        std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootScenesNode, rootPropNode, rootMaterialNode, rootInfosNode, rootShadowsNode, rootCollisionNode, rootObjectParams, rootMObjectParams;
         odfaeg::graphic::CircleShape cursor;
         odfaeg::math::Vec3f guiSize, guiPos, mousePosition;
         bool isGuiShown, showGrid, alignToGrid, showRectSelect;

@@ -267,7 +267,7 @@ namespace odfaeg {
                     EntityId bt = ModelFactory::createBigTileModel(factory, math::Vec3f(startX, startY, startY + (endY - startY) * 0.5f), math::Vec3f(endX - startX, endY - startY, 0));
                     std::vector<EntityId> bigTileId;
                     bigTileId.push_back(bt);
-                    addEntity(componentMapping, bt);
+
                     for (int y = startY; y < endY;  y+=tileSize.y) {
                         for (int x = startX; x < endX; x+=tileSize.x) {
                             //On projete les positions en fonction de la projection du jeux.
@@ -374,7 +374,6 @@ namespace odfaeg {
                                     tileId[0] = clonedTile;
                                     componentMapping.template apply<TransformComponent>(moveSystem, tileId, mvparams);
                                     tile = tileId[0];
-                                    addEntity(componentMapping, tile);
                                     Cell* cell = getGridCellAt(math::Vec3f(transform->center.x, transform->center.y, 0));
                                     /*for (unsigned l = 0; l < cell->getEntitiesInside().size(); l++) {
                                         if (getComponent<EntityInfoComponent>(cell->getEntitiesInside()[l])->groupName == "E_TILE") {
@@ -387,14 +386,11 @@ namespace odfaeg {
                                         }
                                     }*/
                                 }
-                                if (rect.getSize().z != 0) {
-
-                                } else {
-                                    componentMapping.addChild(bt, tile);
-                                }
+                                componentMapping.addChild(bt, tile);
                             }
                         }
                     }
+                    addEntity(componentMapping, bt);
             }
             void Scene::setName (string name) {
                 this->name = name;
@@ -469,9 +465,12 @@ namespace odfaeg {
                 if (getComponent<TransformComponent>(entity) != nullptr) {
                     /*if (getComponent<MeshComponent>(entity) != nullptr && getComponent<EntityInfoComponent>(componentMapping.getRoot(entity))->groupName == "E_WALL")
                         std::cout<<"add wall tile!"<<std::endl;*/
-                    return gridMap->addEntity(getComponent<TransformComponent>(entity)->globalBounds, entity);
+                    if (!gridMap->addEntity(getComponent<TransformComponent>(entity)->globalBounds, entity))
+                        return false;
+                } else {
+                    return false;
                 }
-                return false;
+                return true;
             }
             bool Scene::removeEntity (ComponentMapping& componentMapping, EntityId entity) {
                 if (getComponent<AnimationComponent>(entity)) {

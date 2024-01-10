@@ -132,17 +132,20 @@ namespace odfaeg {
                                                     layout (location = 3) in vec3 normals;
                                                     layout (location = 4) in mat4 worldMat;
                                                     layout (location = 12) in uint textureIndex;
+                                                    layout (location = 14) in uint l;
                                                     uniform mat4 projectionMatrix;
                                                     uniform mat4 viewMatrix;
                                                     uniform mat4 textureMatrix[)"+core::conversionUIntString(Texture::getAllTextures().size())+R"(];
                                                     out vec2 fTexCoords;
                                                     out vec4 frontColor;
                                                     out uint texIndex;
+                                                    out uint layer;
                                                     void main() {
                                                         gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
                                                         fTexCoords = (textureIndex != 0) ? (textureMatrix[textureIndex-1] * vec4(texCoords, 1.f, 1.f)).xy : texCoords;
                                                         frontColor = color;
                                                         texIndex = textureIndex;
+                                                        layer = l;
                                                     }
                                                     )";
                 const std::string  normalVertexShader = R"(#version 460
@@ -151,17 +154,20 @@ namespace odfaeg {
                                                         layout (location = 2) in vec2 texCoords;
                                                         layout (location = 3) in vec3 normals;
                                                         layout (location = 4) in uint textureIndex;
+                                                        layout (location = 6) in uint l;
                                                         uniform mat4 textureMatrix[)"+core::conversionUIntString(Texture::getAllTextures().size())+R"(];
                                                         uniform mat4 projectionMatrix;
                                                         uniform mat4 viewMatrix;
                                                         out vec2 fTexCoords;
                                                         out vec4 frontColor;
                                                         out uint texIndex;
+                                                        out uint layer;
                                                         void main () {
                                                             gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.f);
                                                             fTexCoords = (textureIndex != 0) ? (textureMatrix[textureIndex-1] * vec4(texCoords, 1.f, 1.f)).xy : texCoords;
                                                             frontColor = color;
                                                             texIndex = textureIndex;
+                                                            layer = l;
                                                         })";
                 const std::string  linkedListVertexShader2 = R"(#version 460
                                                                 layout (location = 0) in vec3 position;
@@ -241,12 +247,12 @@ namespace odfaeg {
                                                                           in vec4 frontColor;
                                                                           in vec2 fTexCoords;
                                                                           in flat uint texIndex;
+                                                                          in flat uint layer;
                                                                           layout(std140, binding=0) uniform ALL_TEXTURES {
                                                                               sampler2D textures[200];
                                                                           };
                                                                           uniform sampler2D texture;
                                                                           uniform float haveTexture;
-                                                                          uniform uint layer;
                                                                           uniform uint nbLayers;
 
                                                                           layout(binding = 0, rgba32f) uniform image2D depthBuffer;
@@ -255,7 +261,7 @@ namespace odfaeg {
                                                                           void main () {
                                                                               vec4 texel = (texIndex != 0) ? frontColor * texture2D(textures[texIndex-1], fTexCoords.xy) : frontColor;
                                                                               float z = gl_FragCoord.z;
-                                                                              float l = layer / nbLayers;
+                                                                              float l = float(layer) / float(nbLayers);
                                                                               vec4 depth = imageLoad(depthBuffer,ivec2(gl_FragCoord.xy));
                                                                               if (l > depth.y || l == depth.y && z > depth.z) {
                                                                                 fColor = vec4(0, l, z, texel.a);
@@ -275,19 +281,19 @@ namespace odfaeg {
                                                                       uniform sampler2D texture;
                                                                       uniform sampler2D depthBuffer;
                                                                       uniform float haveTexture;
-                                                                      uniform uint layer;
                                                                       uniform uint nbLayers;
                                                                       uniform vec3 resolution;
                                                                       in vec4 frontColor;
                                                                       in vec2 fTexCoords;
                                                                       in flat uint texIndex;
+                                                                      in flat uint layer;
                                                                       void main() {
                                                                           vec4 texel = (texIndex != 0) ? frontColor * texture2D(textures[texIndex-1], fTexCoords.xy) : frontColor;
                                                                           float current_alpha = texel.a;
                                                                           vec2 position = (gl_FragCoord.xy / resolution.xy);
                                                                           vec4 depth = texture2D (depthBuffer, position);
                                                                           vec4 alpha = imageLoad(alphaBuffer,ivec2(gl_FragCoord.xy));
-                                                                          float l = layer / nbLayers;
+                                                                          float l = float(layer) / float(nbLayers);
                                                                           float z = gl_FragCoord.z;
                                                                           if ((l > depth.y || l == depth.y && z > depth.z) && current_alpha > alpha.a) {
                                                                               fColor = vec4(0, l, z, current_alpha);
@@ -579,8 +585,6 @@ namespace odfaeg {
                         } else {
                             sBuildDepthBuffer.setParameter("haveTexture", 0.f);
                         }
-                        float layer = m_reflInstances[i].getVertexArrays()[0]->getEntity()->getLayer();
-                        sBuildDepthBuffer.setParameter("layer", layer);
 
                         sBuildDepthBuffer.setParameter("nbLayers",GameObject::getNbLayers());
                         matrices.clear();
@@ -604,6 +608,7 @@ namespace odfaeg {
                                     for (unsigned int k = 0; k < m_reflInstances[i].getVertexArrays()[j]->getVertexCount(); k++) {
                                         //std::cout<<"add vertices : "<<" i : "<<i<<" j : "<<"k : "<<k<<" size  : "<<vbBindlessTex[p].getVertexCount()<<std::endl;
                                         vbBindlessTex[p].append((*m_reflInstances[i].getVertexArrays()[j])[k], (m_reflInstances[i].getMaterial().getTexture() != nullptr) ? m_reflInstances[i].getMaterial().getTexture()->getNativeHandle() : 0);
+                                        vbBindlessTex[p].addLayer(m_reflInstances[i].getMaterial().getLayer());
                                     }
                                 }
                             }
@@ -631,13 +636,12 @@ namespace odfaeg {
                         } else {
                             sBuildDepthBufferNormal.setParameter("haveTexture", 0.f);
                         }
-                        float layer = m_reflNormals[i].getVertexArrays()[0]->getEntity()->getLayer();
-                        sBuildDepthBuffer.setParameter("layer", layer);
                         sBuildDepthBuffer.setParameter("nbLayers",GameObject::getNbLayers());
                         vb.clear();
                         vb.setPrimitiveType(m_reflNormals[i].getAllVertices().getPrimitiveType());
                         for (unsigned int j = 0; j < m_reflNormals[i].getAllVertices().getVertexCount(); j++) {
                             vb.append(m_reflNormals[i].getAllVertices()[j]);
+                            vb.addLayer(m_reflNormals[i].getMaterial().getLayer());
                         }
                         vb.update();
                         currentStates.blendMode = sf::BlendNone;
@@ -661,8 +665,6 @@ namespace odfaeg {
                         } else {
                             sBuildAlphaBuffer.setParameter("haveTexture", 0.f);
                         }
-                        float layer = m_instances[i].getVertexArrays()[0]->getEntity()->getLayer();
-                        sBuildAlphaBuffer.setParameter("layer", layer);
                         sBuildAlphaBuffer.setParameter("nbLayers",GameObject::getNbLayers());
                         vb.clear();
                         vb.setPrimitiveType(m_instances[i].getVertexArrays()[0]->getPrimitiveType());
@@ -684,6 +686,7 @@ namespace odfaeg {
                                 if (entity == m_instances[i].getVertexArrays()[j]->getEntity()) {
                                     for (unsigned int k = 0; k < m_instances[i].getVertexArrays()[j]->getVertexCount(); k++) {
                                         vb.append((*m_instances[i].getVertexArrays()[j])[k]);
+                                        vb.addLayer(m_instances[i].getMaterial().getLayer());
                                     }
                                 }
                             }
@@ -704,13 +707,12 @@ namespace odfaeg {
                         } else {
                             sBuildAlphaBufferNormal.setParameter("haveTexture", 0.f);
                         }
-                        float layer = m_normals[i].getVertexArrays()[0]->getEntity()->getLayer();
-                        sBuildAlphaBufferNormal.setParameter("layer", layer);
                         sBuildAlphaBufferNormal.setParameter("nbLayers",GameObject::getNbLayers());
                         //std::cout<<"layer : "<<layer<<" nb layers : "<<Entity::getNbLayers()<<std::endl;
                         unsigned int p = m_normals[i].getAllVertices().getPrimitiveType();
                         for (unsigned int j = 0; j < m_normals[i].getAllVertices().getVertexCount(); j++) {
                             vbBindlessTex[p].append(m_normals[i].getAllVertices()[j],(m_normals[i].getMaterial().getTexture() != nullptr) ? m_normals[i].getMaterial().getTexture()->getNativeHandle() : 0);
+                            vbBindlessTex[p].addLayer(m_normals[i].getMaterial().getLayer());
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 #include "../../../include/odfaeg/Core/runtimeCompiler.hpp"
 #include <iostream>
+#include "../../../include/odfaeg/Core/utilities.h"
 namespace odfaeg {
     namespace core {
         RuntimeCompiler::RuntimeCompiler(std::string functionName) : funcName(functionName), isDllOpened(false) {
@@ -14,8 +15,8 @@ namespace odfaeg {
                 #endif
                 isDllOpened = false;
             }
-            std::ofstream file(funcName+".DEF");
-            file<<"LIBRARY \""+funcName+"\"\n";
+            std::ofstream file(outputDir+"\\"+funcName+".DEF");
+            file<<"LIBRARY \""+outputDir+"\\"+funcName+"\"\n";
             file<<"EXPORTS\n";
             for (unsigned int i = 0; i < functions.size(); i++) {
                 file<<functions[i]+"\n";
@@ -33,21 +34,11 @@ namespace odfaeg {
                     command+="-D"+macros[i]+" ";
                 }
                 for (unsigned int i = 0; i < includeDirs.size(); i++) {
-                    /*if (i == 0)
-                        command += "-I";*/
                     command += "-I"+includeDirs[i]+" ";
                 }
-                command += " 2> "+funcName+".err";
+                command += " 2> "+outputDir+"\\"+funcName+conversionIntString(s)+".err";
+                std::cout<<"command : "<<command<<std::endl;
                 system(command.c_str());
-                std::ifstream ifs(funcName+".err");
-                std::string line;
-                if (ifs) {
-                    while (getline(ifs, line)) {
-                        compileErrors+=line+"\n";
-                    }
-                    ifs.close();
-                }
-                std::cout<<"errors : "<<compileErrors<<std::endl;
             }
             for (unsigned int i = 0; i < libraryDirs.size(); i++) {
                 if (i == 0)
@@ -59,7 +50,7 @@ namespace odfaeg {
             }
             //std::cout<<"command : "<<command<<std::endl;
             system(command.c_str());
-            command = "g++ -shared -o "+funcName+".dll";
+            command = "g++ -shared -o "+outputDir+"\\"+funcName+".dll";
             for (unsigned int s = 0; s < sourceFiles.size(); s++) {
                 command+=" "+sourceFiles[s]+".o ";
             }
@@ -69,18 +60,9 @@ namespace odfaeg {
             for (unsigned int i = 0; i < libraries.size(); i++) {
                 command += "-l"+libraries[i]+" ";
             }
-            command += " 2> "+funcName+".err";
+            command += " 2> "+outputDir+"\\"+funcName+"shared.err";
 
-            std::cout<<"command : "<<command<<std::endl;
             system(command.c_str());
-            std::ifstream ifs(funcName+".err");
-            std::string line;
-            if (ifs) {
-                while (getline(ifs, line)) {
-                    compileErrors+=line+"\n";
-                }
-                ifs.close();
-            }
             /*std::string path = "./"+funcName+".so";
             flib = dlopen(path.c_str(), RTLD_LAZY);
             if (!flib) {
@@ -118,6 +100,9 @@ namespace odfaeg {
         }
         void RuntimeCompiler::addRuntimeFunction(std::string f) {
             functions.push_back(f);
+        }
+        void RuntimeCompiler::setOutputDir(std::string outputDir) {
+            this->outputDir = outputDir;
         }
         RuntimeCompiler::~RuntimeCompiler() {
             if (isDllOpened)

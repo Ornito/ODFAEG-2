@@ -37,7 +37,7 @@ namespace odfaeg {
             void Node::addNode(Node* node) {
                 math::Vec2f nodeRelPos = component->getRelPosition();
                 if (this != getRootNode())
-                    nodeRelPos.y += component->getRelSize().y;
+                    nodeRelPos.y = component->getRelPosition().y + component->getRelSize().y;
                 findNodePos(this, nodeRelPos);
                 node->component->setRelPosition(node->component->getRelPosition().x, nodeRelPos.y);
                 getRootNode()->displaceNodes (node, nodeRelPos);
@@ -59,6 +59,7 @@ namespace odfaeg {
             void Node::findNodePos (Node* node, math::Vec2f& nodeRelPos) {
                 for (unsigned int i = 0; i < nodes.size(); i++) {
                     nodeRelPos.y += nodes[i]->component->getRelSize().y;
+
                     nodes[i]->findNodePos(nodes[i].get(), nodeRelPos);
                 }
             }

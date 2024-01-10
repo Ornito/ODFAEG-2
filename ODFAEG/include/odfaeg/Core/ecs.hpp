@@ -21,11 +21,7 @@ namespace odfaeg {
                 get<T>()[entity] = component;
             }
             template <typename T>
-            T* getComponent(EntityId entity, std::string name = "") {
-                if (name == "test") {
-                    std::cout<<"test size : "<<get<T>().size()<<" test entity : "<<entity<<std::endl;
-                    std::cout<<"test has component ? "<<!get<T>()[entity].has_value()<<std::endl;
-                }
+            T* getComponent(EntityId entity) {
                 if (entity >= get<T>().size() || !get<T>()[entity].has_value()) {
                     /*if (name == "test")
                         std::cout<<"return nullptr"<<std::endl;*/
@@ -80,6 +76,82 @@ namespace odfaeg {
                     if(parentMapping[entity].has_value());
                        return parentMapping[entity].value();
                     return -1;
+                }
+                template <typename Archive, typename... Components>
+                void readEntities(EntityFactory& factory, Archive& ar, std::vector<EntityId>& entities) {
+                    size_t nbEntities;
+                    ar(nbEntities);
+                    for (unsigned int i = 0; i < nbEntities; i++) {
+                        EntityId entity;
+                        readEntity<Archive, Components...>(factory, ar, entity);
+                        entities.push_back(entity);
+                    }
+                }
+                template <typename Archive, typename... Components>
+                void readEntity(EntityFactory& factory, Archive& ar, EntityId& entity) {
+                    ar(entity);
+                    readComponents<0, Archive, Components...>(ar, entity);
+                    factory.createEntity(getComponent<EntityInfoComponent>(entity)->groupName);
+                    size_t nbChildren;
+                    ar(nbChildren);
+                    for (unsigned int i = 0; i < nbChildren; i++) {
+                        EntityId child;
+                        readEntity<Archive, Components...>(factory, ar, child);
+                        addChild(entity, child);
+                    }
+                }
+                template <size_t I, typename Archive, typename... Components, class = typename std::enable_if_t<(sizeof...(Components) != 0 && I < sizeof...(Components)-1)>>
+                void readComponents(Archive& ar, EntityId entity) {
+                    std::tuple_element_t<I, std::tuple<Components...>>* component;
+                    ar(component);
+                    if (component != nullptr) {
+                        addComponent(entity, *component);
+                    }
+                    readComponents<I+1, Archive, Components...>(ar, entity);
+                }
+                template <size_t I, typename Archive, typename... Components, class... D, class = typename std::enable_if_t<(sizeof...(Components) != 0 && I == sizeof...(Components)-1)>>
+                void readComponents(Archive& ar, EntityId entity) {
+                    std::tuple_element_t<I, std::tuple<Components...>>* component;
+                    ar(component);
+                    if (component != nullptr) {
+                        addComponent(entity, *component);
+                    }
+                }
+                template <size_t I, typename Archive, typename... Components, class... D, class... E, class = typename std::enable_if_t<(sizeof...(Components) == 0)>>
+                void readComponents(Archive& ar, EntityId entity) {
+
+                }
+                template <typename Archive, typename... Components>
+                void writeEntities(Archive& ar, std::vector<EntityId> entities) {
+                    unsigned int size = entities.size();
+                    ar(size);
+                    for (unsigned int i = 0; i < entities.size(); i++) {
+                        writeEntity<Archive, Components...>(ar, entities[i]);
+                    }
+                }
+                template <typename Archive, typename... Components>
+                void writeEntity(Archive& ar, EntityId entity) {
+                    ar(entity);
+                    writeComponents<0, Archive, Components...>(ar, entity);
+                    unsigned int size = getChildren(entity).size();
+                    ar(size);
+                    for (unsigned int i = 0; i < getChildren(entity).size(); i++) {
+                        writeEntity<Archive, Components...>(ar, getChildren(entity)[i]);
+                    }
+                }
+                template <size_t I, typename Archive, typename... Components, class = typename std::enable_if_t<(sizeof...(Components) != 0 && I < sizeof...(Components)-1)>>
+                void writeComponents(Archive& ar, EntityId entity) {
+                    ar(getComponent<std::tuple_element_t<I, std::tuple<Components...>>>(entity));
+                    writeComponents<I+1, Archive, Components...>(ar, entity);
+                }
+                template <size_t I, typename Archive, typename... Components, class... D, class = typename std::enable_if_t<(sizeof...(Components) != 0 && I == sizeof...(Components)-1)>>
+                void writeComponents(Archive& ar, EntityId entity) {
+                    ar(getComponent<std::tuple_element_t<I, std::tuple<Components...>>>(entity));
+                }
+
+                template <size_t I, typename Archive, typename... Components, class... D, class... E, class = typename std::enable_if_t<(sizeof...(Components) == 0)>>
+                void writeComponents(Archive& ar, EntityId entity) {
+
                 }
                 bool remove(EntityId entity) {
                     if (entity <  childrenMapping.size()) {

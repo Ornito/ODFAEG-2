@@ -10,9 +10,10 @@
 #include "odfaeg/Window/command.h"
 #include "odfaeg/Window/iKeyboard.hpp"
 #include "odfaeg/Window/iMouse.hpp"
-#include "../../ODFAEG/include/odfaeg/Core/resourceCache.h"
+#include "odfaeg/Core/resourceCache.h"
 #include <fstream>
-#include "../../ODFAEG/include/odfaeg/Core/dynamicTuple.hpp"
+#include "odfaeg/Physics/ECS/particleSystem.hpp"
+#include "odfaeg/Math/distributions.h"
 namespace sorrok {
     class MyECSAppli : public odfaeg::core::ecs::Application {
         public:
@@ -23,6 +24,7 @@ namespace sorrok {
         void onDisplay(odfaeg::graphic::RenderWindow* window);
         void onUpdate (odfaeg::graphic::RenderWindow* window, odfaeg::window::IEvent& event);
         void onExec ();
+        odfaeg::physic::UniversalEmitter emitter;
         odfaeg::core::ResourceCache<> cache;
         unsigned int fpsCounter;
         odfaeg::graphic::ecs::EntityFactory factory;

@@ -27,7 +27,9 @@ set(SRC
 	${INCROOT}/particule.h
         ${SRCROOT}/particle.cpp
         ${INCROOT}/particuleSystem.h
-	${SRCROOT}/particleSystem.cpp)
+	${SRCROOT}/particleSystem.cpp
+	${INCROOT}/ECS/particleSystem.hpp
+	${SRCROOT}/ECS/particleSystem.cpp)
 include_directories(${CMAKE_INCLUDE_PATH})
 link_directories(${CMAKE_LIBRARY_PATH})
 find_package (SFML 2 COMPONENTS window system graphics audio REQUIRED)

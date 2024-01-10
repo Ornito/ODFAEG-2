@@ -38,7 +38,9 @@
 namespace odfaeg
 {
     namespace physic {
-
+        namespace ecs {
+            class ParticleSystem;
+        }
         /// @addtogroup Particles
         /// @{
 
@@ -51,6 +53,7 @@ namespace odfaeg
         // ---------------------------------------------------------------------------------------------------------------------------
         // Public member functions
         public:
+
         /// @brief Constructor
         /// @param totalLifetime How long the particle totally exists.
         explicit	Particle(sf::Time totalLifetime);
@@ -83,6 +86,8 @@ namespace odfaeg
         // Friends
         /// @cond FriendsAreAnImplementationDetail
         friend class ParticleSystem;
+        friend class ecs::ParticleSystem;
+
         friend sf::Time ODFAEG_PHYSICS_API getElapsedLifetime(const Particle& particle);
         friend sf::Time ODFAEG_PHYSICS_API getTotalLifetime(const Particle& particle);
         /// @endcond

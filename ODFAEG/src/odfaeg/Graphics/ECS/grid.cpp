@@ -85,7 +85,6 @@ namespace odfaeg {
                                     cm = getGridCellAt(pos);
                                 }
                                 added = true;
-
                                 cm->addEntity(entity);
                                 /*if (entity->getType() == "E_BIGTILE")
                                   std::cout<<cm->getCoords()<<std::endl;*/

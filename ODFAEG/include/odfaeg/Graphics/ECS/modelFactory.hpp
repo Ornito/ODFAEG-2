@@ -3,6 +3,7 @@
 #include "components.hpp"
 #include "../../Core/ecs.hpp"
 #include "../rectangleShape.h"
+#include "../2D/ambientLight.h"
 #include <GLFW/glfw3.h>
 #include <set>
 #include "world.hpp"
@@ -84,9 +85,16 @@ namespace odfaeg {
                     TransformComponent tc = *getComponent<TransformComponent>(tile);
                     WallTypeComponent wtc;
                     wtc.wallType = type;
+                    ShadowInfoComponent sic;
+                    Light* light = &g2d::AmbientLight::getAmbientLight();
+                    float sy = light->getHeight() / (light->getHeight() * 0.75f);
+                    sic.shadowScale = math::Vec3f(1, sy, 1);
+                    int c = tc.size.y * sy;
+                    sic.shadowCenter = math::Vec3f(0, 0, -c);
                     addComponent(wall, eic);
                     addComponent(wall, tc);
                     addComponent(wall, wtc);
+                    addComponent(wall, sic);
                     world.addChild(wall, tile);
                     return wall;
                 }
@@ -95,8 +103,15 @@ namespace odfaeg {
                     EntityInfoComponent eic;
                     eic.groupName = "E_DECOR";
                     TransformComponent tc = *getComponent<TransformComponent>(tile);
+                    ShadowInfoComponent sic;
+                    Light* light = &g2d::AmbientLight::getAmbientLight();
+                    float sy = light->getHeight() / (light->getHeight() * 0.75f);
+                    sic.shadowScale = math::Vec3f(1, sy, 1);
+                    int c = tc.size.y * sy;
+                    sic.shadowCenter = math::Vec3f(0, 0, -c);
                     addComponent(decor, eic);
                     addComponent(decor, tc);
+                    addComponent(decor, sic);
                     world.addChild(decor, tile);
                     return decor;
                 }
@@ -118,13 +133,13 @@ namespace odfaeg {
                     tc.globalBounds = tc.localBounds.transform(tm);
                     tc.transformMatrix = tm;
                     AnimationComponent ac;
+                    ac.fr = fr;
                     ac.playing = true;
                     ac.loop = loop;
                     if (frames.size() > 0) {
                         ac.currentFrame = frames[ac.currentFrameIndex];
                         ac.previousFrame = (ac.currentFrameIndex - 1 < 0) ? frames[frames.size()-1] : frames[ac.currentFrameIndex-1];
                         ac.nextFrame = (ac.currentFrameIndex >= frames.size()) ? frames[0] : frames[ac.currentFrameIndex+1];
-                        ac.interpolatedFrame = world.getComponentMapping().clone<EntityInfoComponent, TransformComponent, MeshComponent, ColliderComponent>(factory, frames[ac.currentFrameIndex]);
                         for (unsigned int i = 0; i < frames.size(); i++) {
                             world.addChild(animation, frames[i]);
                         }

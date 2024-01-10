@@ -129,6 +129,7 @@ namespace odfaeg {
             entity->type = type;
             entity->entityState = entityState;
             entity->selected = selected;
+            entity->className = className;
         }
         //Do nothing by default.
         void Entity::setExternalObjectName(std::string externalObjectName) {
@@ -137,6 +138,12 @@ namespace odfaeg {
         //Return empty string by default.
         std::string Entity::getExternalObjectName() {
             return "";
+        }
+        void Entity::setClassName(std::string className) {
+            this->className = className;
+        }
+        std::string Entity::getClassName() {
+            return className;
         }
         //Do nothing by default.
         void Entity::setExternal(bool external) {

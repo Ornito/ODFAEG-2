@@ -189,11 +189,15 @@ namespace odfaeg {
                     ar(externalObjectName);
                     //std::cout<<"external object name : "<<std::endl;
                     ar(layer);
+                    if (ar.isInputArchive()) {
+                        setLayer(layer);
+                    }
                     //std::cout<<"water : "<<water<<std::endl;
                     ar(drawMode);
                     //std::cout<<"draw mode : "<<drawMode<<std::endl;
 
                     ar(children);
+
                     //std::cout<<"children"<<std::endl;
                 /*} else {
                     alreadySerialized = false;
@@ -256,7 +260,7 @@ namespace odfaeg {
             std::unique_ptr<physic::BoundingVolume> collisionVolume; /** the collision volume of the entity*/
             bool alreadySerialized;
             unsigned int boneIndex;
-            float layer;
+            unsigned int layer;
             DrawMode drawMode;
             bool external, selected;
             std::string externalObjectName;

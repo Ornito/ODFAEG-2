@@ -382,12 +382,10 @@ namespace odfaeg {
                     std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                     if (it != adresses.end()) {
                         buffer<<it->second<<std::endl;
-                        //std::cout<<"id : "<<it->second<<std::endl;
                     } else {
                         std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                         adresses.insert(newAddress);
                         buffer<<newAddress.second<<std::endl;
-                        //std::cout<<"id : "<<newAddress.second<<std::endl;
                         nbSerialized++;
                         object->serialize(*this);
                     }
@@ -1136,7 +1134,6 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
-                //std::cout<<"id : "<<id<<std::endl;
                 if (id != -1) {
                     std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {

@@ -44,7 +44,7 @@ namespace odfaeg {
                 #if defined (ODFAEG_SYSTEM_LINUX)
                 std::string path = "./"+funcName+".so";
                 #else if defined (ODFAEG_SYSTEM_WINDOWS)
-                std::string path = "./"+funcName+".dll";
+                std::string path = "./"+outputDir+"\\"+funcName+".dll";
                 #endif
                 #if defined (ODFAEG_SYSTEM_LINUX)
                  if (!isDllOpened) {
@@ -119,6 +119,7 @@ namespace odfaeg {
             *   \brief destructor. (we need to free the shared library)
             */
             ~RuntimeCompiler();
+            void setOutputDir(std::string outputDir);
             private :
             #if defined (ODFAEG_SYSTEM_LINUX)
             FILE* flib;
@@ -126,8 +127,9 @@ namespace odfaeg {
             HMODULE flib; /** pointer to the shared library.*/
             #endif
             bool isDllOpened; /**> if the shared library is open.*/
-            std::string funcName; /**> the name of the sahred library.*/
+            std::string funcName; /**> the name of the shared library.*/
             std::string compileErrors; /**> compilation errors.*/
+            std::string outputDir;
             std::vector<std::string> sourceFiles; /**> the c++ source files to compiler.*/
             std::vector<std::string> includeDirs; /**> the include directories.*/
             std::vector<std::string> libraryDirs; /**> the library directories.*/

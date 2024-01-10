@@ -5,13 +5,16 @@ namespace odfaeg {
             AnimationUpdater::AnimationUpdater(World& world, EntityFactory& entityFactory) : world(world), entityFactory(entityFactory) {
             }
             void AnimationUpdater::addAnim(EntityId anim) {
+                AnimationComponent* ac = getComponent<AnimationComponent>(anim);
+                if (ac->currentFrameIndex < world.getComponentMapping().getChildren(anim).size())
+                    ac->interpolatedFrame = world.getComponentMapping().clone<EntityInfoComponent, TransformComponent, MeshComponent, ColliderComponent>(entityFactory, world.getComponentMapping().getChildren(anim)[ac->currentFrameIndex]);
                 anims.push_back(anim);
             }
             void AnimationUpdater::onUpdate() {
                 for (unsigned int i = 0; i < anims.size(); i++) {
                     AnimationComponent* ac = getComponent<AnimationComponent>(anims[i]);
-
                     if (ac->playing && ac->clock.getElapsedTime().asSeconds() > ac->fr) {
+
                         if (world.getComponentMapping().getChildren(anims[i]).size() > 2) {
                             ac->interpPerc++;
                             if (ac->interpPerc >= ac->interpLevels) {
@@ -59,7 +62,6 @@ namespace odfaeg {
                                 iva[j].texCoords = cva[j].texCoords;
                             }
                         }
-                        //std::cout<<"current frame : "<<currentFrame<<" matérial : "<<getComponent<MeshComponent>(currentFrame)->faces[i].getMaterial().getTexture()<<std::endl;
                         getComponent<MeshComponent>(interpolatedFrame)->faces[i].setMaterial(getComponent<MeshComponent>(currentFrame)->faces[i].getMaterial());
                         getComponent<MeshComponent>(interpolatedFrame)->faces[i].setTransformMatrix(getComponent<MeshComponent>(currentFrame)->faces[i].getTransformMatrix());
                     }

@@ -84,6 +84,7 @@ namespace odfaeg {
                     ar(texRect.height);
                     ar(texId);
                     //std::cout<<"mat tex id : "<<texId<<std::endl;
+
                 }
             };
             public :

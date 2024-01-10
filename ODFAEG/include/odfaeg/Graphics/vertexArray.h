@@ -174,6 +174,7 @@ namespace odfaeg {
                 //std::cout<<"locals : "<<std::endl;
                 ar(m_entity);
                 //std::cout<<"entity : "<<m_entity<<std::endl;
+                ar(m_entityId);
                 if (ar.isInputArchive())
                     onLoad();
             }
