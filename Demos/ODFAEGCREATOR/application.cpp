@@ -1074,29 +1074,37 @@ Vec3f ODFAEGCreator::getGridCellPos(Vec3f pos) {
 }
 void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     if (&getRenderWindow() == window && event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED && event.keyboard.code == IKeyboard::Delete) {
+
+        rootPropNode->deleteAllNodes();
+        rootMaterialNode->deleteAllNodes();
+        rootInfosNode->deleteAllNodes();
+        rootShadowsNode->deleteAllNodes();
+        rootCollisionNode->deleteAllNodes();
+        pTransform->removeAll();
+        pMaterial->removeAll();
+        pInfos->removeAll();
+        pShadows->removeAll();
+        pCollisions->removeAll();
         if(dynamic_cast<Entity*>(selectedObject) != nullptr) {
-            //std::cout<<"delete selected object"<<std::endl;
-            dynamic_cast<Entity*>(selectedObject)->detachChildren();
+            //std::cout<<"detach children selected object : "<<std::endl;
+
+            //std::cout<<"remove selected object"<<std::endl;
             getWorld()->removeEntity(dynamic_cast<Entity*>(selectedObject));
+            dynamic_cast<Entity*>(selectedObject)->detachChildren();
+            std::cout<<"delete selected object : "<<dynamic_cast<Entity*>(selectedObject)->getType()<<std::endl;
             delete selectedObject;
-            rootPropNode->deleteAllNodes();
-            rootMaterialNode->deleteAllNodes();
-            rootInfosNode->deleteAllNodes();
-            rootShadowsNode->deleteAllNodes();
-            rootCollisionNode->deleteAllNodes();
-            pTransform->removeAll();
-            pMaterial->removeAll();
-            pInfos->removeAll();
-            pShadows->removeAll();
-            pCollisions->removeAll();
+
         }
         std::vector<Transformable*> objects = rectSelect.getItems();
         //std::cout<<"size : "<<objects.size()<<std::endl;
         for (unsigned int i = 1; i < objects.size(); i++) {
             if(dynamic_cast<Entity*>(objects[i]) != nullptr) {
-                //std::cout<<"delete object : "<<i<<std::endl;
-                dynamic_cast<Entity*>(objects[i])->detachChildren();
+                //std::cout<<"detach children : "<<i<<std::endl;
+
+                //std::cout<<"remove entity : "<<i<<std::endl;
                 getWorld()->removeEntity(dynamic_cast<Entity*>(objects[i]));
+                dynamic_cast<Entity*>(objects[i])->detachChildren();
+                std::cout<<"delete selected object : "<<dynamic_cast<Entity*>(objects[i])->getType()<<std::endl;
                 delete objects[i];
             }
         }
@@ -1412,13 +1420,13 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
             rectSelect.setRect(pos.x, pos.y, pos.z, box.getSize().x, box.getSize().y, box.getSize().z);
             if (getWorld()->getCurrentSceneManager() != nullptr) {
                 //std::cout<<"select get visible entities"<<std::endl;
-                std::vector<Entity*> entities = getWorld()->getVisibleEntities(taSelectExpression->getText(), factory);
+                std::vector<Entity*> entities = getWorld()->getEntities(taSelectExpression->getText());
                 //std::cout<<"visible entities selected get : "<<entities.size()<<std::endl;
                 for (unsigned int i = 0; i < entities.size(); i++) {
                     //std::cout<<"type : "<<entities[i]->getType()<<std::endl<<"select pos : "<<rectSelect.getSelectionRect().getPosition()<<"select size : "<<rectSelect.getSelectionRect().getSize()<<"globalbounds pos : "<<entities[i]->getGlobalBounds().getPosition()<<"globalbounds size : "<<entities[i]->getGlobalBounds().getSize()<<std::endl;
                     if (rectSelect.getSelectionRect().intersects(entities[i]->getGlobalBounds())) {
                         //if (dynamic_cast<Tile*>(entities[i])) {
-                            //std::cout<<"add tile : "<<i<<std::endl;
+
                             rectSelect.addItem(entities[i]);
                             entities[i]->setSelected(true);
                             //std::cout<<"border added"<<std::endl;
@@ -1434,6 +1442,7 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
                     }
                 }
             }
+            std::cout<<"rect selected size : "<<rectSelect.getItems().size()<<std::endl;
             if (rectSelect.getItems().size() > 0)
                 selectedObject = rectSelect.getItems()[0];
             if (dynamic_cast<Entity*> (selectedObject)) {
@@ -1698,7 +1707,7 @@ void ODFAEGCreator::onExec() {
                 textPaths.push_back(tTexId->getText());
             }
 
-            std::map<std::string, std::string>::iterator it;
+            /*std::map<std::string, std::string>::iterator it;
             it = cppAppliContent.find(minAppliname+".cpp");
             if (it != cppAppliContent.end()) {
                 std::string& content = it->second;
@@ -1706,7 +1715,7 @@ void ODFAEGCreator::onExec() {
                 std::string subs = content.substr(pos);
                 pos += subs.find_first_of('\n') + 1;
                 content.insert(pos, "    tm.fromFileWithAlias("+path+","+ImgName+");");
-            }
+            }*/
             fdTexturePath->setEventContextActivated(false);
             tScriptEdit->setEventContextActivated(true);
             for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
@@ -2279,14 +2288,13 @@ void ODFAEGCreator::actionPerformed(Button* button) {
     }
     if (button->getText() == "Create") {
         appliname = ta->getText();
-        std::ofstream applis(appliname+"\\"+appliname+".poc");
-        applis<<appliname<<std::endl;
         applitype = dpList->getSelectedItem();
         #if defined (ODFAEG_SYSTEM_LINUX)
         path = fdProjectPath->getAppiDir() + "/" + appliname;
         #else if defined (ODFAEG_SYSTEM_WINDOWS)
         path = fdProjectPath->getAppiDir() + "\\" + appliname;
         #endif // if
+
         const char* lcars = appliname.c_str();
         char* ucars = new char[appliname.size()];
         for (unsigned int i = 0; i < appliname.length(); i++) {
@@ -2303,6 +2311,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             std::cerr<<"Failed to create application directory!";
             //std::cerr << "Error: " << strerror(errno);
         }
+        std::ofstream applis(appliname+"\\"+appliname+".poc");
+        applis<<appliname<<std::endl;
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
         wApplicationNew->setVisible(false);
         getRenderComponentManager().setEventContextActivated(false, *wApplicationNew);
@@ -2665,11 +2675,13 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                  }
             }
         }
+        std::string toInsert = "";
+        int pos;
+        std::string toFind;
         //std::cout<<"source file : "<<sourceFile<<std::endl;
         if (sourceCode.find("#include \""+headerFile+"\"") == std::string::npos) {
             sourceCode.insert(0, "#include \""+headerFile+"\"\n");
-            std::string toInsert = "";
-            int pos;
+
             if (sourceCode.find("}") != std::string::npos) {
                 pos = sourceCode.find("}")+2;
                 if (dpSelectPointerType->getSelectedItem() == "No pointer") {
@@ -2680,72 +2692,85 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                     }
                 } else {
                     toInsert = "std::vector<"+dpSelectPointerType->getSelectedItem()+"*> v"+cl.getName()+";\n";
-                }
-                sourceCode.insert(pos, toInsert);
-                toInsert = "";
-                std::string toFind = "void createObject(ODFAEGCreator *c, bool save) {\n";
-                toFind += "    EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, odfaeg::physic::BoundingVolume, odfaeg::physic::BoundingBox)\n";
-                toFind += "    EXPORT_CLASS_GUID_(EntityTile, odfaeg::graphic::Entity, odfaeg::graphic::Tile, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                toFind += "    EXPORT_CLASS_GUID_(EntityBigTile, odfaeg::graphic::Entity, odfaeg::graphic::BigTile, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                toFind += "    EXPORT_CLASS_GUID_(EntityWall, odfaeg::graphic::Entity, odfaeg::graphic::g2d::Wall, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                toFind += "    EXPORT_CLASS_GUID_(EntityDecor, odfaeg::graphic::Entity, odfaeg::graphic::g2d::Decor, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                toFind += "    EXPORT_CLASS_GUID_(EntityAnimation, odfaeg::graphic::Entity, odfaeg::graphic::Anim, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                toFind += "    EXPORT_CLASS_GUID_(EntityMesh, odfaeg::graphic::Entity, odfaeg::graphic::Mesh, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                toFind += "    EXPORT_CLASS_GUID_(EntityParticleSystem, odfaeg::graphic::Entity, odfaeg::physic::ParticleSystem, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                toFind += "    odfaeg::core::Application::app = c;\n";
-                pos = sourceCode.find(toFind)+toFind.size();
-                if (dpSelectPointerType->getSelectedItem() != "No pointer" && dpSelectPointerType->getSelectedItem() != dpSelectClass->getSelectedItem()) {
-                    std::vector<std::string> parts = split(dpSelectPointerType->getSelectedItem(), "::");
-                    std::string name = parts[parts.size()-1];
-                    toInsert += "   EXPORT_CLASS_GUID_("+name+cl.getName()+","+dpSelectPointerType->getSelectedItem()+","+dpSelectClass->getSelectedItem()+", VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(c->getEntityFactory()))\n";
-                }
-                if (found) {
-                    toInsert += "   std::map<std::string, std::vector<odfaeg::graphic::Entity*>>::iterator it"+cl.getName()+" = c->getExternals().find(\""+cl.getName()+"\");\n";
-                    toInsert += "   if (it"+cl.getName()+" == c->getExternals().end()) {\n";
-                    toInsert += "       c->getExternals().insert(std::make_pair(\""+cl.getName()+"\","+"v"+cl.getName()+"));\n";
-                    toInsert += "       it"+cl.getName()+" = c->getExternals().find(\""+cl.getName()+"\");\n";
-                    toInsert += "   }\n";
-                }
-                toInsert += "   if(save) {\n";
-                toInsert += "       std::ofstream of"+cl.getName()+" (\""+cl.getName()+".oc\");\n";
-                toInsert += "       odfaeg::core::OTextArchive oa"+cl.getName()+" (of"+cl.getName()+");\n";
-                if (found) {
-                    toInsert += "       oa"+cl.getName()+"(it"+cl.getName()+"->second);\n";
-                } else {
-                    toInsert += "       oa"+cl.getName()+"(v"+cl.getName()+");\n";
-                }
-                toInsert += "   }\n";
-                sourceCode.insert(pos, toInsert);
-                toInsert = "";
-                toFind = "void readObjects (ODFAEGCreator *c) {\n";
-                toFind += "    EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, odfaeg::physic::BoundingVolume, odfaeg::physic::BoundingBox)\n";
-                toFind += "    EXPORT_CLASS_GUID_(EntityTile, odfaeg::graphic::Entity, odfaeg::graphic::Tile, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                toFind += "    EXPORT_CLASS_GUID_(EntityBigTile, odfaeg::graphic::Entity, odfaeg::graphic::BigTile, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                toFind += "    EXPORT_CLASS_GUID_(EntityWall, odfaeg::graphic::Entity, odfaeg::graphic::g2d::Wall, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                toFind += "    EXPORT_CLASS_GUID_(EntityDecor, odfaeg::graphic::Entity, odfaeg::graphic::g2d::Decor, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                toFind += "    EXPORT_CLASS_GUID_(EntityAnimation, odfaeg::graphic::Entity, odfaeg::graphic::Anim, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                toFind += "    EXPORT_CLASS_GUID_(EntityMesh, odfaeg::graphic::Entity, odfaeg::graphic::Mesh, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                toFind += "    EXPORT_CLASS_GUID_(EntityParticleSystem, odfaeg::graphic::Entity, odfaeg::physic::ParticleSystem, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                toFind += "    odfaeg::core::Application::app = c;\n";
-                pos = sourceCode.find(toFind)+toFind.size();
-                if (dpSelectPointerType->getSelectedItem() != "No pointer" && dpSelectPointerType->getSelectedItem() != dpSelectClass->getSelectedItem()) {
-                    std::vector<std::string> parts = split(dpSelectPointerType->getSelectedItem(), "::");
-                    std::string name = parts[parts.size()-1];
-                    toInsert += "   EXPORT_CLASS_GUID_("+name+cl.getName()+","+dpSelectPointerType->getSelectedItem()+","+dpSelectClass->getSelectedItem()+", VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
-                }
-                toInsert += "   std::ifstream if"+cl.getName()+" (\""+cl.getName()+".oc\");\n";
-                toInsert += "   odfaeg::core::ITextArchive ia"+cl.getName()+" (if"+cl.getName()+");\n";
-                toInsert += "   ia"+cl.getName()+"(v"+cl.getName()+");\n";
-                if (found) {
-                    //toInsert += "   c->getExternals().insert(std::make_pair(\""+cl.getName()+"\",v"+cl.getName()+"));\n";
-                    toInsert += "   for (unsigned int i = 0; i < v"+cl.getName()+".size(); i++)\n";
-                    toInsert += "       c->addExternalEntity(v"+cl.getName()+"[i],\""+cl.getName()+"\");\n";
-                    //toInsert += "   c->updateNb(\""+cl.getName()+"\",v"+cl.getName()+".size());\n";
+                    toInsert += "   v"+cl.getName()+".clear();\n";
                 }
                 sourceCode.insert(pos, toInsert);
             }
+            toInsert = "";
+            toFind = "void createObject(ODFAEGCreator *c, bool save) {\n";
+            toFind += "    EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, odfaeg::physic::BoundingVolume, odfaeg::physic::BoundingBox)\n";
+            toFind += "    EXPORT_CLASS_GUID_(EntityTile, odfaeg::graphic::Entity, odfaeg::graphic::Tile, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            toFind += "    EXPORT_CLASS_GUID_(EntityBigTile, odfaeg::graphic::Entity, odfaeg::graphic::BigTile, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            toFind += "    EXPORT_CLASS_GUID_(EntityWall, odfaeg::graphic::Entity, odfaeg::graphic::g2d::Wall, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            toFind += "    EXPORT_CLASS_GUID_(EntityDecor, odfaeg::graphic::Entity, odfaeg::graphic::g2d::Decor, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            toFind += "    EXPORT_CLASS_GUID_(EntityAnimation, odfaeg::graphic::Entity, odfaeg::graphic::Anim, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            toFind += "    EXPORT_CLASS_GUID_(EntityMesh, odfaeg::graphic::Entity, odfaeg::graphic::Mesh, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            toFind += "    EXPORT_CLASS_GUID_(EntityParticleSystem, odfaeg::graphic::Entity, odfaeg::physic::ParticleSystem, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            toFind += "    odfaeg::core::Application::app = c;\n";
+            pos = sourceCode.find(toFind)+toFind.size();
+            if (dpSelectPointerType->getSelectedItem() != "No pointer" && dpSelectPointerType->getSelectedItem() != dpSelectClass->getSelectedItem()) {
+                std::vector<std::string> parts = split(dpSelectPointerType->getSelectedItem(), "::");
+                std::string name = parts[parts.size()-1];
+                toInsert += "   EXPORT_CLASS_GUID_("+name+cl.getName()+","+dpSelectPointerType->getSelectedItem()+","+dpSelectClass->getSelectedItem()+", VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(c->getEntityFactory()))\n";
+                sourceCode.insert(pos, toInsert);
+            }
+            toInsert += "   if(save) {\n";
+            toInsert += "       std::ofstream of"+cl.getName()+" (\""+cl.getName()+".oc\");\n";
+            toInsert += "       odfaeg::core::OTextArchive oa"+cl.getName()+" (of"+cl.getName()+");\n";
+            if (found) {
+                toInsert += "       oa"+cl.getName()+"(it"+cl.getName()+"->second);\n";
+            } else {
+                toInsert += "       oa"+cl.getName()+"(v"+cl.getName()+");\n";
+            }
+            toInsert += "   }\n";
+            sourceCode.insert(pos, toInsert);
+            toInsert = "";
+            toFind = "void readObjects (ODFAEGCreator *c) {\n";
+            toFind += "    EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, odfaeg::physic::BoundingVolume, odfaeg::physic::BoundingBox)\n";
+            toFind += "    EXPORT_CLASS_GUID_(EntityTile, odfaeg::graphic::Entity, odfaeg::graphic::Tile, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            toFind += "    EXPORT_CLASS_GUID_(EntityBigTile, odfaeg::graphic::Entity, odfaeg::graphic::BigTile, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            toFind += "    EXPORT_CLASS_GUID_(EntityWall, odfaeg::graphic::Entity, odfaeg::graphic::g2d::Wall, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            toFind += "    EXPORT_CLASS_GUID_(EntityDecor, odfaeg::graphic::Entity, odfaeg::graphic::g2d::Decor, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            toFind += "    EXPORT_CLASS_GUID_(EntityAnimation, odfaeg::graphic::Entity, odfaeg::graphic::Anim, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            toFind += "    EXPORT_CLASS_GUID_(EntityMesh, odfaeg::graphic::Entity, odfaeg::graphic::Mesh, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            toFind += "    EXPORT_CLASS_GUID_(EntityParticleSystem, odfaeg::graphic::Entity, odfaeg::physic::ParticleSystem, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            toFind += "    odfaeg::core::Application::app = c;\n";
+            pos = sourceCode.find(toFind)+toFind.size();
+            if (dpSelectPointerType->getSelectedItem() != "No pointer" && dpSelectPointerType->getSelectedItem() != dpSelectClass->getSelectedItem()) {
+                std::vector<std::string> parts = split(dpSelectPointerType->getSelectedItem(), "::");
+                std::string name = parts[parts.size()-1];
+                toInsert += "   EXPORT_CLASS_GUID_("+name+cl.getName()+","+dpSelectPointerType->getSelectedItem()+","+dpSelectClass->getSelectedItem()+", VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+            }
+            toInsert += "   std::ifstream if"+cl.getName()+" (\""+cl.getName()+".oc\");\n";
+            toInsert += "   odfaeg::core::ITextArchive ia"+cl.getName()+" (if"+cl.getName()+");\n";
+            toInsert += "   ia"+cl.getName()+"(v"+cl.getName()+");\n";
+            if (found) {
+                //toInsert += "   c->getExternals().insert(std::make_pair(\""+cl.getName()+"\",v"+cl.getName()+"));\n";
+                toInsert += "   for (unsigned int i = 0; i < v"+cl.getName()+".size(); i++)\n";
+                toInsert += "       c->addExternalEntity(v"+cl.getName()+"[i],\""+cl.getName()+"\");\n";
+                //toInsert += "   c->updateNb(\""+cl.getName()+"\",v"+cl.getName()+".size());\n";
+            }
+            sourceCode.insert(pos, toInsert);
         }
-
+        toFind = "void createObject(ODFAEGCreator *c, bool save) {\n";
+        toFind += "    EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, odfaeg::physic::BoundingVolume, odfaeg::physic::BoundingBox)\n";
+        toFind += "    EXPORT_CLASS_GUID_(EntityTile, odfaeg::graphic::Entity, odfaeg::graphic::Tile, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+        toFind += "    EXPORT_CLASS_GUID_(EntityBigTile, odfaeg::graphic::Entity, odfaeg::graphic::BigTile, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+        toFind += "    EXPORT_CLASS_GUID_(EntityWall, odfaeg::graphic::Entity, odfaeg::graphic::g2d::Wall, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+        toFind += "    EXPORT_CLASS_GUID_(EntityDecor, odfaeg::graphic::Entity, odfaeg::graphic::g2d::Decor, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+        toFind += "    EXPORT_CLASS_GUID_(EntityAnimation, odfaeg::graphic::Entity, odfaeg::graphic::Anim, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+        toFind += "    EXPORT_CLASS_GUID_(EntityMesh, odfaeg::graphic::Entity, odfaeg::graphic::Mesh, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+        toFind += "    EXPORT_CLASS_GUID_(EntityParticleSystem, odfaeg::graphic::Entity, odfaeg::physic::ParticleSystem, VA_LIST(odfaeg::graphic::EntityFactory&), VA_LIST(std::ref(c->getEntityFactory())))\n";
+        toFind += "    odfaeg::core::Application::app = c;\n";
+        pos = sourceCode.find(toFind)+toFind.size();
+        /*if (found) {
+            toInsert = "   std::map<std::string, std::vector<odfaeg::graphic::Entity*>>::iterator it"+cl.getName()+" = c->getExternals().find(\""+cl.getName()+"\");\n";
+            toInsert += "   if (it"+cl.getName()+" == c->getExternals().end()) {\n";
+            toInsert += "       c->getExternals().insert(std::make_pair(\""+cl.getName()+"\","+"v"+cl.getName()+"));\n";
+            toInsert += "       it"+cl.getName()+" = c->getExternals().find(\""+cl.getName()+"\");\n";
+            toInsert += "   }\n";
+            sourceCode.insert(pos, toInsert);
+        }*/
         std::vector<std::string> argValues;
         unsigned int j = 0;
         for (unsigned int i = 0; i < argsTps.size(); i++) {
@@ -2940,15 +2965,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             ifs.close();
         }
         if (fileExist) {
-            while (sourceCode.find(taRObjectName->getText()) != std::string::npos) {
-                int pos = sourceCode.find(taRObjectName->getText());
-                while (sourceCode.at(pos) != '\n') {
-                    pos--;
-                }
-                std::string sub = sourceCode.substr(pos);
-                int pos2 = sub.find("\n")+1;
-                sourceCode.erase(pos, pos + pos2);
-            }
+
             if (found) {
                 std::map<std::string, std::vector<Entity*>>::iterator it = externals.find(cl.getName());
                 if (it != externals.end()) {
@@ -2962,6 +2979,12 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                         }
                     }
                 }
+
+            }
+            std::string toFind=taRObjectName->getText();
+            while (sourceCode.find(toFind) != std::string::npos) {
+                int line = findLine(toFind, sourceCode);
+                removeLine(line, sourceCode);
             }
             std::ofstream file(appliname+"\\sourceCode.cpp");
             file<<sourceCode;
@@ -6170,4 +6193,29 @@ bool ODFAEGCreator::isAlreadyCalled(unsigned int id) {
     if (it != callIds.end()) {
             return it->second;
     }
+}
+void ODFAEGCreator::removeLine(unsigned int line, std::string& content) {
+    std::string cpContent = content;
+    unsigned int tmpLine=0;
+    unsigned int size = 0, pos = 0;
+    while(line > 0 && tmpLine < line) {
+        pos = size;
+        unsigned int size = cpContent.find("\n")+1;
+        cpContent.erase(0, size);
+        tmpLine++;
+    }
+    content.erase(pos, size);
+}
+unsigned int ODFAEGCreator::findLine(std::string toFind, std::string content) {
+    unsigned int line = 0;
+    unsigned int pos = content.find("\n");
+    unsigned int pos2 = content.find(toFind);
+    unsigned int pos3 = 0;
+    while (pos < pos2) {
+        line++;
+        pos3 = content.find("\n")+1;
+        pos += pos3;
+        content.erase(0, pos3);
+    }
+    return line;
 }

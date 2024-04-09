@@ -46,6 +46,7 @@ namespace odfaeg {
         }
 
         bool GridMap::addEntity (Entity *entity) {
+            //std::cout<<"add global bounds : "<<entity->getGlobalBounds().getPosition()<<entity->getGlobalBounds().getWidth()<<","<<entity->getGlobalBounds().getHeight()<<","<<entity->getGlobalBounds().getDepth()<<std::endl;
             int x = entity->getGlobalBounds().getPosition().x;
             int y = entity->getGlobalBounds().getPosition().y;
             int z = entity->getGlobalBounds().getPosition().z;
@@ -293,7 +294,7 @@ namespace odfaeg {
 
         //Supprime une tile dans la cellule. (Sans la supprimer de la mémoire.)
         bool GridMap::removeEntity (Entity *entity) {
-
+            //std::cout<<"remove global bounds : "<<entity->getGlobalBounds().getPosition()<<entity->getGlobalBounds().getWidth()<<","<<entity->getGlobalBounds().getHeight()<<","<<entity->getGlobalBounds().getDepth()<<std::endl;
             int x = entity->getGlobalBounds().getPosition().x;
             int y = entity->getGlobalBounds().getPosition().y;
             int z = entity->getGlobalBounds().getPosition().z;
@@ -306,10 +307,10 @@ namespace odfaeg {
                     for (int k = z; k <= endZ; k+= offsetZ) {
                         math::Vec3f pos (i, j, k);
                         CellMap *cm = getGridCellAt(pos);
-                        math::Vec3f coords = getCoordinatesAt(pos);
+                        /*math::Vec3f coords = getCoordinatesAt(pos);
                         int indice = (math::Math::abs(minX) + coords.x)
                                     + (math::Math::abs(minY) + coords.y) * nbCasesPerRow + (math::Math::abs(minZ) + coords.z) * nbCasesPerCol;
-                        //std::cout<<"remove entity indice : "<<indice<<std::endl<<"mins : "<<std::endl<<minX<<","<<minY<<","<<minZ<<std::endl<<"maxs : "<<maxX<<","<<maxY<<","<<maxZ<<std::endl<<"nb cases : "<<nbCasesPerRow<<","<<nbCasesPerCol<<std::endl<<"coords : "<<coords<<"size : "<<casesMap.size()<<std::endl;
+                        std::cout<<"remove entity indice : "<<indice<<std::endl<<"mins : "<<std::endl<<minX<<","<<minY<<","<<minZ<<std::endl<<"maxs : "<<maxX<<","<<maxY<<","<<maxZ<<std::endl<<"nb cases : "<<nbCasesPerRow<<","<<nbCasesPerCol<<std::endl<<"coords : "<<coords<<"size : "<<casesMap.size()<<std::endl;*/
                         if (cm != nullptr) {
                           /*if (i == x && j == y && k == z && entity->getType() == "E_TILE") {
                               int indice = (math::Math::abs(minX) + cm->getCoords().x)

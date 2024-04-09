@@ -352,21 +352,27 @@ namespace odfaeg {
             return gridMap->addEntity(entity);
         }
         bool Scene::removeEntity (Entity *entity) {
-            if (entity->isAnimated()) {
-                if (entity->getCurrentFrame() != nullptr) {
-                    removeEntity(entity->getCurrentFrame());
+            if (entity != nullptr) {
+
+                if (entity->isAnimated()) {
+                    if (entity->getCurrentFrame() != nullptr) {
+                        removeEntity(entity->getCurrentFrame());
+                    }
+                } else {
+                    std::vector<Entity*> children = entity->getChildren();
+                    for (unsigned int i = 0; i < children.size(); i++) {
+                        removeEntity(children[i]);
+                    }
                 }
-            } else {
-                std::vector<Entity*> children = entity->getChildren();
-                for (unsigned int i = 0; i < children.size(); i++) {
-                    removeEntity(children[i]);
+                std::vector<Face> faces = entity->getFaces();
+                for (unsigned int j = 0; j < faces.size(); j++) {
+                    decreaseComptImg(faces[j].getMaterial().getTexture());
+                }
+                if(!gridMap->removeEntity(entity)) {
+                   return false;
                 }
             }
-            std::vector<Face> faces = entity->getFaces();
-            for (unsigned int j = 0; j < faces.size(); j++) {
-                decreaseComptImg(faces[j].getMaterial().getTexture());
-            }
-            return gridMap->removeEntity(entity);
+            return true;
         }
         bool Scene::deleteEntity (Entity *entity) {
             if (entity->isAnimated()) {
@@ -387,10 +393,10 @@ namespace odfaeg {
             for (unsigned int j = 0; j < faces.size(); j++) {
                 decreaseComptImg(faces[j].getMaterial().getTexture());
             }
-            if (entity->getParent() == nullptr) {
-                return gridMap->deleteEntity(entity);
+            if (entity->getParent() == nullptr && !gridMap->deleteEntity(entity)) {
+                return false;
             }
-            return false;
+            return true;
         }
         math::Vec3f Scene::getPosition() {
             return gridMap->getMins();
